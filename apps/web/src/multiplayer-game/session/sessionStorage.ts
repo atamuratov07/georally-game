@@ -72,6 +72,5 @@ export function clearRoomSession(
 	const store = readStore()
 	const sessionKey = getSessionKey(roomCode, role)
 	delete store[sessionKey]
-	delete store[roomCode.toUpperCase()]
 	writeStore(store)
 }

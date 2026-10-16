@@ -52,11 +52,13 @@ interface HostRoomSubscriptionHandlers {
 	onRoomSnapshot?: (payload: HostRoomSnapshotEvent) => void
 	onRoomClosed?: (payload: RoomClosedEvent) => void
 	onSocketDisconnect?: (reason: string) => void
+	onSocketReconnect?: () => void
 }
 interface PlayerRoomSubscriptionHandlers {
 	onRoomSnapshot?: (payload: PlayerRoomSnapshotEvent) => void
 	onRoomClosed?: (payload: RoomClosedEvent) => void
 	onSocketDisconnect?: (reason: string) => void
+	onSocketReconnect?: () => void
 }
 
 export interface SocketGateway {
@@ -226,14 +228,20 @@ export function createSocketGateway(): SocketGateway {
 				handlers.onSocketDisconnect?.(reason)
 			}
 
+			const handleSocketReconnect = () => {
+				handlers.onSocketReconnect?.()
+			}
+
 			currentSocket.on('room:host-snapshot', handleRoomSnapshot)
 			currentSocket.on('room:closed', handleRoomClosed)
 			currentSocket.on('disconnect', handleSocketDisconnect)
+			currentSocket.on('connect', handleSocketReconnect)
 
 			return () => {
 				currentSocket.off('room:host-snapshot', handleRoomSnapshot)
 				currentSocket.off('room:closed', handleRoomClosed)
 				currentSocket.off('disconnect', handleSocketDisconnect)
+				currentSocket.off('connect', handleSocketReconnect)
 			}
 		},
 
@@ -256,14 +264,20 @@ export function createSocketGateway(): SocketGateway {
 				handlers.onSocketDisconnect?.(reason)
 			}
 
+			const handleSocketReconnect = () => {
+				handlers.onSocketReconnect?.()
+			}
+
 			currentSocket.on('room:player-snapshot', handleRoomSnapshot)
 			currentSocket.on('room:closed', handleRoomClosed)
 			currentSocket.on('disconnect', handleSocketDisconnect)
+			currentSocket.on('connect', handleSocketReconnect)
 
 			return () => {
 				currentSocket.off('room:player-snapshot', handleRoomSnapshot)
 				currentSocket.off('room:closed', handleRoomClosed)
 				currentSocket.off('disconnect', handleSocketDisconnect)
+				currentSocket.off('connect', handleSocketReconnect)
 			}
 		},
 

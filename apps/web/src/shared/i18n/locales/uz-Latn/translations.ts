@@ -235,6 +235,7 @@ const translations = {
 				"Saqlangan o'yinchi sessiyasi muddati tugagan yoki noto'g'ri.",
 			roomSessionExpired:
 				"Saqlangan xona sessiyasi muddati tugagan yoki noto'g'ri.",
+			sessionOpenedElsewhere: 'Bu xona boshqa varaq yoki oynada ochilgan.',
 		},
 	},
 	gatewayErrors: {

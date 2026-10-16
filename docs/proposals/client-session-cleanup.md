@@ -45,10 +45,9 @@ const revealRound = useCallback(
 
 `startGame` still needs its custom body (it reads `roomMode` / `connectedMemberCount` from the ready state for analytics) but can call `runReadyAction` too.
 
-## 3. Remove dead code
+## 3. Remove the unused `step` field
 
-- **`step: 'lookup' | 'resume'`** in `useRoomPlayerController`'s entry state is written in three places and never read. (It disappears anyway with the [lookup extraction](player-room-lookup-extraction.md).)
-- **`delete store[roomCode.toUpperCase()]`** in `sessionStorage.clearRoomSession` cleans up a storage key format that predates the `role:code` keys. `readStore` drops entries older than `SESSION_TTL_MS` (7 days) regardless of key shape, so legacy entries are long gone.
+`step: 'lookup' | 'resume'` in `useRoomPlayerController`'s entry state is written in three places and never read. Delete the field and its three assignments. (It disappears anyway with the [lookup extraction](player-room-lookup-extraction.md).)
 
 ## Tests
 

@@ -4,14 +4,10 @@ import {
 	type AckCallback,
 	type AdvanceRoundRequest,
 	type ClientToServerEvents,
-	type CreateRoomRequest,
-	type CreateRoomResponse,
 	type EmptyAckData,
 	type HostRoomSnapshotEvent,
 	type JoinRoomRequest,
 	type JoinRoomResponse,
-	type LookupRoomRequest,
-	type LookupRoomResponse,
 	type PlayerRoomSnapshotEvent,
 	type ResumeHostRoomRequest,
 	type ResumeHostRoomResponse,
@@ -64,8 +60,6 @@ interface PlayerRoomSubscriptionHandlers {
 }
 
 export interface SocketGateway {
-	createRoom: (payload: CreateRoomRequest) => Promise<CreateRoomResponse>
-	lookupRoom: (payload: LookupRoomRequest) => Promise<LookupRoomResponse>
 	joinRoom: (payload: JoinRoomRequest) => Promise<JoinRoomResponse>
 	resumeHostRoom: (
 		payload: ResumeHostRoomRequest,
@@ -177,14 +171,6 @@ export function createSocketGateway(): SocketGateway {
 	}
 
 	return {
-		createRoom(payload) {
-			return request('room:create', payload)
-		},
-
-		lookupRoom(payload) {
-			return request('room:lookup', payload)
-		},
-
 		joinRoom(payload) {
 			return request('room:join', payload)
 		},

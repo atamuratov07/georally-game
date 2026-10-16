@@ -1,4 +1,5 @@
 import { playableCountryPool } from '@georally/country-catalog'
+import request from 'supertest'
 
 import { parseEnv } from '../src/config/env'
 import { createApp } from '../src/app'
@@ -7,11 +8,14 @@ import { createRoomPublisher } from '../src/features/rooms/publisher'
 import { RoomsRepository } from '../src/features/rooms/repository'
 import { RoomsService } from '../src/features/rooms/service'
 import { registerRoomHandlers } from '../src/features/rooms/socket'
+import { registerRoomRoutes } from '../src/features/rooms/http'
 import { io as ioc, type Socket as ClientSocket } from 'socket.io-client'
 import type { AddressInfo } from 'net'
 import {
 	GAME_NAMESPACE,
 	type ClientToServerEvents,
+	type CreateRoomRequest,
+	type CreateRoomResponse,
 	type ServerToClientEvents,
 } from '@georally/game-protocol'
 
@@ -26,7 +30,8 @@ export async function bootstrapServer() {
 
 	let getHealthSnapshot = (): Record<string, unknown> => ({})
 
-	const app = createApp({
+	const { app, apiRouter } = createApp({
+		corsOrigins: env.corsOrigins,
 		getHealthSnapshot: () => getHealthSnapshot(),
 	})
 
@@ -68,6 +73,7 @@ export async function bootstrapServer() {
 		namespace: gameNamespace,
 		roomsService,
 	})
+	registerRoomRoutes({ router: apiRouter, roomsService })
 
 	await new Promise<void>(resolve => {
 		httpServer.listen(resolve)
@@ -87,6 +93,22 @@ export async function bootstrapServer() {
 		})
 
 		return client
+	}
+
+	const createRoomAsHost = async (body: CreateRoomRequest) => {
+		const response = await request(httpServer)
+			.post('/api/rooms')
+			.send(body)
+			.expect(201)
+
+		const created: CreateRoomResponse = response.body.data
+
+		const hostSocket = await connectClient()
+		const resumed = await hostSocket.emitWithAck('room:host-resume', {
+			memberSessionToken: created.memberSessionToken,
+		})
+		if (!resumed.ok) throw new Error('host resume failed')
+		return { hostSocket, created }
 	}
 
 	const resetBetweenTests = (): void => {
@@ -110,6 +132,7 @@ export async function bootstrapServer() {
 		httpServer,
 		resetBetweenTests,
 		connectClient,
+		createRoomAsHost,
 		teardown,
 	}
 }

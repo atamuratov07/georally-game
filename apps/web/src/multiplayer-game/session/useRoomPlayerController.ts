@@ -18,6 +18,7 @@ import {
 import { i18n } from '../../shared/i18n/setup'
 import { trackRoomJoined } from '../../shared/analytics/track'
 import { useMultiplayerGameAnalytics } from '../../shared/analytics/useMultiplayerGameAnalytics'
+import { lookupRoom } from '../api/roomsApi'
 
 type RoomPlayerEntryState =
 	| {
@@ -187,7 +188,7 @@ export function useRoomPlayerController(
 		})
 
 		try {
-			const lookupResponse = await gateway.lookupRoom({ roomCode })
+			const lookupResponse = await lookupRoom({ roomCode })
 			if (!isActiveEntryRun(runId)) {
 				return
 			}

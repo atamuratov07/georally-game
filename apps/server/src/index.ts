@@ -7,13 +7,15 @@ import { RoomsRepository } from './features/rooms/repository.js'
 import { RoomsService } from './features/rooms/service.js'
 import { registerRoomHandlers } from './features/rooms/socket.js'
 import { createRealtimeServer } from './server.js'
+import { registerRoomRoutes } from './features/rooms/http.js'
 
 const env = parseEnv(process.env)
 const repository = new RoomsRepository()
 
 let getHealthSnapshot = (): Record<string, unknown> => ({})
 
-const app = createApp({
+const { app, apiRouter } = createApp({
+	corsOrigins: env.corsOrigins,
 	getHealthSnapshot: () => getHealthSnapshot(),
 })
 
@@ -55,6 +57,7 @@ registerRoomHandlers({
 	namespace: gameNamespace,
 	roomsService,
 })
+registerRoomRoutes({ router: apiRouter, roomsService })
 
 httpServer.listen(env.port, env.host, () => {
 	console.log(`Listening on http://${env.host}:${env.port}`)

@@ -78,7 +78,6 @@ export interface RoomsServiceOptions {
 export interface CreateRoomInput {
 	hostName: string
 	roomMode: RoomMode
-	socketId: string
 }
 
 export interface JoinRoomInput {
@@ -171,9 +170,7 @@ export class RoomsService {
 		}
 	}
 
-	createRoom(
-		input: CreateRoomInput,
-	): ServiceResult<BoundServiceResponse<CreateRoomResponse>> {
+	createRoom(input: CreateRoomInput): ServiceResult<CreateRoomResponse> {
 		const roomId = createRoomId()
 		const roomCode = createRoomCode(
 			code => !this.repository.hasRoomCode(code),
@@ -200,26 +197,16 @@ export class RoomsService {
 			token: hostSessionToken,
 			roomId,
 			memberId: hostId,
-			socketId: input.socketId,
+			socketId: null,
 		})
-
-		const snapshot = isRoomInGroupMode(roomResult.value)
-			? this.buildGroupHostRoomSnapshot(roomResult.value, hostId)
-			: this.buildClassroomHostRoomSnapshot(roomResult.value, hostId)
-
-		if (!snapshot.ok) {
-			return snapshot
-		}
+		this.rescheduleRoomExpire(roomId)
 
 		return ok({
-			response: {
-				role: 'host',
-				roomId,
-				roomCode,
-				memberId: hostId,
-				memberSessionToken: hostSessionToken,
-				snapshot: snapshot.value,
-			},
+			role: 'host',
+			roomId,
+			roomCode,
+			memberId: hostId,
+			memberSessionToken: hostSessionToken,
 		})
 	}
 
@@ -582,7 +569,7 @@ export class RoomsService {
 	}
 
 	disconnectSocket(socketId: string): void {
-		const session = this.repository.unbindSocket(socketId)
+		const session = this.repository.unbindSocketFromSession(socketId)
 		if (!session) {
 			return
 		}

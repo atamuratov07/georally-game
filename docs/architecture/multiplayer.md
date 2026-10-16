@@ -203,6 +203,8 @@ A room created over HTTP starts with its host **disconnected**: no socket exists
 
 Errors use `400` for `invalid_payload` (including malformed JSON), `500` for `internal_error`, and `422` for domain errors. Clients read the body, not the status.
 
+In production, nginx limits `POST /api/rooms` to 10 requests per minute per client IP (bursts of up to 5 are allowed) and answers `429` beyond that, before the request reaches the server. That response is nginx's HTML error page, not an `Ack` body, so the client shows its generic connection error. Lookups are not limited: a whole classroom behind one school IP looks up the same code at once.
+
 **Client → server socket events:**
 
 - `room:join`

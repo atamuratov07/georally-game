@@ -1,9 +1,7 @@
 import type { AckCallback, RoomProtocolError } from '@georally/game-protocol'
 import {
 	advanceRoundRequestSchema,
-	createRoomRequestSchema,
 	joinRoomRequestSchema,
-	lookupRoomRequestSchema,
 	resumeHostRoomRequestSchema,
 	resumePlayerRoomRequestSchema,
 	returnToLobbyRequestSchema,
@@ -17,6 +15,7 @@ import type { ZodType } from 'zod'
 import type { RoomMemberRole } from '@georally/game-domain/multiplayer/room'
 import type { RoomsService } from './service.js'
 import type { GameNamespace, GameSocket } from './types.js'
+import type { Result } from '@georally/game-domain'
 
 export interface RegisterRoomHandlersOptions {
 	namespace: GameNamespace
@@ -104,54 +103,39 @@ function disconnectReplacedSocket(
 	namespace.sockets.get(socketId)?.disconnect(true)
 }
 
+function handleSessionCommand<TPayload, TResult>(
+	socket: GameSocket,
+	schema: ZodType<TPayload>,
+	payload: unknown,
+	ack: AckCallback<TResult>,
+	run: (
+		memberSessionToken: string,
+		value: TPayload,
+	) => Result<TResult, RoomProtocolError>,
+): void {
+	const auth = requireAuthenticated(socket)
+	if (!auth.ok)
+		return respondWithError(ack, {
+			code: 'unauthorized',
+		})
+
+	const parsed = parsePayload(schema, payload)
+	if (!parsed.ok)
+		return respondWithError(ack, {
+			code: 'invalid_payload',
+		})
+
+	const result = run(auth.value, parsed.value)
+	if (!result.ok) return respondWithError(ack, result.error)
+
+	respondWithSuccess(ack, result.value)
+}
+
 export function registerRoomHandlers({
 	namespace,
 	roomsService,
 }: RegisterRoomHandlersOptions): void {
 	namespace.on('connection', socket => {
-		socket.on('room:lookup', (payload, ack) => {
-			const parsed = parsePayload(lookupRoomRequestSchema, payload)
-			if (!parsed.ok) {
-				return respondWithError(ack, {
-					code: 'invalid_payload',
-				})
-			}
-
-			return respondWithSuccess(
-				ack,
-				roomsService.lookupRoom(parsed.value.roomCode),
-			)
-		})
-
-		socket.on('room:create', (payload, ack) => {
-			const auth = requireAuthenticated(socket)
-			if (auth.ok) {
-				return respondWithError(ack, {
-					code: 'unauthorized',
-				})
-			}
-
-			const parsed = parsePayload(createRoomRequestSchema, payload)
-			if (!parsed.ok) {
-				return respondWithError(ack, {
-					code: 'invalid_payload',
-				})
-			}
-
-			const createdRoom = roomsService.createRoom({
-				hostName: parsed.value.hostName,
-				roomMode: parsed.value.roomMode,
-				socketId: socket.id,
-			})
-			if (!createdRoom.ok) {
-				return respondWithError(ack, createdRoom.error)
-			}
-
-			bindSocketIdentity(socket, createdRoom.value.response)
-
-			return respondWithSuccess(ack, createdRoom.value.response)
-		})
-
 		socket.on('room:join', (payload, ack) => {
 			const auth = requireAuthenticated(socket)
 			if (auth.ok) {
@@ -190,6 +174,11 @@ export function registerRoomHandlers({
 				})
 			}
 
+			const auth = requireAuthenticated(socket)
+			if (auth.ok && auth.value !== parsed.value.memberSessionToken) {
+				return respondWithError(ack, { code: 'unauthorized' })
+			}
+
 			const resumedRoom = roomsService.resumeHostRoom({
 				memberSessionToken: parsed.value.memberSessionToken,
 				socketId: socket.id,
@@ -222,6 +211,11 @@ export function registerRoomHandlers({
 				})
 			}
 
+			const auth = requireAuthenticated(socket)
+			if (auth.ok && auth.value !== parsed.value.memberSessionToken) {
+				return respondWithError(ack, { code: 'unauthorized' })
+			}
+
 			const resumedRoom = roomsService.resumePlayerRoom({
 				memberSessionToken: parsed.value.memberSessionToken,
 				socketId: socket.id,
@@ -247,27 +241,13 @@ export function registerRoomHandlers({
 		})
 
 		socket.on('room:return-to-lobby', (payload, ack) => {
-			const auth = requireAuthenticated(socket)
-			if (!auth.ok) {
-				return respondWithError(ack, { code: 'unauthorized' })
-			}
-
-			const parsed = parsePayload(returnToLobbyRequestSchema, payload)
-			if (!parsed.ok) {
-				return respondWithError(ack, {
-					code: 'invalid_payload',
-				})
-			}
-
-			const returnedRoomResult = roomsService.returnToLobby({
-				memberSessionToken: auth.value,
-			})
-
-			if (!returnedRoomResult.ok) {
-				return respondWithError(ack, returnedRoomResult.error)
-			}
-
-			return respondWithSuccess(ack, returnedRoomResult.value)
+			handleSessionCommand(
+				socket,
+				returnToLobbyRequestSchema,
+				payload,
+				ack,
+				token => roomsService.returnToLobby({ memberSessionToken: token }),
+			)
 		})
 
 		socket.on('room:terminate', (payload, ack) => {
@@ -297,30 +277,17 @@ export function registerRoomHandlers({
 		})
 
 		socket.on('game:start', (payload, ack) => {
-			const auth = requireAuthenticated(socket)
-			if (!auth.ok) {
-				return respondWithError(ack, {
-					code: 'unauthorized',
-				})
-			}
-
-			const parsed = parsePayload(startGameRequestSchema, payload)
-			if (!parsed.ok) {
-				return respondWithError(ack, {
-					code: 'invalid_payload',
-				})
-			}
-
-			const startedGame = roomsService.startGame({
-				memberSessionToken: auth.value,
-				gameConfig: parsed.value.gameConfig,
-			})
-
-			if (!startedGame.ok) {
-				return respondWithError(ack, startedGame.error)
-			}
-
-			return respondWithSuccess(ack, startedGame.value)
+			handleSessionCommand(
+				socket,
+				startGameRequestSchema,
+				payload,
+				ack,
+				(token, value) =>
+					roomsService.startGame({
+						memberSessionToken: token,
+						gameConfig: value.gameConfig,
+					}),
+			)
 		})
 
 		socket.on('game:reveal-round', (payload, ack) => {

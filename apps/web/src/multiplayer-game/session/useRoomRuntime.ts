@@ -46,6 +46,7 @@ type RoomSubscriptionHandlers<TView> = {
 	onRoomSnapshot: (payload: { roomId: RoomId; snapshot: TView }) => void
 	onRoomClosed: (payload: RoomClosedEvent) => void
 	onSocketDisconnect: (reason: string) => void
+	onSocketReconnect: () => void
 }
 
 export type RoomRuntimeAdapter<TView> = {
@@ -103,7 +104,6 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 	})
 	const roomRef = useRef<TView | null>(null)
 	const unsubscribeRef = useRef<(() => void) | null>(null)
-	const reconnectTimerRef = useRef<number | null>(null)
 	const requestRunIdRef = useRef(0)
 	const reconnectRef = useRef<
 		(
@@ -120,13 +120,6 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 		return requestRunIdRef.current === runId
 	}, [])
 
-	const clearReconnectTimer = useCallback(() => {
-		if (reconnectTimerRef.current !== null) {
-			clearTimeout(reconnectTimerRef.current)
-			reconnectTimerRef.current = null
-		}
-	}, [])
-
 	const clearSubscriptions = useCallback(() => {
 		unsubscribeRef.current?.()
 		unsubscribeRef.current = null
@@ -134,9 +127,8 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 
 	const stopConnection = useCallback(() => {
 		requestRunIdRef.current++
-		clearReconnectTimer()
 		clearSubscriptions()
-	}, [clearReconnectTimer, clearSubscriptions])
+	}, [clearSubscriptions])
 
 	const disconnect = useCallback(() => {
 		stopConnection()
@@ -150,7 +142,6 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 				throw new Error('Cannot attach a session for a different room.')
 			}
 
-			clearReconnectTimer()
 			clearSubscriptions()
 
 			roomRef.current = snapshot
@@ -181,6 +172,7 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 						return
 					}
 
+					// Analytics
 					trackRoomClosed({
 						reason: payload.reason,
 						roomMode: roomRef.current?.roomMode,
@@ -188,6 +180,7 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 						phaseAtClose: roomRef.current?.phase,
 						memberCountAtClose: roomRef.current?.connectedMemberCount,
 					})
+					// Analytics end
 
 					stopConnection()
 					setState({
@@ -201,28 +194,33 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 						adapter.close()
 					}, 0)
 				},
-				onSocketDisconnect: () => {
+				onSocketDisconnect: reason => {
+					if (reason === 'io server disconnect') {
+						stopConnection()
+						setState({
+							status: 'error',
+							roomCode,
+							message: i18n.t(
+								'multiplayer.error.sessionOpenedElsewhere',
+							),
+						})
+						return
+					}
+
 					setState({
 						status: 'reconnecting',
 						roomCode,
 						session,
 						room: roomRef.current,
 					})
+				},
 
-					clearReconnectTimer()
-					reconnectTimerRef.current = setTimeout(() => {
-						void reconnectRef.current(session, 'reconnecting')
-					}, 1200)
+				onSocketReconnect: () => {
+					void reconnectRef.current(session, 'reconnecting')
 				},
 			})
 		},
-		[
-			clearReconnectTimer,
-			clearSubscriptions,
-			adapter,
-			roomCode,
-			stopConnection,
-		],
+		[clearSubscriptions, adapter, roomCode, stopConnection],
 	)
 
 	const connect = useCallback(
@@ -231,7 +229,6 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 			mode: 'connecting' | 'reconnecting' = 'connecting',
 		): Promise<ConnectRoomSessionResult> => {
 			const runId = beginRun()
-			clearReconnectTimer()
 
 			if (mode === 'reconnecting') {
 				setState({
@@ -288,15 +285,7 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 				return { kind: 'error' }
 			}
 		},
-		[
-			attachSession,
-			beginRun,
-			clearReconnectTimer,
-			disconnect,
-			isActiveRun,
-			adapter,
-			roomCode,
-		],
+		[attachSession, beginRun, disconnect, isActiveRun, adapter, roomCode],
 	)
 
 	useEffect(() => {

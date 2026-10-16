@@ -1,8 +1,6 @@
 import type { AckCallback, EmptyAckData } from './ack'
 import type {
-	CreateRoomRequest,
 	JoinRoomRequest,
-	LookupRoomRequest,
 	AdvanceRoundRequest,
 	ResumeHostRoomRequest,
 	ResumePlayerRoomRequest,
@@ -13,10 +11,8 @@ import type {
 	TerminateRoomRequest,
 } from './requests'
 import type {
-	CreateRoomResponse,
 	HostRoomSnapshotEvent,
 	JoinRoomResponse,
-	LookupRoomResponse,
 	PlayerRoomSnapshotEvent,
 	ResumeHostRoomResponse,
 	ResumePlayerRoomResponse,
@@ -27,14 +23,6 @@ import type {
 export const GAME_NAMESPACE = '/game' as const
 
 export interface ClientToServerEvents {
-	'room:create': (
-		payload: CreateRoomRequest,
-		ack: AckCallback<CreateRoomResponse>,
-	) => void
-	'room:lookup': (
-		payload: LookupRoomRequest,
-		ack: AckCallback<LookupRoomResponse>,
-	) => void
 	'room:join': (
 		payload: JoinRoomRequest,
 		ack: AckCallback<JoinRoomResponse>,

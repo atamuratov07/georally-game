@@ -25,12 +25,12 @@ GeoRally is a real-time geography quiz game: a player sees a country prompt, fin
 - **Singleplayer world-map training** — fully client-side, no server needed. Pick question count, difficulty, region, and attempts-per-question, then click countries on an interactive map. Each round tracks attempts (`Hearts`) and a `QuestionTimer`; a wrong guess costs an attempt, and running out (or giving up) reveals the answer.
 - **Two distinct multiplayer modes** — **Group**, where the host also competes and the game is self-driving (rounds auto-advance on a timer, ~3s reveal/leaderboard windows), and **Classroom**, where the host is a monitor only (doesn't occupy a player slot, doesn't compete) and controls pacing manually, round by round.
 - **Realtime multiplayer rooms** — a host creates a room and shares a short code or link; players join from their own devices and everyone answers the same round. The server pushes full, role-specific room snapshots on every state change rather than granular deltas, which keeps client state simple to reason about.
-- **Reconnect support with mode-aware amnesty** — host and player sessions persist a `memberSessionToken` in `localStorage`, so a refresh or dropped connection doesn't kick you out of a room. How long a room tolerates a disconnected host differs by mode (shorter for classroom, since the teacher is the pacing authority) and is configurable server-side.
+- **Reconnect support with mode-aware amnesty** — host and player sessions persist a `memberSessionToken` in `localStorage`, so a refresh or dropped connection doesn't kick you out of a room: the client resumes the session as soon as Socket.IO reconnects, and opening the same session in a second tab moves it there instead of fighting over it. How long a room tolerates a disconnected host differs by mode (shorter for classroom, since the teacher is the pacing authority) and is configurable server-side.
 - **Multi-language UI** — English, Russian, and Uzbek (Latin script), with locale-prefixed routes (`/en`, `/ru`, `/uz`) and automatic language detection/redirect for unprefixed URLs.
-- **Typed realtime protocol** — every socket event is schema-validated with `zod` and every response is an explicit `{ ok, data }` / `{ ok: false, error }` ack; the server never sends raw internal room state, only role-specific projected views.
+- **Typed realtime protocol** — rooms are created and looked up over a small HTTP API (`/api`); everything inside a room runs over Socket.IO. Every request and socket event is schema-validated with `zod`, and every response is an explicit `{ ok, data }` / `{ ok: false, error }` ack, over HTTP and sockets alike; the server never sends raw internal room state, only role-specific projected views.
 - **Self-built map data** — the playable country catalog and vector map tiles are generated offline from open data sources (Natural Earth, MapLibre demotiles, REST Countries, Wikidata) rather than pulled from a paid map provider at runtime.
 - **Product analytics** — GA4 event tracking across both singleplayer and multiplayer, covering visits, game starts/completions, per-question outcomes, room size, and room mode, without relying on GA4's automatic page-view tracking alone (see [Analytics](#analytics)).
-- **Automated server tests** — unit tests for the room service and HTTP integration tests, run with Vitest.
+- **Automated server tests** — unit tests for the room service and integration tests that boot a real server and drive its HTTP API and socket flows, run with Vitest.
 
 ## Tech stack
 
@@ -62,7 +62,9 @@ georally-game/
 │   ├── country-catalog/   # generated playable-country metadata
 │   ├── country-build/     # offline pipeline that produces the catalog + map tiles
 │   └── map-assets/        # generated map tiles land here (dist/ is gitignored)
-├── docs/architecture/     # deep-dive docs — see Architecture below
+├── docs/
+│   ├── architecture/      # deep-dive docs — see Architecture below
+│   └── proposals/         # reviewed improvements, not yet implemented
 ├── docker-compose.yaml    # server + nginx + certbot, used for the production deploy
 └── pnpm-workspace.yaml
 ```
@@ -71,7 +73,7 @@ The full annotated source tree lives in [`docs/architecture/source-tree.md`](doc
 
 ## Getting started
 
-**Prerequisites:** Node.js (LTS) and pnpm (the repo pins `pnpm@11.21.0` via `packageManager` — `corepack enable` will pick that up automatically).
+**Prerequisites:** Node.js (LTS) and pnpm (the repo pins `pnpm@12.9.1` via `packageManager` — `corepack enable` will pick that up automatically).
 
 ```bash
 git clone https://github.com/atamuratov07/georally-game.git
@@ -91,7 +93,7 @@ pnpm dev:web
 pnpm dev:server
 ```
 
-**Web configuration:** `VITE_GAME_SERVER_ORIGIN` optionally points the client at a separate server origin; if unset, the Socket.IO client connects to the same origin at `/game`.
+**Web configuration:** `VITE_GAME_SERVER_ORIGIN` optionally points the client at a separate server origin, for both the HTTP API (`<origin>/api/...`) and Socket.IO (`<origin>/game`); if unset, both use the page's own origin. A separate origin must be listed in the server's `CORS_ORIGIN`.
 
 **Regenerating map data** (only needed if you're changing the country catalog or tiles, not for normal development):
 
@@ -112,7 +114,7 @@ Server configuration (`apps/server/src/config/env.ts`, parsed with `zod`):
 | `CORS_ORIGIN`                             | `http://localhost:5173` | Comma-separated list; production sets this to `https://georally.world`                              |
 | `REVEAL_DURATION_MS`                      | `3000`                  | Group mode auto-advance timing                                                                      |
 | `LEADERBOARD_DURATION_MS`                 | `3000`                  | Group mode auto-advance timing                                                                      |
-| `ROOM_CAPACITY_LIMIT`                     | `40`                    | Max connected members per room                                                                      |
+| `ROOM_CAPACITY_LIMIT`                     | `40`                    | Max members per room; everyone who has joined counts, including members who have since disconnected |
 | `ROOM_NO_CONNECTED_MEMBERS_TTL`           | `600000` (10 min)       | How long an empty room is kept alive                                                                |
 | `ROOM_HOST_DISCONNECTED_IN_GROUP_TTL`     | `300000` (5 min)        | Amnesty window for a disconnected host, group mode                                                  |
 | `ROOM_HOST_DISCONNECTED_IN_CLASSROOM_TTL` | `180000` (3 min)        | Amnesty window for a disconnected host, classroom mode (shorter — the host is the pacing authority) |
@@ -139,6 +141,8 @@ Game and site usage is tracked via GA4 (`gtag.js`), loaded from each locale's HT
 
 Automated tests currently live in `apps/server` only — `game-domain`, `game-protocol`, and the web app don't have their own suites yet.
 
+Unit tests (`src/**/*.test.ts`) exercise `RoomsService` directly. Integration tests (`tests/integration/`) boot a real server on a random port through `tests/setup.ts`, then drive it with Supertest (`/health`, `/api/rooms`) and `socket.io-client` (join, resume, broadcasts, reconnection, tab takeover).
+
 ```bash
 pnpm -F @georally/server test             # everything (unit + integration)
 pnpm -F @georally/server test:unit        # apps/server/src
@@ -150,7 +154,7 @@ There's no root-level `pnpm test` proxy yet — run via the filtered command abo
 
 ## Deployment
 
-Production runs via Docker Compose: a `server` container (the Socket.IO backend), an `nginx` container (built from `apps/web`, serves the static client and reverse-proxies `/game` to the server), and a `certbot` container that renews the Let's Encrypt TLS certificate on a loop. See `docker-compose.yaml` and `apps/web/Dockerfile` / `apps/server/Dockerfile`.
+Production runs via Docker Compose: a `server` container (the Socket.IO backend), an `nginx` container (built from `apps/web`, serves the static client and reverse-proxies `/socket.io/` (the Socket.IO transport, which carries the `/game` namespace), `/api/`, and `/health` to the server), and a `certbot` container that renews the Let's Encrypt TLS certificate on a loop. See `docker-compose.yaml` and `apps/web/Dockerfile` / `apps/server/Dockerfile`.
 
 ```bash
 docker compose up -d --build
@@ -191,13 +195,16 @@ graph LR
     ASSETS -.->|checked-in export| WEB
 ```
 
-| Doc                                                                        | Covers                                                                          |
-| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| [`docs/architecture/source-tree.md`](docs/architecture/source-tree.md)     | Full annotated source tree                                                      |
-| [`docs/architecture/singleplayer.md`](docs/architecture/singleplayer.md)   | Local game flow and state machine                                               |
-| [`docs/architecture/multiplayer.md`](docs/architecture/multiplayer.md)     | Client/server realtime flow, room + game state model, protocol, view projection |
-| [`docs/architecture/data-pipeline.md`](docs/architecture/data-pipeline.md) | Offline build pipeline for the country catalog and map tiles                    |
-| [`docs/architecture/persistence.md`](docs/architecture/persistence.md)     | What's persisted, where, and what that implies for scaling                      |
+| Doc                                                                                      | Covers                                                                           |
+| ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| [`docs/architecture/source-tree.md`](docs/architecture/source-tree.md)                   | Full annotated source tree                                                       |
+| [`docs/architecture/singleplayer.md`](docs/architecture/singleplayer.md)                 | Local game flow and state machine                                                |
+| [`docs/architecture/multiplayer.md`](docs/architecture/multiplayer.md)                   | Client/server realtime flow, room + game state model, protocol, view projection  |
+| [`docs/architecture/data-pipeline.md`](docs/architecture/data-pipeline.md)               | Offline build pipeline for the country catalog and map tiles                     |
+| [`docs/architecture/persistence.md`](docs/architecture/persistence.md)                   | What's persisted, where, and what that implies for scaling                       |
+| [`docs/architecture/connection-lifecycle.md`](docs/architecture/connection-lifecycle.md) | Connection, reconnection, and tab takeover across Socket.IO and the game session |
+
+Improvements found in review but not yet implemented are written up in [`docs/proposals/`](docs/proposals/README.md).
 
 ## Scripts
 

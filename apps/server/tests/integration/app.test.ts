@@ -1,40 +1,70 @@
 import request from 'supertest'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
-import type { Server as HttpServer } from 'http'
-import { bootstrapServer, type RoomClientSocket } from '../setup'
 import { DEFAULT_GAME_CONFIG } from '@georally/game-domain/multiplayer'
 import type {
+	CreateRoomResponse,
 	HostRoomSnapshotEvent,
 	PlayerRoomSnapshotEvent,
 	RoomClosedEvent,
 } from '@georally/game-protocol'
 
+import { parseEnv } from '../../src/config/env'
+import { bootstrapServer, type RoomClientSocket } from '../setup'
+
+type TestServer = Awaited<ReturnType<typeof bootstrapServer>>
+
 describe('multiplayer server integration', () => {
-	let httpServer: HttpServer,
-		connectClient: () => Promise<RoomClientSocket>,
-		resetBetweenTests: () => void,
-		teardown: () => Promise<void>
+	let server: TestServer
 
 	beforeAll(async () => {
-		const server = await bootstrapServer()
-
-		httpServer = server.httpServer
-		resetBetweenTests = server.resetBetweenTests
-		connectClient = server.connectClient
-		teardown = server.teardown
+		server = await bootstrapServer()
 	})
 
 	afterEach(() => {
-		resetBetweenTests()
+		server.resetBetweenTests()
 	})
 
 	afterAll(async () => {
-		await teardown()
+		await server.teardown()
 	})
 
+	async function postRoom(): Promise<CreateRoomResponse> {
+		const response = await request(server.httpServer)
+			.post('/api/rooms')
+			.send({ hostName: 'Alice', roomMode: 'classroom' })
+			.expect(201)
+
+		return response.body.data
+	}
+
+	async function joinAsPlayer(roomCode: string, memberName: string) {
+		const playerSocket = await server.connectClient()
+		const joined = await playerSocket.emitWithAck('room:join', {
+			roomCode,
+			memberName,
+		})
+		if (!joined.ok) throw new Error('setup failed')
+
+		return { playerSocket, joined: joined.data }
+	}
+
+	function nextHostSnapshot(socket: RoomClientSocket) {
+		return new Promise<HostRoomSnapshotEvent>(resolve => {
+			socket.once('room:host-snapshot', resolve)
+		})
+	}
+
+	function nextPlayerSnapshot(socket: RoomClientSocket) {
+		return new Promise<PlayerRoomSnapshotEvent>(resolve => {
+			socket.once('room:player-snapshot', resolve)
+		})
+	}
+
 	describe('GET /health', () => {
-		it('reports zero room and sessions when empty', async () => {
-			const response = await request(httpServer).get('/health').expect(200)
+		it('reports zero rooms and sessions when empty', async () => {
+			const response = await request(server.httpServer)
+				.get('/health')
+				.expect(200)
 
 			expect(response.body).toMatchObject({
 				roomCount: 0,
@@ -43,23 +73,15 @@ describe('multiplayer server integration', () => {
 		})
 
 		it('reflects rooms and sessions after they were created', async () => {
-			const hostSocket = await connectClient()
-			const playerSocket = await connectClient()
-
-			const created = await hostSocket.emitWithAck('room:create', {
-				roomMode: 'classroom',
+			const { created } = await server.createRoomAsHost({
 				hostName: 'Alice',
+				roomMode: 'classroom',
 			})
+			await joinAsPlayer(created.roomCode, 'Bob')
 
-			if (!created.ok) throw new Error('setup failed')
-
-			const joined = await playerSocket.emitWithAck('room:join', {
-				roomCode: created.data.roomCode,
-				memberName: 'Bob',
-			})
-			if (!joined.ok) throw new Error('setup failed')
-
-			const response = await request(httpServer).get('/health').expect(200)
+			const response = await request(server.httpServer)
+				.get('/health')
+				.expect(200)
 
 			expect(response.body).toMatchObject({
 				roomCount: 1,
@@ -68,9 +90,144 @@ describe('multiplayer server integration', () => {
 		})
 	})
 
+	describe('POST /api/rooms', () => {
+		it('creates a room and returns only the session identity', async () => {
+			const response = await request(server.httpServer)
+				.post('/api/rooms')
+				.send({ hostName: 'Alice', roomMode: 'classroom' })
+				.expect(201)
+
+			expect(response.body).toMatchObject({
+				ok: true,
+				data: {
+					role: 'host',
+					roomCode: expect.stringMatching(/^[A-Z0-9]{6}$/),
+					memberId: expect.any(String),
+					memberSessionToken: expect.any(String),
+				},
+			})
+			expect(response.body.data).not.toHaveProperty('snapshot')
+		})
+
+		it('does not bind any socket to the new session', async () => {
+			await postRoom()
+
+			const response = await request(server.httpServer)
+				.get('/health')
+				.expect(200)
+
+			expect(response.body).toMatchObject({
+				roomCount: 1,
+				connectedSessionCount: 0,
+			})
+		})
+
+		it('rejects an invalid payload', async () => {
+			const response = await request(server.httpServer)
+				.post('/api/rooms')
+				.send({ hostName: '', roomMode: 'party' })
+				.expect(400)
+
+			expect(response.body).toEqual({
+				ok: false,
+				error: { code: 'invalid_payload' },
+			})
+		})
+
+		it('rejects malformed JSON with an ack body, not an HTML page', async () => {
+			const response = await request(server.httpServer)
+				.post('/api/rooms')
+				.set('Content-Type', 'application/json')
+				.send('{bad')
+				.expect(400)
+
+			expect(response.body).toEqual({
+				ok: false,
+				error: { code: 'invalid_payload' },
+			})
+		})
+
+		it('answers the CORS preflight for an allowed origin', async () => {
+			const [origin] = parseEnv(process.env).corsOrigins
+
+			const response = await request(server.httpServer)
+				.options('/api/rooms')
+				.set('Origin', origin)
+				.set('Access-Control-Request-Method', 'POST')
+				.set('Access-Control-Request-Headers', 'content-type')
+				.expect(204)
+
+			expect(response.headers['access-control-allow-origin']).toBe(origin)
+		})
+	})
+
+	describe('host handoff from HTTP to socket', () => {
+		it('lets the host resume the created room', async () => {
+			const created = await postRoom()
+
+			const hostSocket = await server.connectClient()
+			const resumed = await hostSocket.emitWithAck('room:host-resume', {
+				memberSessionToken: created.memberSessionToken,
+			})
+
+			expect(resumed.ok).toBe(true)
+			if (!resumed.ok) return
+
+			expect(resumed.data.memberId).toBe(created.memberId)
+			expect(resumed.data.snapshot.members).toEqual(
+				expect.arrayContaining([
+					expect.objectContaining({
+						memberId: created.memberId,
+						connected: true,
+					}),
+				]),
+			)
+
+			const health = await request(server.httpServer)
+				.get('/health')
+				.expect(200)
+			expect(health.body).toMatchObject({ connectedSessionCount: 1 })
+		})
+
+		it('shows players a disconnected host until the host resumes', async () => {
+			const created = await postRoom()
+			const { playerSocket, joined } = await joinAsPlayer(
+				created.roomCode,
+				'Bob',
+			)
+
+			expect(joined.snapshot.members).toEqual(
+				expect.arrayContaining([
+					expect.objectContaining({
+						memberId: created.memberId,
+						connected: false,
+					}),
+				]),
+			)
+
+			const playerSnapshotPromise = nextPlayerSnapshot(playerSocket)
+
+			const hostSocket = await server.connectClient()
+			const resumed = await hostSocket.emitWithAck('room:host-resume', {
+				memberSessionToken: created.memberSessionToken,
+			})
+			if (!resumed.ok) throw new Error('setup failed')
+
+			const playerSnapshotEvent = await playerSnapshotPromise
+			expect(playerSnapshotEvent.snapshot.members).toEqual(
+				expect.arrayContaining([
+					expect.objectContaining({
+						memberId: created.memberId,
+						connected: true,
+					}),
+				]),
+			)
+		})
+	})
+
 	describe('authentication guard', () => {
-		it('rejects game actions from a socket that never created or joined a room', async () => {
-			const strangerSocket = await connectClient()
+		it('rejects game actions from a socket that never joined or resumed a room', async () => {
+			const strangerSocket = await server.connectClient()
 
 			const response = await strangerSocket.emitWithAck(
 				'game:submit-answer',
@@ -79,52 +236,75 @@ describe('multiplayer server integration', () => {
 
 			expect(response.ok).toBe(false)
 			if (response.ok) return
-
 			expect(response.error).toMatchObject({ code: 'unauthorized' })
 		})
 
-		it('rejects create actions from a scoket that is already authenticatd', async () => {
-			const hostSocket = await connectClient()
-
-			const createdOne = await hostSocket.emitWithAck('room:create', {
+		it('rejects a second join from a socket that already joined', async () => {
+			const { created } = await server.createRoomAsHost({
 				hostName: 'Alice',
-				roomMode: 'group',
+				roomMode: 'classroom',
 			})
-			if (!createdOne.ok) throw new Error('setup failed')
+			const { playerSocket } = await joinAsPlayer(created.roomCode, 'Bob')
 
-			const createdTwo = await hostSocket.emitWithAck('room:create', {
-				hostName: 'Steve',
+			const joinedAgain = await playerSocket.emitWithAck('room:join', {
+				roomCode: created.roomCode,
+				memberName: 'Tom',
+			})
+
+			expect(joinedAgain.ok).toBe(false)
+			if (joinedAgain.ok) return
+			expect(joinedAgain.error.code).toBe('unauthorized')
+		})
+
+		it('lets a bound socket resume its own session again', async () => {
+			const { hostSocket, created } = await server.createRoomAsHost({
+				hostName: 'Alice',
 				roomMode: 'classroom',
 			})
 
-			expect(createdTwo.ok).toBe(false)
-			if (createdTwo.ok) return
-			expect(createdTwo.error.code).toBe('unauthorized')
+			const resumed = await hostSocket.emitWithAck('room:host-resume', {
+				memberSessionToken: created.memberSessionToken,
+			})
+
+			expect(resumed.ok).toBe(true)
+		})
+
+		// Requires the resume guard in socket.ts.
+		it("rejects resuming another member's session on a socket that is already bound", async () => {
+			const { created: firstRoom } = await server.createRoomAsHost({
+				hostName: 'Alice',
+				roomMode: 'group',
+			})
+			const { hostSocket: secondHostSocket } = await server.createRoomAsHost(
+				{
+					hostName: 'Steve',
+					roomMode: 'classroom',
+				},
+			)
+
+			const resumed = await secondHostSocket.emitWithAck(
+				'room:host-resume',
+				{
+					memberSessionToken: firstRoom.memberSessionToken,
+				},
+			)
+
+			expect(resumed.ok).toBe(false)
+			if (resumed.ok) return
+			expect(resumed.error.code).toBe('unauthorized')
 		})
 	})
 
 	describe('event broadcast', () => {
 		it("notifies the host's socket when a player joins", async () => {
-			const hostSocket = await connectClient()
-			const playerSocket = await connectClient()
-
-			const created = await hostSocket.emitWithAck('room:create', {
+			const { hostSocket, created } = await server.createRoomAsHost({
 				hostName: 'Alice',
 				roomMode: 'classroom',
 			})
-			if (!created.ok) throw new Error('setup failed')
 
-			const hostSnapshotPromise = new Promise<HostRoomSnapshotEvent>(
-				resolve => {
-					hostSocket.once('room:host-snapshot', resolve)
-				},
-			)
+			const hostSnapshotPromise = nextHostSnapshot(hostSocket)
 
-			const joined = await playerSocket.emitWithAck('room:join', {
-				roomCode: created.data.roomCode,
-				memberName: 'Bob',
-			})
-			if (!joined.ok) throw new Error('setup failed')
+			await joinAsPlayer(created.roomCode, 'Bob')
 
 			const hostSnapshotEvent = await hostSnapshotPromise
 			const memberNames = hostSnapshotEvent.snapshot.members.map(
@@ -134,20 +314,11 @@ describe('multiplayer server integration', () => {
 		})
 
 		it("notifies the player's socket when the host terminates", async () => {
-			const hostSocket = await connectClient()
-			const playerSocket = await connectClient()
-
-			const created = await hostSocket.emitWithAck('room:create', {
+			const { hostSocket, created } = await server.createRoomAsHost({
 				hostName: 'Alice',
 				roomMode: 'classroom',
 			})
-			if (!created.ok) throw new Error('setup failed')
-
-			const joined = await playerSocket.emitWithAck('room:join', {
-				roomCode: created.data.roomCode,
-				memberName: 'Bob',
-			})
-			if (!joined.ok) throw new Error('setup failed')
+			const { playerSocket } = await joinAsPlayer(created.roomCode, 'Bob')
 
 			const playerClosedPromise = new Promise<RoomClosedEvent>(resolve => {
 				playerSocket.once('room:closed', resolve)
@@ -157,51 +328,39 @@ describe('multiplayer server integration', () => {
 			if (!closed.ok) throw new Error('setup failed')
 
 			const playerClosedEvent = await playerClosedPromise
-
 			expect(playerClosedEvent.reason).toBe('host_terminated')
 		})
 	})
 
 	describe('reconnection flow', () => {
 		it('notifies all connected players when the host disconnects', async () => {
-			const hostSocket = await connectClient()
-			const playerSocket = await connectClient()
-
-			const created = await hostSocket.emitWithAck('room:create', {
+			const { hostSocket, created } = await server.createRoomAsHost({
 				hostName: 'Alice',
 				roomMode: 'classroom',
 			})
-			if (!created.ok) throw new Error('setup failed')
+			const { playerSocket, joined } = await joinAsPlayer(
+				created.roomCode,
+				'Bob',
+			)
 
-			const joined = await playerSocket.emitWithAck('room:join', {
-				roomCode: created.data.roomCode,
-				memberName: 'Bob',
-			})
-			if (!joined.ok) throw new Error('setup failed')
-
-			expect(joined.data.snapshot.members).toEqual(
+			expect(joined.snapshot.members).toEqual(
 				expect.arrayContaining([
 					expect.objectContaining({
-						memberId: created.data.memberId,
+						memberId: created.memberId,
 						connected: true,
 					}),
 				]),
 			)
 
-			const playerSnapshotPromise = new Promise<PlayerRoomSnapshotEvent>(
-				resolve => {
-					playerSocket.once('room:player-snapshot', resolve)
-				},
-			)
+			const playerSnapshotPromise = nextPlayerSnapshot(playerSocket)
 
 			hostSocket.disconnect()
 
 			const playerSnapshotEvent = await playerSnapshotPromise
-
 			expect(playerSnapshotEvent.snapshot.members).toEqual(
 				expect.arrayContaining([
 					expect.objectContaining({
-						memberId: created.data.memberId,
+						memberId: created.memberId,
 						connected: false,
 					}),
 				]),
@@ -209,50 +368,34 @@ describe('multiplayer server integration', () => {
 		})
 
 		it('notifies all connected players when the host reconnects', async () => {
-			const hostSocket = await connectClient()
-			const playerSocket = await connectClient()
-
-			const created = await hostSocket.emitWithAck('room:create', {
+			const { hostSocket, created } = await server.createRoomAsHost({
 				hostName: 'Alice',
 				roomMode: 'classroom',
 			})
-			if (!created.ok) throw new Error('setup failed')
-
-			const joined = await playerSocket.emitWithAck('room:join', {
-				roomCode: created.data.roomCode,
-				memberName: 'Bob',
-			})
-			if (!joined.ok) throw new Error('setup failed')
+			const { playerSocket } = await joinAsPlayer(created.roomCode, 'Bob')
 
 			const playerSnapshotOnDisconnectPromise =
-				new Promise<PlayerRoomSnapshotEvent>(resolve => {
-					playerSocket.once('room:player-snapshot', resolve)
-				})
+				nextPlayerSnapshot(playerSocket)
 
 			hostSocket.close()
 
 			const playerSnapshotOnDisconnectEvent =
 				await playerSnapshotOnDisconnectPromise
-
 			const hostMember =
 				playerSnapshotOnDisconnectEvent.snapshot.members.find(
-					member => member.memberId === created.data.memberId,
+					member => member.memberId === created.memberId,
 				)
 			if (hostMember?.connected) throw new Error('setup failed')
 
-			const playerSnapshotOnResumePromise =
-				new Promise<PlayerRoomSnapshotEvent>(resolve => {
-					playerSocket.once('room:player-snapshot', resolve)
-				})
+			const playerSnapshotOnResumePromise = nextPlayerSnapshot(playerSocket)
 
-			const newHostSocket = await connectClient()
+			const newHostSocket = await server.connectClient()
 			const resumed = await newHostSocket.emitWithAck('room:host-resume', {
-				memberSessionToken: created.data.memberSessionToken,
+				memberSessionToken: created.memberSessionToken,
 			})
 			if (!resumed.ok) throw new Error('setup failed')
 
 			const playerSnapshotOnResumeEvent = await playerSnapshotOnResumePromise
-
 			expect(playerSnapshotOnResumeEvent.snapshot.members).toEqual(
 				expect.arrayContaining([
 					expect.objectContaining({
@@ -263,74 +406,51 @@ describe('multiplayer server integration', () => {
 			)
 		})
 
-		it('evicts the socket when another socket resumes the same sessions', async () => {
-			const hostSocket = await connectClient()
-
-			const created = await hostSocket.emitWithAck('room:create', {
+		it('evicts the socket when another socket resumes the same session', async () => {
+			const { hostSocket, created } = await server.createRoomAsHost({
 				hostName: 'Alice',
 				roomMode: 'classroom',
 			})
-			if (!created.ok) throw new Error('setup failed')
 
 			const hostDisconnectPromise = new Promise<string>(resolve => {
 				hostSocket.once('disconnect', resolve)
 			})
 
-			const newHostSocket = await connectClient()
-
+			const newHostSocket = await server.connectClient()
 			const resumed = await newHostSocket.emitWithAck('room:host-resume', {
-				memberSessionToken: created.data.memberSessionToken,
+				memberSessionToken: created.memberSessionToken,
 			})
 			if (!resumed.ok) throw new Error('setup failed')
 
 			const hostDisconnectReason = await hostDisconnectPromise
-
 			expect(hostDisconnectReason).toBe('io server disconnect')
 		})
 	})
 
 	describe('per-role visibility split', () => {
 		it('reaches the right socket', async () => {
-			const hostSocket = await connectClient()
-			const playerSocket = await connectClient()
-
-			const created = await hostSocket.emitWithAck('room:create', {
-				roomMode: 'classroom',
+			const { hostSocket, created } = await server.createRoomAsHost({
 				hostName: 'Alice',
+				roomMode: 'classroom',
 			})
+			const { playerSocket, joined } = await joinAsPlayer(
+				created.roomCode,
+				'Bob',
+			)
 
-			if (!created.ok) throw new Error('setup failed')
-
-			const joined = await playerSocket.emitWithAck('room:join', {
-				roomCode: created.data.roomCode,
-				memberName: 'Bob',
-			})
-			if (!joined.ok) throw new Error('setup failed')
+			// Listen before emitting: the player's start snapshot travels on a
+			// different connection and can arrive after the host's ack resolves.
+			const playerStartedPromise = nextPlayerSnapshot(playerSocket)
 
 			const started = await hostSocket.emitWithAck('game:start', {
 				gameConfig: DEFAULT_GAME_CONFIG,
 			})
 			if (!started.ok) throw new Error('setup failed')
 
-			const playerSnapshotStartedPromise =
-				new Promise<PlayerRoomSnapshotEvent>(resolve => {
-					playerSocket.once('room:player-snapshot', resolve)
-				})
+			await playerStartedPromise
 
-			// why this catches snapshot if start was already made bafore and why host doesn't?
-			const playerSnapshotStartedEvent = await playerSnapshotStartedPromise
-
-			const hostSnapshotPromise = new Promise<HostRoomSnapshotEvent>(
-				resolve => {
-					hostSocket.once('room:host-snapshot', resolve)
-				},
-			)
-
-			const playerSnapshotPromise = new Promise<PlayerRoomSnapshotEvent>(
-				resolve => {
-					playerSocket.once('room:player-snapshot', resolve)
-				},
-			)
+			const hostSnapshotPromise = nextHostSnapshot(hostSocket)
+			const playerSnapshotPromise = nextPlayerSnapshot(playerSocket)
 
 			const revealed = await hostSocket.emitWithAck('game:reveal-round', {})
 			if (!revealed.ok) throw new Error('setup failed')
@@ -351,7 +471,7 @@ describe('multiplayer server integration', () => {
 			expect(hostSnapshotEvent.snapshot.activeGame.participants).toEqual(
 				expect.arrayContaining([
 					{
-						participantId: joined.data.memberId,
+						participantId: joined.memberId,
 						rank: 1,
 						score: 0,
 						correctCount: 0,

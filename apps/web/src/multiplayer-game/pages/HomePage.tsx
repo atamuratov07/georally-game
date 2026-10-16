@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { ButtonLink, ScreenShell } from '../../shared/ui'
 import { formatGatewayErrorMessage } from '../api/errors'
-import { createSocketGateway } from '../api/socketGateway'
 import { CreateRoomForm } from '../create/CreateRoomForm'
 import { JoinRoomForm } from '../join/JoinRoomForm'
 import { saveRoomSession } from '../session/sessionStorage'
@@ -11,19 +10,13 @@ import { LanguageSwitcher } from '../../shared/i18n'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedNavigate } from '../../app/useLocalizedNavigate'
 import { trackRoomCreated } from '../../shared/analytics/track'
+import { createRoom } from '../api/roomsApi'
 
 export default function HomePage(): JSX.Element {
 	const { t } = useTranslation()
 	const navigate = useLocalizedNavigate()
-	const gateway = useMemo(() => createSocketGateway(), [])
 	const [createError, setCreateError] = useState<string | null>(null)
 	const [isCreating, setIsCreating] = useState(false)
-
-	useEffect(() => {
-		return () => {
-			gateway.disconnect()
-		}
-	}, [gateway])
 
 	const handleCreateRoom = useCallback(
 		async (values: CreateRoomRequest) => {
@@ -31,17 +24,13 @@ export default function HomePage(): JSX.Element {
 			setCreateError(null)
 
 			try {
-				const response = await gateway.createRoom({
+				const response = await createRoom({
 					hostName: values.hostName,
 					roomMode: values.roomMode,
 				})
 
 				const storedSession: RoomSession = {
-					role: response.role,
-					roomId: response.roomId,
-					roomCode: response.roomCode,
-					memberId: response.memberId,
-					memberSessionToken: response.memberSessionToken,
+					...response,
 					savedAt: Date.now(),
 				}
 
@@ -54,7 +43,7 @@ export default function HomePage(): JSX.Element {
 				setIsCreating(false)
 			}
 		},
-		[gateway, navigate],
+		[navigate],
 	)
 
 	return (

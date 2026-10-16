@@ -233,6 +233,8 @@ const translations = {
 			playerSessionExpired:
 				'The saved player session expired or is invalid.',
 			roomSessionExpired: 'The saved room session expired or is invalid.',
+			sessionOpenedElsewhere:
+				'This room was opened in another tab or window.',
 		},
 	},
 	gatewayErrors: {

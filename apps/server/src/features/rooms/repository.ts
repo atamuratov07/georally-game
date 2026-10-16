@@ -210,8 +210,6 @@ export class RoomsRepository {
 			if (previousSession && previousSession.socketId === socketId) {
 				previousSession.socketId = null
 			}
-
-			this.sessionTokensBySocketId.delete(socketId)
 		}
 
 		const previousSocketId =
@@ -229,7 +227,7 @@ export class RoomsRepository {
 		return previousSocketId
 	}
 
-	unbindSocket(socketId: string): MemberSessionRecord | undefined {
+	unbindSocketFromSession(socketId: string): MemberSessionRecord | undefined {
 		const memberSessionToken = this.sessionTokensBySocketId.get(socketId)
 		if (!memberSessionToken) {
 			return undefined

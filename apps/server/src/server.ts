@@ -31,10 +31,6 @@ export function createRealtimeServer({
 			origin: corsOrigins,
 			credentials: true,
 		},
-		connectionStateRecovery: {
-			maxDisconnectionDuration: 120_000,
-			skipMiddlewares: true,
-		},
 		serveClient: false,
 	})
 

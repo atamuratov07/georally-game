@@ -4,14 +4,10 @@ import {
 	type AckCallback,
 	type AdvanceRoundRequest,
 	type ClientToServerEvents,
-	type CreateRoomRequest,
-	type CreateRoomResponse,
 	type EmptyAckData,
 	type HostRoomSnapshotEvent,
 	type JoinRoomRequest,
 	type JoinRoomResponse,
-	type LookupRoomRequest,
-	type LookupRoomResponse,
 	type PlayerRoomSnapshotEvent,
 	type ResumeHostRoomRequest,
 	type ResumeHostRoomResponse,
@@ -56,16 +52,16 @@ interface HostRoomSubscriptionHandlers {
 	onRoomSnapshot?: (payload: HostRoomSnapshotEvent) => void
 	onRoomClosed?: (payload: RoomClosedEvent) => void
 	onSocketDisconnect?: (reason: string) => void
+	onSocketReconnect?: () => void
 }
 interface PlayerRoomSubscriptionHandlers {
 	onRoomSnapshot?: (payload: PlayerRoomSnapshotEvent) => void
 	onRoomClosed?: (payload: RoomClosedEvent) => void
 	onSocketDisconnect?: (reason: string) => void
+	onSocketReconnect?: () => void
 }
 
 export interface SocketGateway {
-	createRoom: (payload: CreateRoomRequest) => Promise<CreateRoomResponse>
-	lookupRoom: (payload: LookupRoomRequest) => Promise<LookupRoomResponse>
 	joinRoom: (payload: JoinRoomRequest) => Promise<JoinRoomResponse>
 	resumeHostRoom: (
 		payload: ResumeHostRoomRequest,
@@ -177,14 +173,6 @@ export function createSocketGateway(): SocketGateway {
 	}
 
 	return {
-		createRoom(payload) {
-			return request('room:create', payload)
-		},
-
-		lookupRoom(payload) {
-			return request('room:lookup', payload)
-		},
-
 		joinRoom(payload) {
 			return request('room:join', payload)
 		},
@@ -240,14 +228,20 @@ export function createSocketGateway(): SocketGateway {
 				handlers.onSocketDisconnect?.(reason)
 			}
 
+			const handleSocketReconnect = () => {
+				handlers.onSocketReconnect?.()
+			}
+
 			currentSocket.on('room:host-snapshot', handleRoomSnapshot)
 			currentSocket.on('room:closed', handleRoomClosed)
 			currentSocket.on('disconnect', handleSocketDisconnect)
+			currentSocket.on('connect', handleSocketReconnect)
 
 			return () => {
 				currentSocket.off('room:host-snapshot', handleRoomSnapshot)
 				currentSocket.off('room:closed', handleRoomClosed)
 				currentSocket.off('disconnect', handleSocketDisconnect)
+				currentSocket.off('connect', handleSocketReconnect)
 			}
 		},
 
@@ -270,14 +264,20 @@ export function createSocketGateway(): SocketGateway {
 				handlers.onSocketDisconnect?.(reason)
 			}
 
+			const handleSocketReconnect = () => {
+				handlers.onSocketReconnect?.()
+			}
+
 			currentSocket.on('room:player-snapshot', handleRoomSnapshot)
 			currentSocket.on('room:closed', handleRoomClosed)
 			currentSocket.on('disconnect', handleSocketDisconnect)
+			currentSocket.on('connect', handleSocketReconnect)
 
 			return () => {
 				currentSocket.off('room:player-snapshot', handleRoomSnapshot)
 				currentSocket.off('room:closed', handleRoomClosed)
 				currentSocket.off('disconnect', handleSocketDisconnect)
+				currentSocket.off('connect', handleSocketReconnect)
 			}
 		},
 

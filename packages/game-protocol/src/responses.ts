@@ -20,9 +20,7 @@ export interface SessionIdentity {
 	memberSessionToken: string
 }
 
-export interface CreateRoomResponse extends SessionIdentity {
-	snapshot: ClassroomHostRoomView | GroupHostRoomView
-}
+export type CreateRoomResponse = SessionIdentity
 
 export const lookupRoomMissingResponseSchema = z.object({
 	exists: z.literal(false),

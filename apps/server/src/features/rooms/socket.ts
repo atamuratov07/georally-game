@@ -1,4 +1,8 @@
-import type { AckCallback, RoomProtocolError } from '@georally/game-protocol'
+import type {
+	Ack,
+	AckCallback,
+	RoomProtocolError,
+} from '@georally/game-protocol'
 import {
 	advanceRoundRequestSchema,
 	joinRoomRequestSchema,
@@ -16,10 +20,12 @@ import type { RoomMemberRole } from '@georally/game-domain/multiplayer/room'
 import type { RoomsService } from './service.js'
 import type { GameNamespace, GameSocket } from './types.js'
 import type { Result } from '@georally/game-domain'
+import type { ProtocolErrorReporter } from '../../observability/protocolErrors.js'
 
 export interface RegisterRoomHandlersOptions {
 	namespace: GameNamespace
 	roomsService: RoomsService
+	reportProtocolError: ProtocolErrorReporter
 }
 
 function respondWithError<T>(
@@ -134,8 +140,28 @@ function handleSessionCommand<TPayload, TResult>(
 export function registerRoomHandlers({
 	namespace,
 	roomsService,
+	reportProtocolError,
 }: RegisterRoomHandlersOptions): void {
 	namespace.on('connection', socket => {
+		socket.use((packet, next) => {
+			const [socketEvent, , ack] = packet
+			if (typeof ack !== 'function') {
+				reportProtocolError('ack_error', { code: 'invalid_payload' })
+				return
+			}
+
+			packet[2] = (response: Ack<unknown>) => {
+				if (!response.ok) {
+					reportProtocolError('ack_error', response.error, {
+						socketEvent,
+						roomId: socket.data.roomId,
+					})
+				}
+				ack(response)
+			}
+			next()
+		})
+
 		socket.on('room:join', (payload, ack) => {
 			const auth = requireAuthenticated(socket)
 			if (auth.ok) {

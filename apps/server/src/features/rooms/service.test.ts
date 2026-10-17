@@ -5,6 +5,7 @@ import { RoomsRepository } from './repository.js'
 import { RoomsService, type CreateRoomInput } from './service.js'
 import { DEFAULT_GAME_CONFIG } from '@georally/game-domain/multiplayer'
 import type { RoomExpireTTLConfig } from '@georally/game-domain/multiplayer/room'
+import { createLogger, type Logger } from '../../observability/logger.js'
 
 function createService(
 	overrides: {
@@ -12,6 +13,7 @@ function createService(
 		revealDurationMs?: number
 		leaderboardDurationMs?: number
 		roomExpireTTL?: Partial<RoomExpireTTLConfig>
+		logger?: Logger
 	} = {},
 ) {
 	const repository = new RoomsRepository()
@@ -34,6 +36,7 @@ function createService(
 			noConnectedMembersMs: 1_000 * 60 * 10,
 			...overrides.roomExpireTTL,
 		},
+		logger: overrides.logger,
 	})
 
 	function createHostedRoom(input: CreateRoomInput, socketId = 'socket-1') {
@@ -1707,5 +1710,181 @@ describe('RoomsService.disconnectSocket', () => {
 
 		expect(() => service.disconnectSocket('socket-2')).not.toThrow()
 		expect(hooks.onRoomUpdated).not.toHaveBeenCalled()
+	})
+})
+
+describe('RoomsService logging', () => {
+	beforeEach(() => {
+		vi.useFakeTimers()
+	})
+
+	afterEach(() => {
+		vi.useRealTimers()
+	})
+
+	function createLoggedService() {
+		const lines: Record<string, unknown>[] = []
+		const logger = createLogger('info', {
+			write: (line: string) => {
+				lines.push(JSON.parse(line))
+			},
+		})
+
+		return { ...createService({ logger }), lines }
+	}
+
+	function startOneQuestionGame(
+		helpers: ReturnType<typeof createLoggedService>,
+		roomMode: 'group' | 'classroom',
+	) {
+		const created = helpers.createHostedRoom({ hostName: 'Alice', roomMode })
+		const joined = helpers.service.joinRoom({
+			roomCode: created.roomCode,
+			memberName: 'Bob',
+			socketId: 'socket-2',
+		})
+		if (!joined.ok) throw new Error('setup failed')
+
+		const started = helpers.service.startGame({
+			memberSessionToken: created.memberSessionToken,
+			gameConfig: { ...DEFAULT_GAME_CONFIG, questionCount: 1 },
+		})
+		if (!started.ok) throw new Error('setup failed')
+
+		return { created, joined: joined.value.response }
+	}
+
+	it('logs room creation with the room id and mode only', () => {
+		const { lines, createHostedRoom } = createLoggedService()
+
+		const created = createHostedRoom({ hostName: 'Alice', roomMode: 'group' })
+
+		expect(lines).toEqual([
+			{
+				level: 'info',
+				time: expect.any(String),
+				roomId: created.roomId,
+				roomMode: 'group',
+				event: 'room_created',
+			},
+		])
+	})
+
+	it('logs the start and the end of a classroom game', () => {
+		const helpers = createLoggedService()
+		const { created } = startOneQuestionGame(helpers, 'classroom')
+
+		const revealed = helpers.service.revealGameRound({
+			memberSessionToken: created.memberSessionToken,
+		})
+		if (!revealed.ok) throw new Error('setup failed')
+		const advanced = helpers.service.advanceGameRound({
+			memberSessionToken: created.memberSessionToken,
+		})
+		if (!advanced.ok) throw new Error('setup failed')
+
+		expect(helpers.repository.getRoomById(created.roomId)?.state.phase).toBe(
+			'finished',
+		)
+		expect(helpers.lines.map(line => line.event)).toEqual([
+			'room_created',
+			'game_started',
+			'game_finished',
+		])
+		expect(helpers.lines[1]).toMatchObject({
+			roomId: created.roomId,
+			roomMode: 'classroom',
+			gameId: expect.any(String),
+			participantCount: 1,
+			questionCount: 1,
+		})
+		expect(helpers.lines[2]).toMatchObject({
+			roomId: created.roomId,
+			roomMode: 'classroom',
+			gameId: helpers.lines[1]?.gameId,
+			participantCount: 1,
+			questionCount: 1,
+			durationMs: expect.any(Number),
+		})
+	})
+
+	it('logs the end of a group game finished by the round timers', () => {
+		const helpers = createLoggedService()
+		const { created } = startOneQuestionGame(helpers, 'group')
+
+		vi.advanceTimersByTime(120_000)
+
+		expect(helpers.repository.getRoomById(created.roomId)?.state.phase).toBe(
+			'finished',
+		)
+		expect(helpers.lines.at(-1)).toMatchObject({
+			event: 'game_finished',
+			roomMode: 'group',
+			participantCount: 2,
+			questionCount: 1,
+		})
+	})
+
+	it('logs room closure with the reason, phase and member counts', () => {
+		const helpers = createLoggedService()
+		const { created } = startOneQuestionGame(helpers, 'classroom')
+
+		const terminated = helpers.service.terminateRoom({
+			memberSessionToken: created.memberSessionToken,
+		})
+		if (!terminated.ok) throw new Error('setup failed')
+
+		expect(helpers.lines.at(-1)).toEqual({
+			level: 'info',
+			time: expect.any(String),
+			roomId: created.roomId,
+			roomMode: 'classroom',
+			reason: 'host_terminated',
+			phase: 'active',
+			memberCount: 2,
+			connectedMemberCount: 2,
+			ageMs: expect.any(Number),
+			event: 'room_closed',
+		})
+	})
+
+	it('never logs member names, room codes or session tokens', () => {
+		const helpers = createLoggedService()
+		const { created, joined } = startOneQuestionGame(helpers, 'group')
+		vi.advanceTimersByTime(120_000)
+		helpers.service.shutdown('server_shutdown')
+
+		const serialized = JSON.stringify(helpers.lines)
+		for (const value of [
+			'Alice',
+			'Bob',
+			created.roomCode,
+			created.memberSessionToken,
+			joined.memberSessionToken,
+		]) {
+			expect(serialized).not.toContain(value)
+		}
+	})
+})
+
+describe('RoomsService.getHealthSnapshot', () => {
+	it('counts rooms by phase', () => {
+		const { service, createHostedRoom } = createService()
+		createHostedRoom({ hostName: 'Alice', roomMode: 'classroom' })
+		const started = createHostedRoom(
+			{ hostName: 'Bob', roomMode: 'group' },
+			'socket-2',
+		)
+		const startResult = service.startGame({
+			memberSessionToken: started.memberSessionToken,
+			gameConfig: DEFAULT_GAME_CONFIG,
+		})
+		if (!startResult.ok) throw new Error('setup failed')
+
+		expect(service.getHealthSnapshot()).toEqual({
+			roomCount: 2,
+			connectedSessionCount: 2,
+			roomsByPhase: { lobby: 1, active: 1, finished: 0 },
+		})
 	})
 })

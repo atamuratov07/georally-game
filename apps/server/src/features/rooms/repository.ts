@@ -163,7 +163,9 @@ export class RoomsRepository {
 
 	createMemberSession(session: MemberSessionRecord): MemberSessionRecord {
 		if (this.sessionsByToken.has(session.token)) {
-			throw new Error(`Member session ${session.token} already exists.`)
+			throw new Error(
+				`Member session for member ${session.memberId} already exists.`,
+			)
 		}
 
 		this.sessionsByToken.set(session.token, session)

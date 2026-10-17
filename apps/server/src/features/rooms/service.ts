@@ -23,6 +23,7 @@ import {
 	applyGameCommand,
 	getAnsweredParticipantCount,
 	getGameParticipantCount,
+	getGameQuestionCount,
 	type GameConfig,
 } from '@georally/game-domain/multiplayer/game'
 import {
@@ -42,6 +43,8 @@ import {
 	getRoomExpireDueAt,
 	type RoomExpireTTLConfig,
 	getRoomOccupancy,
+	getConnectedMemberCount,
+	type RoomPhase,
 } from '@georally/game-domain/multiplayer/room'
 import {
 	createGameId,
@@ -52,6 +55,7 @@ import {
 } from './ids.js'
 import type { MemberSessionRecord, RoomsRepository } from './repository.js'
 import type { BoundServiceResponse, MemberSessionToken } from './types.js'
+import { createSilentLogger, type Logger } from '../../observability/logger.js'
 
 type ServiceResult<T> = Result<T, RoomProtocolError>
 
@@ -73,6 +77,7 @@ export interface RoomsServiceOptions {
 	roomCapacityLimit: number
 	roomExpireTTL: RoomExpireTTLConfig
 	now?: () => number
+	logger?: Logger
 }
 
 export interface CreateRoomInput {
@@ -130,6 +135,7 @@ export class RoomsService {
 	private readonly roomCapacityLimit: number
 	private readonly now: () => number
 	private readonly roomExpireTTL: RoomExpireTTLConfig
+	private readonly logger: Logger
 
 	constructor(options: RoomsServiceOptions) {
 		this.countryPool = options.countryPool
@@ -140,12 +146,23 @@ export class RoomsService {
 		this.roomCapacityLimit = options.roomCapacityLimit
 		this.roomExpireTTL = options.roomExpireTTL
 		this.now = options.now ?? Date.now
+		this.logger = options.logger ?? createSilentLogger()
 	}
 
 	getHealthSnapshot() {
+		const roomsByPhase: Record<RoomPhase, number> = {
+			lobby: 0,
+			active: 0,
+			finished: 0,
+		}
+		for (const context of this.repository.listRooms()) {
+			roomsByPhase[context.state.phase] += 1
+		}
+
 		return {
 			roomCount: this.repository.getRoomCount(),
 			connectedSessionCount: this.repository.getConnectedSessionCount(),
+			roomsByPhase,
 		}
 	}
 
@@ -200,6 +217,7 @@ export class RoomsService {
 			socketId: null,
 		})
 		this.rescheduleRoomExpire(roomId)
+		this.getRoomLogger(roomResult.value).info('room_created')
 
 		return ok({
 			role: 'host',
@@ -472,6 +490,18 @@ export class RoomsService {
 
 		this.commitRoomState(sessionContext.value.state.roomId, nextState.value)
 
+		if (nextState.value.phase === 'active') {
+			const { activeGame } = nextState.value
+			this.getRoomLogger(nextState.value).info(
+				{
+					gameId: activeGame.gameId,
+					participantCount: getGameParticipantCount(activeGame),
+					questionCount: getGameQuestionCount(activeGame),
+				},
+				'game_started',
+			)
+		}
+
 		return ok({})
 	}
 
@@ -612,6 +642,17 @@ export class RoomsService {
 		this.hooks.onRoomClosed(context.state.roomId, reason)
 		this.repository.deleteRoom(context.state.roomId)
 
+		this.getRoomLogger(context.state).info(
+			{
+				reason,
+				phase: context.state.phase,
+				memberCount: context.state.memberOrder.length,
+				connectedMemberCount: getConnectedMemberCount(context.state),
+				ageMs: this.now() - context.state.createdAt,
+			},
+			'room_closed',
+		)
+
 		return true
 	}
 
@@ -679,15 +720,40 @@ export class RoomsService {
 				})
 	}
 
+	private getRoomLogger(state: RoomState): Logger {
+		return this.logger.child({
+			roomId: state.roomId,
+			roomMode: state.roomMode,
+		})
+	}
+
 	private commitRoomState(
 		roomId: RoomId,
 		nextState: RoomState,
 		options: RoomUpdateOptions = {},
 	): void {
+		const previousPhase = this.repository.getRoomById(roomId)?.state.phase
+
 		this.repository.setRoomState(roomId, nextState)
 		this.rescheduleRoomAdvance(roomId)
 		this.rescheduleRoomExpire(roomId)
 		this.hooks.onRoomUpdated(roomId, options)
+
+		if (previousPhase === 'active' && nextState.phase === 'finished') {
+			const { lastGameResult } = nextState
+			this.getRoomLogger(nextState).info(
+				{
+					gameId: lastGameResult.gameId,
+					participantCount: lastGameResult.leaderboard.length,
+					questionCount: lastGameResult.rounds.length,
+					durationMs:
+						lastGameResult.finishedAt -
+						(lastGameResult.rounds[0]?.startedAt ??
+							lastGameResult.finishedAt),
+				},
+				'game_finished',
+			)
+		}
 	}
 
 	private rescheduleRoomAdvance(roomId: RoomId): void {
@@ -711,7 +777,7 @@ export class RoomsService {
 			try {
 				this.executeScheduledRoomAdvance(roomId, dueAt)
 			} catch (error) {
-				console.error(`Failed to advance room ${roomId}`, error)
+				this.logger.error({ err: error, roomId }, 'room_advance_failed')
 			}
 		}, delayMs)
 
@@ -755,7 +821,7 @@ export class RoomsService {
 			try {
 				this.executeScheduledRoomExpire(roomId, dueAt)
 			} catch (error) {
-				console.error(`Failed to expire room ${roomId}`, error)
+				this.logger.error({ err: error, roomId }, 'room_expire_failed')
 			}
 		}, ttlMs)
 

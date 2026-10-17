@@ -9,6 +9,9 @@ import { RoomsRepository } from '../src/features/rooms/repository'
 import { RoomsService } from '../src/features/rooms/service'
 import { registerRoomHandlers } from '../src/features/rooms/socket'
 import { registerRoomRoutes } from '../src/features/rooms/http'
+import { createLogger } from '../src/observability/logger'
+import { createProtocolErrorReporter } from '../src/observability/protocolErrors'
+import { createRuntimeStats } from '../src/observability/stats'
 import { io as ioc, type Socket as ClientSocket } from 'socket.io-client'
 import type { AddressInfo } from 'net'
 import {
@@ -24,15 +27,29 @@ export type RoomClientSocket = ClientSocket<
 	ClientToServerEvents
 >
 
+export type LogLine = Record<string, unknown>
+
 export async function bootstrapServer() {
 	const env = parseEnv(process.env)
 	const repository = new RoomsRepository()
+	const logLines: LogLine[] = []
+	const logger = createLogger('debug', {
+		write: (line: string) => {
+			logLines.push(JSON.parse(line))
+		},
+	})
+	const stats = createRuntimeStats()
+	const reportProtocolError = createProtocolErrorReporter({
+		logger,
+		onInvalidPayload: stats.recordInvalidPayload,
+	})
 
 	let getHealthSnapshot = (): Record<string, unknown> => ({})
 
 	const { app, apiRouter } = createApp({
 		corsOrigins: env.corsOrigins,
 		getHealthSnapshot: () => getHealthSnapshot(),
+		reportProtocolError,
 	})
 
 	const { httpServer, io, gameNamespace } = createRealtimeServer({
@@ -57,6 +74,7 @@ export async function bootstrapServer() {
 			hostDisconnectedInClassroomMs: env.roomHostDisconnectedInClassroomTTL,
 			finishedMs: env.roomFinishedTTL,
 		},
+		logger,
 		hooks: {
 			onRoomUpdated: (roomId, options) => {
 				publisher.publishRoomSnapshots(roomId, options)
@@ -67,13 +85,17 @@ export async function bootstrapServer() {
 		},
 	})
 
-	getHealthSnapshot = () => roomsService.getHealthSnapshot()
+	getHealthSnapshot = () => ({
+		...roomsService.getHealthSnapshot(),
+		...stats.read(),
+	})
 
 	registerRoomHandlers({
 		namespace: gameNamespace,
 		roomsService,
+		reportProtocolError,
 	})
-	registerRoomRoutes({ router: apiRouter, roomsService })
+	registerRoomRoutes({ router: apiRouter, roomsService, reportProtocolError })
 
 	await new Promise<void>(resolve => {
 		httpServer.listen(resolve)
@@ -117,6 +139,8 @@ export async function bootstrapServer() {
 		}
 		connectedClients.length = 0
 		roomsService.shutdown('server_shutdown')
+		stats.readAndReset()
+		logLines.length = 0
 	}
 
 	const teardown = async (): Promise<void> => {
@@ -124,12 +148,14 @@ export async function bootstrapServer() {
 			client.close()
 		}
 		roomsService.shutdown('server_shutdown')
+		stats.stop()
 		io.close()
 		await new Promise(resolve => httpServer.close(resolve))
 	}
 
 	return {
 		httpServer,
+		logLines,
 		resetBetweenTests,
 		connectClient,
 		createRoomAsHost,

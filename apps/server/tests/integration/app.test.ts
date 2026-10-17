@@ -512,4 +512,167 @@ describe('multiplayer server integration', () => {
 			})
 		})
 	})
+
+	describe('observability', () => {
+		async function getHealth() {
+			const response = await request(server.httpServer)
+				.get('/health')
+				.expect(200)
+			return response.body
+		}
+
+		function emitWithoutAck(socket: RoomClientSocket, ...args: unknown[]) {
+			;(socket as unknown as { emit: (...values: unknown[]) => void }).emit(
+				...args,
+			)
+		}
+
+		it('exposes rooms by phase, event loop delay, memory and the invalid payload count', async () => {
+			await server.createRoomAsHost({
+				hostName: 'Alice',
+				roomMode: 'classroom',
+			})
+
+			expect(await getHealth()).toMatchObject({
+				status: 'ok',
+				roomCount: 1,
+				connectedSessionCount: 1,
+				roomsByPhase: { lobby: 1, active: 0, finished: 0 },
+				eventLoopDelayMs: {
+					p50: expect.any(Number),
+					p99: expect.any(Number),
+				},
+				rssMb: expect.any(Number),
+				heapUsedMb: expect.any(Number),
+				invalidPayloadCount: 0,
+			})
+		})
+
+		it('counts invalid payloads from HTTP and sockets without logging them', async () => {
+			await request(server.httpServer)
+				.post('/api/rooms')
+				.send({ hostName: '', roomMode: 'party' })
+				.expect(400)
+			await request(server.httpServer)
+				.post('/api/rooms')
+				.set('Content-Type', 'application/json')
+				.send('{bad')
+				.expect(400)
+			const socket = await server.connectClient()
+			const joined = await socket.emitWithAck('room:join', {
+				roomCode: 'nope',
+			} as never)
+
+			expect(joined).toEqual({
+				ok: false,
+				error: { code: 'invalid_payload' },
+			})
+			expect((await getHealth()).invalidPayloadCount).toBe(3)
+			expect(server.logLines).toEqual([])
+		})
+
+		it('survives events sent without an ack callback and counts them as invalid payloads', async () => {
+			const socket = await server.connectClient()
+
+			emitWithoutAck(socket, 'game:submit-answer', { countryId: 'FR' })
+			emitWithoutAck(socket, 'room:join', () => {})
+			const joined = await socket.emitWithAck('room:join', {
+				roomCode: 'ZZZZZZ',
+				memberName: 'Bob',
+			})
+
+			expect(joined).toEqual({
+				ok: false,
+				error: { code: 'room_not_found' },
+			})
+			expect(socket.connected).toBe(true)
+			expect((await getHealth()).invalidPayloadCount).toBe(2)
+		})
+
+		it('logs ack errors with the socket event and error code', async () => {
+			const socket = await server.connectClient()
+
+			await socket.emitWithAck('room:join', {
+				roomCode: 'ZZZZZZ',
+				memberName: 'Bob',
+			})
+
+			expect(server.logLines).toEqual([
+				{
+					level: 'warn',
+					time: expect.any(String),
+					socketEvent: 'room:join',
+					code: 'room_not_found',
+					event: 'ack_error',
+				},
+			])
+		})
+
+		it('adds the room id to ack errors from a socket bound to a room', async () => {
+			const { created } = await server.createRoomAsHost({
+				hostName: 'Alice',
+				roomMode: 'classroom',
+			})
+			const { playerSocket } = await joinAsPlayer(created.roomCode, 'Bob')
+
+			const revealed = await playerSocket.emitWithAck(
+				'game:reveal-round',
+				{},
+			)
+
+			expect(revealed).toEqual({
+				ok: false,
+				error: { code: 'room_not_active' },
+			})
+			expect(server.logLines.at(-1)).toMatchObject({
+				level: 'warn',
+				event: 'ack_error',
+				socketEvent: 'game:reveal-round',
+				roomId: created.roomId,
+				code: 'room_not_active',
+			})
+		})
+
+		it('logs a room lifecycle without member names, room codes or session tokens', async () => {
+			const { hostSocket, created } = await server.createRoomAsHost({
+				hostName: 'Alice',
+				roomMode: 'classroom',
+			})
+			const { playerSocket, joined } = await joinAsPlayer(
+				created.roomCode,
+				'Bob',
+			)
+			await request(server.httpServer)
+				.get(`/api/rooms/${created.roomCode}`)
+				.expect(200)
+			const started = await hostSocket.emitWithAck('game:start', {
+				gameConfig: DEFAULT_GAME_CONFIG,
+			})
+			if (!started.ok) throw new Error('setup failed')
+			await playerSocket.emitWithAck('room:join', {
+				roomCode: created.roomCode,
+				memberName: 'Zoltan',
+			})
+			const terminated = await hostSocket.emitWithAck('room:terminate', {})
+			if (!terminated.ok) throw new Error('setup failed')
+
+			expect(server.logLines.map(line => line.event)).toEqual([
+				'room_created',
+				'game_started',
+				'ack_error',
+				'room_closed',
+			])
+			const serialized = JSON.stringify(server.logLines)
+			for (const value of [
+				'Alice',
+				'Bob',
+				'Zoltan',
+				created.roomCode,
+				created.memberSessionToken,
+				joined.memberSessionToken,
+			]) {
+				expect(serialized).not.toContain(value)
+			}
+		})
+	})
 })

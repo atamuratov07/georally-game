@@ -1,6 +1,8 @@
 import type { ErrorRequestHandler, Response } from 'express'
 import type { Ack, RoomProtocolError } from '@georally/game-protocol'
 
+import type { ProtocolErrorReporter } from '../observability/protocolErrors.js'
+
 function statusForError(error: RoomProtocolError): number {
 	switch (error.code) {
 		case 'invalid_payload':
@@ -29,20 +31,24 @@ export function respondWithSuccess<T>(
 	response.status(status).json(body)
 }
 
-export const handleHttpError: ErrorRequestHandler = (
-	error,
-	_request,
-	response,
-	next,
-) => {
-	if (response.headersSent) {
-		return next(error)
-	}
+export function createHttpErrorHandler(
+	reportProtocolError: ProtocolErrorReporter,
+): ErrorRequestHandler {
+	return (error, request, response, next) => {
+		if (response.headersSent) {
+			return next(error)
+		}
 
-	if (error?.type === 'entity.parse.failed') {
-		return respondWithError(response, { code: 'invalid_payload' })
-	}
+		if (error?.type === 'entity.parse.failed') {
+			reportProtocolError('http_error', { code: 'invalid_payload' })
+			return respondWithError(response, { code: 'invalid_payload' })
+		}
 
-	console.error('Unhandled HTTP error', error)
-	respondWithError(response, { code: 'internal_error' })
+		reportProtocolError(
+			'http_error',
+			{ code: 'internal_error' },
+			{ err: error, method: request.method, route: request.route?.path },
+		)
+		respondWithError(response, { code: 'internal_error' })
+	}
 }

@@ -8,8 +8,25 @@ import { RoomsService } from './features/rooms/service.js'
 import { registerRoomHandlers } from './features/rooms/socket.js'
 import { createRealtimeServer } from './server.js'
 import { registerRoomRoutes } from './features/rooms/http.js'
+import { createLogger } from './observability/logger.js'
+import { registerFatalHandlers } from './observability/process.js'
+import { createProtocolErrorReporter } from './observability/protocolErrors.js'
+import {
+	createRuntimeStats,
+	startStatsReporter,
+} from './observability/stats.js'
+
+const STATS_INTERVAL_MS = 60_000
 
 const env = parseEnv(process.env)
+const logger = createLogger(env.logLevel)
+registerFatalHandlers(logger)
+
+const stats = createRuntimeStats()
+const reportProtocolError = createProtocolErrorReporter({
+	logger,
+	onInvalidPayload: stats.recordInvalidPayload,
+})
 const repository = new RoomsRepository()
 
 let getHealthSnapshot = (): Record<string, unknown> => ({})
@@ -17,6 +34,7 @@ let getHealthSnapshot = (): Record<string, unknown> => ({})
 const { app, apiRouter } = createApp({
 	corsOrigins: env.corsOrigins,
 	getHealthSnapshot: () => getHealthSnapshot(),
+	reportProtocolError,
 })
 
 const { httpServer, io, gameNamespace } = createRealtimeServer({
@@ -41,6 +59,7 @@ const roomsService = new RoomsService({
 		hostDisconnectedInClassroomMs: env.roomHostDisconnectedInClassroomTTL,
 		finishedMs: env.roomFinishedTTL,
 	},
+	logger,
 	hooks: {
 		onRoomUpdated: (roomId, options) => {
 			publisher.publishRoomSnapshots(roomId, options)
@@ -51,26 +70,49 @@ const roomsService = new RoomsService({
 	},
 })
 
-getHealthSnapshot = () => roomsService.getHealthSnapshot()
+getHealthSnapshot = () => ({
+	...roomsService.getHealthSnapshot(),
+	...stats.read(),
+})
 
 registerRoomHandlers({
 	namespace: gameNamespace,
 	roomsService,
+	reportProtocolError,
 })
-registerRoomRoutes({ router: apiRouter, roomsService })
+registerRoomRoutes({ router: apiRouter, roomsService, reportProtocolError })
+
+const stopStatsReporter = startStatsReporter({
+	logger,
+	intervalMs: STATS_INTERVAL_MS,
+	collect: () => ({
+		...roomsService.getHealthSnapshot(),
+		...stats.readAndReset(),
+	}),
+})
 
 httpServer.listen(env.port, env.host, () => {
-	console.log(`Listening on http://${env.host}:${env.port}`)
+	logger.info(
+		{
+			host: env.host,
+			port: env.port,
+			nodeVersion: process.version,
+			logLevel: env.logLevel,
+			roomCapacityLimit: env.roomCapacityLimit,
+		},
+		'server_started',
+	)
 })
 
 function shutdown(signal: NodeJS.Signals) {
-	console.log(`Shutting down on ${signal}`)
+	logger.info({ signal }, 'server_stopping')
 
+	stopStatsReporter()
 	roomsService.shutdown('server_shutdown')
 	io.close()
 	httpServer.close(error => {
 		if (error) {
-			console.error('Failed to close HTTP server cleanly.', error)
+			logger.error({ err: error }, 'server_close_failed')
 			process.exit(1)
 		}
 

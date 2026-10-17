@@ -1,6 +1,8 @@
 import type {
-	Ack,
 	AckCallback,
+	ClientToServerEvents,
+	ResumeHostRoomResponse,
+	ResumePlayerRoomResponse,
 	RoomProtocolError,
 } from '@georally/game-protocol'
 import {
@@ -18,15 +20,26 @@ import type { ZodType } from 'zod'
 
 import type { RoomMemberRole } from '@georally/game-domain/multiplayer/room'
 import type { RoomsService } from './service.js'
-import type { GameNamespace, GameSocket } from './types.js'
-import type { Result } from '@georally/game-domain'
+import type {
+	BoundServiceResponse,
+	GameNamespace,
+	GameSocket,
+	MemberSessionToken,
+} from './types.js'
+import { err, ok, type Result } from '@georally/game-domain'
+import type { Logger } from '../../observability/logger.js'
 import type { ProtocolErrorReporter } from '../../observability/protocolErrors.js'
 
 export interface RegisterRoomHandlersOptions {
 	namespace: GameNamespace
 	roomsService: RoomsService
 	reportProtocolError: ProtocolErrorReporter
+	logger: Logger
 }
+
+type SocketEvent = keyof ClientToServerEvents | 'disconnect'
+
+type CommandResult<T> = Result<T, RoomProtocolError>
 
 function respondWithError<T>(
 	ack: AckCallback<T>,
@@ -109,166 +122,190 @@ function disconnectReplacedSocket(
 	namespace.sockets.get(socketId)?.disconnect(true)
 }
 
-function handleSessionCommand<TPayload, TResult>(
-	socket: GameSocket,
-	schema: ZodType<TPayload>,
-	payload: unknown,
-	ack: AckCallback<TResult>,
-	run: (
-		memberSessionToken: string,
-		value: TPayload,
-	) => Result<TResult, RoomProtocolError>,
-): void {
-	const auth = requireAuthenticated(socket)
-	if (!auth.ok)
-		return respondWithError(ack, {
-			code: 'unauthorized',
-		})
-
-	const parsed = parsePayload(schema, payload)
-	if (!parsed.ok)
-		return respondWithError(ack, {
-			code: 'invalid_payload',
-		})
-
-	const result = run(auth.value, parsed.value)
-	if (!result.ok) return respondWithError(ack, result.error)
-
-	respondWithSuccess(ack, result.value)
-}
-
 export function registerRoomHandlers({
 	namespace,
 	roomsService,
 	reportProtocolError,
+	logger,
 }: RegisterRoomHandlersOptions): void {
+	function reportHandlerFailure(
+		socket: GameSocket,
+		socketEvent: SocketEvent,
+		error: unknown,
+	): void {
+		logger.error(
+			{ err: error, socketEvent, roomId: socket.data.roomId },
+			'socket_handler_failed',
+		)
+	}
+
+	function runSocketCommand<TResult>(
+		socket: GameSocket,
+		socketEvent: SocketEvent,
+		ack: AckCallback<TResult>,
+		command: () => CommandResult<TResult>,
+	): void {
+		try {
+			const result = command()
+			if (!result.ok) {
+				reportProtocolError('ack_error', result.error, {
+					socketEvent,
+					roomId: socket.data.roomId,
+				})
+				return respondWithError(ack, result.error)
+			}
+
+			respondWithSuccess(ack, result.value)
+		} catch (error) {
+			reportHandlerFailure(socket, socketEvent, error)
+			respondWithError(ack, { code: 'internal_error' })
+		}
+	}
+
+	function handleSessionCommand<TPayload, TResult>(
+		socket: GameSocket,
+		socketEvent: SocketEvent,
+		schema: ZodType<TPayload>,
+		payload: unknown,
+		ack: AckCallback<TResult>,
+		run: (
+			memberSessionToken: string,
+			value: TPayload,
+		) => CommandResult<TResult>,
+		onSuccess?: (result: TResult) => void,
+	): void {
+		runSocketCommand(socket, socketEvent, ack, () => {
+			const auth = requireAuthenticated(socket)
+			if (!auth.ok) {
+				return err({ code: 'unauthorized' })
+			}
+
+			const parsed = parsePayload(schema, payload)
+			if (!parsed.ok) {
+				return err({ code: 'invalid_payload' })
+			}
+
+			const result = run(auth.value, parsed.value)
+			if (result.ok) {
+				onSuccess?.(result.value)
+			}
+
+			return result
+		})
+	}
+
+	function resumeSession<
+		TResponse extends ResumeHostRoomResponse | ResumePlayerRoomResponse,
+	>(
+		socket: GameSocket,
+		socketEvent: SocketEvent,
+		schema: ZodType<{ memberSessionToken: MemberSessionToken }>,
+		payload: unknown,
+		ack: AckCallback<TResponse>,
+		role: RoomMemberRole,
+		resume: (input: {
+			memberSessionToken: MemberSessionToken
+			socketId: string
+		}) => CommandResult<BoundServiceResponse<TResponse>>,
+	): void {
+		runSocketCommand(socket, socketEvent, ack, () => {
+			const parsed = parsePayload(schema, payload)
+			if (!parsed.ok) {
+				return err({ code: 'invalid_payload' })
+			}
+
+			const { memberSessionToken } = parsed.value
+			const auth = requireAuthenticated(socket)
+			if (auth.ok && auth.value !== memberSessionToken) {
+				return err({ code: 'unauthorized' })
+			}
+
+			const resumed = resume({ memberSessionToken, socketId: socket.id })
+			if (!resumed.ok) {
+				return resumed
+			}
+
+			bindSocketIdentity(socket, {
+				role,
+				roomId: resumed.value.response.roomId,
+				memberId: resumed.value.response.memberId,
+				memberSessionToken,
+			})
+			disconnectReplacedSocket(
+				namespace,
+				resumed.value.replacedSocketId,
+				socket.id,
+			)
+
+			return ok(resumed.value.response)
+		})
+	}
+
 	namespace.on('connection', socket => {
 		socket.use((packet, next) => {
-			const [socketEvent, , ack] = packet
-			if (typeof ack !== 'function') {
+			if (typeof packet[2] !== 'function') {
 				reportProtocolError('ack_error', { code: 'invalid_payload' })
 				return
 			}
 
-			packet[2] = (response: Ack<unknown>) => {
-				if (!response.ok) {
-					reportProtocolError('ack_error', response.error, {
-						socketEvent,
-						roomId: socket.data.roomId,
-					})
-				}
-				ack(response)
-			}
 			next()
 		})
 
 		socket.on('room:join', (payload, ack) => {
-			const auth = requireAuthenticated(socket)
-			if (auth.ok) {
-				return respondWithError(ack, {
-					code: 'unauthorized',
-				})
-			}
+			runSocketCommand(socket, 'room:join', ack, () => {
+				const auth = requireAuthenticated(socket)
+				if (auth.ok) {
+					return err({ code: 'unauthorized' })
+				}
 
-			const parsed = parsePayload(joinRoomRequestSchema, payload)
-			if (!parsed.ok) {
-				return respondWithError(ack, {
-					code: 'invalid_payload',
-				})
-			}
+				const parsed = parsePayload(joinRoomRequestSchema, payload)
+				if (!parsed.ok) {
+					return err({ code: 'invalid_payload' })
+				}
 
-			const joinedRoom = roomsService.joinRoom({
-				roomCode: parsed.value.roomCode,
-				memberName: parsed.value.memberName,
-				socketId: socket.id,
+				const joinedRoom = roomsService.joinRoom({
+					roomCode: parsed.value.roomCode,
+					memberName: parsed.value.memberName,
+					socketId: socket.id,
+				})
+				if (!joinedRoom.ok) {
+					return joinedRoom
+				}
+
+				bindSocketIdentity(socket, joinedRoom.value.response)
+
+				return ok(joinedRoom.value.response)
 			})
-
-			if (!joinedRoom.ok) {
-				return respondWithError(ack, joinedRoom.error)
-			}
-
-			bindSocketIdentity(socket, joinedRoom.value.response)
-
-			return respondWithSuccess(ack, joinedRoom.value.response)
 		})
 
 		socket.on('room:host-resume', (payload, ack) => {
-			const parsed = parsePayload(resumeHostRoomRequestSchema, payload)
-			if (!parsed.ok) {
-				return respondWithError(ack, {
-					code: 'invalid_payload',
-				})
-			}
-
-			const auth = requireAuthenticated(socket)
-			if (auth.ok && auth.value !== parsed.value.memberSessionToken) {
-				return respondWithError(ack, { code: 'unauthorized' })
-			}
-
-			const resumedRoom = roomsService.resumeHostRoom({
-				memberSessionToken: parsed.value.memberSessionToken,
-				socketId: socket.id,
-			})
-
-			if (!resumedRoom.ok) {
-				return respondWithError(ack, resumedRoom.error)
-			}
-
-			bindSocketIdentity(socket, {
-				role: 'host',
-				roomId: resumedRoom.value.response.roomId,
-				memberId: resumedRoom.value.response.memberId,
-				memberSessionToken: parsed.value.memberSessionToken,
-			})
-			disconnectReplacedSocket(
-				namespace,
-				resumedRoom.value.replacedSocketId,
-				socket.id,
+			resumeSession(
+				socket,
+				'room:host-resume',
+				resumeHostRoomRequestSchema,
+				payload,
+				ack,
+				'host',
+				input => roomsService.resumeHostRoom(input),
 			)
-
-			return respondWithSuccess(ack, resumedRoom.value.response)
 		})
 
 		socket.on('room:player-resume', (payload, ack) => {
-			const parsed = parsePayload(resumePlayerRoomRequestSchema, payload)
-			if (!parsed.ok) {
-				return respondWithError(ack, {
-					code: 'invalid_payload',
-				})
-			}
-
-			const auth = requireAuthenticated(socket)
-			if (auth.ok && auth.value !== parsed.value.memberSessionToken) {
-				return respondWithError(ack, { code: 'unauthorized' })
-			}
-
-			const resumedRoom = roomsService.resumePlayerRoom({
-				memberSessionToken: parsed.value.memberSessionToken,
-				socketId: socket.id,
-			})
-
-			if (!resumedRoom.ok) {
-				return respondWithError(ack, resumedRoom.error)
-			}
-
-			bindSocketIdentity(socket, {
-				role: 'player',
-				roomId: resumedRoom.value.response.roomId,
-				memberId: resumedRoom.value.response.memberId,
-				memberSessionToken: parsed.value.memberSessionToken,
-			})
-			disconnectReplacedSocket(
-				namespace,
-				resumedRoom.value.replacedSocketId,
-				socket.id,
+			resumeSession(
+				socket,
+				'room:player-resume',
+				resumePlayerRoomRequestSchema,
+				payload,
+				ack,
+				'player',
+				input => roomsService.resumePlayerRoom(input),
 			)
-
-			return respondWithSuccess(ack, resumedRoom.value.response)
 		})
 
 		socket.on('room:return-to-lobby', (payload, ack) => {
 			handleSessionCommand(
 				socket,
+				'room:return-to-lobby',
 				returnToLobbyRequestSchema,
 				payload,
 				ack,
@@ -277,34 +314,21 @@ export function registerRoomHandlers({
 		})
 
 		socket.on('room:terminate', (payload, ack) => {
-			const auth = requireAuthenticated(socket)
-			if (!auth.ok) {
-				return respondWithError(ack, { code: 'unauthorized' })
-			}
-
-			const parsed = parsePayload(terminateRoomRequestSchema, payload)
-			if (!parsed.ok) {
-				return respondWithError(ack, {
-					code: 'invalid_payload',
-				})
-			}
-
-			const terminatedRoomResult = roomsService.terminateRoom({
-				memberSessionToken: auth.value,
-			})
-
-			if (!terminatedRoomResult.ok) {
-				return respondWithError(ack, terminatedRoomResult.error)
-			}
-
-			clearSocketIdentity(socket)
-
-			return respondWithSuccess(ack, terminatedRoomResult.value)
+			handleSessionCommand(
+				socket,
+				'room:terminate',
+				terminateRoomRequestSchema,
+				payload,
+				ack,
+				token => roomsService.terminateRoom({ memberSessionToken: token }),
+				() => clearSocketIdentity(socket),
+			)
 		})
 
 		socket.on('game:start', (payload, ack) => {
 			handleSessionCommand(
 				socket,
+				'game:start',
 				startGameRequestSchema,
 				payload,
 				ack,
@@ -317,86 +341,50 @@ export function registerRoomHandlers({
 		})
 
 		socket.on('game:reveal-round', (payload, ack) => {
-			const auth = requireAuthenticated(socket)
-			if (!auth.ok) {
-				return respondWithError(ack, {
-					code: 'unauthorized',
-				})
-			}
-
-			const parsed = parsePayload(revealRoundRequestSchema, payload)
-			if (!parsed.ok) {
-				return respondWithError(ack, {
-					code: 'invalid_payload',
-				})
-			}
-
-			const revealedGameRound = roomsService.revealGameRound({
-				memberSessionToken: auth.value,
-			})
-
-			if (!revealedGameRound.ok) {
-				return respondWithError(ack, revealedGameRound.error)
-			}
-
-			return respondWithSuccess(ack, revealedGameRound.value)
+			handleSessionCommand(
+				socket,
+				'game:reveal-round',
+				revealRoundRequestSchema,
+				payload,
+				ack,
+				token =>
+					roomsService.revealGameRound({ memberSessionToken: token }),
+			)
 		})
 
 		socket.on('game:advance-round', (payload, ack) => {
-			const auth = requireAuthenticated(socket)
-			if (!auth.ok) {
-				return respondWithError(ack, {
-					code: 'unauthorized',
-				})
-			}
-
-			const parsed = parsePayload(advanceRoundRequestSchema, payload)
-			if (!parsed.ok) {
-				return respondWithError(ack, {
-					code: 'invalid_payload',
-				})
-			}
-
-			const advancedGameRound = roomsService.advanceGameRound({
-				memberSessionToken: auth.value,
-			})
-
-			if (!advancedGameRound.ok) {
-				return respondWithError(ack, advancedGameRound.error)
-			}
-
-			return respondWithSuccess(ack, advancedGameRound.value)
+			handleSessionCommand(
+				socket,
+				'game:advance-round',
+				advanceRoundRequestSchema,
+				payload,
+				ack,
+				token =>
+					roomsService.advanceGameRound({ memberSessionToken: token }),
+			)
 		})
 
 		socket.on('game:submit-answer', (payload, ack) => {
-			const auth = requireAuthenticated(socket)
-			if (!auth.ok) {
-				return respondWithError(ack, {
-					code: 'unauthorized',
-				})
-			}
-
-			const parsed = parsePayload(submitAnswerRequestSchema, payload)
-			if (!parsed.ok) {
-				return respondWithError(ack, {
-					code: 'invalid_payload',
-				})
-			}
-
-			const submittedAnswer = roomsService.submitAnswer({
-				memberSessionToken: auth.value,
-				countryId: parsed.value.countryId,
-			})
-
-			if (!submittedAnswer.ok) {
-				return respondWithError(ack, submittedAnswer.error)
-			}
-
-			return respondWithSuccess(ack, submittedAnswer.value)
+			handleSessionCommand(
+				socket,
+				'game:submit-answer',
+				submitAnswerRequestSchema,
+				payload,
+				ack,
+				(token, value) =>
+					roomsService.submitAnswer({
+						memberSessionToken: token,
+						countryId: value.countryId,
+					}),
+			)
 		})
 
 		socket.on('disconnect', () => {
-			roomsService.disconnectSocket(socket.id)
+			try {
+				roomsService.disconnectSocket(socket.id)
+			} catch (error) {
+				reportHandlerFailure(socket, 'disconnect', error)
+			}
 			clearSocketIdentity(socket)
 		})
 	})

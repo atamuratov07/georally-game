@@ -1,5 +1,13 @@
 import request from 'supertest'
-import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
+import {
+	afterAll,
+	afterEach,
+	beforeAll,
+	describe,
+	expect,
+	it,
+	vi,
+} from 'vitest'
 import { DEFAULT_GAME_CONFIG } from '@georally/game-domain/multiplayer'
 import type {
 	CreateRoomResponse,
@@ -673,6 +681,165 @@ describe('multiplayer server integration', () => {
 			]) {
 				expect(serialized).not.toContain(value)
 			}
+		})
+	})
+
+	describe('socket handler failures', () => {
+		function failureLines() {
+			return server.logLines.filter(
+				line => line.event === 'socket_handler_failed',
+			)
+		}
+
+		it('replies internal_error to a session command that throws, logs it once and keeps serving', async () => {
+			const { hostSocket, created } = await server.createRoomAsHost({
+				hostName: 'Alice',
+				roomMode: 'classroom',
+			})
+			const { playerSocket } = await joinAsPlayer(created.roomCode, 'Bob')
+			const started = await hostSocket.emitWithAck('game:start', {
+				gameConfig: DEFAULT_GAME_CONFIG,
+			})
+			if (!started.ok) throw new Error('setup failed')
+			const submitAnswer = vi
+				.spyOn(server.roomsService, 'submitAnswer')
+				.mockImplementation(() => {
+					throw new Error('boom')
+				})
+
+			const submitted = await playerSocket.emitWithAck(
+				'game:submit-answer',
+				{
+					countryId: '250',
+				},
+			)
+
+			expect(submitted).toEqual({
+				ok: false,
+				error: { code: 'internal_error' },
+			})
+			expect(server.logLines.filter(line => line.level === 'error')).toEqual(
+				[
+					{
+						level: 'error',
+						time: expect.any(String),
+						err: expect.objectContaining({
+							type: 'Error',
+							message: 'boom',
+							stack: expect.stringContaining('Error: boom'),
+						}),
+						socketEvent: 'game:submit-answer',
+						roomId: created.roomId,
+						event: 'socket_handler_failed',
+					},
+				],
+			)
+			expect(
+				server.logLines.filter(line => line.event === 'ack_error'),
+			).toEqual([])
+
+			submitAnswer.mockRestore()
+			const retried = await playerSocket.emitWithAck('game:submit-answer', {
+				countryId: '250',
+			})
+			expect(retried.ok).toBe(true)
+			expect(playerSocket.connected).toBe(true)
+		})
+
+		it('leaves the socket unbound when join throws', async () => {
+			const { created } = await server.createRoomAsHost({
+				hostName: 'Alice',
+				roomMode: 'classroom',
+			})
+			const socket = await server.connectClient()
+			const joinRoom = vi
+				.spyOn(server.roomsService, 'joinRoom')
+				.mockImplementation(() => {
+					throw new Error('boom')
+				})
+
+			const failed = await socket.emitWithAck('room:join', {
+				roomCode: created.roomCode,
+				memberName: 'Bob',
+			})
+
+			expect(failed).toEqual({
+				ok: false,
+				error: { code: 'internal_error' },
+			})
+			expect(failureLines()).toMatchObject([
+				{ socketEvent: 'room:join', err: { message: 'boom' } },
+			])
+
+			joinRoom.mockRestore()
+			const joined = await socket.emitWithAck('room:join', {
+				roomCode: created.roomCode,
+				memberName: 'Bob',
+			})
+			expect(joined.ok).toBe(true)
+		})
+
+		it('replies internal_error when resume throws', async () => {
+			const created = await postRoom()
+			const socket = await server.connectClient()
+			vi.spyOn(server.roomsService, 'resumeHostRoom').mockImplementation(
+				() => {
+					throw new Error('boom')
+				},
+			)
+
+			const resumed = await socket.emitWithAck('room:host-resume', {
+				memberSessionToken: created.memberSessionToken,
+			})
+
+			expect(resumed).toEqual({
+				ok: false,
+				error: { code: 'internal_error' },
+			})
+			expect(failureLines()).toMatchObject([
+				{ socketEvent: 'room:host-resume', err: { message: 'boom' } },
+			])
+		})
+
+		it('logs a disconnect handler that throws and keeps serving', async () => {
+			const { created } = await server.createRoomAsHost({
+				hostName: 'Alice',
+				roomMode: 'classroom',
+			})
+			const { playerSocket } = await joinAsPlayer(created.roomCode, 'Bob')
+			vi.spyOn(server.roomsService, 'disconnectSocket').mockImplementation(
+				() => {
+					throw new Error('boom')
+				},
+			)
+
+			playerSocket.disconnect()
+
+			await vi.waitFor(() => {
+				expect(failureLines()).toMatchObject([
+					{
+						socketEvent: 'disconnect',
+						roomId: created.roomId,
+						err: { message: 'boom' },
+					},
+				])
+			})
+			await request(server.httpServer).get('/health').expect(200)
+		})
+
+		it('clears the socket identity after a successful terminate', async () => {
+			const { hostSocket } = await server.createRoomAsHost({
+				hostName: 'Alice',
+				roomMode: 'classroom',
+			})
+
+			const terminated = await hostSocket.emitWithAck('room:terminate', {})
+			const started = await hostSocket.emitWithAck('game:start', {
+				gameConfig: DEFAULT_GAME_CONFIG,
+			})
+
+			expect(terminated.ok).toBe(true)
+			expect(started).toEqual({ ok: false, error: { code: 'unauthorized' } })
 		})
 	})
 })

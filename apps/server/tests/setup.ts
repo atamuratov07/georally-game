@@ -94,6 +94,7 @@ export async function bootstrapServer() {
 		namespace: gameNamespace,
 		roomsService,
 		reportProtocolError,
+		logger,
 	})
 	registerRoomRoutes({ router: apiRouter, roomsService, reportProtocolError })
 
@@ -155,6 +156,7 @@ export async function bootstrapServer() {
 
 	return {
 		httpServer,
+		roomsService,
 		logLines,
 		resetBetweenTests,
 		connectClient,

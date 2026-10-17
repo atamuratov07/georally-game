@@ -79,6 +79,7 @@ registerRoomHandlers({
 	namespace: gameNamespace,
 	roomsService,
 	reportProtocolError,
+	logger,
 })
 registerRoomRoutes({ router: apiRouter, roomsService, reportProtocolError })
 

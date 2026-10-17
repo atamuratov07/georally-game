@@ -10,6 +10,11 @@ services:
          - CORS_ORIGIN=https://georally.world
       expose:
          - '3001'
+      logging:
+         driver: json-file
+         options:
+            max-size: 10m
+            max-file: '5'
 
    nginx:
       build:
@@ -24,6 +29,11 @@ services:
          - ./data/certbot/www:/var/www/certbot
       depends_on:
          - server
+      logging:
+         driver: json-file
+         options:
+            max-size: 10m
+            max-file: '5'
 
    certbot:
       image: certbot/certbot:latest

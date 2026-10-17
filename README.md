@@ -112,6 +112,7 @@ Server configuration (`apps/server/src/config/env.ts`, parsed with `zod`):
 | `PORT`                                    | `3001`                  |                                                                                                     |
 | `HOST`                                    | `0.0.0.0`               |                                                                                                     |
 | `CORS_ORIGIN`                             | `http://localhost:5173` | Comma-separated list; production sets this to `https://georally.world`                              |
+| `LOG_LEVEL`                               | `info`                  | `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`; logs are JSON lines on stdout       |
 | `REVEAL_DURATION_MS`                      | `3000`                  | Group mode auto-advance timing                                                                      |
 | `LEADERBOARD_DURATION_MS`                 | `3000`                  | Group mode auto-advance timing                                                                      |
 | `ROOM_CAPACITY_LIMIT`                     | `40`                    | Max members per room; everyone who has joined counts, including members who have since disconnected |
@@ -160,6 +161,8 @@ Production runs via Docker Compose: a `server` container (the Socket.IO backend)
 docker compose up -d --build
 ```
 
+The server writes one JSON line per event to stdout; both `server` and `nginx` use Docker's `json-file` log driver, rotated at 10 MB × 5 files. See [`docs/measurements.md`](docs/measurements.md#reading-the-logs-on-the-server) for how to query them.
+
 ## Architecture
 
 GeoRally's architecture is documented in depth under [`docs/architecture/`](docs/architecture), so this README stays skimmable. The short version:
@@ -204,7 +207,7 @@ graph LR
 | [`docs/architecture/persistence.md`](docs/architecture/persistence.md)                   | What's persisted, where, and what that implies for scaling                       |
 | [`docs/architecture/connection-lifecycle.md`](docs/architecture/connection-lifecycle.md) | Connection, reconnection, and tab takeover across Socket.IO and the game session |
 
-Improvements found in review but not yet implemented are written up in [`docs/proposals/`](docs/proposals/README.md).
+Improvements found in review but not yet implemented are written up in [`docs/proposals/`](docs/proposals/README.md). Server logging, the stats line, and measurement results are in [`docs/measurements.md`](docs/measurements.md).
 
 ## Scripts
 

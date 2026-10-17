@@ -148,10 +148,11 @@ graph TD
 
 **Server responsibilities:**
 
-- `app.ts` — Express app: `/health`, and an `/api` router with CORS, `Cache-Control: no-store`, JSON body parsing, and a final error handler.
+- `app.ts` — Express app: `/health` (room counts, rooms by phase, event-loop delay, memory, and the `invalid_payload` count), and an `/api` router with CORS, `Cache-Control: no-store`, JSON body parsing, and a final error handler.
 - `http/responses.ts` — shared helpers that send the `Ack<T>` body over HTTP with a matching status code, and the error handler that turns malformed JSON into `invalid_payload` and anything else into `internal_error`.
+- `observability/` — the pino logger (JSON lines on stdout, `LOG_LEVEL`), the runtime stats behind `/health` and the 60-second `stats` log line, the reporter that logs every ack/HTTP error except `invalid_payload` (which is only counted), and the fatal `uncaughtException` / `unhandledRejection` handlers. Events, fields and how to query them are in [`../measurements.md`](../measurements.md).
 - `features/rooms/http.ts` — HTTP routes: `POST /api/rooms` and `GET /api/rooms/:roomCode`.
-- `features/rooms/socket.ts` — validates socket payloads with zod, checks socket authentication, delegates to `RoomsService`, binds sockets to sessions on join/resume, evicts a replaced socket on tab takeover, and returns typed acks.
+- `features/rooms/socket.ts` — drops packets that carry no ack callback (counted as `invalid_payload`), reports failed acks, validates socket payloads with zod, checks socket authentication, delegates to `RoomsService`, binds sockets to sessions on join/resume, evicts a replaced socket on tab takeover, and returns typed acks.
 - `features/rooms/service.ts` — creates, joins, resumes, starts games, submits answers, reveals/advances classroom rounds, returns finished rooms to the lobby, closes rooms, handles disconnects, and schedules timed transitions and expiry.
 - `features/rooms/repository.ts` — stores rooms by ID/code, member sessions by token, socket ⇄ session bindings, and scheduled transition and expiry handles.
 - `features/rooms/publisher.ts` — converts internal room state into host/player views and emits only the appropriate snapshot type to each bound socket.
@@ -257,7 +258,7 @@ Host views can include all evaluated submissions after reveal or leaderboard. Pl
 - Host and player sessions are persisted in browser `localStorage`.
 - Reconnect/resume uses `memberSessionToken`, not `socket.id`. Socket.IO's `connectionStateRecovery` is intentionally off; see [`connection-lifecycle.md`](connection-lifecycle.md).
 - Opening the same session in a second tab moves the session to the new tab and disconnects the old one, which then stops instead of reconnecting.
-- Server state is in memory only — a server restart invalidates all live room state.
+- Server state is in memory only — a server restart invalidates all live room state. An uncaught exception or unhandled rejection is logged as a `fatal` line and the process exits with code 1, so Docker restarts it.
 - On shutdown, the service emits `room:closed` with reason `server_shutdown` before closing Socket.IO.
 - Host and player receive different projections of the same room state via `visibility.ts`.
 

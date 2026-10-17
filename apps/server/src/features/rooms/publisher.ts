@@ -2,9 +2,7 @@ import type { RoomClosedEvent } from '@georally/game-protocol'
 
 import type { MemberId } from '@georally/game-domain/multiplayer'
 import {
-	isRoomInGroupMode,
-	toClassroomHostRoomView,
-	toGroupHostRoomView,
+	toHostRoomView,
 	toPlayerRoomView,
 	type RoomId,
 } from '@georally/game-domain/multiplayer/room'
@@ -42,9 +40,7 @@ export function createRoomPublisher({
 			}
 
 			if (session.role === 'host') {
-				const snapshot = isRoomInGroupMode(context.state)
-					? toGroupHostRoomView(context.state, session.memberId)
-					: toClassroomHostRoomView(context.state, session.memberId)
+				const snapshot = toHostRoomView(context.state, session.memberId)
 
 				if (!snapshot) {
 					continue

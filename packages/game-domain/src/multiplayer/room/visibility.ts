@@ -5,7 +5,12 @@ import {
 	type GameHostView,
 	type GameParticipantView,
 } from '../game/visibility'
-import { getConnectedMemberCount, getMember, getMembers } from './selectors'
+import {
+	getConnectedMemberCount,
+	getMember,
+	getMembers,
+	isRoomInGroupMode,
+} from './selectors'
 import type {
 	MemberId,
 	RoomMemberRole,
@@ -283,6 +288,15 @@ export function toClassroomHostRoomView(
 				lastGameResult: state.lastGameResult,
 			}
 	}
+}
+
+export function toHostRoomView(
+	state: RoomState,
+	viewerMemberId: MemberId,
+): RoomHostView | undefined {
+	return isRoomInGroupMode(state)
+		? toGroupHostRoomView(state, viewerMemberId)
+		: toClassroomHostRoomView(state, viewerMemberId)
 }
 
 function getPlayerRoomViewBase(

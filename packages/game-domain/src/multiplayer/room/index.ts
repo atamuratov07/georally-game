@@ -44,6 +44,7 @@ export {
 export {
 	toGroupHostRoomView,
 	toClassroomHostRoomView,
+	toHostRoomView,
 	toPlayerRoomView,
 	type ClassroomHostRoomActiveView,
 	type ClassroomHostRoomFinishedView,

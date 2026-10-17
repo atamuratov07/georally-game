@@ -31,15 +31,13 @@ import {
 	createRoom,
 	toPlayerRoomView,
 	type MemberId,
-	type ClassroomHostRoomView,
-	type GroupHostRoomView,
+	type RoomHostView,
 	type RoomId,
+	type RoomMemberRole,
 	type RoomMode,
 	type RoomPlayerView,
 	type RoomState,
-	toClassroomHostRoomView,
-	toGroupHostRoomView,
-	isRoomInGroupMode,
+	toHostRoomView,
 	getRoomExpireDueAt,
 	type RoomExpireTTLConfig,
 	getRoomOccupancy,
@@ -289,64 +287,26 @@ export class RoomsService {
 	resumeHostRoom(
 		input: ResumeHostRoomInput,
 	): ServiceResult<BoundServiceResponse<ResumeHostRoomResponse>> {
-		const session = this.repository.getMemberSession(input.memberSessionToken)
-		if (!session) {
-			return err({
-				code: 'member_session_not_found',
-			})
-		}
-		if (session.role !== 'host') {
-			return err({ code: 'insufficient_permissions' })
+		const resumed = this.resumeMember(input.memberSessionToken, 'host')
+		if (!resumed.ok) {
+			return resumed
 		}
 
-		const context = this.repository.getRoomById(session.roomId)
-		if (!context) {
-			return err({
-				code: 'room_not_found',
-			})
-		}
-
-		const member = context.state.membersById[session.memberId]
-		if (!member) {
-			return err({
-				code: 'member_session_not_found',
-			})
-		}
-
-		let nextState = context.state
-		if (!member.connected) {
-			const reconnectResult = applyRoomCommand(context.state, {
-				type: 'RECONNECT_MEMBER',
-				id: session.memberId,
-				now: this.now(),
-			})
-
-			if (!reconnectResult.ok) {
-				return reconnectResult
-			}
-
-			nextState = reconnectResult.value
-			this.commitRoomState(nextState.roomId, nextState, {
-				excludeMemberId: session.memberId,
-			})
-		}
-
+		const { state, memberId } = resumed.value
 		const replacedSocketId = this.repository.bindSocketToSession(
 			input.memberSessionToken,
 			input.socketId,
 		)
 
-		const snapshot = isRoomInGroupMode(nextState)
-			? this.buildGroupHostRoomSnapshot(nextState, session.memberId)
-			: this.buildClassroomHostRoomSnapshot(nextState, session.memberId)
+		const snapshot = this.buildHostRoomSnapshot(state, memberId)
 		if (!snapshot.ok) {
 			return snapshot
 		}
 
 		return ok({
 			response: {
-				roomId: nextState.roomId,
-				memberId: session.memberId,
+				roomId: state.roomId,
+				memberId,
 				snapshot: snapshot.value,
 			},
 			replacedSocketId,
@@ -356,63 +316,26 @@ export class RoomsService {
 	resumePlayerRoom(
 		input: ResumePlayerRoomInput,
 	): ServiceResult<BoundServiceResponse<ResumePlayerRoomResponse>> {
-		const session = this.repository.getMemberSession(input.memberSessionToken)
-		if (!session) {
-			return err({
-				code: 'member_session_not_found',
-			})
+		const resumed = this.resumeMember(input.memberSessionToken, 'player')
+		if (!resumed.ok) {
+			return resumed
 		}
 
-		if (session.role !== 'player') {
-			return err({ code: 'insufficient_permissions' })
-		}
-
-		const context = this.repository.getRoomById(session.roomId)
-		if (!context) {
-			return err({
-				code: 'room_not_found',
-			})
-		}
-
-		const member = context.state.membersById[session.memberId]
-		if (!member) {
-			return err({
-				code: 'member_session_not_found',
-			})
-		}
-
-		let nextState = context.state
-		if (!member.connected) {
-			const reconnectResult = applyRoomCommand(context.state, {
-				type: 'RECONNECT_MEMBER',
-				id: session.memberId,
-				now: this.now(),
-			})
-
-			if (!reconnectResult.ok) {
-				return reconnectResult
-			}
-
-			nextState = reconnectResult.value
-			this.commitRoomState(nextState.roomId, nextState, {
-				excludeMemberId: session.memberId,
-			})
-		}
-
+		const { state, memberId } = resumed.value
 		const replacedSocketId = this.repository.bindSocketToSession(
 			input.memberSessionToken,
 			input.socketId,
 		)
 
-		const snapshot = this.buildRoomPlayerSnapshot(nextState, session.memberId)
+		const snapshot = this.buildRoomPlayerSnapshot(state, memberId)
 		if (!snapshot.ok) {
 			return snapshot
 		}
 
 		return ok({
 			response: {
-				roomId: nextState.roomId,
-				memberId: session.memberId,
+				roomId: state.roomId,
+				memberId,
 				snapshot: snapshot.value,
 			},
 			replacedSocketId,
@@ -682,23 +605,53 @@ export class RoomsService {
 		})
 	}
 
-	private buildClassroomHostRoomSnapshot(
-		state: RoomState,
-		memberId: MemberId,
-	): ServiceResult<ClassroomHostRoomView> {
-		const snapshot = toClassroomHostRoomView(state, memberId)
-		return snapshot
-			? ok(snapshot)
-			: err({
-					code: 'internal_error',
-				})
+	private resumeMember(
+		memberSessionToken: MemberSessionToken,
+		expectedRole: RoomMemberRole,
+	): ServiceResult<{ state: RoomState; memberId: MemberId }> {
+		const session = this.repository.getMemberSession(memberSessionToken)
+		if (!session) {
+			return err({ code: 'member_session_not_found' })
+		}
+		if (session.role !== expectedRole) {
+			return err({ code: 'insufficient_permissions' })
+		}
+
+		const context = this.repository.getRoomById(session.roomId)
+		if (!context) {
+			return err({ code: 'room_not_found' })
+		}
+
+		const member = context.state.membersById[session.memberId]
+		if (!member) {
+			return err({ code: 'member_session_not_found' })
+		}
+
+		if (member.connected) {
+			return ok({ state: context.state, memberId: session.memberId })
+		}
+
+		const reconnected = applyRoomCommand(context.state, {
+			type: 'RECONNECT_MEMBER',
+			id: session.memberId,
+			now: this.now(),
+		})
+		if (!reconnected.ok) {
+			return reconnected
+		}
+
+		this.commitRoomState(reconnected.value.roomId, reconnected.value, {
+			excludeMemberId: session.memberId,
+		})
+
+		return ok({ state: reconnected.value, memberId: session.memberId })
 	}
 
-	private buildGroupHostRoomSnapshot(
+	private buildHostRoomSnapshot(
 		state: RoomState,
 		memberId: MemberId,
-	): ServiceResult<GroupHostRoomView> {
-		const snapshot = toGroupHostRoomView(state, memberId)
+	): ServiceResult<RoomHostView> {
+		const snapshot = toHostRoomView(state, memberId)
 
 		return snapshot
 			? ok(snapshot)

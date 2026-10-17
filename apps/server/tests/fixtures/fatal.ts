@@ -1,6 +1,7 @@
 import { createLogger } from '../../src/observability/logger'
 import { registerFatalHandlers } from '../../src/observability/process'
 
+void process.stdout
 registerFatalHandlers(createLogger('info'))
 
 const message = `boom ${'x'.repeat(200_000)}`

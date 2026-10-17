@@ -1,3 +1,5 @@
+import { performance } from 'node:perf_hooks'
+
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { createLogger } from './logger.js'
@@ -18,6 +20,11 @@ describe('createRuntimeStats', () => {
 				p50: expect.any(Number),
 				p99: expect.any(Number),
 			},
+			cpuMs: {
+				user: expect.any(Number),
+				system: expect.any(Number),
+			},
+			cpuPercent: expect.any(Number),
 			rssMb: expect.any(Number),
 			heapUsedMb: expect.any(Number),
 			invalidPayloadCount: 2,
@@ -48,6 +55,25 @@ describe('createRuntimeStats', () => {
 		stats.stop()
 
 		expect(snapshot.eventLoopDelayMs.p99).toBeGreaterThanOrEqual(50)
+	})
+
+	it('reports the CPU time and share used since the last reset', () => {
+		const stats = createRuntimeStats()
+		stats.readAndReset()
+
+		const busyUntil = performance.now() + 60
+		while (performance.now() < busyUntil) {
+			Math.sqrt(busyUntil)
+		}
+		const busy = stats.readAndReset()
+		const afterReset = stats.read()
+		stats.stop()
+
+		expect(busy.cpuMs.user + busy.cpuMs.system).toBeGreaterThanOrEqual(50)
+		expect(busy.cpuPercent).toBeGreaterThan(50)
+		expect(afterReset.cpuMs.user + afterReset.cpuMs.system).toBeLessThan(
+			busy.cpuMs.user + busy.cpuMs.system,
+		)
 	})
 
 	it('keeps counting on read and starts over after readAndReset', () => {

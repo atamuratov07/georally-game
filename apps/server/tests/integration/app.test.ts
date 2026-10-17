@@ -535,7 +535,7 @@ describe('multiplayer server integration', () => {
 			)
 		}
 
-		it('exposes rooms by phase, event loop delay, memory and the invalid payload count', async () => {
+		it('exposes rooms by phase, event loop delay, CPU, memory and the invalid payload count', async () => {
 			await server.createRoomAsHost({
 				hostName: 'Alice',
 				roomMode: 'classroom',
@@ -550,6 +550,11 @@ describe('multiplayer server integration', () => {
 					p50: expect.any(Number),
 					p99: expect.any(Number),
 				},
+				cpuMs: {
+					user: expect.any(Number),
+					system: expect.any(Number),
+				},
+				cpuPercent: expect.any(Number),
 				rssMb: expect.any(Number),
 				heapUsedMb: expect.any(Number),
 				invalidPayloadCount: 0,

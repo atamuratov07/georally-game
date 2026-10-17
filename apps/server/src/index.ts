@@ -16,8 +16,6 @@ import {
 	startStatsReporter,
 } from './observability/stats.js'
 
-const STATS_INTERVAL_MS = 60_000
-
 const env = parseEnv(process.env)
 const logger = createLogger(env.logLevel)
 registerFatalHandlers(logger)
@@ -85,7 +83,7 @@ registerRoomRoutes({ router: apiRouter, roomsService, reportProtocolError })
 
 const stopStatsReporter = startStatsReporter({
 	logger,
-	intervalMs: STATS_INTERVAL_MS,
+	intervalMs: env.statsIntervalMs,
 	collect: () => ({
 		...roomsService.getHealthSnapshot(),
 		...stats.readAndReset(),
@@ -99,6 +97,7 @@ httpServer.listen(env.port, env.host, () => {
 			port: env.port,
 			nodeVersion: process.version,
 			logLevel: env.logLevel,
+			statsIntervalMs: env.statsIntervalMs,
 			roomCapacityLimit: env.roomCapacityLimit,
 		},
 		'server_started',

@@ -113,6 +113,7 @@ Server configuration (`apps/server/src/config/env.ts`, parsed with `zod`):
 | `HOST`                                    | `0.0.0.0`               |                                                                                                     |
 | `CORS_ORIGIN`                             | `http://localhost:5173` | Comma-separated list; production sets this to `https://georally.world`                              |
 | `LOG_LEVEL`                               | `info`                  | `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`; logs are JSON lines on stdout       |
+| `STATS_INTERVAL_MS`                       | `60000`                 | How often the `stats` log line is written (min `1000`)                                              |
 | `REVEAL_DURATION_MS`                      | `3000`                  | Group mode auto-advance timing                                                                      |
 | `LEADERBOARD_DURATION_MS`                 | `3000`                  | Group mode auto-advance timing                                                                      |
 | `ROOM_CAPACITY_LIMIT`                     | `40`                    | Max members per room; everyone who has joined counts, including members who have since disconnected |

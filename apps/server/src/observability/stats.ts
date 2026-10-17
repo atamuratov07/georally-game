@@ -1,8 +1,9 @@
-import { monitorEventLoopDelay } from 'node:perf_hooks'
+import { monitorEventLoopDelay, performance } from 'node:perf_hooks'
 
 import type { Logger } from './logger.js'
 
 const NANOSECONDS_PER_MILLISECOND = 1_000_000
+const MICROSECONDS_PER_MILLISECOND = 1_000
 const BYTES_PER_MEGABYTE = 1024 * 1024
 const EVENT_LOOP_DELAY_RESOLUTION_MS = 10
 
@@ -11,6 +12,11 @@ export interface ProcessStats {
 		p50: number
 		p99: number
 	}
+	cpuMs: {
+		user: number
+		system: number
+	}
+	cpuPercent: number
 	rssMb: number
 	heapUsedMb: number
 	invalidPayloadCount: number
@@ -26,6 +32,8 @@ export function createRuntimeStats() {
 	})
 	eventLoopDelay.enable()
 	let invalidPayloadCount = 0
+	let windowStartedAt = performance.now()
+	let windowStartCpu = process.cpuUsage()
 
 	function readEventLoopDelayMs(percentile: number): number {
 		const intervalMs =
@@ -35,12 +43,22 @@ export function createRuntimeStats() {
 
 	function read(): ProcessStats {
 		const memory = process.memoryUsage()
+		const cpu = process.cpuUsage(windowStartCpu)
+		const userMs = cpu.user / MICROSECONDS_PER_MILLISECOND
+		const systemMs = cpu.system / MICROSECONDS_PER_MILLISECOND
+		const elapsedMs = performance.now() - windowStartedAt
 
 		return {
 			eventLoopDelayMs: {
 				p50: readEventLoopDelayMs(50),
 				p99: readEventLoopDelayMs(99),
 			},
+			cpuMs: {
+				user: round(userMs),
+				system: round(systemMs),
+			},
+			cpuPercent:
+				elapsedMs > 0 ? round(((userMs + systemMs) / elapsedMs) * 100) : 0,
 			rssMb: round(memory.rss / BYTES_PER_MEGABYTE),
 			heapUsedMb: round(memory.heapUsed / BYTES_PER_MEGABYTE),
 			invalidPayloadCount,
@@ -51,6 +69,8 @@ export function createRuntimeStats() {
 		const stats = read()
 		eventLoopDelay.reset()
 		invalidPayloadCount = 0
+		windowStartedAt = performance.now()
+		windowStartCpu = process.cpuUsage()
 		return stats
 	}
 

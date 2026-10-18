@@ -2,6 +2,7 @@ import {
 	buildCachePath,
 	ensureCacheDir,
 	readCachedJson,
+	readCachedResponse,
 	writeCachedJson,
 } from './cache.mjs'
 
@@ -59,6 +60,11 @@ export async function fetchWdqsJson({
 	ensureCacheDir(cacheDir)
 
 	const cachePath = buildCachePath(cacheDir, cacheKey)
+	const cachedResponse = readCachedResponse(cachePath, 'WDQS', cacheKey)
+	if (cachedResponse !== null) {
+		return cachedResponse
+	}
+
 	let lastFailure = null
 	let attemptsMade = 0
 

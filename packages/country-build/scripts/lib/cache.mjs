@@ -38,3 +38,21 @@ export function readCachedJson(cachePath) {
 export function writeCachedJson(cachePath, value) {
 	fs.writeFileSync(cachePath, JSON.stringify(value, null, 2), 'utf8')
 }
+
+export function isRefreshRequested() {
+	return process.env.COUNTRY_BUILD_REFRESH === '1'
+}
+
+export function readCachedResponse(cachePath, source, cacheKey) {
+	if (isRefreshRequested()) {
+		return null
+	}
+
+	const cached = readCachedJson(cachePath)
+	if (cached !== null) {
+		console.log(
+			`${source} "${cacheKey}": using the cached response at ${cachePath}. Set COUNTRY_BUILD_REFRESH=1 to request it again.`,
+		)
+	}
+	return cached
+}

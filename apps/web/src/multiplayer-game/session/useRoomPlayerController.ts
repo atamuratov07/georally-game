@@ -1,4 +1,5 @@
 import type { RoomPlayerView } from '@georally/game-domain/multiplayer'
+import { composePlayerRoomView } from '@georally/game-domain/multiplayer/room'
 import type { LookupRoomFoundResponse } from '@georally/game-protocol'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { formatGatewayErrorMessage } from '../api/errors'
@@ -63,9 +64,18 @@ export function useRoomPlayerController(
 				gateway.resumePlayerRoom({
 					memberSessionToken: session.memberSessionToken,
 				}),
-			subscribe: ({ onRoomClosed, onRoomSnapshot, onSocketDisconnect }) =>
-				gateway.subscribePlayerRoom({
-					onRoomSnapshot,
+			compose: composePlayerRoomView,
+			subscribe: ({
+				onRoomUpdate,
+				onRoomViewer,
+				onRoomHostDetail,
+				onRoomClosed,
+				onSocketDisconnect,
+			}) =>
+				gateway.subscribeRoom({
+					onRoomUpdate,
+					onRoomViewer,
+					onRoomHostDetail,
 					onRoomClosed,
 					onSocketDisconnect,
 				}),
@@ -129,8 +139,8 @@ export function useRoomPlayerController(
 					savedAt: Date.now(),
 				}
 
-				runtime.acceptSession(session, response.snapshot)
-				trackRoomJoined(response.snapshot.roomMode)
+				runtime.acceptSession(session, response.sync)
+				trackRoomJoined(response.sync.shared.roomMode)
 				saveRoomSession(session)
 				setRuntimeStarted(true)
 			})

@@ -377,7 +377,7 @@ describe('RoomsService.startGame', () => {
 		if (!started.ok) throw new Error('setup failed')
 
 		expect(hooks.onRoomUpdated).toHaveBeenCalledTimes(2)
-		expect(hooks.onRoomUpdated).toHaveBeenLastCalledWith(created.roomId, {})
+		expect(hooks.onRoomUpdated).toHaveBeenLastCalledWith(created.roomId)
 
 		const room = repository.getRoomById(created.roomId)
 		if (!room) throw new Error('room not created')
@@ -403,7 +403,7 @@ describe('RoomsService.startGame', () => {
 		if (!started.ok) throw new Error('setup failed')
 
 		expect(hooks.onRoomUpdated).toHaveBeenCalledTimes(1)
-		expect(hooks.onRoomUpdated).toHaveBeenLastCalledWith(created.roomId, {})
+		expect(hooks.onRoomUpdated).toHaveBeenLastCalledWith(created.roomId)
 
 		const room = repository.getRoomById(created.roomId)
 		if (!room) throw new Error('room not created')
@@ -440,7 +440,7 @@ describe('RoomsService.startGame', () => {
 		})
 		if (!started.ok) throw new Error('setup failed')
 
-		expect(hooks.onRoomUpdated).toHaveBeenLastCalledWith(created.roomId, {})
+		expect(hooks.onRoomUpdated).toHaveBeenLastCalledWith(created.roomId)
 
 		const room = repository.getRoomById(created.roomId)
 		if (!room) throw new Error('room not created')

@@ -19,7 +19,7 @@ import {
 import type { ZodType } from 'zod'
 
 import type { RoomMemberRole } from '@georally/game-domain/multiplayer/room'
-import { hasMemberSockets, memberChannel } from './channels.js'
+import { hasMemberSockets, memberChannel, roomChannel } from './channels.js'
 import type { RoomsService } from './service.js'
 import type { GameNamespace, GameSocket, MemberSessionToken } from './types.js'
 import { err, ok, type Result } from '@georally/game-domain'
@@ -110,6 +110,9 @@ function detachSocketFromMember(socket: GameSocket): void {
 	if (socket.data.memberId) {
 		void socket.leave(memberChannel(socket.data.memberId))
 	}
+	if (socket.data.roomId) {
+		void socket.leave(roomChannel(socket.data.roomId))
+	}
 	clearSocketIdentity(socket)
 }
 
@@ -126,7 +129,7 @@ function attachSocketToMember(
 	bindSocketIdentity(socket, identity)
 
 	const channel = memberChannel(identity.memberId)
-	void socket.join(channel)
+	void socket.join([channel, roomChannel(identity.roomId)])
 	namespace.in(channel).except(socket.id).disconnectSockets(true)
 }
 

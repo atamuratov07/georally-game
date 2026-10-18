@@ -1,12 +1,13 @@
 import {
 	ROOM_PHASES,
-	type ClassroomHostRoomView,
-	type GroupHostRoomView,
 	type MemberId,
 	type RoomCode,
 	type RoomId,
 	type RoomMemberRole,
-	type RoomPlayerView,
+	type RoomSync,
+	type RoomSyncHostDetailUpdate,
+	type RoomSyncUpdate,
+	type RoomSyncViewerUpdate,
 } from '@georally/game-domain/multiplayer/room'
 
 import { z } from 'zod'
@@ -52,36 +53,42 @@ export type LookupRoomFoundResponse = z.infer<
 export type LookupRoomResponse = z.infer<typeof lookupRoomResponseSchema>
 
 export interface JoinRoomResponse extends SessionIdentity {
-	snapshot: RoomPlayerView
+	serverNow: number
+	sync: RoomSync
 }
 
-export type ResumeHostRoomResponse = {
+export interface ResumeRoomResponse {
 	roomId: RoomId
 	memberId: MemberId
-	snapshot: ClassroomHostRoomView | GroupHostRoomView
+	serverNow: number
+	sync: RoomSync
 }
 
-export interface ResumePlayerRoomResponse {
-	roomId: RoomId
-	memberId: MemberId
-	snapshot: RoomPlayerView
-}
+export type ResumeHostRoomResponse = ResumeRoomResponse
+
+export type ResumePlayerRoomResponse = ResumeRoomResponse
 
 export interface SubmitAnswerResponse {
 	acceptedAt: number
 }
 
-export type HostRoomSnapshotEvent = {
+export interface RoomUpdateEvent extends RoomSyncUpdate {
 	roomId: RoomId
-	snapshot: ClassroomHostRoomView | GroupHostRoomView
+	serverNow: number
 }
 
-export interface PlayerRoomSnapshotEvent {
+export interface RoomViewerEvent extends RoomSyncViewerUpdate {
 	roomId: RoomId
-	snapshot: RoomPlayerView
+	serverNow: number
+}
+
+export interface RoomHostDetailEvent extends RoomSyncHostDetailUpdate {
+	roomId: RoomId
+	serverNow: number
 }
 
 export interface RoomClosedEvent {
 	roomId: RoomId
+	serverNow: number
 	reason: 'host_terminated' | 'expired' | 'server_shutdown'
 }

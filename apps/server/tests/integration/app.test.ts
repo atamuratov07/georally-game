@@ -9,14 +9,18 @@ import {
 	vi,
 } from 'vitest'
 import { DEFAULT_GAME_CONFIG } from '@georally/game-domain/multiplayer'
+import {
+	toHostRoomView,
+	toPlayerRoomView,
+} from '@georally/game-domain/multiplayer/room'
 import type {
 	CreateRoomResponse,
-	HostRoomSnapshotEvent,
-	PlayerRoomSnapshotEvent,
 	RoomClosedEvent,
+	RoomUpdateEvent,
 } from '@georally/game-protocol'
 
 import { parseEnv } from '../../src/config/env'
+import { trackRoomClient, type TrackedRoomClient } from '../roomClient'
 import { bootstrapServer, type RoomClientSocket } from '../setup'
 
 type TestServer = Awaited<ReturnType<typeof bootstrapServer>>
@@ -56,15 +60,9 @@ describe('multiplayer server integration', () => {
 		return { playerSocket, joined: joined.data }
 	}
 
-	function nextHostSnapshot(socket: RoomClientSocket) {
-		return new Promise<HostRoomSnapshotEvent>(resolve => {
-			socket.once('room:host-snapshot', resolve)
-		})
-	}
-
-	function nextPlayerSnapshot(socket: RoomClientSocket) {
-		return new Promise<PlayerRoomSnapshotEvent>(resolve => {
-			socket.once('room:player-snapshot', resolve)
+	function nextUpdate(socket: RoomClientSocket) {
+		return new Promise<RoomUpdateEvent>(resolve => {
+			socket.once('room:update', resolve)
 		})
 	}
 
@@ -182,7 +180,7 @@ describe('multiplayer server integration', () => {
 			if (!resumed.ok) return
 
 			expect(resumed.data.memberId).toBe(created.memberId)
-			expect(resumed.data.snapshot.members).toEqual(
+			expect(resumed.data.sync.members).toEqual(
 				expect.arrayContaining([
 					expect.objectContaining({
 						memberId: created.memberId,
@@ -204,7 +202,7 @@ describe('multiplayer server integration', () => {
 				'Bob',
 			)
 
-			expect(joined.snapshot.members).toEqual(
+			expect(joined.sync.members).toEqual(
 				expect.arrayContaining([
 					expect.objectContaining({
 						memberId: created.memberId,
@@ -213,7 +211,7 @@ describe('multiplayer server integration', () => {
 				]),
 			)
 
-			const playerSnapshotPromise = nextPlayerSnapshot(playerSocket)
+			const playerUpdatePromise = nextUpdate(playerSocket)
 
 			const hostSocket = await server.connectClient()
 			const resumed = await hostSocket.emitWithAck('room:host-resume', {
@@ -221,8 +219,8 @@ describe('multiplayer server integration', () => {
 			})
 			if (!resumed.ok) throw new Error('setup failed')
 
-			const playerSnapshotEvent = await playerSnapshotPromise
-			expect(playerSnapshotEvent.snapshot.members).toEqual(
+			const playerUpdate = await playerUpdatePromise
+			expect(playerUpdate.members).toEqual(
 				expect.arrayContaining([
 					expect.objectContaining({
 						memberId: created.memberId,
@@ -310,14 +308,12 @@ describe('multiplayer server integration', () => {
 				roomMode: 'classroom',
 			})
 
-			const hostSnapshotPromise = nextHostSnapshot(hostSocket)
+			const hostUpdatePromise = nextUpdate(hostSocket)
 
 			await joinAsPlayer(created.roomCode, 'Bob')
 
-			const hostSnapshotEvent = await hostSnapshotPromise
-			const memberNames = hostSnapshotEvent.snapshot.members.map(
-				member => member.name,
-			)
+			const hostUpdate = await hostUpdatePromise
+			const memberNames = hostUpdate.members?.map(member => member.name)
 			expect(memberNames).toEqual(['Alice', 'Bob'])
 		})
 
@@ -351,7 +347,7 @@ describe('multiplayer server integration', () => {
 				'Bob',
 			)
 
-			expect(joined.snapshot.members).toEqual(
+			expect(joined.sync.members).toEqual(
 				expect.arrayContaining([
 					expect.objectContaining({
 						memberId: created.memberId,
@@ -360,12 +356,12 @@ describe('multiplayer server integration', () => {
 				]),
 			)
 
-			const playerSnapshotPromise = nextPlayerSnapshot(playerSocket)
+			const playerUpdatePromise = nextUpdate(playerSocket)
 
 			hostSocket.disconnect()
 
-			const playerSnapshotEvent = await playerSnapshotPromise
-			expect(playerSnapshotEvent.snapshot.members).toEqual(
+			const playerUpdate = await playerUpdatePromise
+			expect(playerUpdate.members).toEqual(
 				expect.arrayContaining([
 					expect.objectContaining({
 						memberId: created.memberId,
@@ -382,20 +378,17 @@ describe('multiplayer server integration', () => {
 			})
 			const { playerSocket } = await joinAsPlayer(created.roomCode, 'Bob')
 
-			const playerSnapshotOnDisconnectPromise =
-				nextPlayerSnapshot(playerSocket)
+			const playerUpdateOnDisconnectPromise = nextUpdate(playerSocket)
 
 			hostSocket.close()
 
-			const playerSnapshotOnDisconnectEvent =
-				await playerSnapshotOnDisconnectPromise
-			const hostMember =
-				playerSnapshotOnDisconnectEvent.snapshot.members.find(
-					member => member.memberId === created.memberId,
-				)
-			if (hostMember?.connected) throw new Error('setup failed')
+			const playerUpdateOnDisconnect = await playerUpdateOnDisconnectPromise
+			const hostMember = playerUpdateOnDisconnect.members?.find(
+				member => member.memberId === created.memberId,
+			)
+			if (hostMember?.connected !== false) throw new Error('setup failed')
 
-			const playerSnapshotOnResumePromise = nextPlayerSnapshot(playerSocket)
+			const playerUpdateOnResumePromise = nextUpdate(playerSocket)
 
 			const newHostSocket = await server.connectClient()
 			const resumed = await newHostSocket.emitWithAck('room:host-resume', {
@@ -403,8 +396,8 @@ describe('multiplayer server integration', () => {
 			})
 			if (!resumed.ok) throw new Error('setup failed')
 
-			const playerSnapshotOnResumeEvent = await playerSnapshotOnResumePromise
-			expect(playerSnapshotOnResumeEvent.snapshot.members).toEqual(
+			const playerUpdateOnResume = await playerUpdateOnResumePromise
+			expect(playerUpdateOnResume.members).toEqual(
 				expect.arrayContaining([
 					expect.objectContaining({
 						memberId: resumed.data.memberId,
@@ -471,62 +464,64 @@ describe('multiplayer server integration', () => {
 			})
 			if (!resumed.ok) throw new Error('setup failed')
 
-			const hostSnapshotPromise = nextHostSnapshot(newHostSocket)
+			const hostUpdatePromise = nextUpdate(newHostSocket)
 
 			await joinAsPlayer(created.roomCode, 'Bob')
 
-			const hostSnapshotEvent = await hostSnapshotPromise
-			expect(
-				hostSnapshotEvent.snapshot.members.map(member => member.name),
-			).toEqual(['Alice', 'Bob'])
+			const hostUpdate = await hostUpdatePromise
+			expect(hostUpdate.members?.map(member => member.name)).toEqual([
+				'Alice',
+				'Bob',
+			])
 		})
 	})
 
 	describe('per-role visibility split', () => {
 		it('reaches the right socket', async () => {
-			const { hostSocket, created } = await server.createRoomAsHost({
-				hostName: 'Alice',
-				roomMode: 'classroom',
+			const created = await postRoom()
+			const host = trackRoomClient('host')
+			const hostSocket = await server.connectClient()
+			host.listen(hostSocket)
+			const resumed = await hostSocket.emitWithAck('room:host-resume', {
+				memberSessionToken: created.memberSessionToken,
 			})
-			const { playerSocket, joined } = await joinAsPlayer(
-				created.roomCode,
-				'Bob',
-			)
+			if (!resumed.ok) throw new Error('setup failed')
+			host.start(resumed.data.memberId, resumed.data.sync)
 
-			// Listen before emitting: the player's start snapshot travels on a
-			// different connection and can arrive after the host's ack resolves.
-			const playerStartedPromise = nextPlayerSnapshot(playerSocket)
+			const player = trackRoomClient('player')
+			const playerSocket = await server.connectClient()
+			player.listen(playerSocket)
+			const joined = await playerSocket.emitWithAck('room:join', {
+				roomCode: created.roomCode,
+				memberName: 'Bob',
+			})
+			if (!joined.ok) throw new Error('setup failed')
+			player.start(joined.data.memberId, joined.data.sync)
 
 			const started = await hostSocket.emitWithAck('game:start', {
 				gameConfig: DEFAULT_GAME_CONFIG,
 			})
 			if (!started.ok) throw new Error('setup failed')
 
-			await playerStartedPromise
-
-			const hostSnapshotPromise = nextHostSnapshot(hostSocket)
-			const playerSnapshotPromise = nextPlayerSnapshot(playerSocket)
-
 			const revealed = await hostSocket.emitWithAck('game:reveal-round', {})
 			if (!revealed.ok) throw new Error('setup failed')
 
-			const hostSnapshotEvent = await hostSnapshotPromise
+			await host.waitFor(() => host.view()?.activeGame?.phase === 'revealed')
+			await player.waitFor(
+				() => player.view()?.activeGame?.phase === 'revealed',
+			)
 
-			expect(hostSnapshotEvent.snapshot.viewerRole).toBe('host')
+			const hostView = host.view()
+			expect(hostView?.viewerRole).toBe('host')
+			expect(hostView?.roomMode).toBe('classroom')
+			if (hostView?.roomMode !== 'classroom') return
+			if (hostView.phase !== 'active') return
+			if (hostView.activeGame.phase !== 'revealed') return
 
-			expect(hostSnapshotEvent.snapshot.roomMode).toBe('classroom')
-			if (hostSnapshotEvent.snapshot.roomMode !== 'classroom') return
-
-			expect(hostSnapshotEvent.snapshot.phase).toBe('active')
-			if (hostSnapshotEvent.snapshot.phase !== 'active') return
-
-			expect(hostSnapshotEvent.snapshot.activeGame.phase).toBe('revealed')
-			if (hostSnapshotEvent.snapshot.activeGame.phase !== 'revealed') return
-
-			expect(hostSnapshotEvent.snapshot.activeGame.participants).toEqual(
+			expect(hostView.activeGame.participants).toEqual(
 				expect.arrayContaining([
 					{
-						participantId: joined.memberId,
+						participantId: joined.data.memberId,
 						rank: 1,
 						score: 0,
 						correctCount: 0,
@@ -540,26 +535,13 @@ describe('multiplayer server integration', () => {
 				]),
 			)
 
-			const playerSnapshotEvent = await playerSnapshotPromise
+			const playerView = player.view()
+			expect(playerView?.viewerRole).toBe('player')
+			if (playerView?.phase !== 'active') return
+			if (playerView.activeGame.phase !== 'revealed') return
 
-			expect(playerSnapshotEvent.snapshot.viewerRole).toBe('player')
-
-			expect(playerSnapshotEvent.snapshot.roomMode).toBe('classroom')
-			if (playerSnapshotEvent.snapshot.roomMode !== 'classroom') return
-
-			expect(playerSnapshotEvent.snapshot.phase).toBe('active')
-			if (playerSnapshotEvent.snapshot.phase !== 'active') return
-
-			expect(playerSnapshotEvent.snapshot.activeGame.phase).toBe('revealed')
-			if (playerSnapshotEvent.snapshot.activeGame.phase !== 'revealed')
-				return
-
-			expect(playerSnapshotEvent.snapshot.activeGame).not.toHaveProperty(
-				'participants',
-			)
-			expect(
-				playerSnapshotEvent.snapshot.activeGame.viewerSubmission,
-			).toMatchObject({
+			expect(playerView.activeGame).not.toHaveProperty('participants')
+			expect(playerView.activeGame.viewerSubmission).toMatchObject({
 				countryId: null,
 				isCorrect: false,
 				scoreAwarded: 0,
@@ -732,6 +714,287 @@ describe('multiplayer server integration', () => {
 				joined.memberSessionToken,
 			]) {
 				expect(serialized).not.toContain(value)
+			}
+		})
+	})
+
+	describe('room sync protocol', () => {
+		async function connectTracked(role: 'host' | 'player') {
+			const client = trackRoomClient(role)
+			const socket = await server.connectClient()
+			client.listen(socket)
+			return { client, socket }
+		}
+
+		async function setUpClassroom(playerNames: string[]) {
+			const created = await postRoom()
+			const host = await connectTracked('host')
+			const resumed = await host.socket.emitWithAck('room:host-resume', {
+				memberSessionToken: created.memberSessionToken,
+			})
+			if (!resumed.ok) throw new Error('setup failed')
+			host.client.start(resumed.data.memberId, resumed.data.sync)
+
+			const players = []
+			for (const memberName of playerNames) {
+				const player = await connectTracked('player')
+				const joined = await player.socket.emitWithAck('room:join', {
+					roomCode: created.roomCode,
+					memberName,
+				})
+				if (!joined.ok) throw new Error('setup failed')
+				player.client.start(joined.data.memberId, joined.data.sync)
+				players.push({ ...player, joined: joined.data })
+			}
+
+			return { created, host, players, resumed: resumed.data }
+		}
+
+		function getRoomContext(roomId: string) {
+			const context = server.repository.getRoomById(roomId)
+			if (!context) throw new Error('room not found')
+			return context
+		}
+
+		async function waitForServerRevision(
+			roomId: string,
+			clients: TrackedRoomClient[],
+		) {
+			const { revision } = getRoomContext(roomId)
+			await Promise.all(
+				clients.map(client =>
+					client.waitFor(() => client.state?.sync.revision === revision),
+				),
+			)
+		}
+
+		function getOpenQuestion(roomId: string) {
+			const { state } = getRoomContext(roomId)
+			if (state.phase !== 'active' || state.activeGame.phase !== 'open') {
+				throw new Error('expected an open round')
+			}
+			return state.activeGame.currentRound.questionId
+		}
+
+		it('rebuilds the full client state after a mid-game reconnect', async () => {
+			const { created, host, players } = await setUpClassroom(['Bob', 'Tom'])
+			const [stayer, leaver] = players as [
+				(typeof players)[number],
+				(typeof players)[number],
+			]
+
+			const started = await host.socket.emitWithAck('game:start', {
+				gameConfig: DEFAULT_GAME_CONFIG,
+			})
+			if (!started.ok) throw new Error('setup failed')
+
+			leaver.socket.disconnect()
+			await host.client.waitFor(
+				() =>
+					host.client
+						.view()
+						?.members.find(
+							member => member.memberId === leaver.joined.memberId,
+						)?.connected === false,
+			)
+
+			const answered = await stayer.socket.emitWithAck(
+				'game:submit-answer',
+				{
+					countryId: getOpenQuestion(created.roomId),
+				},
+			)
+			if (!answered.ok) throw new Error('setup failed')
+			for (const command of [
+				'game:reveal-round',
+				'game:advance-round',
+			] as const) {
+				const result = await host.socket.emitWithAck(command, {})
+				if (!result.ok) throw new Error('setup failed')
+			}
+			const answeredAgain = await stayer.socket.emitWithAck(
+				'game:submit-answer',
+				{ countryId: getOpenQuestion(created.roomId) },
+			)
+			if (!answeredAgain.ok) throw new Error('setup failed')
+
+			const returning = await connectTracked('player')
+			const resumed = await returning.socket.emitWithAck(
+				'room:player-resume',
+				{ memberSessionToken: leaver.joined.memberSessionToken },
+			)
+			if (!resumed.ok) throw new Error('setup failed')
+			returning.client.start(resumed.data.memberId, resumed.data.sync)
+
+			expect(
+				resumed.data.sync.game?.eligibleCountryIds.length,
+			).toBeGreaterThan(0)
+			expect(returning.client.view()).toStrictEqual(
+				toPlayerRoomView(
+					getRoomContext(created.roomId).state,
+					leaver.joined.memberId,
+				),
+			)
+
+			const lastAnswer = await returning.socket.emitWithAck(
+				'game:submit-answer',
+				{ countryId: getOpenQuestion(created.roomId) },
+			)
+			if (!lastAnswer.ok) throw new Error('setup failed')
+
+			const clients = [host.client, stayer.client, returning.client]
+			await waitForServerRevision(created.roomId, clients)
+
+			const { state } = getRoomContext(created.roomId)
+			expect(state.phase === 'active' && state.activeGame.phase).toBe(
+				'revealed',
+			)
+			expect(host.client.view()).toStrictEqual(
+				toHostRoomView(state, created.memberId),
+			)
+			expect(stayer.client.view()).toStrictEqual(
+				toPlayerRoomView(state, stayer.joined.memberId),
+			)
+			expect(returning.client.view()).toStrictEqual(
+				toPlayerRoomView(state, leaver.joined.memberId),
+			)
+			for (const client of clients) {
+				expect(client.state?.outOfSync).toBe(false)
+			}
+		})
+
+		it('sends the game constants at start and on resume, not with each answer', async () => {
+			const { created, host, players } = await setUpClassroom(['Bob'])
+			const player = players[0]!
+
+			const started = await host.socket.emitWithAck('game:start', {
+				gameConfig: DEFAULT_GAME_CONFIG,
+			})
+			if (!started.ok) throw new Error('setup failed')
+			await waitForServerRevision(created.roomId, [player.client])
+
+			const startUpdate = player.client.received.at(-1)
+			expect(startUpdate?.event).toBe('room:update')
+			expect(startUpdate?.payload.game).toMatchObject({
+				eligibleCountryIds: expect.arrayContaining([expect.any(String)]),
+			})
+
+			const answered = await player.socket.emitWithAck(
+				'game:submit-answer',
+				{
+					countryId: getOpenQuestion(created.roomId),
+				},
+			)
+			if (!answered.ok) throw new Error('setup failed')
+			await waitForServerRevision(created.roomId, [player.client])
+
+			const answerEvents = player.client.received.slice(
+				player.client.received.indexOf(startUpdate!) + 1,
+			)
+			expect(answerEvents.map(received => received.event)).toEqual([
+				'room:viewer',
+				'room:update',
+			])
+			const answerUpdate = answerEvents[1]!.payload
+			expect(answerUpdate).not.toHaveProperty('game')
+			expect(answerUpdate).not.toHaveProperty('members')
+			expect(JSON.stringify(answerUpdate)).not.toContain(
+				'eligibleCountryIds',
+			)
+
+			const resumed = await player.socket.emitWithAck('room:player-resume', {
+				memberSessionToken: player.joined.memberSessionToken,
+			})
+			if (!resumed.ok) throw new Error('setup failed')
+			expect(resumed.data.sync.game).toEqual(startUpdate?.payload.game)
+		})
+
+		it('sends host-only data to the host socket and never to players', async () => {
+			const { created, host, players } = await setUpClassroom(['Bob', 'Tom'])
+
+			const started = await host.socket.emitWithAck('game:start', {
+				gameConfig: DEFAULT_GAME_CONFIG,
+			})
+			if (!started.ok) throw new Error('setup failed')
+			for (const player of players) {
+				const answered = await player.socket.emitWithAck(
+					'game:submit-answer',
+					{ countryId: getOpenQuestion(created.roomId) },
+				)
+				if (!answered.ok) throw new Error('setup failed')
+				const { revision } = getRoomContext(created.roomId)
+				await player.client.waitFor(
+					() => player.client.state?.sync.revision === revision,
+				)
+			}
+			const advanced = await host.socket.emitWithAck(
+				'game:advance-round',
+				{},
+			)
+			if (!advanced.ok) throw new Error('setup failed')
+			await waitForServerRevision(created.roomId, [
+				host.client,
+				...players.map(player => player.client),
+			])
+
+			expect(
+				host.client.received.some(
+					received => received.event === 'room:host-detail',
+				),
+			).toBe(true)
+			for (const player of players) {
+				for (const received of player.client.received) {
+					expect(received.event).not.toBe('room:host-detail')
+					expect(JSON.stringify(received.payload)).not.toContain(
+						'"participants"',
+					)
+				}
+			}
+		})
+
+		it('puts serverNow in every server event and in join and resume responses', async () => {
+			const { created, host, players, resumed } = await setUpClassroom([
+				'Bob',
+			])
+			const player = players[0]!
+			expect(typeof resumed.serverNow).toBe('number')
+			expect(typeof player.joined.serverNow).toBe('number')
+
+			const started = await host.socket.emitWithAck('game:start', {
+				gameConfig: DEFAULT_GAME_CONFIG,
+			})
+			if (!started.ok) throw new Error('setup failed')
+			const answered = await player.socket.emitWithAck(
+				'game:submit-answer',
+				{
+					countryId: getOpenQuestion(created.roomId),
+				},
+			)
+			if (!answered.ok) throw new Error('setup failed')
+			const advanced = await host.socket.emitWithAck(
+				'game:advance-round',
+				{},
+			)
+			if (!advanced.ok) throw new Error('setup failed')
+
+			const playerClosed = new Promise<RoomClosedEvent>(resolve => {
+				player.socket.once('room:closed', resolve)
+			})
+			const terminated = await host.socket.emitWithAck('room:terminate', {})
+			if (!terminated.ok) throw new Error('setup failed')
+			await playerClosed
+
+			const received = [...host.client.received, ...player.client.received]
+			expect(new Set(received.map(event => event.event))).toEqual(
+				new Set([
+					'room:update',
+					'room:viewer',
+					'room:host-detail',
+					'room:closed',
+				]),
+			)
+			for (const event of received) {
+				expect(typeof event.payload.serverNow).toBe('number')
 			}
 		})
 	})

@@ -26,6 +26,7 @@ export interface ScheduledRoomExpire {
 
 export interface RoomContext {
 	state: RoomState
+	revision: number
 	memberSessionTokensByMemberId: Map<MemberId, MemberSessionToken>
 	scheduledAdvance: ScheduledRoomAdvance | null
 	scheduledExpire: ScheduledRoomExpire | null
@@ -53,6 +54,7 @@ export class RoomsRepository {
 
 		const context: RoomContext = {
 			state,
+			revision: 0,
 			memberSessionTokensByMemberId: new Map(),
 			scheduledAdvance: null,
 			scheduledExpire: null,
@@ -93,6 +95,7 @@ export class RoomsRepository {
 		}
 
 		context.state = newState
+		context.revision += 1
 		return context
 	}
 

@@ -2,6 +2,7 @@ import type {
 	GameConfig,
 	RoomHostView,
 } from '@georally/game-domain/multiplayer'
+import { composeHostRoomView } from '@georally/game-domain/multiplayer/room'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { createSocketGateway, type SocketGateway } from '../api/socketGateway'
 import { clearRoomGameConfig } from '../model/gameConfig'
@@ -49,7 +50,8 @@ export function useRoomHostController<TAction extends string>(
 				gateway.resumeHostRoom({
 					memberSessionToken: session.memberSessionToken,
 				}),
-			subscribe: handlers => gateway.subscribeHostRoom(handlers),
+			compose: composeHostRoomView,
+			subscribe: handlers => gateway.subscribeRoom(handlers),
 			close: () => gateway.disconnect(),
 		}),
 		[gateway],

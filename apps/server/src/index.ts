@@ -59,8 +59,8 @@ const roomsService = new RoomsService({
 	},
 	logger,
 	hooks: {
-		onRoomUpdated: (roomId, options) => {
-			publisher.publishRoomSnapshots(roomId, options)
+		onRoomUpdated: roomId => {
+			publisher.publishRoomUpdate(roomId)
 		},
 		onRoomClosed: (roomId, reason) => {
 			publisher.publishRoomClosed(roomId, reason)

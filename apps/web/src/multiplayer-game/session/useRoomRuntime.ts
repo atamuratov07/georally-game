@@ -1,13 +1,22 @@
-import type {
-	MemberId,
-	RoomCode,
-	RoomId,
-	RoomMode,
-	RoomPhase,
+import {
+	applyRoomSyncHostDetailUpdate,
+	applyRoomSyncUpdate,
+	applyRoomSyncViewerUpdate,
+	createRoomSyncState,
+	type MemberId,
+	type RoomCode,
+	type RoomMode,
+	type RoomPhase,
+	type RoomSync,
+	type RoomSyncState,
 } from '@georally/game-domain/multiplayer/room'
-import type { RoomClosedEvent } from '@georally/game-protocol'
+import type {
+	ResumeRoomResponse,
+	RoomClosedEvent,
+} from '@georally/game-protocol'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { formatGatewayErrorMessage, toGatewayError } from '../api/errors'
+import type { RoomSubscriptionHandlers } from '../api/socketGateway'
 import type { RoomSession } from './types'
 import { i18n } from '../../shared/i18n/setup'
 import { trackRoomClosed } from '../../shared/analytics/track'
@@ -42,20 +51,10 @@ export type RoomRuntimeState<TView> =
 			message: string
 	  }
 
-type RoomSubscriptionHandlers<TView> = {
-	onRoomSnapshot: (payload: { roomId: RoomId; snapshot: TView }) => void
-	onRoomClosed: (payload: RoomClosedEvent) => void
-	onSocketDisconnect: (reason: string) => void
-	onSocketReconnect: () => void
-}
-
 export type RoomRuntimeAdapter<TView> = {
-	resume: (session: RoomSession) => Promise<{
-		roomId: RoomId
-		memberId: MemberId
-		snapshot: TView
-	}>
-	subscribe: (handlers: RoomSubscriptionHandlers<TView>) => () => void
+	resume: (session: RoomSession) => Promise<ResumeRoomResponse>
+	compose: (sync: RoomSync, memberId: MemberId) => TView | undefined
+	subscribe: (handlers: Required<RoomSubscriptionHandlers>) => () => void
 	close: () => void
 }
 
@@ -76,7 +75,7 @@ interface UseRoomRuntimeResult<TView> {
 		session: RoomSession,
 		mode?: 'connecting' | 'reconnecting',
 	) => Promise<ConnectRoomSessionResult>
-	acceptSession: (session: RoomSession, snapshot: TView) => void
+	acceptSession: (session: RoomSession, sync: RoomSync) => void
 	disconnect: () => void
 }
 
@@ -103,6 +102,7 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 		roomCode,
 	})
 	const roomRef = useRef<TView | null>(null)
+	const syncRef = useRef<RoomSyncState | null>(null)
 	const unsubscribeRef = useRef<(() => void) | null>(null)
 	const requestRunIdRef = useRef(0)
 	const reconnectRef = useRef<
@@ -134,38 +134,87 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 		stopConnection()
 		adapter.close()
 		roomRef.current = null
+		syncRef.current = null
 	}, [adapter, stopConnection])
 
 	const attachSession = useCallback(
-		(session: RoomSession, snapshot: TView) => {
+		(session: RoomSession, sync: RoomSync) => {
 			if (session.roomCode !== roomCode) {
 				throw new Error('Cannot attach a session for a different room.')
 			}
 
 			clearSubscriptions()
 
-			roomRef.current = snapshot
+			const room = adapter.compose(sync, session.memberId)
+			if (!room) {
+				throw new Error('The room state from the server is incomplete.')
+			}
+
+			syncRef.current = createRoomSyncState(sync)
+			roomRef.current = room
 
 			setState({
 				status: 'ready',
 				roomCode,
 				session,
-				room: snapshot,
+				room,
 			})
 
-			unsubscribeRef.current = adapter.subscribe({
-				onRoomSnapshot: payload => {
-					if (payload.roomId !== session.roomId) {
-						return
-					}
+			const applySyncState = (next: RoomSyncState) => {
+				const current = syncRef.current
+				syncRef.current = next
+				if (next.outOfSync) {
+					void reconnectRef.current(session, 'reconnecting')
+					return
+				}
+				if (next.sync === current?.sync) {
+					return
+				}
 
-					roomRef.current = payload.snapshot
-					setState({
-						status: 'ready',
-						roomCode,
-						session,
-						room: payload.snapshot,
-					})
+				const nextRoom = adapter.compose(next.sync, session.memberId)
+				if (!nextRoom) {
+					syncRef.current = { ...next, outOfSync: true }
+					void reconnectRef.current(session, 'reconnecting')
+					return
+				}
+
+				roomRef.current = nextRoom
+				setState({
+					status: 'ready',
+					roomCode,
+					session,
+					room: nextRoom,
+				})
+			}
+
+			const getSyncState = (roomId: string) => {
+				const current = syncRef.current
+				return roomId === session.roomId && current && !current.outOfSync
+					? current
+					: null
+			}
+
+			unsubscribeRef.current = adapter.subscribe({
+				onRoomUpdate: payload => {
+					const current = getSyncState(payload.roomId)
+					if (current) {
+						applySyncState(applyRoomSyncUpdate(current, payload))
+					}
+				},
+				onRoomViewer: payload => {
+					const current = getSyncState(payload.roomId)
+					if (current) {
+						syncRef.current = applyRoomSyncViewerUpdate(current, payload)
+					}
+				},
+				onRoomHostDetail: payload => {
+					const current = getSyncState(payload.roomId)
+					if (current) {
+						syncRef.current = applyRoomSyncHostDetailUpdate(
+							current,
+							payload,
+						)
+					}
 				},
 				onRoomClosed: payload => {
 					if (payload.roomId !== session.roomId) {
@@ -258,7 +307,7 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 					savedAt: Date.now(),
 				}
 
-				attachSession(nextSession, response.snapshot)
+				attachSession(nextSession, response.sync)
 				return { kind: 'connected', session: nextSession }
 			} catch (error) {
 				if (!isActiveRun(runId)) {

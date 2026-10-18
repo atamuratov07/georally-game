@@ -5,10 +5,8 @@ import {
 	type AdvanceRoundRequest,
 	type ClientToServerEvents,
 	type EmptyAckData,
-	type HostRoomSnapshotEvent,
 	type JoinRoomRequest,
 	type JoinRoomResponse,
-	type PlayerRoomSnapshotEvent,
 	type ResumeHostRoomRequest,
 	type ResumeHostRoomResponse,
 	type ResumePlayerRoomRequest,
@@ -16,6 +14,9 @@ import {
 	type ReturnToLobbyRequest,
 	type RevealRoundRequest,
 	type RoomClosedEvent,
+	type RoomHostDetailEvent,
+	type RoomUpdateEvent,
+	type RoomViewerEvent,
 	type ServerToClientEvents,
 	type StartGameRequest,
 	type SubmitAnswerRequest,
@@ -48,14 +49,10 @@ interface TimedAckEmitter {
 	): Promise<Ack<ClientEventResponseMap[TEvent]>>
 }
 
-interface HostRoomSubscriptionHandlers {
-	onRoomSnapshot?: (payload: HostRoomSnapshotEvent) => void
-	onRoomClosed?: (payload: RoomClosedEvent) => void
-	onSocketDisconnect?: (reason: string) => void
-	onSocketReconnect?: () => void
-}
-interface PlayerRoomSubscriptionHandlers {
-	onRoomSnapshot?: (payload: PlayerRoomSnapshotEvent) => void
+export interface RoomSubscriptionHandlers {
+	onRoomUpdate?: (payload: RoomUpdateEvent) => void
+	onRoomViewer?: (payload: RoomViewerEvent) => void
+	onRoomHostDetail?: (payload: RoomHostDetailEvent) => void
 	onRoomClosed?: (payload: RoomClosedEvent) => void
 	onSocketDisconnect?: (reason: string) => void
 	onSocketReconnect?: () => void
@@ -75,8 +72,7 @@ export interface SocketGateway {
 	submitAnswer: (payload: SubmitAnswerRequest) => Promise<SubmitAnswerResponse>
 	revealRound: (payload: RevealRoundRequest) => Promise<EmptyAckData>
 	advanceRound: (payload: AdvanceRoundRequest) => Promise<EmptyAckData>
-	subscribeHostRoom: (handlers: HostRoomSubscriptionHandlers) => () => void
-	subscribePlayerRoom: (handlers: PlayerRoomSubscriptionHandlers) => () => void
+	subscribeRoom: (handlers: RoomSubscriptionHandlers) => () => void
 	disconnect: () => void
 }
 
@@ -209,11 +205,19 @@ export function createSocketGateway(): SocketGateway {
 			return request('game:advance-round', payload)
 		},
 
-		subscribeHostRoom(handlers) {
+		subscribeRoom(handlers) {
 			const currentSocket = getSocket()
 
-			const handleRoomSnapshot = (payload: HostRoomSnapshotEvent) => {
-				handlers.onRoomSnapshot?.(payload)
+			const handleRoomUpdate = (payload: RoomUpdateEvent) => {
+				handlers.onRoomUpdate?.(payload)
+			}
+
+			const handleRoomViewer = (payload: RoomViewerEvent) => {
+				handlers.onRoomViewer?.(payload)
+			}
+
+			const handleRoomHostDetail = (payload: RoomHostDetailEvent) => {
+				handlers.onRoomHostDetail?.(payload)
 			}
 
 			const handleRoomClosed = (payload: RoomClosedEvent) => {
@@ -232,49 +236,17 @@ export function createSocketGateway(): SocketGateway {
 				handlers.onSocketReconnect?.()
 			}
 
-			currentSocket.on('room:host-snapshot', handleRoomSnapshot)
+			currentSocket.on('room:update', handleRoomUpdate)
+			currentSocket.on('room:viewer', handleRoomViewer)
+			currentSocket.on('room:host-detail', handleRoomHostDetail)
 			currentSocket.on('room:closed', handleRoomClosed)
 			currentSocket.on('disconnect', handleSocketDisconnect)
 			currentSocket.on('connect', handleSocketReconnect)
 
 			return () => {
-				currentSocket.off('room:host-snapshot', handleRoomSnapshot)
-				currentSocket.off('room:closed', handleRoomClosed)
-				currentSocket.off('disconnect', handleSocketDisconnect)
-				currentSocket.off('connect', handleSocketReconnect)
-			}
-		},
-
-		subscribePlayerRoom(handlers) {
-			const currentSocket = getSocket()
-
-			const handleRoomSnapshot = (payload: PlayerRoomSnapshotEvent) => {
-				handlers.onRoomSnapshot?.(payload)
-			}
-
-			const handleRoomClosed = (payload: RoomClosedEvent) => {
-				handlers.onRoomClosed?.(payload)
-			}
-
-			const handleSocketDisconnect = (reason: string) => {
-				if (intentionalDisconnect) {
-					return
-				}
-
-				handlers.onSocketDisconnect?.(reason)
-			}
-
-			const handleSocketReconnect = () => {
-				handlers.onSocketReconnect?.()
-			}
-
-			currentSocket.on('room:player-snapshot', handleRoomSnapshot)
-			currentSocket.on('room:closed', handleRoomClosed)
-			currentSocket.on('disconnect', handleSocketDisconnect)
-			currentSocket.on('connect', handleSocketReconnect)
-
-			return () => {
-				currentSocket.off('room:player-snapshot', handleRoomSnapshot)
+				currentSocket.off('room:update', handleRoomUpdate)
+				currentSocket.off('room:viewer', handleRoomViewer)
+				currentSocket.off('room:host-detail', handleRoomHostDetail)
 				currentSocket.off('room:closed', handleRoomClosed)
 				currentSocket.off('disconnect', handleSocketDisconnect)
 				currentSocket.off('connect', handleSocketReconnect)

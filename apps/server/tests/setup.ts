@@ -76,8 +76,8 @@ export async function bootstrapServer() {
 		},
 		logger,
 		hooks: {
-			onRoomUpdated: (roomId, options) => {
-				publisher.publishRoomSnapshots(roomId, options)
+			onRoomUpdated: roomId => {
+				publisher.publishRoomUpdate(roomId)
 			},
 			onRoomClosed: (roomId, reason) => {
 				publisher.publishRoomClosed(roomId, reason)
@@ -156,6 +156,7 @@ export async function bootstrapServer() {
 
 	return {
 		httpServer,
+		repository,
 		roomsService,
 		logLines,
 		resetBetweenTests,

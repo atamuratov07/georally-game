@@ -29,15 +29,13 @@ import {
 import {
 	applyRoomCommand,
 	createRoom,
-	toPlayerRoomView,
+	toRoomSync,
 	type MemberId,
-	type RoomHostView,
 	type RoomId,
 	type RoomMemberRole,
 	type RoomMode,
-	type RoomPlayerView,
 	type RoomState,
-	toHostRoomView,
+	type RoomSync,
 	getRoomExpireDueAt,
 	type RoomExpireTTLConfig,
 	getRoomOccupancy,
@@ -57,12 +55,8 @@ import { createSilentLogger, type Logger } from '../../observability/logger.js'
 
 type ServiceResult<T> = Result<T, RoomProtocolError>
 
-interface RoomUpdateOptions {
-	excludeMemberId?: MemberId
-}
-
 interface RoomsServiceHooks {
-	onRoomUpdated: (roomId: RoomId, options?: RoomUpdateOptions) => void
+	onRoomUpdated: (roomId: RoomId) => void
 	onRoomClosed: (roomId: RoomId, reason: RoomClosedEvent['reason']) => void
 }
 
@@ -250,9 +244,7 @@ export class RoomsService {
 			return nextState
 		}
 
-		this.commitRoomState(context.state.roomId, nextState.value, {
-			excludeMemberId: memberId,
-		})
+		this.commitRoomState(context.state.roomId, nextState.value)
 
 		const memberSessionToken = createMemberSessionToken()
 		this.repository.createMemberSession({
@@ -262,9 +254,9 @@ export class RoomsService {
 			memberId,
 		})
 
-		const snapshot = this.buildRoomPlayerSnapshot(nextState.value, memberId)
-		if (!snapshot.ok) {
-			return snapshot
+		const sync = this.buildRoomSync(nextState.value.roomId, memberId)
+		if (!sync.ok) {
+			return sync
 		}
 
 		return ok({
@@ -273,7 +265,8 @@ export class RoomsService {
 			roomCode: nextState.value.roomCode,
 			memberId,
 			memberSessionToken,
-			snapshot: snapshot.value,
+			serverNow: this.now(),
+			sync: sync.value,
 		})
 	}
 
@@ -287,15 +280,16 @@ export class RoomsService {
 
 		const { state, memberId } = resumed.value
 
-		const snapshot = this.buildHostRoomSnapshot(state, memberId)
-		if (!snapshot.ok) {
-			return snapshot
+		const sync = this.buildRoomSync(state.roomId, memberId)
+		if (!sync.ok) {
+			return sync
 		}
 
 		return ok({
 			roomId: state.roomId,
 			memberId,
-			snapshot: snapshot.value,
+			serverNow: this.now(),
+			sync: sync.value,
 		})
 	}
 
@@ -309,15 +303,16 @@ export class RoomsService {
 
 		const { state, memberId } = resumed.value
 
-		const snapshot = this.buildRoomPlayerSnapshot(state, memberId)
-		if (!snapshot.ok) {
-			return snapshot
+		const sync = this.buildRoomSync(state.roomId, memberId)
+		if (!sync.ok) {
+			return sync
 		}
 
 		return ok({
 			roomId: state.roomId,
 			memberId,
-			snapshot: snapshot.value,
+			serverNow: this.now(),
+			sync: sync.value,
 		})
 	}
 
@@ -614,34 +609,22 @@ export class RoomsService {
 			return reconnected
 		}
 
-		this.commitRoomState(reconnected.value.roomId, reconnected.value, {
-			excludeMemberId: session.memberId,
-		})
+		this.commitRoomState(reconnected.value.roomId, reconnected.value)
 
 		return ok({ state: reconnected.value, memberId: session.memberId })
 	}
 
-	private buildHostRoomSnapshot(
-		state: RoomState,
+	private buildRoomSync(
+		roomId: RoomId,
 		memberId: MemberId,
-	): ServiceResult<RoomHostView> {
-		const snapshot = toHostRoomView(state, memberId)
+	): ServiceResult<RoomSync> {
+		const context = this.repository.getRoomById(roomId)
+		const sync = context
+			? toRoomSync(context.state, context.revision, memberId)
+			: undefined
 
-		return snapshot
-			? ok(snapshot)
-			: err({
-					code: 'internal_error',
-				})
-	}
-
-	private buildRoomPlayerSnapshot(
-		state: RoomState,
-		memberId: MemberId,
-	): ServiceResult<RoomPlayerView> {
-		const snapshot = toPlayerRoomView(state, memberId)
-
-		return snapshot
-			? ok(snapshot)
+		return sync
+			? ok(sync)
 			: err({
 					code: 'internal_error',
 				})
@@ -654,17 +637,13 @@ export class RoomsService {
 		})
 	}
 
-	private commitRoomState(
-		roomId: RoomId,
-		nextState: RoomState,
-		options: RoomUpdateOptions = {},
-	): void {
+	private commitRoomState(roomId: RoomId, nextState: RoomState): void {
 		const previousPhase = this.repository.getRoomById(roomId)?.state.phase
 
 		this.repository.setRoomState(roomId, nextState)
 		this.rescheduleRoomAdvance(roomId)
 		this.rescheduleRoomExpire(roomId)
-		this.hooks.onRoomUpdated(roomId, options)
+		this.hooks.onRoomUpdated(roomId)
 
 		if (previousPhase === 'active' && nextState.phase === 'finished') {
 			const { lastGameResult } = nextState

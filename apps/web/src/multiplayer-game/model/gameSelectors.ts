@@ -8,7 +8,7 @@ import type {
 	GameView,
 } from '@georally/game-domain/multiplayer/game'
 import type { VisibleMemberInfo } from '@georally/game-domain/multiplayer/room'
-import { getMemberName } from './roomSelectors'
+import { getMemberName, getMembersById } from './roomSelectors'
 
 export interface CurrentRoundView {
 	startedAt: number
@@ -52,13 +52,12 @@ export function getLeaderboardEntries(
 
 export function getHostStandings(
 	game: ActiveGameHostView,
-	members: VisibleMemberInfo[],
+	members: readonly VisibleMemberInfo[],
 ): HostParticipantStanding[] {
+	const membersById = getMembersById(members)
 	return game.participants
 		.map(participant => {
-			const participantInfo = members.find(
-				member => member.memberId === participant.participantId,
-			)
+			const participantInfo = membersById.get(participant.participantId)
 			if (!participantInfo) return
 			return {
 				participantId: participant.participantId,

@@ -24,7 +24,7 @@ GeoRally is a real-time geography quiz game: a player sees a country prompt, fin
 
 - **Singleplayer world-map training** — fully client-side, no server needed. Pick question count, difficulty, region, and attempts-per-question, then click countries on an interactive map. Each round tracks attempts (`Hearts`) and a `QuestionTimer`; a wrong guess costs an attempt, and running out (or giving up) reveals the answer.
 - **Two distinct multiplayer modes** — **Group**, where the host also competes and the game is self-driving (rounds auto-advance on a timer, ~3s reveal/leaderboard windows), and **Classroom**, where the host is a monitor only (doesn't occupy a player slot, doesn't compete) and controls pacing manually, round by round.
-- **Realtime multiplayer rooms** — a host creates a room and shares a short code or link; players join from their own devices and everyone answers the same round. The server pushes full, role-specific room snapshots on every state change rather than granular deltas, which keeps client state simple to reason about.
+- **Realtime multiplayer rooms** — a host creates a room and shares a short code or link; players join from their own devices and everyone answers the same round. On every state change the server sends the part everyone shares once per room and each member's own part to that member; a resume returns the full state, so the client never has to patch deltas.
 - **Reconnect support with mode-aware amnesty** — host and player sessions persist a `memberSessionToken` in `localStorage`, so a refresh or dropped connection doesn't kick you out of a room: the client resumes the session as soon as Socket.IO reconnects, and opening the same session in a second tab moves it there instead of fighting over it. How long a room tolerates a disconnected host differs by mode (shorter for classroom, since the teacher is the pacing authority) and is configurable server-side.
 - **Multi-language UI** — English, Russian, and Uzbek (Latin script), with locale-prefixed routes (`/en`, `/ru`, `/uz`) and automatic language detection/redirect for unprefixed URLs.
 - **Typed realtime protocol** — rooms are created and looked up over a small HTTP API (`/api`); everything inside a room runs over Socket.IO. Every request and socket event is schema-validated with `zod`, and every response is an explicit `{ ok, data }` / `{ ok: false, error }` ack, over HTTP and sockets alike; the server never sends raw internal room state, only role-specific projected views.
@@ -112,6 +112,8 @@ Server configuration (`apps/server/src/config/env.ts`, parsed with `zod`):
 | `PORT`                                    | `3001`                  |                                                                                                     |
 | `HOST`                                    | `0.0.0.0`               |                                                                                                     |
 | `CORS_ORIGIN`                             | `http://localhost:5173` | Comma-separated list; production sets this to `https://georally.world`                              |
+| `LOG_LEVEL`                               | `info`                  | `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`; logs are JSON lines on stdout       |
+| `STATS_INTERVAL_MS`                       | `60000`                 | How often the `stats` log line is written (min `1000`)                                              |
 | `REVEAL_DURATION_MS`                      | `3000`                  | Group mode auto-advance timing                                                                      |
 | `LEADERBOARD_DURATION_MS`                 | `3000`                  | Group mode auto-advance timing                                                                      |
 | `ROOM_CAPACITY_LIMIT`                     | `40`                    | Max members per room; everyone who has joined counts, including members who have since disconnected |
@@ -132,7 +134,7 @@ Game and site usage is tracked via GA4 (`gtag.js`), loaded from each locale's HT
 | -------------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | `room_created` / `room_joined` / `room_closed`           | A multiplayer room is created, joined, or closed (with the reason and phase at close) |
 | `mp_game_start`                                          | The host successfully starts a multiplayer game                                       |
-| `game_entered`                                           | A viewer's own room snapshot shows the game as active (per connected client)          |
+| `game_entered`                                           | A viewer's own room view shows the game as active (per connected client)              |
 | `mp_question_answered`                                   | A multiplayer round resolves for the viewer                                           |
 | `mp_game_end`                                            | A multiplayer game finishes                                                           |
 | `sp_game_start` / `sp_question_answered` / `sp_game_end` | Equivalent lifecycle points in a singleplayer run                                     |
@@ -159,6 +161,8 @@ Production runs via Docker Compose: a `server` container (the Socket.IO backend)
 ```bash
 docker compose up -d --build
 ```
+
+The server writes one JSON line per event to stdout; both `server` and `nginx` use Docker's `json-file` log driver, rotated at 10 MB × 5 files. See [`docs/architecture/logging.md`](docs/architecture/logging.md#reading-the-logs) for the events and how to query them.
 
 ## Architecture
 
@@ -203,6 +207,7 @@ graph LR
 | [`docs/architecture/data-pipeline.md`](docs/architecture/data-pipeline.md)               | Offline build pipeline for the country catalog and map tiles                     |
 | [`docs/architecture/persistence.md`](docs/architecture/persistence.md)                   | What's persisted, where, and what that implies for scaling                       |
 | [`docs/architecture/connection-lifecycle.md`](docs/architecture/connection-lifecycle.md) | Connection, reconnection, and tab takeover across Socket.IO and the game session |
+| [`docs/architecture/logging.md`](docs/architecture/logging.md)                           | Server log events, the stats line and `/health`, and how to query the logs       |
 
 Improvements found in review but not yet implemented are written up in [`docs/proposals/`](docs/proposals/README.md).
 

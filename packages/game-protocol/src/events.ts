@@ -11,12 +11,13 @@ import type {
 	TerminateRoomRequest,
 } from './requests'
 import type {
-	HostRoomSnapshotEvent,
 	JoinRoomResponse,
-	PlayerRoomSnapshotEvent,
 	ResumeHostRoomResponse,
 	ResumePlayerRoomResponse,
 	RoomClosedEvent,
+	RoomHostDetailEvent,
+	RoomUpdateEvent,
+	RoomViewerEvent,
 	SubmitAnswerResponse,
 } from './responses'
 
@@ -62,8 +63,9 @@ export interface ClientToServerEvents {
 }
 
 export interface ServerToClientEvents {
-	'room:host-snapshot': (payload: HostRoomSnapshotEvent) => void
-	'room:player-snapshot': (payload: PlayerRoomSnapshotEvent) => void
+	'room:update': (payload: RoomUpdateEvent) => void
+	'room:viewer': (payload: RoomViewerEvent) => void
+	'room:host-detail': (payload: RoomHostDetailEvent) => void
 	'room:closed': (payload: RoomClosedEvent) => void
 }
 

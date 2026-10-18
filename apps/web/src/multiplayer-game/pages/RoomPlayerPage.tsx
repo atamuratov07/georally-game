@@ -9,6 +9,7 @@ import { RoomLobbyScreen } from '../lobby/RoomLobbyScreen'
 import { RoomClosedScreen } from '../screens/RoomClosedScreen'
 import { RoomErrorScreen } from '../screens/RoomErrorScreen'
 import { RoomLoadingScreen } from '../screens/RoomLoadingScreen'
+import { getMembersById } from '../model/roomSelectors'
 
 import { AnimatePresence } from 'motion/react'
 import { FloatingNotice } from '../../shared/ui/FloatingNotice'
@@ -150,7 +151,9 @@ export default function RoomPlayerPage(): JSX.Element {
 		)
 	}
 
-	const hostConnected = room.members.find(member => member.isHost)?.connected
+	const hostConnected = getMembersById(room.members).get(
+		room.hostId,
+	)?.connected
 
 	const renderHostConnectionStatus =
 		room.roomMode === 'classroom' ? (

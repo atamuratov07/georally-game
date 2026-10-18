@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 
+import { getServerNow } from '../../model/serverClock'
+
 export function useTimestampGate(
 	startedAt: number | null,
 	delayMs: number,
 ): boolean {
 	const [isReady, setIsReady] = useState(() => {
-		return startedAt !== null && Date.now() - startedAt >= delayMs
+		return startedAt !== null && getServerNow() - startedAt >= delayMs
 	})
 
 	useEffect(() => {
@@ -14,7 +16,7 @@ export function useTimestampGate(
 			return
 		}
 
-		const remainingMs = delayMs - (Date.now() - startedAt)
+		const remainingMs = delayMs - (getServerNow() - startedAt)
 		if (remainingMs <= 0) {
 			setIsReady(true)
 			return

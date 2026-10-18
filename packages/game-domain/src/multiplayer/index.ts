@@ -18,6 +18,7 @@ export {
 	createRoom,
 	toGroupHostRoomView,
 	toClassroomHostRoomView,
+	toHostRoomView,
 	toPlayerRoomView,
 	type MemberId,
 	type ClassroomHostRoomView,

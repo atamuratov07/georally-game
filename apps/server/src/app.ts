@@ -1,10 +1,12 @@
 import cors from 'cors'
 import express, { Router } from 'express'
-import { handleHttpError } from './http/responses.js'
+import { createHttpErrorHandler } from './http/responses.js'
+import type { ProtocolErrorReporter } from './observability/protocolErrors.js'
 
 export interface CreateAppOptions {
 	corsOrigins: string[]
 	getHealthSnapshot?: () => Record<string, unknown>
+	reportProtocolError: ProtocolErrorReporter
 }
 
 export function createApp(options: CreateAppOptions) {
@@ -32,7 +34,7 @@ export function createApp(options: CreateAppOptions) {
 		express.json(),
 		apiRouter,
 	)
-	app.use(handleHttpError)
+	app.use(createHttpErrorHandler(options.reportProtocolError))
 
 	return { app, apiRouter }
 }

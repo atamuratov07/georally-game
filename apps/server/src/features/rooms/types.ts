@@ -32,8 +32,3 @@ export type GameSocket = Socket<
 	InterServerEvents,
 	GameSocketData
 >
-
-export interface BoundServiceResponse<T> {
-	response: T
-	replacedSocketId?: string
-}

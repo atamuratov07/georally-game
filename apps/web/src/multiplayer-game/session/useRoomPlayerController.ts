@@ -1,4 +1,5 @@
 import type { RoomPlayerView } from '@georally/game-domain/multiplayer'
+import { composePlayerRoomView } from '@georally/game-domain/multiplayer/room'
 import type { LookupRoomFoundResponse } from '@georally/game-protocol'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { formatGatewayErrorMessage } from '../api/errors'
@@ -19,6 +20,7 @@ import { i18n } from '../../shared/i18n/setup'
 import { trackRoomJoined } from '../../shared/analytics/track'
 import { useMultiplayerGameAnalytics } from '../../shared/analytics/useMultiplayerGameAnalytics'
 import { lookupRoom } from '../api/roomsApi'
+import { syncServerClock } from '../model/serverClock'
 
 type RoomPlayerEntryState =
 	| {
@@ -63,12 +65,8 @@ export function useRoomPlayerController(
 				gateway.resumePlayerRoom({
 					memberSessionToken: session.memberSessionToken,
 				}),
-			subscribe: ({ onRoomClosed, onRoomSnapshot, onSocketDisconnect }) =>
-				gateway.subscribePlayerRoom({
-					onRoomSnapshot,
-					onRoomClosed,
-					onSocketDisconnect,
-				}),
+			compose: composePlayerRoomView,
+			subscribe: handlers => gateway.subscribeRoom(handlers),
 			close: () => gateway.disconnect(),
 		}),
 		[gateway],
@@ -120,6 +118,7 @@ export function useRoomPlayerController(
 					roomCode,
 					memberName: playerName.trim(),
 				})
+				syncServerClock(response.serverNow)
 				const session: RoomSession = {
 					roomId: response.roomId,
 					roomCode: response.roomCode,
@@ -129,8 +128,8 @@ export function useRoomPlayerController(
 					savedAt: Date.now(),
 				}
 
-				runtime.acceptSession(session, response.snapshot)
-				trackRoomJoined(response.snapshot.roomMode)
+				runtime.acceptSession(session, response.sync)
+				trackRoomJoined(response.sync.shared.roomMode)
 				saveRoomSession(session)
 				setRuntimeStarted(true)
 			})

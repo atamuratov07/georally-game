@@ -23,25 +23,24 @@ import {
 	applyGameCommand,
 	getAnsweredParticipantCount,
 	getGameParticipantCount,
+	getGameQuestionCount,
 	type GameConfig,
 } from '@georally/game-domain/multiplayer/game'
 import {
 	applyRoomCommand,
 	createRoom,
-	toPlayerRoomView,
+	toRoomSync,
 	type MemberId,
-	type ClassroomHostRoomView,
-	type GroupHostRoomView,
 	type RoomId,
+	type RoomMemberRole,
 	type RoomMode,
-	type RoomPlayerView,
 	type RoomState,
-	toClassroomHostRoomView,
-	toGroupHostRoomView,
-	isRoomInGroupMode,
+	type RoomSync,
 	getRoomExpireDueAt,
 	type RoomExpireTTLConfig,
 	getRoomOccupancy,
+	getConnectedMemberCount,
+	type RoomPhase,
 } from '@georally/game-domain/multiplayer/room'
 import {
 	createGameId,
@@ -51,16 +50,13 @@ import {
 	createRoomId,
 } from './ids.js'
 import type { MemberSessionRecord, RoomsRepository } from './repository.js'
-import type { BoundServiceResponse, MemberSessionToken } from './types.js'
+import type { MemberSessionToken } from './types.js'
+import { createSilentLogger, type Logger } from '../../observability/logger.js'
 
 type ServiceResult<T> = Result<T, RoomProtocolError>
 
-interface RoomUpdateOptions {
-	excludeMemberId?: MemberId
-}
-
 interface RoomsServiceHooks {
-	onRoomUpdated: (roomId: RoomId, options?: RoomUpdateOptions) => void
+	onRoomUpdated: (roomId: RoomId) => void
 	onRoomClosed: (roomId: RoomId, reason: RoomClosedEvent['reason']) => void
 }
 
@@ -73,6 +69,7 @@ export interface RoomsServiceOptions {
 	roomCapacityLimit: number
 	roomExpireTTL: RoomExpireTTLConfig
 	now?: () => number
+	logger?: Logger
 }
 
 export interface CreateRoomInput {
@@ -83,16 +80,13 @@ export interface CreateRoomInput {
 export interface JoinRoomInput {
 	roomCode: string
 	memberName: string
-	socketId: string
 }
 
 export interface ResumeHostRoomInput {
 	memberSessionToken: MemberSessionToken
-	socketId: string
 }
 export interface ResumePlayerRoomInput {
 	memberSessionToken: MemberSessionToken
-	socketId: string
 }
 
 export interface StartGameInput {
@@ -130,6 +124,7 @@ export class RoomsService {
 	private readonly roomCapacityLimit: number
 	private readonly now: () => number
 	private readonly roomExpireTTL: RoomExpireTTLConfig
+	private readonly logger: Logger
 
 	constructor(options: RoomsServiceOptions) {
 		this.countryPool = options.countryPool
@@ -140,12 +135,25 @@ export class RoomsService {
 		this.roomCapacityLimit = options.roomCapacityLimit
 		this.roomExpireTTL = options.roomExpireTTL
 		this.now = options.now ?? Date.now
+		this.logger = options.logger ?? createSilentLogger()
 	}
 
 	getHealthSnapshot() {
+		const roomsByPhase: Record<RoomPhase, number> = {
+			lobby: 0,
+			active: 0,
+			finished: 0,
+		}
+		let connectedSessionCount = 0
+		for (const context of this.repository.listRooms()) {
+			roomsByPhase[context.state.phase] += 1
+			connectedSessionCount += getConnectedMemberCount(context.state)
+		}
+
 		return {
 			roomCount: this.repository.getRoomCount(),
-			connectedSessionCount: this.repository.getConnectedSessionCount(),
+			connectedSessionCount,
+			roomsByPhase,
 		}
 	}
 
@@ -197,9 +205,9 @@ export class RoomsService {
 			token: hostSessionToken,
 			roomId,
 			memberId: hostId,
-			socketId: null,
 		})
 		this.rescheduleRoomExpire(roomId)
+		this.getRoomLogger(roomResult.value).info('room_created')
 
 		return ok({
 			role: 'host',
@@ -210,9 +218,7 @@ export class RoomsService {
 		})
 	}
 
-	joinRoom(
-		input: JoinRoomInput,
-	): ServiceResult<BoundServiceResponse<JoinRoomResponse>> {
+	joinRoom(input: JoinRoomInput): ServiceResult<JoinRoomResponse> {
 		const context = this.repository.getRoomByCode(input.roomCode)
 		if (!context) {
 			return err({
@@ -238,9 +244,7 @@ export class RoomsService {
 			return nextState
 		}
 
-		this.commitRoomState(context.state.roomId, nextState.value, {
-			excludeMemberId: memberId,
-		})
+		this.commitRoomState(context.state.roomId, nextState.value)
 
 		const memberSessionToken = createMemberSessionToken()
 		this.repository.createMemberSession({
@@ -248,156 +252,67 @@ export class RoomsService {
 			token: memberSessionToken,
 			roomId: nextState.value.roomId,
 			memberId,
-			socketId: input.socketId,
 		})
 
-		const snapshot = this.buildRoomPlayerSnapshot(nextState.value, memberId)
-		if (!snapshot.ok) {
-			return snapshot
+		const sync = this.buildRoomSync(nextState.value.roomId, memberId)
+		if (!sync.ok) {
+			return sync
 		}
 
 		return ok({
-			response: {
-				role: 'player',
-				roomId: nextState.value.roomId,
-				roomCode: nextState.value.roomCode,
-				memberId,
-				memberSessionToken,
-				snapshot: snapshot.value,
-			},
+			role: 'player',
+			roomId: nextState.value.roomId,
+			roomCode: nextState.value.roomCode,
+			memberId,
+			memberSessionToken,
+			serverNow: this.now(),
+			sync: sync.value,
 		})
 	}
 
 	resumeHostRoom(
 		input: ResumeHostRoomInput,
-	): ServiceResult<BoundServiceResponse<ResumeHostRoomResponse>> {
-		const session = this.repository.getMemberSession(input.memberSessionToken)
-		if (!session) {
-			return err({
-				code: 'member_session_not_found',
-			})
-		}
-		if (session.role !== 'host') {
-			return err({ code: 'insufficient_permissions' })
+	): ServiceResult<ResumeHostRoomResponse> {
+		const resumed = this.resumeMember(input.memberSessionToken, 'host')
+		if (!resumed.ok) {
+			return resumed
 		}
 
-		const context = this.repository.getRoomById(session.roomId)
-		if (!context) {
-			return err({
-				code: 'room_not_found',
-			})
-		}
+		const { state, memberId } = resumed.value
 
-		const member = context.state.membersById[session.memberId]
-		if (!member) {
-			return err({
-				code: 'member_session_not_found',
-			})
-		}
-
-		let nextState = context.state
-		if (!member.connected) {
-			const reconnectResult = applyRoomCommand(context.state, {
-				type: 'RECONNECT_MEMBER',
-				id: session.memberId,
-				now: this.now(),
-			})
-
-			if (!reconnectResult.ok) {
-				return reconnectResult
-			}
-
-			nextState = reconnectResult.value
-			this.commitRoomState(nextState.roomId, nextState, {
-				excludeMemberId: session.memberId,
-			})
-		}
-
-		const replacedSocketId = this.repository.bindSocketToSession(
-			input.memberSessionToken,
-			input.socketId,
-		)
-
-		const snapshot = isRoomInGroupMode(nextState)
-			? this.buildGroupHostRoomSnapshot(nextState, session.memberId)
-			: this.buildClassroomHostRoomSnapshot(nextState, session.memberId)
-		if (!snapshot.ok) {
-			return snapshot
+		const sync = this.buildRoomSync(state.roomId, memberId)
+		if (!sync.ok) {
+			return sync
 		}
 
 		return ok({
-			response: {
-				roomId: nextState.roomId,
-				memberId: session.memberId,
-				snapshot: snapshot.value,
-			},
-			replacedSocketId,
+			roomId: state.roomId,
+			memberId,
+			serverNow: this.now(),
+			sync: sync.value,
 		})
 	}
 
 	resumePlayerRoom(
 		input: ResumePlayerRoomInput,
-	): ServiceResult<BoundServiceResponse<ResumePlayerRoomResponse>> {
-		const session = this.repository.getMemberSession(input.memberSessionToken)
-		if (!session) {
-			return err({
-				code: 'member_session_not_found',
-			})
+	): ServiceResult<ResumePlayerRoomResponse> {
+		const resumed = this.resumeMember(input.memberSessionToken, 'player')
+		if (!resumed.ok) {
+			return resumed
 		}
 
-		if (session.role !== 'player') {
-			return err({ code: 'insufficient_permissions' })
-		}
+		const { state, memberId } = resumed.value
 
-		const context = this.repository.getRoomById(session.roomId)
-		if (!context) {
-			return err({
-				code: 'room_not_found',
-			})
-		}
-
-		const member = context.state.membersById[session.memberId]
-		if (!member) {
-			return err({
-				code: 'member_session_not_found',
-			})
-		}
-
-		let nextState = context.state
-		if (!member.connected) {
-			const reconnectResult = applyRoomCommand(context.state, {
-				type: 'RECONNECT_MEMBER',
-				id: session.memberId,
-				now: this.now(),
-			})
-
-			if (!reconnectResult.ok) {
-				return reconnectResult
-			}
-
-			nextState = reconnectResult.value
-			this.commitRoomState(nextState.roomId, nextState, {
-				excludeMemberId: session.memberId,
-			})
-		}
-
-		const replacedSocketId = this.repository.bindSocketToSession(
-			input.memberSessionToken,
-			input.socketId,
-		)
-
-		const snapshot = this.buildRoomPlayerSnapshot(nextState, session.memberId)
-		if (!snapshot.ok) {
-			return snapshot
+		const sync = this.buildRoomSync(state.roomId, memberId)
+		if (!sync.ok) {
+			return sync
 		}
 
 		return ok({
-			response: {
-				roomId: nextState.roomId,
-				memberId: session.memberId,
-				snapshot: snapshot.value,
-			},
-			replacedSocketId,
+			roomId: state.roomId,
+			memberId,
+			serverNow: this.now(),
+			sync: sync.value,
 		})
 	}
 
@@ -471,6 +386,18 @@ export class RoomsService {
 		}
 
 		this.commitRoomState(sessionContext.value.state.roomId, nextState.value)
+
+		if (nextState.value.phase === 'active') {
+			const { activeGame } = nextState.value
+			this.getRoomLogger(nextState.value).info(
+				{
+					gameId: activeGame.gameId,
+					participantCount: getGameParticipantCount(activeGame),
+					questionCount: getGameQuestionCount(activeGame),
+				},
+				'game_started',
+			)
+		}
 
 		return ok({})
 	}
@@ -568,25 +495,20 @@ export class RoomsService {
 		})
 	}
 
-	disconnectSocket(socketId: string): void {
-		const session = this.repository.unbindSocketFromSession(socketId)
-		if (!session) {
-			return
-		}
-
-		const context = this.repository.getRoomById(session.roomId)
+	disconnectMember(roomId: RoomId, memberId: MemberId): void {
+		const context = this.repository.getRoomById(roomId)
 		if (!context) {
 			return
 		}
 
-		const member = context.state.membersById[session.memberId]
+		const member = context.state.membersById[memberId]
 		if (!member || !member.connected) {
 			return
 		}
 
 		const disconnectedState = applyRoomCommand(context.state, {
 			type: 'DISCONNECT_MEMBER',
-			id: session.memberId,
+			id: memberId,
 			now: this.now(),
 		})
 
@@ -611,6 +533,17 @@ export class RoomsService {
 
 		this.hooks.onRoomClosed(context.state.roomId, reason)
 		this.repository.deleteRoom(context.state.roomId)
+
+		this.getRoomLogger(context.state).info(
+			{
+				reason,
+				phase: context.state.phase,
+				memberCount: context.state.memberOrder.length,
+				connectedMemberCount: getConnectedMemberCount(context.state),
+				ageMs: this.now() - context.state.createdAt,
+			},
+			'room_closed',
+		)
 
 		return true
 	}
@@ -641,53 +574,92 @@ export class RoomsService {
 		})
 	}
 
-	private buildClassroomHostRoomSnapshot(
-		state: RoomState,
-		memberId: MemberId,
-	): ServiceResult<ClassroomHostRoomView> {
-		const snapshot = toClassroomHostRoomView(state, memberId)
-		return snapshot
-			? ok(snapshot)
-			: err({
-					code: 'internal_error',
-				})
+	private resumeMember(
+		memberSessionToken: MemberSessionToken,
+		expectedRole: RoomMemberRole,
+	): ServiceResult<{ state: RoomState; memberId: MemberId }> {
+		const session = this.repository.getMemberSession(memberSessionToken)
+		if (!session) {
+			return err({ code: 'member_session_not_found' })
+		}
+		if (session.role !== expectedRole) {
+			return err({ code: 'insufficient_permissions' })
+		}
+
+		const context = this.repository.getRoomById(session.roomId)
+		if (!context) {
+			return err({ code: 'room_not_found' })
+		}
+
+		const member = context.state.membersById[session.memberId]
+		if (!member) {
+			return err({ code: 'member_session_not_found' })
+		}
+
+		if (member.connected) {
+			return ok({ state: context.state, memberId: session.memberId })
+		}
+
+		const reconnected = applyRoomCommand(context.state, {
+			type: 'RECONNECT_MEMBER',
+			id: session.memberId,
+			now: this.now(),
+		})
+		if (!reconnected.ok) {
+			return reconnected
+		}
+
+		this.commitRoomState(reconnected.value.roomId, reconnected.value)
+
+		return ok({ state: reconnected.value, memberId: session.memberId })
 	}
 
-	private buildGroupHostRoomSnapshot(
-		state: RoomState,
-		memberId: MemberId,
-	): ServiceResult<GroupHostRoomView> {
-		const snapshot = toGroupHostRoomView(state, memberId)
-
-		return snapshot
-			? ok(snapshot)
-			: err({
-					code: 'internal_error',
-				})
-	}
-
-	private buildRoomPlayerSnapshot(
-		state: RoomState,
-		memberId: MemberId,
-	): ServiceResult<RoomPlayerView> {
-		const snapshot = toPlayerRoomView(state, memberId)
-
-		return snapshot
-			? ok(snapshot)
-			: err({
-					code: 'internal_error',
-				})
-	}
-
-	private commitRoomState(
+	private buildRoomSync(
 		roomId: RoomId,
-		nextState: RoomState,
-		options: RoomUpdateOptions = {},
-	): void {
+		memberId: MemberId,
+	): ServiceResult<RoomSync> {
+		const context = this.repository.getRoomById(roomId)
+		const sync = context
+			? toRoomSync(context.state, context.revision, memberId)
+			: undefined
+
+		return sync
+			? ok(sync)
+			: err({
+					code: 'internal_error',
+				})
+	}
+
+	private getRoomLogger(state: RoomState): Logger {
+		return this.logger.child({
+			roomId: state.roomId,
+			roomMode: state.roomMode,
+		})
+	}
+
+	private commitRoomState(roomId: RoomId, nextState: RoomState): void {
+		const previousPhase = this.repository.getRoomById(roomId)?.state.phase
+
 		this.repository.setRoomState(roomId, nextState)
 		this.rescheduleRoomAdvance(roomId)
 		this.rescheduleRoomExpire(roomId)
-		this.hooks.onRoomUpdated(roomId, options)
+		this.hooks.onRoomUpdated(roomId)
+
+		if (previousPhase === 'active' && nextState.phase === 'finished') {
+			const { lastGameResult } = nextState
+			this.getRoomLogger(nextState).info(
+				{
+					gameId: lastGameResult.gameId,
+					participantCount: lastGameResult.leaderboard.length,
+					questionCount: lastGameResult.rounds.length,
+					durationMs:
+						lastGameResult.finishedAt -
+						(lastGameResult.rounds[0]?.startedAt ??
+							lastGameResult.finishedAt),
+				},
+				'game_finished',
+			)
+		}
 	}
 
 	private rescheduleRoomAdvance(roomId: RoomId): void {
@@ -711,7 +683,7 @@ export class RoomsService {
 			try {
 				this.executeScheduledRoomAdvance(roomId, dueAt)
 			} catch (error) {
-				console.error(`Failed to advance room ${roomId}`, error)
+				this.logger.error({ err: error, roomId }, 'room_advance_failed')
 			}
 		}, delayMs)
 
@@ -755,7 +727,7 @@ export class RoomsService {
 			try {
 				this.executeScheduledRoomExpire(roomId, dueAt)
 			} catch (error) {
-				console.error(`Failed to expire room ${roomId}`, error)
+				this.logger.error({ err: error, roomId }, 'room_expire_failed')
 			}
 		}, ttlMs)
 

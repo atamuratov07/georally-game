@@ -12,7 +12,6 @@ export interface MemberSessionRecord {
 	roomId: RoomId
 	memberId: MemberId
 	role: RoomMemberRole
-	socketId: string | null
 }
 
 export interface ScheduledRoomAdvance {
@@ -27,6 +26,7 @@ export interface ScheduledRoomExpire {
 
 export interface RoomContext {
 	state: RoomState
+	revision: number
 	memberSessionTokensByMemberId: Map<MemberId, MemberSessionToken>
 	scheduledAdvance: ScheduledRoomAdvance | null
 	scheduledExpire: ScheduledRoomExpire | null
@@ -38,10 +38,6 @@ export class RoomsRepository {
 	private readonly sessionsByToken = new Map<
 		MemberSessionToken,
 		MemberSessionRecord
-	>()
-	private readonly sessionTokensBySocketId = new Map<
-		string,
-		MemberSessionToken
 	>()
 
 	hasRoomCode(roomCode: RoomCode): boolean {
@@ -58,6 +54,7 @@ export class RoomsRepository {
 
 		const context: RoomContext = {
 			state,
+			revision: 0,
 			memberSessionTokensByMemberId: new Map(),
 			scheduledAdvance: null,
 			scheduledExpire: null,
@@ -98,6 +95,7 @@ export class RoomsRepository {
 		}
 
 		context.state = newState
+		context.revision += 1
 		return context
 	}
 
@@ -147,11 +145,6 @@ export class RoomsRepository {
 		}
 
 		for (const token of context.memberSessionTokensByMemberId.values()) {
-			const session = this.sessionsByToken.get(token)
-			if (session?.socketId) {
-				this.sessionTokensBySocketId.delete(session.socketId)
-			}
-
 			this.sessionsByToken.delete(token)
 		}
 
@@ -163,7 +156,9 @@ export class RoomsRepository {
 
 	createMemberSession(session: MemberSessionRecord): MemberSessionRecord {
 		if (this.sessionsByToken.has(session.token)) {
-			throw new Error(`Member session ${session.token} already exists.`)
+			throw new Error(
+				`Member session for member ${session.memberId} already exists.`,
+			)
 		}
 
 		this.sessionsByToken.set(session.token, session)
@@ -173,10 +168,6 @@ export class RoomsRepository {
 			session.token,
 		)
 
-		if (session.socketId) {
-			this.sessionTokensBySocketId.set(session.socketId, session.token)
-		}
-
 		return session
 	}
 
@@ -184,63 +175,6 @@ export class RoomsRepository {
 		memberSessionToken: MemberSessionToken,
 	): MemberSessionRecord | undefined {
 		return this.sessionsByToken.get(memberSessionToken)
-	}
-
-	getMemberSessionBySocketId(
-		socketId: string,
-	): MemberSessionRecord | undefined {
-		const memberSessionToken = this.sessionTokensBySocketId.get(socketId)
-		return memberSessionToken
-			? this.sessionsByToken.get(memberSessionToken)
-			: undefined
-	}
-
-	bindSocketToSession(
-		memberSessionToken: MemberSessionToken,
-		socketId: string,
-	): string | undefined {
-		const session = this.sessionsByToken.get(memberSessionToken)
-		if (!session) {
-			return undefined
-		}
-
-		const previousToken = this.sessionTokensBySocketId.get(socketId)
-		if (previousToken && previousToken !== memberSessionToken) {
-			const previousSession = this.sessionsByToken.get(previousToken)
-			if (previousSession && previousSession.socketId === socketId) {
-				previousSession.socketId = null
-			}
-		}
-
-		const previousSocketId =
-			session.socketId && session.socketId !== socketId
-				? session.socketId
-				: undefined
-
-		if (previousSocketId) {
-			this.sessionTokensBySocketId.delete(previousSocketId)
-		}
-
-		session.socketId = socketId
-		this.sessionTokensBySocketId.set(socketId, memberSessionToken)
-
-		return previousSocketId
-	}
-
-	unbindSocketFromSession(socketId: string): MemberSessionRecord | undefined {
-		const memberSessionToken = this.sessionTokensBySocketId.get(socketId)
-		if (!memberSessionToken) {
-			return undefined
-		}
-
-		this.sessionTokensBySocketId.delete(socketId)
-
-		const session = this.sessionsByToken.get(memberSessionToken)
-		if (session && session.socketId === socketId) {
-			session.socketId = null
-		}
-
-		return session
 	}
 
 	listMemberSessions(roomId: RoomId): MemberSessionRecord[] {
@@ -255,18 +189,6 @@ export class RoomsRepository {
 				return session ? [session] : []
 			},
 		)
-	}
-
-	getConnectedSessionCount(): number {
-		let connectedSessionCount = 0
-
-		for (const session of this.sessionsByToken.values()) {
-			if (session.socketId) {
-				connectedSessionCount += 1
-			}
-		}
-
-		return connectedSessionCount
 	}
 
 	clearAllScheduledRoomAdvances(): void {

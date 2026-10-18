@@ -1,9 +1,13 @@
 import { z } from 'zod'
 
+import { LOG_LEVELS, type LogLevel } from '../observability/logger.js'
+
 const envSchema = z.object({
 	PORT: z.coerce.number().int().positive().default(3001),
 	HOST: z.string().min(1).default('0.0.0.0'),
 	CORS_ORIGIN: z.string().default('http://localhost:5173'),
+	LOG_LEVEL: z.enum(LOG_LEVELS).default('info'),
+	STATS_INTERVAL_MS: z.coerce.number().int().min(1_000).default(60_000),
 	REVEAL_DURATION_MS: z.coerce.number().int().min(1_000).default(3_000),
 	LEADERBOARD_DURATION_MS: z.coerce.number().int().min(1_000).default(3_000),
 	ROOM_CAPACITY_LIMIT: z.coerce.number().int().min(1).default(40),
@@ -33,6 +37,8 @@ export interface AppEnv {
 	port: number
 	host: string
 	corsOrigins: string[]
+	logLevel: LogLevel
+	statsIntervalMs: number
 	revealDurationMs: number
 	leaderboardDurationMs: number
 	roomCapacityLimit: number
@@ -56,6 +62,8 @@ export function parseEnv(input: NodeJS.ProcessEnv): AppEnv {
 		port: env.PORT,
 		host: env.HOST,
 		corsOrigins: parseCorsOrigins(env.CORS_ORIGIN),
+		logLevel: env.LOG_LEVEL,
+		statsIntervalMs: env.STATS_INTERVAL_MS,
 		revealDurationMs: env.REVEAL_DURATION_MS,
 		leaderboardDurationMs: env.LEADERBOARD_DURATION_MS,
 		roomCapacityLimit: env.ROOM_CAPACITY_LIMIT,

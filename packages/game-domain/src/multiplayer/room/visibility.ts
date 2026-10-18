@@ -139,7 +139,7 @@ export type RoomFinishedView =
 	| GroupHostRoomFinishedView
 	| RoomPlayerFinishedView
 
-function toVisibleMembers(state: RoomState): VisibleMemberInfo[] {
+export function toVisibleMembers(state: RoomState): VisibleMemberInfo[] {
 	return getMembers(state).map(member => ({
 		memberId: member.id,
 		name: member.name,

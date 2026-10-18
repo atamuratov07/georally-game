@@ -50,8 +50,14 @@ export {
 	type RevealedRoundState,
 } from './types'
 export {
+	toEvaluatedHostParticipants,
+	toEvaluatedViewerSubmissionView,
 	toGameHostView,
 	toGameParticipantView,
+	toOpenHostParticipants,
+	toViewerSubmissionView,
+	type GameEvaluatedParticipantsEntry,
+	type GameParticipantsEntry,
 	type CompletedGameParticipantView,
 	type EvaluatedViewerSubmissionView,
 	type GameView,

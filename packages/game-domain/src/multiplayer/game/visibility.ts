@@ -6,6 +6,7 @@ import {
 	getGameLeaderboard,
 	getGameParticipantCount,
 	getGameQuestionCount,
+	type ActiveGameState,
 } from './selectors'
 import type {
 	EvaluatedSubmission,
@@ -95,7 +96,7 @@ export interface GameViewOptions {
 	includeAllSubmissions?: boolean
 }
 
-function toViewerSubmissionView(
+export function toViewerSubmissionView(
 	submission: LockedSubmission,
 ): ViewerSubmissionView {
 	return {
@@ -104,7 +105,7 @@ function toViewerSubmissionView(
 	}
 }
 
-function toEvaluatedViewerSubmissionView(
+export function toEvaluatedViewerSubmissionView(
 	submission: EvaluatedSubmission,
 ): EvaluatedViewerSubmissionView {
 	return {
@@ -229,7 +230,7 @@ interface ActiveGameHostViewBase extends GameHostViewBase {
 	questionCountryId: CountryId
 }
 
-interface GameParticipantsEntry {
+export interface GameParticipantsEntry {
 	participantId: MemberId
 	rank: number
 	score: number
@@ -299,25 +300,8 @@ export function toGameHostView(
 		scope: state.session.config.scope,
 		participantCount: getGameParticipantCount(state),
 	}
-	const leaderboard = getGameLeaderboard(state)
-
 	switch (state.phase) {
-		case 'open': {
-			const participants: GameParticipantsEntry[] = leaderboard.map(
-				leaderboardEntry => {
-					const participantSubmission =
-						state.currentRound.submissions[leaderboardEntry.participantId]
-					return {
-						participantId: leaderboardEntry.participantId,
-						rank: leaderboardEntry.rank,
-						score: leaderboardEntry.score,
-						correctCount: leaderboardEntry.correctCount,
-						submittedAt: participantSubmission
-							? participantSubmission.submittedAt
-							: null,
-					}
-				},
-			)
+		case 'open':
 			return {
 				...base,
 				phase: 'open',
@@ -325,32 +309,14 @@ export function toGameHostView(
 				deadlineAt: state.currentRound.deadlineAt,
 				answeredCount: getAnsweredParticipantCount(state),
 				questionCountryId: state.currentRound.questionId,
-				participants,
+				participants: toOpenHostParticipants(
+					state,
+					getGameLeaderboard(state),
+				),
 			}
-		}
 
 		case 'revealed':
-		case 'leaderboard': {
-			const participants: GameEvaluatedParticipantsEntry[] = leaderboard.map(
-				leaderboardEntry => {
-					const participantSubmission =
-						state.currentRound.submissions[leaderboardEntry.participantId]
-					return {
-						participantId: leaderboardEntry.participantId,
-						rank: leaderboardEntry.rank,
-						score: leaderboardEntry.score,
-						correctCount: leaderboardEntry.correctCount,
-						submission: participantSubmission
-							? {
-									isCorrect: participantSubmission.isCorrect,
-									countryId: participantSubmission.countryId,
-									scoreAwarded: participantSubmission.score,
-									submittedAt: participantSubmission.submittedAt,
-								}
-							: null,
-					}
-				},
-			)
+		case 'leaderboard':
 			return {
 				...base,
 				phase: state.phase,
@@ -360,9 +326,11 @@ export function toGameHostView(
 				answeredCount: getAnsweredParticipantCount(state),
 				questionCountryId: state.currentRound.questionId,
 				correctCountryId: state.currentRound.questionId,
-				participants,
+				participants: toEvaluatedHostParticipants(
+					state,
+					getGameLeaderboard(state),
+				),
 			}
-		}
 
 		case 'completed': {
 			return {
@@ -372,4 +340,47 @@ export function toGameHostView(
 			}
 		}
 	}
+}
+
+export function toOpenHostParticipants(
+	state: Extract<ActiveGameState, { phase: 'open' }>,
+	leaderboard: readonly GameLeaderboardEntry[],
+): GameParticipantsEntry[] {
+	return leaderboard.map(leaderboardEntry => {
+		const participantSubmission =
+			state.currentRound.submissions[leaderboardEntry.participantId]
+		return {
+			participantId: leaderboardEntry.participantId,
+			rank: leaderboardEntry.rank,
+			score: leaderboardEntry.score,
+			correctCount: leaderboardEntry.correctCount,
+			submittedAt: participantSubmission
+				? participantSubmission.submittedAt
+				: null,
+		}
+	})
+}
+
+export function toEvaluatedHostParticipants(
+	state: Exclude<ActiveGameState, { phase: 'open' }>,
+	leaderboard: readonly GameLeaderboardEntry[],
+): GameEvaluatedParticipantsEntry[] {
+	return leaderboard.map(leaderboardEntry => {
+		const participantSubmission =
+			state.currentRound.submissions[leaderboardEntry.participantId]
+		return {
+			participantId: leaderboardEntry.participantId,
+			rank: leaderboardEntry.rank,
+			score: leaderboardEntry.score,
+			correctCount: leaderboardEntry.correctCount,
+			submission: participantSubmission
+				? {
+						isCorrect: participantSubmission.isCorrect,
+						countryId: participantSubmission.countryId,
+						scoreAwarded: participantSubmission.score,
+						submittedAt: participantSubmission.submittedAt,
+					}
+				: null,
+		}
+	})
 }

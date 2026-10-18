@@ -65,20 +65,7 @@ export function useRoomPlayerController(
 					memberSessionToken: session.memberSessionToken,
 				}),
 			compose: composePlayerRoomView,
-			subscribe: ({
-				onRoomUpdate,
-				onRoomViewer,
-				onRoomHostDetail,
-				onRoomClosed,
-				onSocketDisconnect,
-			}) =>
-				gateway.subscribeRoom({
-					onRoomUpdate,
-					onRoomViewer,
-					onRoomHostDetail,
-					onRoomClosed,
-					onSocketDisconnect,
-				}),
+			subscribe: handlers => gateway.subscribeRoom(handlers),
 			close: () => gateway.disconnect(),
 		}),
 		[gateway],

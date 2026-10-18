@@ -19,13 +19,9 @@ import {
 import type { ZodType } from 'zod'
 
 import type { RoomMemberRole } from '@georally/game-domain/multiplayer/room'
+import { hasMemberSockets, memberChannel } from './channels.js'
 import type { RoomsService } from './service.js'
-import type {
-	BoundServiceResponse,
-	GameNamespace,
-	GameSocket,
-	MemberSessionToken,
-} from './types.js'
+import type { GameNamespace, GameSocket, MemberSessionToken } from './types.js'
 import { err, ok, type Result } from '@georally/game-domain'
 import type { Logger } from '../../observability/logger.js'
 import type { ProtocolErrorReporter } from '../../observability/protocolErrors.js'
@@ -110,16 +106,28 @@ function clearSocketIdentity(socket: GameSocket): void {
 	socket.data.role = undefined
 }
 
-function disconnectReplacedSocket(
-	namespace: GameNamespace,
-	socketId: string | undefined,
-	currentSocketId: string,
-): void {
-	if (!socketId || socketId === currentSocketId) {
-		return
+function detachSocketFromMember(socket: GameSocket): void {
+	if (socket.data.memberId) {
+		void socket.leave(memberChannel(socket.data.memberId))
 	}
+	clearSocketIdentity(socket)
+}
 
-	namespace.sockets.get(socketId)?.disconnect(true)
+function attachSocketToMember(
+	namespace: GameNamespace,
+	socket: GameSocket,
+	identity: {
+		role: RoomMemberRole
+		roomId: string
+		memberId: string
+		memberSessionToken: string
+	},
+): void {
+	bindSocketIdentity(socket, identity)
+
+	const channel = memberChannel(identity.memberId)
+	void socket.join(channel)
+	namespace.in(channel).except(socket.id).disconnectSockets(true)
 }
 
 export function registerRoomHandlers({
@@ -205,8 +213,7 @@ export function registerRoomHandlers({
 		role: RoomMemberRole,
 		resume: (input: {
 			memberSessionToken: MemberSessionToken
-			socketId: string
-		}) => CommandResult<BoundServiceResponse<TResponse>>,
+		}) => CommandResult<TResponse>,
 	): void {
 		runSocketCommand(socket, socketEvent, ack, () => {
 			const parsed = parsePayload(schema, payload)
@@ -220,24 +227,19 @@ export function registerRoomHandlers({
 				return err({ code: 'unauthorized' })
 			}
 
-			const resumed = resume({ memberSessionToken, socketId: socket.id })
+			const resumed = resume({ memberSessionToken })
 			if (!resumed.ok) {
 				return resumed
 			}
 
-			bindSocketIdentity(socket, {
+			attachSocketToMember(namespace, socket, {
 				role,
-				roomId: resumed.value.response.roomId,
-				memberId: resumed.value.response.memberId,
+				roomId: resumed.value.roomId,
+				memberId: resumed.value.memberId,
 				memberSessionToken,
 			})
-			disconnectReplacedSocket(
-				namespace,
-				resumed.value.replacedSocketId,
-				socket.id,
-			)
 
-			return ok(resumed.value.response)
+			return ok(resumed.value)
 		})
 	}
 
@@ -266,15 +268,14 @@ export function registerRoomHandlers({
 				const joinedRoom = roomsService.joinRoom({
 					roomCode: parsed.value.roomCode,
 					memberName: parsed.value.memberName,
-					socketId: socket.id,
 				})
 				if (!joinedRoom.ok) {
 					return joinedRoom
 				}
 
-				bindSocketIdentity(socket, joinedRoom.value.response)
+				attachSocketToMember(namespace, socket, joinedRoom.value)
 
-				return ok(joinedRoom.value.response)
+				return ok(joinedRoom.value)
 			})
 		})
 
@@ -321,7 +322,7 @@ export function registerRoomHandlers({
 				payload,
 				ack,
 				token => roomsService.terminateRoom({ memberSessionToken: token }),
-				() => clearSocketIdentity(socket),
+				() => detachSocketFromMember(socket),
 			)
 		})
 
@@ -380,10 +381,13 @@ export function registerRoomHandlers({
 		})
 
 		socket.on('disconnect', () => {
-			try {
-				roomsService.disconnectSocket(socket.id)
-			} catch (error) {
-				reportHandlerFailure(socket, 'disconnect', error)
+			const { roomId, memberId } = socket.data
+			if (roomId && memberId && !hasMemberSockets(namespace, memberId)) {
+				try {
+					roomsService.disconnectMember(roomId, memberId)
+				} catch (error) {
+					reportHandlerFailure(socket, 'disconnect', error)
+				}
 			}
 			clearSocketIdentity(socket)
 		})

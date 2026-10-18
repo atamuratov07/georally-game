@@ -433,6 +433,53 @@ describe('multiplayer server integration', () => {
 			const hostDisconnectReason = await hostDisconnectPromise
 			expect(hostDisconnectReason).toBe('io server disconnect')
 		})
+
+		it('keeps the member connected when another socket takes over its session', async () => {
+			const { hostSocket, created } = await server.createRoomAsHost({
+				hostName: 'Alice',
+				roomMode: 'classroom',
+			})
+			await joinAsPlayer(created.roomCode, 'Bob')
+
+			const evictedPromise = new Promise<string>(resolve => {
+				hostSocket.once('disconnect', resolve)
+			})
+
+			const newHostSocket = await server.connectClient()
+			const resumed = await newHostSocket.emitWithAck('room:host-resume', {
+				memberSessionToken: created.memberSessionToken,
+			})
+			if (!resumed.ok) throw new Error('setup failed')
+
+			await evictedPromise
+
+			const health = await request(server.httpServer)
+				.get('/health')
+				.expect(200)
+			expect(health.body).toMatchObject({ connectedSessionCount: 2 })
+		})
+
+		it('delivers snapshots to the socket that took over', async () => {
+			const { created } = await server.createRoomAsHost({
+				hostName: 'Alice',
+				roomMode: 'classroom',
+			})
+
+			const newHostSocket = await server.connectClient()
+			const resumed = await newHostSocket.emitWithAck('room:host-resume', {
+				memberSessionToken: created.memberSessionToken,
+			})
+			if (!resumed.ok) throw new Error('setup failed')
+
+			const hostSnapshotPromise = nextHostSnapshot(newHostSocket)
+
+			await joinAsPlayer(created.roomCode, 'Bob')
+
+			const hostSnapshotEvent = await hostSnapshotPromise
+			expect(
+				hostSnapshotEvent.snapshot.members.map(member => member.name),
+			).toEqual(['Alice', 'Bob'])
+		})
 	})
 
 	describe('per-role visibility split', () => {
@@ -812,7 +859,7 @@ describe('multiplayer server integration', () => {
 				roomMode: 'classroom',
 			})
 			const { playerSocket } = await joinAsPlayer(created.roomCode, 'Bob')
-			vi.spyOn(server.roomsService, 'disconnectSocket').mockImplementation(
+			vi.spyOn(server.roomsService, 'disconnectMember').mockImplementation(
 				() => {
 					throw new Error('boom')
 				},

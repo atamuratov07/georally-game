@@ -18,8 +18,8 @@ How a multiplayer client stays connected to a room, and which part of the stack 
 │ 5. UI runtime        connecting / ready / reconnecting /   │  GeoRally (client)
 │                      closed / error                        │
 ├────────────────────────────────────────────────────────────┤
-│ 4. Game session      memberSessionToken ⇄ socketId binding,│  GeoRally (server + client)
-│                      member.connected, room TTLs           │
+│ 4. Game session      memberSessionToken → member,          │  GeoRally (server + client)
+│                      member channel, connected flag, TTLs  │
 ├────────────────────────────────────────────────────────────┤
 │ 3. Socket.IO socket  namespace /game, socket.id,           │  Socket.IO
 │                      socket.data, events + acks            │
@@ -59,29 +59,34 @@ The object we call `.on` / `.emit` on, scoped to the `/game` namespace.
 
 `connectionStateRecovery` is deliberately **not** enabled. It only restores a socket when the same in-memory client reconnects within a time window, so it cannot cover page refreshes, discarded mobile tabs, or long outages, which the token-based resume (layer 4) already covers. Room updates are full snapshots rather than deltas, so the missed-packet replay it offers has no value: the snapshot returned by resume supersedes anything missed.
 
-Socket.IO also has its own "rooms" (`socket.join(...)`, broadcast groups of socket ids). They are unrelated to GeoRally rooms and are currently unused; the publisher addresses sockets directly with `namespace.to(socketId)` because every member receives a different projection of the room.
+Socket.IO also has its own "rooms" (`socket.join(...)`, broadcast groups of socket ids), called **channels** here to avoid confusion with GeoRally rooms. Every socket that serves a member joins `member:<memberId>` (`channels.ts`). Snapshots and `room:closed` go to that channel, so the server never stores socket ids. On tab takeover the new socket joins the channel first and then evicts every other socket in it.
 
 ## Layer 4: Game session
 
 Socket.IO cannot tell which member a socket belongs to. The server keeps that mapping in `RoomsRepository`:
 
 ```
-memberSessionToken ──(sessionsByToken)──▶ { roomId, memberId, role, socketId }
-socketId ──(sessionTokensBySocketId)──▶ memberSessionToken
+memberSessionToken ──(sessionsByToken)──▶ { roomId, memberId, role }
+socket.data.memberSessionToken / memberId   ← set on join/resume
+channel member:<memberId>                   ← sockets currently serving that member
 RoomState.membersById[memberId].connected   ← what other members see
 ```
 
-| Event                                                   | Server behavior                                                                         |
-| ------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `POST /api/rooms` (HTTP)                                | Create the host's session with no socket; the host stays disconnected until it resumes. |
-| New socket connects                                     | Nothing. The socket is anonymous until it joins or resumes.                             |
-| `room:join` / `room:host-resume` / `room:player-resume` | Bind socket ⇄ session, mark the member connected, broadcast, return a snapshot.         |
-| A second socket resumes the same token                  | Rebind to the new socket and `disconnect(true)` the old one (tab takeover).             |
-| A bound socket resumes a _different_ token              | Rejected with `unauthorized`; one socket serves at most one session.                    |
-| Socket `'disconnect'`                                   | Unbind, mark the member disconnected, broadcast, start expiry TTLs.                     |
-| Room expires / is terminated / server stops             | Emit `room:closed`, delete the room and its sessions.                                   |
+`RoomsService` never sees a socket: join and resume take a token or a room code, and the socket layer calls `disconnectMember(roomId, memberId)` from `socket.data`.
+
+| Event                                                   | Server behavior                                                                                          |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `POST /api/rooms` (HTTP)                                | Create the host's session with no socket; the host stays disconnected until it resumes.                  |
+| New socket connects                                     | Nothing. The socket is anonymous until it joins or resumes.                                              |
+| `room:join` / `room:host-resume` / `room:player-resume` | Mark the member connected, broadcast, set `socket.data`, join the member channel, return a snapshot.     |
+| A second socket resumes the same token                  | Join the member channel, then `disconnect(true)` every other socket in it (tab takeover).                |
+| A bound socket resumes a _different_ token              | Rejected with `unauthorized`; one socket serves at most one session.                                     |
+| Socket `'disconnect'`                                   | If no other socket is in the member channel, mark the member disconnected, broadcast, start expiry TTLs. |
+| Room expires / is terminated / server stops             | Emit `room:closed`, delete the room and its sessions.                                                    |
 
 The `memberSessionToken`, persisted in `localStorage`, is the only identity that outlives a socket. It is what lets a member survive a refresh, a crash, or any reconnection.
+
+Join before evict is the one ordering rule. Socket.IO removes a socket from its channels before firing `'disconnect'`, so anything still in the channel is a different socket. Evicting first would let the old socket's handler find an empty channel and mark the member disconnected, and everyone in the room would see a "disconnected → connected" flicker. The same check covers a refresh where the new page resumes before the server notices that the old socket died (up to ~45 s, layer 1). `hasMemberSockets` reads the local adapter only; with the Redis adapter it would have to become `fetchSockets()`.
 
 ## Layer 5: UI runtime
 
@@ -98,7 +103,7 @@ The `memberSessionToken`, persisted in `localStorage`, is the only identity that
 ```
 L1  network drops ─ heartbeat times out ────────────── Manager reconnects ─▶
 L3  client: 'disconnect' (ping timeout)                'connect' (new socket.id)
-L4  server: disconnectSocket → connected=false         ← resume(token) → rebind, connected=true
+L4  server: disconnectMember → connected=false         ← resume(token) → join channel, connected=true
 L5  ready ─▶ reconnecting ───────────────────────────────────────────────▶ ready
 ```
 
@@ -113,7 +118,7 @@ L5  (page reloads) ────────────────────�
 **Second tab takes over**
 
 ```
-L4  tab B resumes the token → server rebinds to B and disconnect(true)s A
+L4  tab B resumes the token → B joins the member channel, server disconnect(true)s A
 L3  tab A: 'disconnect' ('io server disconnect') → Manager does NOT retry
 L5  tab A shows "session opened elsewhere" and stops
 ```
@@ -134,7 +139,7 @@ L5  closed screen. A later resume would get member_session_not_found.
 | Reporting that a drop or reconnect happened, and why          | Socket.IO (`'disconnect'` reason, `'connect'`)    |
 | Knowing which member a socket belongs to                      | GeoRally: join / resume with the token            |
 | Re-identifying after every reconnect (`socket.id` changes)    | GeoRally: resume on `'connect'`                   |
-| Marking members connected / disconnected and notifying others | GeoRally: `disconnectSocket`, `RECONNECT_MEMBER`  |
+| Marking members connected / disconnected and notifying others | GeoRally: `disconnectMember`, `RECONNECT_MEMBER`  |
 | Tab-takeover policy                                           | GeoRally: evict on the server, stop on the client |
 | When a room dies                                              | GeoRally: expiry TTLs                             |
 | What the user sees                                            | GeoRally: `useRoomRuntime`                        |

@@ -73,22 +73,20 @@ it('does not count disconnected players toward the limit', () => {
 	const joinedOne = service.joinRoom({
 		roomCode: created.roomCode,
 		memberName: 'Bob',
-		socketId: 'socket-2',
 	})
 	if (!joinedOne.ok) throw new Error('setup failed')
 
-	service.disconnectSocket('socket-2')
+	service.disconnectMember(created.roomId, joinedOne.value.memberId)
 
 	const joinedTwo = service.joinRoom({
 		roomCode: created.roomCode,
 		memberName: 'Tom',
-		socketId: 'socket-3',
 	})
 
 	expect(joinedTwo.ok).toBe(true)
 })
 ```
 
-(Adjust `socketId` / `disconnectSocket` if the [member channels](socketio-member-channels.md) refactor has landed.) The existing "counts the host toward the limit in group mode" and "excludes the host from the limit in classroom mode" tests must keep passing.
+The existing "counts the host toward the limit in group mode" and "excludes the host from the limit in classroom mode" tests must keep passing.
 
 Also update the README configuration row to say the limit counts connected members and is soft for returning members.

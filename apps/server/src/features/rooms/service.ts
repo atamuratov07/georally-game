@@ -52,7 +52,7 @@ import {
 	createRoomId,
 } from './ids.js'
 import type { MemberSessionRecord, RoomsRepository } from './repository.js'
-import type { BoundServiceResponse, MemberSessionToken } from './types.js'
+import type { MemberSessionToken } from './types.js'
 import { createSilentLogger, type Logger } from '../../observability/logger.js'
 
 type ServiceResult<T> = Result<T, RoomProtocolError>
@@ -86,16 +86,13 @@ export interface CreateRoomInput {
 export interface JoinRoomInput {
 	roomCode: string
 	memberName: string
-	socketId: string
 }
 
 export interface ResumeHostRoomInput {
 	memberSessionToken: MemberSessionToken
-	socketId: string
 }
 export interface ResumePlayerRoomInput {
 	memberSessionToken: MemberSessionToken
-	socketId: string
 }
 
 export interface StartGameInput {
@@ -153,13 +150,15 @@ export class RoomsService {
 			active: 0,
 			finished: 0,
 		}
+		let connectedSessionCount = 0
 		for (const context of this.repository.listRooms()) {
 			roomsByPhase[context.state.phase] += 1
+			connectedSessionCount += getConnectedMemberCount(context.state)
 		}
 
 		return {
 			roomCount: this.repository.getRoomCount(),
-			connectedSessionCount: this.repository.getConnectedSessionCount(),
+			connectedSessionCount,
 			roomsByPhase,
 		}
 	}
@@ -212,7 +211,6 @@ export class RoomsService {
 			token: hostSessionToken,
 			roomId,
 			memberId: hostId,
-			socketId: null,
 		})
 		this.rescheduleRoomExpire(roomId)
 		this.getRoomLogger(roomResult.value).info('room_created')
@@ -226,9 +224,7 @@ export class RoomsService {
 		})
 	}
 
-	joinRoom(
-		input: JoinRoomInput,
-	): ServiceResult<BoundServiceResponse<JoinRoomResponse>> {
+	joinRoom(input: JoinRoomInput): ServiceResult<JoinRoomResponse> {
 		const context = this.repository.getRoomByCode(input.roomCode)
 		if (!context) {
 			return err({
@@ -264,7 +260,6 @@ export class RoomsService {
 			token: memberSessionToken,
 			roomId: nextState.value.roomId,
 			memberId,
-			socketId: input.socketId,
 		})
 
 		const snapshot = this.buildRoomPlayerSnapshot(nextState.value, memberId)
@@ -273,30 +268,24 @@ export class RoomsService {
 		}
 
 		return ok({
-			response: {
-				role: 'player',
-				roomId: nextState.value.roomId,
-				roomCode: nextState.value.roomCode,
-				memberId,
-				memberSessionToken,
-				snapshot: snapshot.value,
-			},
+			role: 'player',
+			roomId: nextState.value.roomId,
+			roomCode: nextState.value.roomCode,
+			memberId,
+			memberSessionToken,
+			snapshot: snapshot.value,
 		})
 	}
 
 	resumeHostRoom(
 		input: ResumeHostRoomInput,
-	): ServiceResult<BoundServiceResponse<ResumeHostRoomResponse>> {
+	): ServiceResult<ResumeHostRoomResponse> {
 		const resumed = this.resumeMember(input.memberSessionToken, 'host')
 		if (!resumed.ok) {
 			return resumed
 		}
 
 		const { state, memberId } = resumed.value
-		const replacedSocketId = this.repository.bindSocketToSession(
-			input.memberSessionToken,
-			input.socketId,
-		)
 
 		const snapshot = this.buildHostRoomSnapshot(state, memberId)
 		if (!snapshot.ok) {
@@ -304,28 +293,21 @@ export class RoomsService {
 		}
 
 		return ok({
-			response: {
-				roomId: state.roomId,
-				memberId,
-				snapshot: snapshot.value,
-			},
-			replacedSocketId,
+			roomId: state.roomId,
+			memberId,
+			snapshot: snapshot.value,
 		})
 	}
 
 	resumePlayerRoom(
 		input: ResumePlayerRoomInput,
-	): ServiceResult<BoundServiceResponse<ResumePlayerRoomResponse>> {
+	): ServiceResult<ResumePlayerRoomResponse> {
 		const resumed = this.resumeMember(input.memberSessionToken, 'player')
 		if (!resumed.ok) {
 			return resumed
 		}
 
 		const { state, memberId } = resumed.value
-		const replacedSocketId = this.repository.bindSocketToSession(
-			input.memberSessionToken,
-			input.socketId,
-		)
 
 		const snapshot = this.buildRoomPlayerSnapshot(state, memberId)
 		if (!snapshot.ok) {
@@ -333,12 +315,9 @@ export class RoomsService {
 		}
 
 		return ok({
-			response: {
-				roomId: state.roomId,
-				memberId,
-				snapshot: snapshot.value,
-			},
-			replacedSocketId,
+			roomId: state.roomId,
+			memberId,
+			snapshot: snapshot.value,
 		})
 	}
 
@@ -521,25 +500,20 @@ export class RoomsService {
 		})
 	}
 
-	disconnectSocket(socketId: string): void {
-		const session = this.repository.unbindSocketFromSession(socketId)
-		if (!session) {
-			return
-		}
-
-		const context = this.repository.getRoomById(session.roomId)
+	disconnectMember(roomId: RoomId, memberId: MemberId): void {
+		const context = this.repository.getRoomById(roomId)
 		if (!context) {
 			return
 		}
 
-		const member = context.state.membersById[session.memberId]
+		const member = context.state.membersById[memberId]
 		if (!member || !member.connected) {
 			return
 		}
 
 		const disconnectedState = applyRoomCommand(context.state, {
 			type: 'DISCONNECT_MEMBER',
-			id: session.memberId,
+			id: memberId,
 			now: this.now(),
 		})
 

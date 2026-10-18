@@ -39,13 +39,12 @@ function createService(
 		logger: overrides.logger,
 	})
 
-	function createHostedRoom(input: CreateRoomInput, socketId = 'socket-1') {
+	function createHostedRoom(input: CreateRoomInput) {
 		const created = service.createRoom(input)
 		if (!created.ok) throw new Error('setup failed')
 
 		const resumed = service.resumeHostRoom({
 			memberSessionToken: created.value.memberSessionToken,
-			socketId,
 		})
 		if (!resumed.ok) throw new Error('setup failed')
 
@@ -118,7 +117,6 @@ describe('RoomsService.joinRoom', () => {
 		const joined = service.joinRoom({
 			roomCode: 'ZZZZZZ',
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 
 		expect(joined.ok).toBe(false)
@@ -136,13 +134,12 @@ describe('RoomsService.joinRoom', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 
 		expect(joined.ok).toBe(true)
 		if (!joined.ok) return
 
-		expect(joined.value.response.role).toBe('player')
+		expect(joined.value.role).toBe('player')
 		expect(hooks.onRoomUpdated).toHaveBeenCalledTimes(1)
 	})
 
@@ -156,7 +153,6 @@ describe('RoomsService.joinRoom', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Alice',
-			socketId: 'socket-2',
 		})
 
 		expect(joined.ok).toBe(false)
@@ -176,14 +172,12 @@ describe('RoomsService.joinRoom', () => {
 		const joinedOne = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		expect(joinedOne.ok).toBe(true)
 
 		const joinedTwo = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Tom',
-			socketId: 'socket-3',
 		})
 
 		expect(joinedTwo.ok).toBe(false)
@@ -205,21 +199,18 @@ describe('RoomsService.joinRoom', () => {
 		const joinedOne = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		expect(joinedOne.ok).toBe(true)
 
 		const joinedTwo = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Tom',
-			socketId: 'socket-3',
 		})
 		expect(joinedTwo.ok).toBe(true)
 
 		const joinedThree = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Jerry',
-			socketId: 'socket-4',
 		})
 
 		expect(joinedThree.ok).toBe(false)
@@ -241,13 +232,12 @@ describe('RoomsService.startGame', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
 		const started = service.startGame({
 			gameConfig: DEFAULT_GAME_CONFIG,
-			memberSessionToken: joined.value.response.memberSessionToken,
+			memberSessionToken: joined.value.memberSessionToken,
 		})
 
 		expect(started.ok).toBe(false)
@@ -330,7 +320,6 @@ describe('RoomsService.startGame', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -357,7 +346,6 @@ describe('RoomsService.startGame', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -379,7 +367,6 @@ describe('RoomsService.startGame', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -438,16 +425,14 @@ describe('RoomsService.startGame', () => {
 		const joinedOne = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		const joinedTwo = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Tom',
-			socketId: 'socket-3',
 		})
 		if (!joinedOne.ok || !joinedTwo.ok) throw new Error('setup failed')
 
-		service.disconnectSocket('socket-2')
+		service.disconnectMember(created.roomId, joinedOne.value.memberId)
 
 		const started = service.startGame({
 			memberSessionToken: created.memberSessionToken,
@@ -463,7 +448,7 @@ describe('RoomsService.startGame', () => {
 			throw new Error('expected active phase')
 
 		expect(Object.keys(room.state.activeGame.participantsById)).toEqual([
-			joinedTwo.value.response.memberId,
+			joinedTwo.value.memberId,
 		])
 	})
 })
@@ -479,12 +464,10 @@ describe('RoomsService.submitAnswer', () => {
 		const joinedOne = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		const joinedTwo = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Tom',
-			socketId: 'socket-3',
 		})
 		if (!joinedOne.ok || !joinedTwo.ok) throw new Error('setup failed')
 
@@ -505,13 +488,13 @@ describe('RoomsService.submitAnswer', () => {
 		expect(room.state.activeGame.phase).toBe('open')
 
 		const submittedOne = service.submitAnswer({
-			memberSessionToken: joinedOne.value.response.memberSessionToken,
+			memberSessionToken: joinedOne.value.memberSessionToken,
 			countryId: '840',
 		})
 		if (!submittedOne.ok) throw new Error('setup failed')
 
 		const submittedTwo = service.submitAnswer({
-			memberSessionToken: joinedOne.value.response.memberSessionToken,
+			memberSessionToken: joinedOne.value.memberSessionToken,
 			countryId: '860',
 		})
 
@@ -530,12 +513,10 @@ describe('RoomsService.submitAnswer', () => {
 		const joinedOne = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		const joinedTwo = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Tom',
-			socketId: 'socket-3',
 		})
 		if (!joinedOne.ok || !joinedTwo.ok) throw new Error('setup failed')
 
@@ -551,7 +532,7 @@ describe('RoomsService.submitAnswer', () => {
 		if (!started.ok) throw new Error('setup failed')
 
 		service.submitAnswer({
-			memberSessionToken: joinedOne.value.response.memberSessionToken,
+			memberSessionToken: joinedOne.value.memberSessionToken,
 			countryId: '840',
 		})
 
@@ -561,7 +542,7 @@ describe('RoomsService.submitAnswer', () => {
 		expect(room.state.activeGame.phase).toBe('open')
 
 		service.submitAnswer({
-			memberSessionToken: joinedTwo.value.response.memberSessionToken,
+			memberSessionToken: joinedTwo.value.memberSessionToken,
 			countryId: '840',
 		})
 
@@ -581,12 +562,10 @@ describe('RoomsService.submitAnswer', () => {
 		const joinedOne = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		const joinedTwo = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Tom',
-			socketId: 'socket-3',
 		})
 		if (!joinedOne.ok || !joinedTwo.ok) throw new Error('setup failed')
 
@@ -601,10 +580,10 @@ describe('RoomsService.submitAnswer', () => {
 		})
 		if (!started.ok) throw new Error('setup failed')
 
-		service.disconnectSocket('socket-3')
+		service.disconnectMember(created.roomId, joinedTwo.value.memberId)
 
 		service.submitAnswer({
-			memberSessionToken: joinedOne.value.response.memberSessionToken,
+			memberSessionToken: joinedOne.value.memberSessionToken,
 			countryId: '840',
 		})
 
@@ -626,7 +605,6 @@ describe('RoomsService.revealGameRound', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -662,7 +640,6 @@ describe('RoomsService.revealGameRound', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -673,7 +650,7 @@ describe('RoomsService.revealGameRound', () => {
 		if (!started.ok) throw new Error('setup failed')
 
 		const revealed = service.revealGameRound({
-			memberSessionToken: joined.value.response.memberSessionToken,
+			memberSessionToken: joined.value.memberSessionToken,
 		})
 		expect(revealed.ok).toBe(false)
 		if (revealed.ok) return
@@ -692,7 +669,6 @@ describe('RoomsService.revealGameRound', () => {
 		const joined = service.joinRoom({
 			memberName: 'Bob',
 			roomCode: created.roomCode,
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -747,7 +723,6 @@ describe('RoomsService.advanceGameRound', () => {
 		const joined = helpers.service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -793,7 +768,7 @@ describe('RoomsService.advanceGameRound', () => {
 		const { service, joined } = reachRevealedPhase()
 
 		const advanced = service.advanceGameRound({
-			memberSessionToken: joined.value.response.memberSessionToken,
+			memberSessionToken: joined.value.memberSessionToken,
 		})
 		expect(advanced.ok).toBe(false)
 		if (advanced.ok) return
@@ -812,7 +787,6 @@ describe('RoomsService.advanceGameRound', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -842,7 +816,6 @@ describe('RoomsService.advanceGameRound', () => {
 		const joined = service.joinRoom({
 			roomCode: room.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -928,7 +901,6 @@ describe('RoomsService game auto advance', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -956,7 +928,6 @@ describe('RoomsService game auto advance', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -1023,7 +994,6 @@ describe('RoomsService game auto advance', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -1133,12 +1103,11 @@ describe('RoomsService room expiry', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
-		service.disconnectSocket('socket-1')
-		service.disconnectSocket('socket-2')
+		service.disconnectMember(created.roomId, created.memberId)
+		service.disconnectMember(created.roomId, joined.value.memberId)
 
 		vi.advanceTimersByTime(noConnectedMembersTTLMs - 1)
 
@@ -1164,13 +1133,12 @@ describe('RoomsService room expiry', () => {
 			roomMode: 'group',
 		})
 
-		service.disconnectSocket('socket-1')
+		service.disconnectMember(created.roomId, created.memberId)
 
 		vi.advanceTimersByTime(hostDisconnectedInGroupTTLMs - 1)
 
 		const resumed = service.resumeHostRoom({
 			memberSessionToken: created.memberSessionToken,
-			socketId: 'socket-1-new',
 		})
 		expect(resumed.ok).toBe(true)
 
@@ -1196,7 +1164,6 @@ describe('RoomsService room expiry', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -1206,7 +1173,7 @@ describe('RoomsService room expiry', () => {
 		})
 		if (!started.ok) throw new Error('setup failed')
 
-		service.disconnectSocket('socket-1')
+		service.disconnectMember(created.roomId, created.memberId)
 
 		vi.advanceTimersByTime(hostDisconnectedInClassroomTTLMs - 1)
 		expect(hooks.onRoomClosed).not.toHaveBeenCalled()
@@ -1234,7 +1201,6 @@ describe('RoomsService room expiry', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -1244,7 +1210,7 @@ describe('RoomsService room expiry', () => {
 		})
 		if (!started.ok) throw new Error('setup failed')
 
-		service.disconnectSocket('socket-1')
+		service.disconnectMember(created.roomId, created.memberId)
 
 		vi.advanceTimersByTime(commonTTLMs * 3)
 
@@ -1259,7 +1225,6 @@ describe('RoomsService.resumePlayerRoom', () => {
 
 		const resumed = service.resumePlayerRoom({
 			memberSessionToken: 'not-a-real-token',
-			socketId: 'socket-9',
 		})
 
 		expect(resumed.ok).toBe(false)
@@ -1276,7 +1241,6 @@ describe('RoomsService.resumePlayerRoom', () => {
 
 		const resumed = service.resumePlayerRoom({
 			memberSessionToken: created.memberSessionToken,
-			socketId: 'socket-9',
 		})
 
 		expect(resumed.ok).toBe(false)
@@ -1284,7 +1248,7 @@ describe('RoomsService.resumePlayerRoom', () => {
 		expect(resumed.error).toMatchObject({ code: 'insufficient_permissions' })
 	})
 
-	it('reconnects a disconnected player and rebinds the socket', () => {
+	it('reconnects a disconnected player', () => {
 		const { service, repository, createHostedRoom } = createService()
 		const created = createHostedRoom({
 			hostName: 'Alice',
@@ -1294,37 +1258,33 @@ describe('RoomsService.resumePlayerRoom', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
-		service.disconnectSocket('socket-2')
+		service.disconnectMember(created.roomId, joined.value.memberId)
 
 		const room = repository.getRoomById(created.roomId)
 		if (!room) throw new Error('room not created')
 
-		expect(
-			room.state.membersById[joined.value.response.memberId]?.connected,
-		).toBe(false)
+		expect(room.state.membersById[joined.value.memberId]?.connected).toBe(
+			false,
+		)
 
 		const resumed = service.resumePlayerRoom({
-			memberSessionToken: joined.value.response.memberSessionToken,
-			socketId: 'socket-2-new',
+			memberSessionToken: joined.value.memberSessionToken,
 		})
 
 		expect(resumed.ok).toBe(true)
-		if (!resumed.ok) return
-		expect(resumed.value.replacedSocketId).toBeUndefined()
 
 		const roomAfter = repository.getRoomById(created.roomId)
 		if (!roomAfter) throw new Error('room not found')
 
 		expect(
-			roomAfter.state.membersById[joined.value.response.memberId]?.connected,
+			roomAfter.state.membersById[joined.value.memberId]?.connected,
 		).toBe(true)
 	})
 
-	it("doesn't error resuming an already-connected member, and still rebinds the socket", () => {
+	it("doesn't error resuming an already-connected member", () => {
 		const { service, createHostedRoom } = createService()
 		const created = createHostedRoom({
 			hostName: 'Alice',
@@ -1334,50 +1294,14 @@ describe('RoomsService.resumePlayerRoom', () => {
 		const joined = service.joinRoom({
 			memberName: 'Bob',
 			roomCode: created.roomCode,
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
 		const resumed = service.resumePlayerRoom({
-			memberSessionToken: joined.value.response.memberSessionToken,
-			socketId: 'socket-2-duplicate-tab',
+			memberSessionToken: joined.value.memberSessionToken,
 		})
 
 		expect(resumed.ok).toBe(true)
-		if (!resumed.ok) return
-		expect(resumed.value.replacedSocketId).toBe('socket-2')
-	})
-
-	it('returns the previous socket id when a second socket resumes the same session', () => {
-		const { service, createHostedRoom } = createService()
-		const created = createHostedRoom({
-			hostName: 'Alice',
-			roomMode: 'classroom',
-		})
-
-		const joined = service.joinRoom({
-			memberName: 'Bob',
-			roomCode: created.roomCode,
-			socketId: 'socket-2',
-		})
-		if (!joined.ok) throw new Error('setup failed')
-
-		service.disconnectSocket('socket-2')
-
-		const firstResume = service.resumePlayerRoom({
-			memberSessionToken: joined.value.response.memberSessionToken,
-			socketId: 'socket-2-tab-a',
-		})
-		expect(firstResume.ok).toBe(true)
-
-		const secondResume = service.resumePlayerRoom({
-			memberSessionToken: joined.value.response.memberSessionToken,
-			socketId: 'socket-2-tab-b',
-		})
-
-		expect(secondResume.ok).toBe(true)
-		if (!secondResume.ok) return
-		expect(secondResume.value.replacedSocketId).toBe('socket-2-tab-a')
 	})
 })
 
@@ -1387,7 +1311,6 @@ describe('RoomsService.resumeHostRoom', () => {
 
 		const resumed = service.resumeHostRoom({
 			memberSessionToken: 'not-a-real-token',
-			socketId: 'socket-9',
 		})
 
 		expect(resumed.ok).toBe(false)
@@ -1405,13 +1328,11 @@ describe('RoomsService.resumeHostRoom', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
 		const resumed = service.resumeHostRoom({
-			memberSessionToken: joined.value.response.memberSessionToken,
-			socketId: 'socket-9',
+			memberSessionToken: joined.value.memberSessionToken,
 		})
 
 		expect(resumed.ok).toBe(false)
@@ -1419,7 +1340,7 @@ describe('RoomsService.resumeHostRoom', () => {
 		expect(resumed.error).toMatchObject({ code: 'insufficient_permissions' })
 	})
 
-	it('reconnects a disconnected host and rebinds the socket', () => {
+	it('reconnects a disconnected host', () => {
 		const { service, repository, createHostedRoom } = createService()
 		const created = createHostedRoom({
 			hostName: 'Alice',
@@ -1429,11 +1350,10 @@ describe('RoomsService.resumeHostRoom', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
-		service.disconnectSocket('socket-1')
+		service.disconnectMember(created.roomId, created.memberId)
 
 		const room = repository.getRoomById(created.roomId)
 		if (!room) throw new Error('room not created')
@@ -1441,12 +1361,9 @@ describe('RoomsService.resumeHostRoom', () => {
 
 		const resumed = service.resumeHostRoom({
 			memberSessionToken: created.memberSessionToken,
-			socketId: 'socket-1-new',
 		})
 
 		expect(resumed.ok).toBe(true)
-		if (!resumed.ok) return
-		expect(resumed.value.replacedSocketId).toBeUndefined()
 
 		const roomAfter = repository.getRoomById(created.roomId)
 		if (!roomAfter) throw new Error('room not found')
@@ -1455,7 +1372,7 @@ describe('RoomsService.resumeHostRoom', () => {
 		)
 	})
 
-	it("doesn't error resuming an already-connected member, and still rebinds the socket", () => {
+	it("doesn't error resuming an already-connected member", () => {
 		const { service, createHostedRoom } = createService()
 		const created = createHostedRoom({
 			hostName: 'Alice',
@@ -1464,37 +1381,9 @@ describe('RoomsService.resumeHostRoom', () => {
 
 		const resumed = service.resumeHostRoom({
 			memberSessionToken: created.memberSessionToken,
-			socketId: 'socket-1-duplicate-tab',
 		})
 
 		expect(resumed.ok).toBe(true)
-		if (!resumed.ok) return
-		expect(resumed.value.replacedSocketId).toBe('socket-1')
-	})
-
-	it('returns the previous socket id when a second socket resumes the same session', () => {
-		const { service, createHostedRoom } = createService()
-		const created = createHostedRoom({
-			hostName: 'Alice',
-			roomMode: 'classroom',
-		})
-
-		service.disconnectSocket('socket-1')
-
-		const firstResume = service.resumeHostRoom({
-			memberSessionToken: created.memberSessionToken,
-			socketId: 'socket-1-tab-a',
-		})
-		expect(firstResume.ok).toBe(true)
-
-		const secondResume = service.resumeHostRoom({
-			memberSessionToken: created.memberSessionToken,
-			socketId: 'socket-1-tab-b',
-		})
-
-		expect(secondResume.ok).toBe(true)
-		if (!secondResume.ok) return
-		expect(secondResume.value.replacedSocketId).toBe('socket-1-tab-a')
 	})
 })
 
@@ -1522,7 +1411,6 @@ describe('RoomsService.returnToLobby', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -1540,7 +1428,7 @@ describe('RoomsService.returnToLobby', () => {
 		vi.advanceTimersByTime(3 * commonPhaseDurationMs + 1)
 
 		const returned = service.returnToLobby({
-			memberSessionToken: joined.value.response.memberSessionToken,
+			memberSessionToken: joined.value.memberSessionToken,
 		})
 
 		expect(returned.ok).toBe(false)
@@ -1623,12 +1511,11 @@ describe('RoomsService.terminateRoom', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
 		const terminated = service.terminateRoom({
-			memberSessionToken: joined.value.response.memberSessionToken,
+			memberSessionToken: joined.value.memberSessionToken,
 		})
 
 		expect(terminated.ok).toBe(false)
@@ -1658,11 +1545,26 @@ describe('RoomsService.terminateRoom', () => {
 	})
 })
 
-describe('RoomsService.disconnectSocket', () => {
-	it('is a no-op for an unknown socket id', () => {
+describe('RoomsService.disconnectMember', () => {
+	it('is a no-op for an unknown room', () => {
 		const { service, hooks } = createService()
 
-		expect(() => service.disconnectSocket('never-connected')).not.toThrow()
+		expect(() =>
+			service.disconnectMember('unknown-room', 'unknown-member'),
+		).not.toThrow()
+		expect(hooks.onRoomUpdated).not.toHaveBeenCalled()
+	})
+
+	it('is a no-op for an unknown member', () => {
+		const { service, hooks, createHostedRoom } = createService()
+		const created = createHostedRoom({
+			hostName: 'Alice',
+			roomMode: 'classroom',
+		})
+
+		expect(() =>
+			service.disconnectMember(created.roomId, 'unknown-member'),
+		).not.toThrow()
 		expect(hooks.onRoomUpdated).not.toHaveBeenCalled()
 	})
 
@@ -1676,22 +1578,21 @@ describe('RoomsService.disconnectSocket', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
 		hooks.onRoomUpdated.mockClear()
 
-		service.disconnectSocket('socket-2')
+		service.disconnectMember(created.roomId, joined.value.memberId)
 
 		expect(hooks.onRoomUpdated).toHaveBeenCalledTimes(1)
 		const room = repository.getRoomById(created.roomId)
-		expect(
-			room?.state.membersById[joined.value.response.memberId]?.connected,
-		).toBe(false)
+		expect(room?.state.membersById[joined.value.memberId]?.connected).toBe(
+			false,
+		)
 	})
 
-	it('is idempotent for a socket that already disconnected', () => {
+	it('is idempotent for a member that already disconnected', () => {
 		const { service, hooks, createHostedRoom } = createService()
 		const created = createHostedRoom({
 			hostName: 'Alice',
@@ -1701,14 +1602,15 @@ describe('RoomsService.disconnectSocket', () => {
 		const joined = service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
-		service.disconnectSocket('socket-2')
+		service.disconnectMember(created.roomId, joined.value.memberId)
 		hooks.onRoomUpdated.mockClear()
 
-		expect(() => service.disconnectSocket('socket-2')).not.toThrow()
+		expect(() =>
+			service.disconnectMember(created.roomId, joined.value.memberId),
+		).not.toThrow()
 		expect(hooks.onRoomUpdated).not.toHaveBeenCalled()
 	})
 })
@@ -1741,7 +1643,6 @@ describe('RoomsService logging', () => {
 		const joined = helpers.service.joinRoom({
 			roomCode: created.roomCode,
 			memberName: 'Bob',
-			socketId: 'socket-2',
 		})
 		if (!joined.ok) throw new Error('setup failed')
 
@@ -1751,7 +1652,7 @@ describe('RoomsService logging', () => {
 		})
 		if (!started.ok) throw new Error('setup failed')
 
-		return { created, joined: joined.value.response }
+		return { created, joined: joined.value }
 	}
 
 	it('logs room creation with the room id and mode only', () => {
@@ -1871,10 +1772,7 @@ describe('RoomsService.getHealthSnapshot', () => {
 	it('counts rooms by phase', () => {
 		const { service, createHostedRoom } = createService()
 		createHostedRoom({ hostName: 'Alice', roomMode: 'classroom' })
-		const started = createHostedRoom(
-			{ hostName: 'Bob', roomMode: 'group' },
-			'socket-2',
-		)
+		const started = createHostedRoom({ hostName: 'Bob', roomMode: 'group' })
 		const startResult = service.startGame({
 			memberSessionToken: started.memberSessionToken,
 			gameConfig: DEFAULT_GAME_CONFIG,

@@ -6,6 +6,7 @@ import {
 	toPlayerRoomView,
 	type RoomId,
 } from '@georally/game-domain/multiplayer/room'
+import { memberChannel } from './channels.js'
 import type { RoomsRepository } from './repository.js'
 import type { GameNamespace } from './types.js'
 
@@ -32,12 +33,15 @@ export function createRoomPublisher({
 		}
 
 		for (const session of repository.listMemberSessions(roomId)) {
-			if (
-				!session.socketId ||
-				session.memberId === options.excludeMemberId
-			) {
+			if (session.memberId === options.excludeMemberId) {
 				continue
 			}
+
+			if (!context.state.membersById[session.memberId]?.connected) {
+				continue
+			}
+
+			const channel = memberChannel(session.memberId)
 
 			if (session.role === 'host') {
 				const snapshot = toHostRoomView(context.state, session.memberId)
@@ -46,7 +50,7 @@ export function createRoomPublisher({
 					continue
 				}
 
-				namespace.to(session.socketId).emit('room:host-snapshot', {
+				namespace.to(channel).emit('room:host-snapshot', {
 					roomId,
 					snapshot,
 				})
@@ -57,7 +61,7 @@ export function createRoomPublisher({
 					continue
 				}
 
-				namespace.to(session.socketId).emit('room:player-snapshot', {
+				namespace.to(channel).emit('room:player-snapshot', {
 					roomId,
 					snapshot,
 				})
@@ -70,11 +74,7 @@ export function createRoomPublisher({
 		reason: RoomClosedEvent['reason'],
 	): void {
 		for (const session of repository.listMemberSessions(roomId)) {
-			if (!session.socketId) {
-				continue
-			}
-
-			namespace.to(session.socketId).emit('room:closed', {
+			namespace.to(memberChannel(session.memberId)).emit('room:closed', {
 				roomId,
 				reason,
 			})

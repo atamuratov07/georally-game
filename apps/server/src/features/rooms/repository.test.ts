@@ -10,7 +10,6 @@ describe('RoomsRepository.createMemberSession', () => {
 			roomId: 'room-1',
 			memberId: 'member-1',
 			role: 'player' as const,
-			socketId: null,
 		}
 		repository.createMemberSession(session)
 

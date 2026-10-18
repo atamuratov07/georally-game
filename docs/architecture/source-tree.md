@@ -24,8 +24,9 @@ georally-game/
 |   |   |           |-- socket.ts       # socket event handlers, payload validation, socket auth
 |   |   |           |-- service.ts      # multiplayer application service
 |   |   |           |-- service.test.ts # service unit tests
-|   |   |           |-- repository.ts   # in-memory rooms, member sessions, socket bindings, timers
+|   |   |           |-- repository.ts   # in-memory rooms, member sessions, timers
 |   |   |           |-- publisher.ts    # pushes host/player snapshots and room-closed events
+|   |   |           |-- channels.ts     # Socket.IO channel names, member socket check
 |   |   |           |-- ids.ts          # room/member/game id, room code, session token generation
 |   |   |           `-- types.ts        # Socket.IO namespace/socket types
 |   |   `-- tests/

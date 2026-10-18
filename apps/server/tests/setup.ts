@@ -12,7 +12,12 @@ import { registerRoomRoutes } from '../src/features/rooms/http'
 import { createLogger } from '../src/observability/logger'
 import { createProtocolErrorReporter } from '../src/observability/protocolErrors'
 import { createRuntimeStats } from '../src/observability/stats'
-import { io as ioc, type Socket as ClientSocket } from 'socket.io-client'
+import {
+	io as ioc,
+	type ManagerOptions,
+	type Socket as ClientSocket,
+	type SocketOptions,
+} from 'socket.io-client'
 import type { AddressInfo } from 'net'
 import {
 	GAME_NAMESPACE,
@@ -29,8 +34,8 @@ export type RoomClientSocket = ClientSocket<
 
 export type LogLine = Record<string, unknown>
 
-export async function bootstrapServer() {
-	const env = parseEnv(process.env)
+export async function bootstrapServer(input: NodeJS.ProcessEnv = process.env) {
+	const env = parseEnv(input)
 	const repository = new RoomsRepository()
 	const logLines: LogLine[] = []
 	const logger = createLogger('debug', {
@@ -55,6 +60,10 @@ export async function bootstrapServer() {
 	const { httpServer, io, gameNamespace } = createRealtimeServer({
 		app,
 		corsOrigins: env.corsOrigins,
+		perMessageDeflate: {
+			enabled: env.perMessageDeflate,
+			threshold: env.perMessageDeflateThreshold,
+		},
 	})
 
 	const publisher = createRoomPublisher({
@@ -106,8 +115,10 @@ export async function bootstrapServer() {
 
 	const connectedClients: RoomClientSocket[] = []
 
-	const connectClient = async () => {
-		const client = ioc(`http://localhost:${port}${GAME_NAMESPACE}`)
+	const connectClient = async (
+		options?: Partial<ManagerOptions & SocketOptions>,
+	) => {
+		const client = ioc(`http://localhost:${port}${GAME_NAMESPACE}`, options)
 		connectedClients.push(client)
 
 		await new Promise<void>((resolve, reject) => {

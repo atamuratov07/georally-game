@@ -596,6 +596,156 @@ describe('RoomsService.submitAnswer', () => {
 	})
 })
 
+describe('RoomsService fair play', () => {
+	beforeEach(() => {
+		vi.useFakeTimers()
+	})
+
+	afterEach(() => {
+		vi.useRealTimers()
+	})
+
+	function startGroupGame(now?: () => number) {
+		const { service, repository, createHostedRoom } = createService({ now })
+		const created = createHostedRoom({
+			hostName: 'Alice',
+			roomMode: 'group',
+		})
+		const joined = service.joinRoom({
+			roomCode: created.roomCode,
+			memberName: 'Bob',
+		})
+		if (!joined.ok) throw new Error('setup failed')
+
+		const started = service.startGame({
+			memberSessionToken: created.memberSessionToken,
+			gameConfig: DEFAULT_GAME_CONFIG,
+		})
+		if (!started.ok) throw new Error('setup failed')
+
+		function getGame() {
+			const context = repository.getRoomById(created.roomId)
+			if (context?.state.phase !== 'active')
+				throw new Error('expected active phase')
+			return context.state.activeGame
+		}
+
+		function getOpenRound() {
+			const game = getGame()
+			if (game.phase !== 'open') throw new Error('expected an open round')
+			return {
+				questionId: game.currentRound.questionId,
+				wrongId: game.session.eligibleIds.find(
+					id => id !== game.currentRound.questionId,
+				)!,
+			}
+		}
+
+		return { service, created, joined: joined.value, getGame, getOpenRound }
+	}
+
+	it('judges and scores answers on the server, by the server clock', () => {
+		let clock = 1_000_000
+		const { service, created, joined, getGame, getOpenRound } =
+			startGroupGame(() => clock)
+		const { questionId, wrongId } = getOpenRound()
+
+		clock = 1_003_400
+		const right = service.submitAnswer({
+			memberSessionToken: joined.memberSessionToken,
+			countryId: questionId,
+		})
+		clock = 1_005_000
+		const wrong = service.submitAnswer({
+			memberSessionToken: created.memberSessionToken,
+			countryId: wrongId,
+		})
+
+		expect(right.ok && right.value.acceptedAt).toBe(1_003_400)
+		expect(wrong.ok && wrong.value.acceptedAt).toBe(1_005_000)
+		const game = getGame()
+		if (game.phase !== 'revealed') throw new Error('expected a reveal')
+		expect(game.currentRound.submissions[joined.memberId]).toEqual({
+			participantId: joined.memberId,
+			countryId: questionId,
+			submittedAt: 1_003_400,
+			isCorrect: true,
+			score: 85,
+		})
+		expect(game.currentRound.submissions[created.memberId]).toEqual({
+			participantId: created.memberId,
+			countryId: wrongId,
+			submittedAt: 1_005_000,
+			isCorrect: false,
+			score: 0,
+		})
+		expect(game.participantsById[joined.memberId]?.score).toBe(85)
+		expect(game.participantsById[created.memberId]?.score).toBe(0)
+	})
+
+	it('keeps the first answer when a second one is rejected', () => {
+		const { service, joined, getGame, getOpenRound } = startGroupGame()
+		const { questionId, wrongId } = getOpenRound()
+
+		const first = service.submitAnswer({
+			memberSessionToken: joined.memberSessionToken,
+			countryId: wrongId,
+		})
+		const second = service.submitAnswer({
+			memberSessionToken: joined.memberSessionToken,
+			countryId: questionId,
+		})
+
+		expect(first.ok).toBe(true)
+		expect(second.ok).toBe(false)
+		if (second.ok) return
+		expect(second.error.code).toBe('participant_already_submitted')
+		const game = getGame()
+		if (game.phase !== 'open') throw new Error('expected an open round')
+		expect(game.currentRound.submissions[joined.memberId]?.countryId).toBe(
+			wrongId,
+		)
+	})
+
+	it("rejects a country outside the game's pool", () => {
+		const { service, joined, getGame } = startGroupGame()
+
+		const submitted = service.submitAnswer({
+			memberSessionToken: joined.memberSessionToken,
+			countryId: '999',
+		})
+
+		expect(submitted.ok).toBe(false)
+		if (submitted.ok) return
+		expect(submitted.error.code).toBe('country_not_eligible')
+		const game = getGame()
+		if (game.phase !== 'open') throw new Error('expected an open round')
+		expect(game.currentRound.submissions[joined.memberId]).toBeUndefined()
+	})
+
+	it('rejects an answer once the deadline has revealed the round', () => {
+		const { service, joined, getGame, getOpenRound } = startGroupGame()
+		const { questionId } = getOpenRound()
+
+		vi.advanceTimersByTime(DEFAULT_GAME_CONFIG.questionDurationMs + 1)
+		const submitted = service.submitAnswer({
+			memberSessionToken: joined.memberSessionToken,
+			countryId: questionId,
+		})
+
+		expect(submitted.ok).toBe(false)
+		if (submitted.ok) return
+		expect(submitted.error.code).toBe('game_not_open')
+		const game = getGame()
+		if (game.phase !== 'revealed') throw new Error('expected a reveal')
+		expect(game.currentRound.submissions[joined.memberId]).toMatchObject({
+			countryId: null,
+			isCorrect: false,
+			score: 0,
+		})
+	})
+})
+
 describe('RoomsService.revealGameRound', () => {
 	it('reveals the round for the host in an active classroom-mode room', () => {
 		const { service, repository, createHostedRoom } = createService()

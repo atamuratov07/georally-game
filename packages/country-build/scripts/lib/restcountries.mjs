@@ -2,6 +2,7 @@ import {
 	buildCachePath,
 	ensureCacheDir,
 	readCachedJson,
+	readCachedResponse,
 	writeCachedJson,
 } from './cache.mjs'
 
@@ -29,6 +30,15 @@ export async function fetchRestcountriesJson({ fields, cacheKey, cacheDir }) {
 	ensureCacheDir(cacheDir)
 
 	const cachePath = buildCachePath(cacheDir, cacheKey)
+	const cachedResponse = readCachedResponse(
+		cachePath,
+		'Restcountries',
+		cacheKey,
+	)
+	if (cachedResponse !== null) {
+		return cachedResponse
+	}
+
 	const result = []
 	const apiKey = requireApiKey()
 	let lastFailure = null

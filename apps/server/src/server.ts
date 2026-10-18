@@ -11,14 +11,35 @@ import { Server as SocketIOServer } from 'socket.io'
 
 import type { GameNamespace, GameSocketData } from './features/rooms/types.js'
 
+export interface PerMessageDeflateSettings {
+	enabled: boolean
+	threshold: number
+}
+
 export interface RealtimeServerOptions {
 	app: Express
 	corsOrigins: string[]
+	perMessageDeflate: PerMessageDeflateSettings
+}
+
+export function toPerMessageDeflateOptions({
+	enabled,
+	threshold,
+}: PerMessageDeflateSettings) {
+	if (!enabled) {
+		return false
+	}
+
+	return {
+		threshold,
+		serverNoContextTakeover: threshold > 0,
+	}
 }
 
 export function createRealtimeServer({
 	app,
 	corsOrigins,
+	perMessageDeflate,
 }: RealtimeServerOptions) {
 	const httpServer = createHttpServer(app)
 	const io = new SocketIOServer<
@@ -32,6 +53,7 @@ export function createRealtimeServer({
 			credentials: true,
 		},
 		serveClient: false,
+		perMessageDeflate: toPerMessageDeflateOptions(perMessageDeflate),
 	})
 
 	const gameNamespace: GameNamespace = io.of(GAME_NAMESPACE)

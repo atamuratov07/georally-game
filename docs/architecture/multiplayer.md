@@ -269,6 +269,8 @@ Host-only and per-viewer data never goes on the room channel. The leaderboard is
 
 **Clock.** Every envelope and the join/resume acks carry `serverNow`. The client stores `serverNow - Date.now()` (`model/serverClock.ts`), and `useCountdown` / `useTimestampGate` measure server timestamps against `getServerNow()`, so a device clock that is off does not change the countdown.
 
+**Compression.** WebSocket permessage-deflate is off by default (`SOCKET_PER_MESSAGE_DEFLATE`, see the README). With it on, Socket.IO still serializes a room broadcast once, but each socket compresses its own copy, and messages below `SOCKET_PER_MESSAGE_DEFLATE_THRESHOLD` are sent as they are. A threshold above 0 needs each message to be compressed on its own (no context takeover), because `ws` applies the threshold only then.
+
 ## Important behavior notes
 
 - Host and player sessions are persisted in browser `localStorage`.

@@ -11,6 +11,12 @@ const envSchema = z.object({
 	REVEAL_DURATION_MS: z.coerce.number().int().min(1_000).default(3_000),
 	LEADERBOARD_DURATION_MS: z.coerce.number().int().min(1_000).default(3_000),
 	ROOM_CAPACITY_LIMIT: z.coerce.number().int().min(1).default(40),
+	SOCKET_PER_MESSAGE_DEFLATE: z.stringbool().default(false),
+	SOCKET_PER_MESSAGE_DEFLATE_THRESHOLD: z.coerce
+		.number()
+		.int()
+		.min(0)
+		.default(1_024),
 	ROOM_NO_CONNECTED_MEMBERS_TTL: z.coerce
 		.number()
 		.int()
@@ -42,6 +48,8 @@ export interface AppEnv {
 	revealDurationMs: number
 	leaderboardDurationMs: number
 	roomCapacityLimit: number
+	perMessageDeflate: boolean
+	perMessageDeflateThreshold: number
 	roomNoConnectedMembersTTL: number
 	roomHostDisconnectedInGroupTTL: number
 	roomHostDisconnectedInClassroomTTL: number
@@ -67,6 +75,8 @@ export function parseEnv(input: NodeJS.ProcessEnv): AppEnv {
 		revealDurationMs: env.REVEAL_DURATION_MS,
 		leaderboardDurationMs: env.LEADERBOARD_DURATION_MS,
 		roomCapacityLimit: env.ROOM_CAPACITY_LIMIT,
+		perMessageDeflate: env.SOCKET_PER_MESSAGE_DEFLATE,
+		perMessageDeflateThreshold: env.SOCKET_PER_MESSAGE_DEFLATE_THRESHOLD,
 		roomNoConnectedMembersTTL: env.ROOM_NO_CONNECTED_MEMBERS_TTL,
 		roomHostDisconnectedInGroupTTL: env.ROOM_HOST_DISCONNECTED_IN_GROUP_TTL,
 		roomHostDisconnectedInClassroomTTL:

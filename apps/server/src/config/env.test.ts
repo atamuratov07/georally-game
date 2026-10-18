@@ -16,4 +16,37 @@ describe('parseEnv', () => {
 	it('rejects a stats interval below one second', () => {
 		expect(() => parseEnv({ STATS_INTERVAL_MS: '999' })).toThrow()
 	})
+
+	it('leaves permessage-deflate off with a 1024-byte threshold by default', () => {
+		const env = parseEnv({})
+
+		expect(env.perMessageDeflate).toBe(false)
+		expect(env.perMessageDeflateThreshold).toBe(1_024)
+	})
+
+	it('reads permessage-deflate settings from the environment', () => {
+		const env = parseEnv({
+			SOCKET_PER_MESSAGE_DEFLATE: 'true',
+			SOCKET_PER_MESSAGE_DEFLATE_THRESHOLD: '512',
+		})
+
+		expect(env.perMessageDeflate).toBe(true)
+		expect(env.perMessageDeflateThreshold).toBe(512)
+	})
+
+	it('reads false as permessage-deflate off', () => {
+		expect(
+			parseEnv({ SOCKET_PER_MESSAGE_DEFLATE: 'false' }).perMessageDeflate,
+		).toBe(false)
+	})
+
+	it('rejects an unknown permessage-deflate value', () => {
+		expect(() => parseEnv({ SOCKET_PER_MESSAGE_DEFLATE: 'maybe' })).toThrow()
+	})
+
+	it('rejects a negative permessage-deflate threshold', () => {
+		expect(() =>
+			parseEnv({ SOCKET_PER_MESSAGE_DEFLATE_THRESHOLD: '-1' }),
+		).toThrow()
+	})
 })

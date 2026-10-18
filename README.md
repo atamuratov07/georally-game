@@ -117,6 +117,8 @@ Server configuration (`apps/server/src/config/env.ts`, parsed with `zod`):
 | `REVEAL_DURATION_MS`                      | `3000`                  | Group mode auto-advance timing                                                                      |
 | `LEADERBOARD_DURATION_MS`                 | `3000`                  | Group mode auto-advance timing                                                                      |
 | `ROOM_CAPACITY_LIMIT`                     | `40`                    | Max members per room; everyone who has joined counts, including members who have since disconnected |
+| `SOCKET_PER_MESSAGE_DEFLATE`              | `false`                 | `true` turns on WebSocket permessage-deflate                                                        |
+| `SOCKET_PER_MESSAGE_DEFLATE_THRESHOLD`    | `1024`                  | Smallest compressed message in bytes; `0` compresses every message and keeps context takeover       |
 | `ROOM_NO_CONNECTED_MEMBERS_TTL`           | `600000` (10 min)       | How long an empty room is kept alive                                                                |
 | `ROOM_HOST_DISCONNECTED_IN_GROUP_TTL`     | `300000` (5 min)        | Amnesty window for a disconnected host, group mode                                                  |
 | `ROOM_HOST_DISCONNECTED_IN_CLASSROOM_TTL` | `180000` (3 min)        | Amnesty window for a disconnected host, classroom mode (shorter — the host is the pacing authority) |

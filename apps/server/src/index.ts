@@ -38,6 +38,10 @@ const { app, apiRouter } = createApp({
 const { httpServer, io, gameNamespace } = createRealtimeServer({
 	app,
 	corsOrigins: env.corsOrigins,
+	perMessageDeflate: {
+		enabled: env.perMessageDeflate,
+		threshold: env.perMessageDeflateThreshold,
+	},
 })
 
 const publisher = createRoomPublisher({
@@ -99,6 +103,8 @@ httpServer.listen(env.port, env.host, () => {
 			logLevel: env.logLevel,
 			statsIntervalMs: env.statsIntervalMs,
 			roomCapacityLimit: env.roomCapacityLimit,
+			perMessageDeflate: env.perMessageDeflate,
+			perMessageDeflateThreshold: env.perMessageDeflateThreshold,
 		},
 		'server_started',
 	)

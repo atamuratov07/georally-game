@@ -199,15 +199,17 @@ for (const row of restMeta) {
  * Russian and Uzbek Latin currency labels keyed by ISO 4217 code.
  */
 const wdCurrencies = await fetchWdqsJson({
-	cacheKey: 'wdqs-currency-labels',
+	cacheKey: 'wdqs-currency-labels-v2',
 	query: `
+PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX bd: <http://www.bigdata.com/rdf#>
 PREFIX wikibase: <http://wikiba.se/ontology#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?code ?currencyRuLabel ?currencyUzLabel ?currencyEnLabel WHERE {
+SELECT ?code ?currency ?isCurrency ?currencyRuLabel ?currencyUzLabel ?currencyEnLabel WHERE {
   ?currency wdt:P498 ?code .
+  BIND(EXISTS { ?currency wdt:P31 wd:Q8142 } AS ?isCurrency)
   OPTIONAL { ?currency rdfs:label ?currencyRuLabel FILTER(LANG(?currencyRuLabel) = "ru") }
   OPTIONAL { ?currency rdfs:label ?currencyUzLabel FILTER(LANG(?currencyUzLabel) = "uz") }
   OPTIONAL { ?currency rdfs:label ?currencyEnLabel FILTER(LANG(?currencyEnLabel) = "en") }
@@ -215,11 +217,33 @@ SELECT ?code ?currencyRuLabel ?currencyUzLabel ?currencyEnLabel WHERE {
 `,
 })
 
-const currencyRuByCode = new Map()
-const currencyUzLatnByCode = new Map()
+function wikidataItemNumber(row) {
+	const match = /Q(\d+)$/.exec(row.currency?.value ?? '')
+	return match ? Number(match[1]) : Number.POSITIVE_INFINITY
+}
+
+function isPreferredCurrencyRow(candidate, current) {
+	const candidateIsCurrency = candidate.isCurrency?.value === 'true'
+	const currentIsCurrency = current.isCurrency?.value === 'true'
+	if (candidateIsCurrency !== currentIsCurrency) {
+		return candidateIsCurrency
+	}
+	return wikidataItemNumber(candidate) < wikidataItemNumber(current)
+}
+
+const currencyRowByCode = new Map()
 for (const row of wdCurrencies.results.bindings ?? []) {
 	const code = row.code?.value?.trim()
-	if (!code || currencyRuByCode.has(code)) continue
+	if (!code) continue
+	const current = currencyRowByCode.get(code)
+	if (!current || isPreferredCurrencyRow(row, current)) {
+		currencyRowByCode.set(code, row)
+	}
+}
+
+const currencyRuByCode = new Map()
+const currencyUzLatnByCode = new Map()
+for (const [code, row] of currencyRowByCode) {
 	currencyRuByCode.set(code, cleanWdLabel(row.currencyRuLabel?.value))
 	currencyUzLatnByCode.set(
 		code,

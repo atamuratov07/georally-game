@@ -15,15 +15,15 @@ Multiplayer is split into four layers:
 - [Server room subsystem](#server-room-subsystem)
 - [Room and game state model](#room-and-game-state-model)
 - [Protocol boundary](#protocol-boundary)
-- [View projection model](#view-projection-model)
+- [Room updates](#room-updates)
 - [Important behavior notes](#important-behavior-notes)
 
 ## Transports
 
-| Transport                     | Used for                                                       | Why                                                                                 |
-| ----------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| HTTP (`/api`)                 | Creating a room, looking up a room for the join screen         | Stateless request/response with no session; no socket is opened until one is needed |
-| Socket.IO (namespace `/game`) | Joining, resuming, every in-room action, and all server pushes | A member's session is bound to a live socket so the server can push snapshots to it |
+| Transport                     | Used for                                                       | Why                                                                                    |
+| ----------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| HTTP (`/api`)                 | Creating a room, looking up a room for the join screen         | Stateless request/response with no session; no socket is opened until one is needed    |
+| Socket.IO (namespace `/game`) | Joining, resuming, every in-room action, and all server pushes | A member's session is bound to a live socket so the server can push room updates to it |
 
 A socket is anonymous until it joins or resumes a session. See [`connection-lifecycle.md`](connection-lifecycle.md) for how connections, reconnections, and tab takeover work across Socket.IO and the game session.
 
@@ -51,11 +51,11 @@ sequenceDiagram
     HostPage->>Gateway: resumeHostRoom({ memberSessionToken })
     Gateway->>Handlers: room:host-resume
     Handlers->>Service: resumeHostRoom()
-    Service-->>Handlers: host snapshot (host now connected)
+    Service-->>Handlers: full room state (host now connected)
     Handlers-->>Gateway: ack
 ```
 
-**Joining (player):** `RoomPlayerPage` looks the room up over HTTP (`GET /api/rooms/:roomCode`) to render the join screen, then sends `room:join` over the socket. The join ack carries the first player snapshot, and the same socket keeps receiving pushes. A player with a stored session resumes with `room:player-resume` instead.
+**Joining (player):** `RoomPlayerPage` looks the room up over HTTP (`GET /api/rooms/:roomCode`) to render the join screen, then sends `room:join` over the socket. The join ack carries the full room state, and the same socket keeps receiving updates. A player with a stored session resumes with `room:player-resume` instead.
 
 **In-room actions and pushes:**
 
@@ -80,8 +80,8 @@ sequenceDiagram
     Service->>Domain: room/game command or transition
     Service->>Repo: persist new in-memory state
     Service->>Publisher: onRoomUpdated / onRoomClosed
-    Publisher->>Socket: role-specific snapshot push
-    Socket->>Gateway: room:host-snapshot / room:player-snapshot / room:closed
+    Publisher->>Socket: per-viewer parts to member channels, one shared update to the room channel
+    Socket->>Gateway: room:viewer / room:host-detail / room:update / room:closed
     Gateway->>Runtime: subscription callback
     Runtime->>UI: React state update
 ```
@@ -155,8 +155,8 @@ graph TD
 - `features/rooms/socket.ts` — drops packets that carry no ack callback (counted as `invalid_payload`), validates socket payloads with zod, checks socket authentication, delegates to `RoomsService`, sets `socket.data` and joins the member channel on join/resume, evicts the channel's other sockets on tab takeover, marks the member disconnected when its last socket leaves, and returns typed acks. Every handler runs through one wrapper (`runSocketCommand`, used by `handleSessionCommand` for in-room commands and by the join and resume handlers): it reports failed acks, and if the handler throws it logs `socket_handler_failed` with the error and replies `internal_error` instead of crashing the process.
 - `features/rooms/service.ts` — creates, joins, resumes, starts games, submits answers, reveals/advances classroom rounds, returns finished rooms to the lobby, closes rooms, handles disconnects, and schedules timed transitions and expiry.
 - `features/rooms/repository.ts` — stores rooms by ID/code, member sessions by token, and scheduled transition and expiry handles. It knows nothing about sockets.
-- `features/rooms/channels.ts` — the Socket.IO channel names (`member:<memberId>`) and the "does this member still have a socket" check.
-- `features/rooms/publisher.ts` — converts internal room state into host/player views and emits only the appropriate snapshot type to each connected member's channel.
+- `features/rooms/channels.ts` — the Socket.IO channel names (`member:<memberId>`, `room:<roomId>`) and the "does this member still have a socket" check.
+- `features/rooms/publisher.ts` — after every commit, sends each connected member's changed per-viewer part to its member channel, the classroom host's detail to the host's member channel, and one shared `room:update` to the room channel. It remembers the last published state per room to decide what changed. See [Room updates](#room-updates).
 - `server.ts` — creates the HTTP server and the Socket.IO `/game` namespace with typed event maps.
 
 ## Room and game state model
@@ -200,7 +200,7 @@ A room created over HTTP starts with its host **disconnected**: no socket exists
 
 | Method and path        | Purpose                            | Success                                                       |
 | ---------------------- | ---------------------------------- | ------------------------------------------------------------- |
-| `POST /rooms`          | Create a room                      | `201` with the host's session identity (no snapshot)          |
+| `POST /rooms`          | Create a room                      | `201` with the host's session identity (no room state)        |
 | `GET /rooms/:roomCode` | Look up a room for the join screen | `200`; a missing room is `exists: false`, not an error status |
 
 Errors use `400` for `invalid_payload` (including malformed JSON), `500` for `internal_error`, and `422` for domain errors. Clients read the body, not the status.
@@ -219,10 +219,11 @@ In production, nginx limits `POST /api/rooms` to 10 requests per minute per clie
 - `game:reveal-round` (classroom host)
 - `game:advance-round` (classroom host)
 
-**Server → client push events:**
+**Server → client push events** (all carry `roomId` and `serverNow`):
 
-- `room:host-snapshot`
-- `room:player-snapshot`
+- `room:update` — the shared room state, once per commit, on the room channel
+- `room:viewer` — one member's own scores and submission, on that member's channel
+- `room:host-detail` — the classroom host's participant list, on the host's channel
 - `room:closed`
 
 **Ack shape** — every socket ack and every HTTP response body uses:
@@ -231,7 +232,7 @@ In production, nginx limits `POST /api/rooms` to 10 requests per minute per clie
 type Ack<T> = { ok: true; data: T } | { ok: false; error: RoomProtocolError }
 ```
 
-The transport contract is: validate request payloads at the server edge, return typed success payloads, return typed protocol/domain errors instead of throwing exceptions across the wire, and push room updates as role-specific snapshots rather than raw internal state.
+The transport contract is: validate request payloads at the server edge, return typed success payloads, return typed protocol/domain errors instead of throwing exceptions across the wire, and push projections of the room rather than raw internal state.
 
 **Socket authentication rules:**
 
@@ -239,20 +240,34 @@ The transport contract is: validate request payloads at the server edge, return 
 - `room:host-resume` / `room:player-resume` are rejected on a socket bound to a _different_ session; resuming the same session again is allowed (reconnects rely on it).
 - Every other event requires a bound socket and acts on that socket's session.
 
-## View projection model
+## Room updates
 
-The server never sends raw `RoomState` to browsers. It projects one internal room into a view for a specific member.
+The server never sends raw `RoomState` to browsers. `packages/game-domain/src/multiplayer/room/sync.ts` splits one committed state into parts by who may see them:
 
-```mermaid
-graph LR
-    State["RoomState"] --> HostView["toGroupHostRoomView() / toClassroomHostRoomView()"]
-    State --> PlayerView["toPlayerRoomView()"]
+| Part             | Built by           | Contents                                                                                                                                   | Sent                                                                           |
+| ---------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| shared           | `toRoomSharedView` | Room phase, code, mode, counts; the game phase, current question, timestamps, `answeredCount`, and the leaderboard once players may see it | Every commit, in `room:update` on `room:<roomId>`                              |
+| members          | `toVisibleMembers` | Names, roles, connection flags                                                                                                             | In `room:update`, only in commits that changed membership or a connection flag |
+| game constants   | `toRoomGameInfo`   | `gameId`, `questionCount`, `scope`, `eligibleCountryIds`, `participantCount`                                                               | In `room:update`, only in the commit that starts the game                      |
+| last game result | `GameResult`       | Every round and submission of the finished game                                                                                            | In `room:update`, only in the commit that finishes the game                    |
+| viewer           | `toGameViewerView` | `viewerScore`, `viewerCorrectCount`, `viewerRank`, `viewerSubmission`                                                                      | `room:viewer` on `member:<memberId>`, only when it changed                     |
+| host detail      | `toGameHostDetail` | Every participant's rank, score and submission (classroom host only)                                                                       | `room:host-detail` on the host's `member:<memberId>`, every commit             |
 
-    HostView --> HostClient["host snapshot"]
-    PlayerView --> PlayerClient["player snapshot"]
-```
+Host-only and per-viewer data never goes on the room channel. The leaderboard is computed once per commit and shared by the update, the viewer parts and the host detail.
 
-Host views can include all evaluated submissions after reveal or leaderboard. Player views focus on the viewer's own submission and only show leaderboard data once the game phase allows it.
+**Revisions.** Every commit increments `RoomContext.revision`, and every commit publishes exactly one `room:update` with that revision. The publisher sends the member-channel parts of a commit before its `room:update`, and Socket.IO keeps the order of messages to one socket.
+
+**Client.** The reducer in `sync.ts` (`applyRoomSyncUpdate`, `applyRoomSyncViewerUpdate`, `applyRoomSyncHostDetailUpdate`) keeps a `RoomSync`:
+
+- A viewer or host part waits as pending until the `room:update` with the same revision arrives; both are applied together, so the screen never shows a new round with the previous round's answer.
+- An update with an older revision is ignored. An update that skips a revision marks the state out of sync, and `useRoomRuntime` resumes the session to get the full state again.
+- `members`, the game constants and the last result are kept until an update replaces them. The game constants are used only while their `gameId` matches the shared game.
+
+`composePlayerRoomView` / `composeHostRoomView` turn a `RoomSync` back into the same `RoomPlayerView`, `GroupHostRoomView` and `ClassroomHostRoomView` that `toPlayerRoomView` / `toHostRoomView` produce from the server state, so the screens did not change. `publisher.test.ts` checks that equality for every member after every commit of two games with a mid-game reconnect, in both modes. The client keeps names out of the leaderboard entries and looks members up through `getMembersById`, a map built once per member list.
+
+**Join and resume.** The ack carries `serverNow` and a full `RoomSync` (all parts for that member at the current revision), which rebuilds the client state on its own. The socket joins its member and room channels in the same handler, before the ack, so the next commit it sees is the next revision.
+
+**Clock.** Every envelope and the join/resume acks carry `serverNow`. The client stores `serverNow - Date.now()` (`model/serverClock.ts`), and `useCountdown` / `useTimestampGate` measure server timestamps against `getServerNow()`, so a device clock that is off does not change the countdown.
 
 ## Important behavior notes
 
@@ -261,6 +276,6 @@ Host views can include all evaluated submissions after reveal or leaderboard. Pl
 - Opening the same session in a second tab moves the session to the new tab and disconnects the old one, which then stops instead of reconnecting.
 - Server state is in memory only — a server restart invalidates all live room state. An exception inside a socket handler is caught, logged and answered with `internal_error`, so one bad command does not restart the server for every room. Any other uncaught exception or unhandled rejection is logged as a `fatal` line and the process exits with code 1, so Docker restarts it.
 - On shutdown, the service emits `room:closed` with reason `server_shutdown` before closing Socket.IO.
-- Host and player receive different projections of the same room state via `visibility.ts`.
+- Host and player receive different projections of the same room state: the shared part is identical for everyone, and host-only and per-viewer parts go to member channels.
 
 See [`persistence.md`](persistence.md) for what that in-memory-only design implies for scaling.

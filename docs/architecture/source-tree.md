@@ -25,12 +25,14 @@ georally-game/
 |   |   |           |-- service.ts      # multiplayer application service
 |   |   |           |-- service.test.ts # service unit tests
 |   |   |           |-- repository.ts   # in-memory rooms, member sessions, timers
-|   |   |           |-- publisher.ts    # pushes host/player snapshots and room-closed events
-|   |   |           |-- channels.ts     # Socket.IO channel names, member socket check
+|   |   |           |-- publisher.ts    # pushes room updates, per-viewer parts and room-closed events
+|   |   |           |-- publisher.test.ts # every client's composed view equals the server view
+|   |   |           |-- channels.ts     # Socket.IO member/room channel names, member socket check
 |   |   |           |-- ids.ts          # room/member/game id, room code, session token generation
 |   |   |           `-- types.ts        # Socket.IO namespace/socket types
 |   |   `-- tests/
 |   |       |-- setup.ts                # boots a real server on a random port for integration tests
+|   |       |-- roomClient.ts           # test client that applies room updates with the domain reducer
 |   |       `-- integration/
 |   |           `-- app.test.ts         # HTTP routes + socket flows end to end
 |   `-- web/
@@ -109,7 +111,7 @@ georally-game/
 |               |   |-- types.ts
 |               |   |-- sessionStorage.ts     # localStorage persistence for host/player sessions
 |               |   |-- useActionStatus.ts
-|               |   |-- useRoomRuntime.ts     # connection status, resume on reconnect, snapshots
+|               |   |-- useRoomRuntime.ts     # connection status, resume on reconnect, room sync state
 |               |   |-- useRoomHostController.ts
 |               |   |-- useRoomPlayerController.ts
 |               |   |-- useGroupHostActions.ts
@@ -117,7 +119,8 @@ georally-game/
 |               |-- model/
 |               |   |-- gameConfig.ts
 |               |   |-- gameSelectors.ts
-|               |   `-- roomSelectors.ts
+|               |   |-- roomSelectors.ts      # members by id, closed reasons
+|               |   `-- serverClock.ts        # server clock offset for countdowns
 |               |-- create/
 |               |   `-- CreateRoomForm.tsx
 |               |-- join/
@@ -159,7 +162,7 @@ georally-game/
 |   |       `-- multiplayer/
 |   |           |-- orchestration.ts     # room + game commands combined (start, submit, reveal, advance)
 |   |           |-- errors.ts
-|   |           |-- room/                # room state machine, expiry, selectors, visibility
+|   |           |-- room/                # room state machine, expiry, selectors, visibility, sync (update split + reducer)
 |   |           `-- game/                # game state machine, scoring, leaderboard, scheduling, visibility
 |   |-- game-protocol/
 |   |   `-- src/

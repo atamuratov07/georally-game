@@ -57,9 +57,9 @@ The object we call `.on` / `.emit` on, scoped to the `/game` namespace.
 - **`socket.id` changes on every reconnection.** To the server, a reconnected client is a brand-new socket.
 - **Server:** each connection is a fresh `socket` with empty `socket.data`. On disconnect, `'disconnect'` fires and that socket's `socket.data` is discarded.
 
-`connectionStateRecovery` is deliberately **not** enabled. It only restores a socket when the same in-memory client reconnects within a time window, so it cannot cover page refreshes, discarded mobile tabs, or long outages, which the token-based resume (layer 4) already covers. Room updates are full snapshots rather than deltas, so the missed-packet replay it offers has no value: the snapshot returned by resume supersedes anything missed.
+`connectionStateRecovery` is deliberately **not** enabled. It only restores a socket when the same in-memory client reconnects within a time window, so it cannot cover page refreshes, discarded mobile tabs, or long outages, which the token-based resume (layer 4) already covers. Its missed-packet replay also adds nothing here. Every reconnection goes through resume, and the resume ack carries the full room state at the current revision, which supersedes anything missed. On a live connection, every commit publishes one `room:update` with a consecutive revision, so a missed update shows up as a gap and the client resumes again ([`multiplayer.md`](multiplayer.md#room-updates)).
 
-Socket.IO also has its own "rooms" (`socket.join(...)`, broadcast groups of socket ids), called **channels** here to avoid confusion with GeoRally rooms. Every socket that serves a member joins `member:<memberId>` (`channels.ts`). Snapshots and `room:closed` go to that channel, so the server never stores socket ids. On tab takeover the new socket joins the channel first and then evicts every other socket in it.
+Socket.IO also has its own "rooms" (`socket.join(...)`, broadcast groups of socket ids), called **channels** here to avoid confusion with GeoRally rooms. Every socket that serves a member joins `member:<memberId>` and `room:<roomId>` (`channels.ts`). Per-viewer and host-only parts go to the member channel; the shared `room:update` and `room:closed` go to the room channel, so each is serialized once per room. The server never stores socket ids. On tab takeover the new socket joins the channel first and then evicts every other socket in it.
 
 ## Layer 4: Game session
 
@@ -74,15 +74,15 @@ RoomState.membersById[memberId].connected   ← what other members see
 
 `RoomsService` never sees a socket: join and resume take a token or a room code, and the socket layer calls `disconnectMember(roomId, memberId)` from `socket.data`.
 
-| Event                                                   | Server behavior                                                                                          |
-| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `POST /api/rooms` (HTTP)                                | Create the host's session with no socket; the host stays disconnected until it resumes.                  |
-| New socket connects                                     | Nothing. The socket is anonymous until it joins or resumes.                                              |
-| `room:join` / `room:host-resume` / `room:player-resume` | Mark the member connected, broadcast, set `socket.data`, join the member channel, return a snapshot.     |
-| A second socket resumes the same token                  | Join the member channel, then `disconnect(true)` every other socket in it (tab takeover).                |
-| A bound socket resumes a _different_ token              | Rejected with `unauthorized`; one socket serves at most one session.                                     |
-| Socket `'disconnect'`                                   | If no other socket is in the member channel, mark the member disconnected, broadcast, start expiry TTLs. |
-| Room expires / is terminated / server stops             | Emit `room:closed`, delete the room and its sessions.                                                    |
+| Event                                                   | Server behavior                                                                                                         |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `POST /api/rooms` (HTTP)                                | Create the host's session with no socket; the host stays disconnected until it resumes.                                 |
+| New socket connects                                     | Nothing. The socket is anonymous until it joins or resumes.                                                             |
+| `room:join` / `room:host-resume` / `room:player-resume` | Mark the member connected, broadcast, set `socket.data`, join the member and room channels, return the full room state. |
+| A second socket resumes the same token                  | Join the member channel, then `disconnect(true)` every other socket in it (tab takeover).                               |
+| A bound socket resumes a _different_ token              | Rejected with `unauthorized`; one socket serves at most one session.                                                    |
+| Socket `'disconnect'`                                   | If no other socket is in the member channel, mark the member disconnected, broadcast, start expiry TTLs.                |
+| Room expires / is terminated / server stops             | Emit `room:closed`, delete the room and its sessions.                                                                   |
 
 The `memberSessionToken`, persisted in `localStorage`, is the only identity that outlives a socket. It is what lets a member survive a refresh, a crash, or any reconnection.
 
@@ -94,7 +94,8 @@ Join before evict is the one ordering rule. Socket.IO removes a socket from its 
 
 - On `'disconnect'` with reason `'io server disconnect'`: the session was taken over by another tab. Stop and show an error; do not resume (resuming would evict the other tab, which would then do the same, forever).
 - On any other `'disconnect'`: show `reconnecting` and wait. The Manager is already retrying.
-- On `'connect'` after the session was established: send the resume request once. Success → `ready`; a rejected token → session expired; any other failure → error (a later `'connect'` will try again).
+- On `'connect'` after the session was established: send the resume request once. Success → `ready`; a rejected token → session expired; any other failure → error (a later `'connect'` will try again). Host and player pages both do this.
+- On a `room:update` whose revision skips one: show `reconnecting` and resume on the same socket. The resume ack replaces the whole client state.
 
 ## Scenarios
 

@@ -17,6 +17,7 @@ import type {
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { formatGatewayErrorMessage, toGatewayError } from '../api/errors'
 import type { RoomSubscriptionHandlers } from '../api/socketGateway'
+import { syncServerClock } from '../model/serverClock'
 import type { RoomSession } from './types'
 import { i18n } from '../../shared/i18n/setup'
 import { trackRoomClosed } from '../../shared/analytics/track'
@@ -196,18 +197,21 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 
 			unsubscribeRef.current = adapter.subscribe({
 				onRoomUpdate: payload => {
+					syncServerClock(payload.serverNow)
 					const current = getSyncState(payload.roomId)
 					if (current) {
 						applySyncState(applyRoomSyncUpdate(current, payload))
 					}
 				},
 				onRoomViewer: payload => {
+					syncServerClock(payload.serverNow)
 					const current = getSyncState(payload.roomId)
 					if (current) {
 						syncRef.current = applyRoomSyncViewerUpdate(current, payload)
 					}
 				},
 				onRoomHostDetail: payload => {
+					syncServerClock(payload.serverNow)
 					const current = getSyncState(payload.roomId)
 					if (current) {
 						syncRef.current = applyRoomSyncHostDetailUpdate(
@@ -217,6 +221,7 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 					}
 				},
 				onRoomClosed: payload => {
+					syncServerClock(payload.serverNow)
 					if (payload.roomId !== session.roomId) {
 						return
 					}
@@ -298,6 +303,7 @@ export function useRoomRuntime<TView extends RoomAnalyticsFields>({
 				if (!isActiveRun(runId)) {
 					return { kind: 'aborted' }
 				}
+				syncServerClock(response.serverNow)
 
 				const nextSession: RoomSession = {
 					...session,

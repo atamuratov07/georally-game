@@ -14,6 +14,7 @@ function createService(
 		leaderboardDurationMs?: number
 		roomExpireTTL?: Partial<RoomExpireTTLConfig>
 		logger?: Logger
+		now?: () => number
 	} = {},
 ) {
 	const repository = new RoomsRepository()
@@ -37,6 +38,7 @@ function createService(
 			...overrides.roomExpireTTL,
 		},
 		logger: overrides.logger,
+		now: overrides.now,
 	})
 
 	function createHostedRoom(input: CreateRoomInput) {
@@ -1784,5 +1786,35 @@ describe('RoomsService.getHealthSnapshot', () => {
 			connectedSessionCount: 2,
 			roomsByPhase: { lobby: 1, active: 1, finished: 0 },
 		})
+	})
+})
+
+describe('RoomsService serverNow', () => {
+	it('puts the injected clock into join and resume responses', () => {
+		const serverNow = 1_760_000_000_000
+		const { service, createHostedRoom } = createService({
+			now: () => serverNow,
+		})
+		const created = createHostedRoom({
+			hostName: 'Alice',
+			roomMode: 'classroom',
+		})
+
+		const joined = service.joinRoom({
+			roomCode: created.roomCode,
+			memberName: 'Bob',
+		})
+		const hostResumed = service.resumeHostRoom({
+			memberSessionToken: created.memberSessionToken,
+		})
+		if (!joined.ok || !hostResumed.ok) throw new Error('setup failed')
+		const playerResumed = service.resumePlayerRoom({
+			memberSessionToken: joined.value.memberSessionToken,
+		})
+		if (!playerResumed.ok) throw new Error('setup failed')
+
+		expect(joined.value.serverNow).toBe(serverNow)
+		expect(hostResumed.value.serverNow).toBe(serverNow)
+		expect(playerResumed.value.serverNow).toBe(serverNow)
 	})
 })

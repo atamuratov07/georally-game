@@ -20,6 +20,7 @@ import { i18n } from '../../shared/i18n/setup'
 import { trackRoomJoined } from '../../shared/analytics/track'
 import { useMultiplayerGameAnalytics } from '../../shared/analytics/useMultiplayerGameAnalytics'
 import { lookupRoom } from '../api/roomsApi'
+import { syncServerClock } from '../model/serverClock'
 
 type RoomPlayerEntryState =
 	| {
@@ -117,6 +118,7 @@ export function useRoomPlayerController(
 					roomCode,
 					memberName: playerName.trim(),
 				})
+				syncServerClock(response.serverNow)
 				const session: RoomSession = {
 					roomId: response.roomId,
 					roomCode: response.roomCode,

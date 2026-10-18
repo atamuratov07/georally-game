@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react'
 
+import { getServerNow } from '../../model/serverClock'
+
 export function useCountdown(deadlineAt: number | null): number {
-	const [now, setNow] = useState(() => Date.now())
+	const [now, setNow] = useState(() => getServerNow())
 
 	useEffect(() => {
 		if (!deadlineAt) {
 			return
 		}
 
-		setNow(Date.now())
+		setNow(getServerNow())
 		const intervalId = setInterval(() => {
-			setNow(Date.now())
+			setNow(getServerNow())
 		}, 1000)
 
 		return () => {

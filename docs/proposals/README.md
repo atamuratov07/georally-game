@@ -6,11 +6,10 @@ Code references name functions and files rather than line numbers, so they stay 
 
 | Proposal                                                               | Kind              | Priority | Effort |
 | ---------------------------------------------------------------------- | ----------------- | -------- | ------ |
-| [Server clock offset for countdowns](server-clock-offset.md)           | Bug (user-facing) | High     | S      |
 | [Member departure and room capacity](member-departure-and-capacity.md) | Bug (user-facing) | High     | S–M    |
 | [Player room lookup extraction](player-room-lookup-extraction.md)      | Simplification    | Medium   | M      |
 | [Client session cleanup](client-session-cleanup.md)                    | Simplification    | Low      | S      |
 
-Suggested order: the two user-facing bugs first, then the simplifications.
+Suggested order: the user-facing bug first, then the simplifications.
 
 Background reading: [`../architecture/connection-lifecycle.md`](../architecture/connection-lifecycle.md) explains the connection layers these proposals refer to.

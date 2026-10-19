@@ -1,6 +1,6 @@
 # GeoRally
 
-GeoRally is a real-time geography quiz game: a player sees a country prompt, finds it on a real map, gets immediate feedback, and repeats short rounds until the country, flag, capital, currency, and region stick. It supports solo practice and live multiplayer rooms — including a classroom mode built for a teacher running a session with a class — in English, Russian, and Uzbek (Latin script). It's a pnpm workspaces monorepo with a React client, an Express + Socket.IO realtime server, and a set of framework-free shared packages that hold the actual game rules.
+GeoRally is a real-time geography quiz game: a player sees a country prompt, finds it on a real map, gets immediate feedback, and repeats short rounds until the country, flag, capital, currency, and region stick. It supports solo practice and live multiplayer rooms, including a classroom mode built for a teacher running a session with a class, in English, Russian, and Uzbek (Latin script). It's a pnpm workspaces monorepo with a React client, an Express + Socket.IO realtime server, and a set of framework-free shared packages that hold the actual game rules.
 
 > **Status:** live in production at [georally.world](https://georally.world), actively developed.
 
@@ -14,23 +14,24 @@ GeoRally is a real-time geography quiz game: a player sees a country prompt, fin
 - [Internationalization](#internationalization)
 - [Analytics](#analytics)
 - [Testing](#testing)
+- [Performance](#performance)
 - [Deployment](#deployment)
 - [Architecture](#architecture)
 - [Scripts](#scripts)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
-- **Singleplayer world-map training** — fully client-side, no server needed. Pick question count, difficulty, region, and attempts-per-question, then click countries on an interactive map. Each round tracks attempts (`Hearts`) and a `QuestionTimer`; a wrong guess costs an attempt, and running out (or giving up) reveals the answer.
-- **Two distinct multiplayer modes** — **Group**, where the host also competes and the game is self-driving (rounds auto-advance on a timer, ~3s reveal/leaderboard windows), and **Classroom**, where the host is a monitor only (doesn't occupy a player slot, doesn't compete) and controls pacing manually, round by round.
-- **Realtime multiplayer rooms** — a host creates a room and shares a short code or link; players join from their own devices and everyone answers the same round. On every state change the server sends the part everyone shares once per room and each member's own part to that member; a resume returns the full state, so the client never has to patch deltas.
-- **Reconnect support with mode-aware amnesty** — host and player sessions persist a `memberSessionToken` in `localStorage`, so a refresh or dropped connection doesn't kick you out of a room: the client resumes the session as soon as Socket.IO reconnects, and opening the same session in a second tab moves it there instead of fighting over it. How long a room tolerates a disconnected host differs by mode (shorter for classroom, since the teacher is the pacing authority) and is configurable server-side.
-- **Multi-language UI** — English, Russian, and Uzbek (Latin script), with locale-prefixed routes (`/en`, `/ru`, `/uz`) and automatic language detection/redirect for unprefixed URLs.
-- **Typed realtime protocol** — rooms are created and looked up over a small HTTP API (`/api`); everything inside a room runs over Socket.IO. Every request and socket event is schema-validated with `zod`, and every response is an explicit `{ ok, data }` / `{ ok: false, error }` ack, over HTTP and sockets alike; the server never sends raw internal room state, only role-specific projected views.
-- **Self-built map data** — the playable country catalog and vector map tiles are generated offline from open data sources (Natural Earth, MapLibre demotiles, REST Countries, Wikidata) rather than pulled from a paid map provider at runtime.
-- **Product analytics** — GA4 event tracking across both singleplayer and multiplayer, covering visits, game starts/completions, per-question outcomes, room size, and room mode, without relying on GA4's automatic page-view tracking alone (see [Analytics](#analytics)).
-- **Automated server tests** — unit tests for the room service and integration tests that boot a real server and drive its HTTP API and socket flows, run with Vitest.
+- **Singleplayer world-map training.** Fully client-side, no server needed. Pick question count, difficulty, region, and attempts-per-question, then click countries on an interactive map. Each round tracks attempts (`Hearts`) and a `QuestionTimer`; a wrong guess costs an attempt, and running out (or giving up) reveals the answer.
+- **Two distinct multiplayer modes.** **Group**, where the host also competes and the game is self-driving (rounds auto-advance on a timer, ~3s reveal/leaderboard windows), and **Classroom**, where the host is a monitor only (doesn't occupy a player slot, doesn't compete) and controls pacing manually, round by round.
+- **Realtime multiplayer rooms.** A host creates a room and shares a short code or link; players join from their own devices and everyone answers the same round. On every state change the server sends the part everyone shares once per room and each member's own part to that member; a resume returns the full state, so the client never has to patch deltas.
+- **Reconnect support with mode-aware amnesty.** Host and player sessions persist a `memberSessionToken` in `localStorage`, so a refresh or dropped connection doesn't kick you out of a room: the client resumes the session as soon as Socket.IO reconnects, and opening the same session in a second tab moves it there instead of fighting over it. How long a room tolerates a disconnected host differs by mode (shorter for classroom, since the teacher is the pacing authority) and is configurable server-side.
+- **Multi-language UI.** English, Russian, and Uzbek (Latin script), with locale-prefixed routes (`/en`, `/ru`, `/uz`) and automatic language detection/redirect for unprefixed URLs.
+- **Typed realtime protocol.** Rooms are created and looked up over a small HTTP API (`/api`); everything inside a room runs over Socket.IO. Every request and socket event is schema-validated with `zod`, and every response is an explicit `{ ok, data }` / `{ ok: false, error }` ack, over HTTP and sockets alike; the server never sends raw internal room state, only role-specific projected views.
+- **Self-built map data.** The playable country catalog and vector map tiles are generated offline from open data sources (Natural Earth, MapLibre demotiles, REST Countries, Wikidata) rather than pulled from a paid map provider at runtime.
+- **Product analytics.** GA4 event tracking across both singleplayer and multiplayer, covering visits, game starts/completions, per-question outcomes, room size, and room mode, without relying on GA4's automatic page-view tracking alone (see [Analytics](#analytics)).
+- **Automated server tests.** Unit tests for the room service and integration tests that boot a real server and drive its HTTP API and socket flows, run with Vitest.
+- **Load-tested realtime layer.** A harness plays full games with up to 930 sockets and checks every answer and final result (see [Performance](#performance)).
 
 ## Tech stack
 
@@ -54,7 +55,7 @@ GeoRally is a real-time geography quiz game: a player sees a country prompt, fin
 ```text
 georally-game/
 ├── apps/
-│   ├── web/       # React + Vite client — singleplayer + multiplayer UI, built as one Vite entry per locale
+│   ├── web/       # React + Vite client: singleplayer + multiplayer UI, built as one Vite entry per locale
 │   └── server/    # Express + Socket.IO realtime server (multiplayer only)
 ├── packages/
 │   ├── game-domain/       # pure game rules & state machines, no framework deps
@@ -63,7 +64,7 @@ georally-game/
 │   ├── country-build/     # offline pipeline that produces the catalog + map tiles
 │   └── map-assets/        # generated map tiles land here (dist/ is gitignored)
 ├── docs/
-│   ├── architecture/      # deep-dive docs — see Architecture below
+│   ├── architecture/      # deep-dive docs, see Architecture below
 │   └── proposals/         # reviewed improvements, not yet implemented
 ├── docker-compose.yaml    # server + nginx + certbot, used for the production deploy
 └── pnpm-workspace.yaml
@@ -73,7 +74,7 @@ The full annotated source tree lives in [`docs/architecture/source-tree.md`](doc
 
 ## Getting started
 
-**Prerequisites:** Node.js (LTS) and pnpm (the repo pins `pnpm@12.9.1` via `packageManager` — `corepack enable` will pick that up automatically).
+**Prerequisites:** Node.js (LTS) and pnpm (the repo pins `pnpm@12.9.1` via `packageManager`; `corepack enable` will pick that up automatically).
 
 ```bash
 git clone https://github.com/atamuratov07/georally-game.git
@@ -81,13 +82,13 @@ cd georally-game
 pnpm install
 ```
 
-**Run the web client** (singleplayer works with this alone, no server needed — Vite serves at `http://localhost:5173` by default):
+**Run the web client** (singleplayer works with this alone, no server needed; Vite serves at `http://localhost:5173` by default):
 
 ```bash
 pnpm dev:web
 ```
 
-**Run the realtime server** (only needed for multiplayer — listens on `0.0.0.0:3001` by default):
+**Run the realtime server** (only needed for multiplayer; listens on `0.0.0.0:3001` by default):
 
 ```bash
 pnpm dev:server
@@ -107,22 +108,22 @@ pnpm build:map-assets            # write tiles into packages/map-assets/dist/til
 
 Server configuration (`apps/server/src/config/env.ts`, parsed with `zod`):
 
-| Variable                                  | Default                 | Notes                                                                                               |
-| ----------------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------- |
-| `PORT`                                    | `3001`                  |                                                                                                     |
-| `HOST`                                    | `0.0.0.0`               |                                                                                                     |
-| `CORS_ORIGIN`                             | `http://localhost:5173` | Comma-separated list; production sets this to `https://georally.world`                              |
-| `LOG_LEVEL`                               | `info`                  | `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`; logs are JSON lines on stdout       |
-| `STATS_INTERVAL_MS`                       | `60000`                 | How often the `stats` log line is written (min `1000`)                                              |
-| `REVEAL_DURATION_MS`                      | `3000`                  | Group mode auto-advance timing                                                                      |
-| `LEADERBOARD_DURATION_MS`                 | `3000`                  | Group mode auto-advance timing                                                                      |
-| `ROOM_CAPACITY_LIMIT`                     | `40`                    | Max members per room; everyone who has joined counts, including members who have since disconnected |
-| `SOCKET_PER_MESSAGE_DEFLATE`              | `false`                 | `true` turns on WebSocket permessage-deflate                                                        |
-| `SOCKET_PER_MESSAGE_DEFLATE_THRESHOLD`    | `1024`                  | Smallest compressed message in bytes; `0` compresses every message and keeps context takeover       |
-| `ROOM_NO_CONNECTED_MEMBERS_TTL`           | `600000` (10 min)       | How long an empty room is kept alive                                                                |
-| `ROOM_HOST_DISCONNECTED_IN_GROUP_TTL`     | `300000` (5 min)        | Amnesty window for a disconnected host, group mode                                                  |
-| `ROOM_HOST_DISCONNECTED_IN_CLASSROOM_TTL` | `180000` (3 min)        | Amnesty window for a disconnected host, classroom mode (shorter — the host is the pacing authority) |
-| `ROOM_FINISHED_TTL`                       | `900000` (15 min)       | How long a finished room's result stays viewable                                                    |
+| Variable                                  | Default                 | Notes                                                                                                    |
+| ----------------------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------- |
+| `PORT`                                    | `3001`                  |                                                                                                          |
+| `HOST`                                    | `0.0.0.0`               |                                                                                                          |
+| `CORS_ORIGIN`                             | `http://localhost:5173` | Comma-separated list; production sets this to `https://georally.world`                                   |
+| `LOG_LEVEL`                               | `info`                  | `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`; logs are JSON lines on stdout            |
+| `STATS_INTERVAL_MS`                       | `60000`                 | How often the `stats` log line is written (min `1000`)                                                   |
+| `REVEAL_DURATION_MS`                      | `3000`                  | Group mode auto-advance timing                                                                           |
+| `LEADERBOARD_DURATION_MS`                 | `3000`                  | Group mode auto-advance timing                                                                           |
+| `ROOM_CAPACITY_LIMIT`                     | `40`                    | Max members per room; everyone who has joined counts, including members who have since disconnected      |
+| `SOCKET_PER_MESSAGE_DEFLATE`              | `false`                 | `true` turns on WebSocket permessage-deflate                                                             |
+| `SOCKET_PER_MESSAGE_DEFLATE_THRESHOLD`    | `1024`                  | Smallest compressed message in bytes; `0` compresses every message and keeps context takeover            |
+| `ROOM_NO_CONNECTED_MEMBERS_TTL`           | `600000` (10 min)       | How long an empty room is kept alive                                                                     |
+| `ROOM_HOST_DISCONNECTED_IN_GROUP_TTL`     | `300000` (5 min)        | Amnesty window for a disconnected host, group mode                                                       |
+| `ROOM_HOST_DISCONNECTED_IN_CLASSROOM_TTL` | `180000` (3 min)        | Amnesty window for a disconnected host, classroom mode (shorter, since the host is the pacing authority) |
+| `ROOM_FINISHED_TTL`                       | `900000` (15 min)       | How long a finished room's result stays viewable                                                         |
 
 ## Internationalization
 
@@ -143,7 +144,7 @@ Game and site usage is tracked via GA4 (`gtag.js`), loaded from each locale's HT
 
 ## Testing
 
-Automated tests currently live in `apps/server` only — `game-domain`, `game-protocol`, and the web app don't have their own suites yet.
+Automated tests currently live in `apps/server` only. `game-domain`, `game-protocol`, and the web app don't have their own suites yet.
 
 Unit tests (`src/**/*.test.ts`) exercise `RoomsService` directly. Integration tests (`tests/integration/`) boot a real server on a random port through `tests/setup.ts`, then drive it with Supertest (`/health`, `/api/rooms`) and `socket.io-client` (join, resume, broadcasts, reconnection, tab takeover).
 
@@ -154,11 +155,40 @@ pnpm -F @georally/server test:integration # apps/server/tests/integration
 pnpm -F @georally/server test:coverage
 ```
 
-There's no root-level `pnpm test` proxy yet — run via the filtered command above, or `cd apps/server && pnpm test`.
+There's no root-level `pnpm test` proxy yet. Run via the filtered command above, or `cd apps/server && pnpm test`.
+
+## Performance
+
+Every state change in a room used to be serialized and sent separately to each player. Now each update is split into a shared part, serialized once and sent to the whole room, and a small per-player part (your answer, score and rank) that is sent only when it changes. Per-game constants go out once at game start, and the member list only when membership changes.
+
+**Traffic per answer and per game** (before → after):
+
+| Metric                                           | 30 players              | 80 players              |
+| ------------------------------------------------ | ----------------------- | ----------------------- |
+| Messages / JSON serializations per answer        | 32 → 3                  | 82 → 3                  |
+| Bytes a non-answering player receives per answer | 5,805 → 576 (−90%)      | 11,801 → 576 (−95%)     |
+| Server bytes per round                           | 6.0 MB → 0.72 MB (−88%) | 79.8 MB → 4.6 MB (−94%) |
+| Server bytes per game                            | 62.1 MB → 9.1 MB (−85%) | 811 MB → 58 MB (−93%)   |
+
+The cost per answer no longer grows with room size: it stays at 3 messages and about 576 bytes for any room from 5 to 80 players.
+
+**Under load** (same change, measured end to end):
+
+| Scenario                            | Answer → reveal p95       | Server CPU per round  | Peak memory (RSS)   |
+| ----------------------------------- | ------------------------- | --------------------- | ------------------- |
+| 80 players, all answer within 10 ms | 233 → 53 ms (−77%)        | 315 → 107 ms (−66%)   |                     |
+| 80 players, answers spread over 8 s | 12.9 → 8.8 ms             | 976 → 284 ms (−71%)   |                     |
+| 15 rooms × 30, answering in sync    | 259 → 77 ms (−70%)        | 563 → 232 ms (−59%)   | 321 → 191 MB (−40%) |
+| 15 rooms × 30, spread answers       |                           | 2,146 → 607 ms (−72%) | 224 → 152 MB        |
+| 30 rooms (930 sockets)              | worst step 58.9 → 17.8 ms |                       | 272 → 163 MB (−40%) |
+
+Every run passed the correctness checks: each answer was accepted exactly once, all clients got identical final results, and there were 0 ack errors at 930 sockets. The production default is 40 players per room; the 80-player runs [TO FILL: how they got past it, e.g. with `ROOM_CAPACITY_LIMIT=80`].
+
+**Offline data pipeline.** The 2,323 per-tile decode calls now run in parallel, the base-layer stage is skipped when a hash of its inputs is unchanged, and Wikidata and REST Countries responses are read from a cache unless a refresh is requested. A full rebuild went from 107.8 s to 9.7 s (−91%), or from 62.0 s to 21.3 s with the build folder cleared. The output is byte-identical: all 3,444 tiles, `tiles.json` and both catalog files match.
 
 ## Deployment
 
-Production runs via Docker Compose: a `server` container (the Socket.IO backend), an `nginx` container (built from `apps/web`, serves the static client and reverse-proxies `/socket.io/` (the Socket.IO transport, which carries the `/game` namespace), `/api/`, and `/health` to the server), and a `certbot` container that renews the Let's Encrypt TLS certificate on a loop. See `docker-compose.yaml` and `apps/web/Dockerfile` / `apps/server/Dockerfile`.
+Production runs via Docker Compose: a `server` container (the Socket.IO backend), an `nginx` container (built from `apps/web`, serves the static client and reverse-proxies `/socket.io/` (the Socket.IO transport, which carries the `/game` namespace), `/api/`, and `/health` to the server), and a `certbot` container that renews the Let's Encrypt TLS certificate on a loop. See `docker-compose.yaml` and `apps/web/Dockerfile` / `apps/server/Dockerfile`. nginx rate-limits room creation (`POST /api/rooms`) to 10 requests a minute per IP with a burst of 5; room lookups are not limited, because a whole class usually shares one school IP.
 
 ```bash
 docker compose up -d --build
@@ -233,8 +263,8 @@ All run from the repo root:
 | `pnpm build:map-assets`       | Generates tiles into `packages/map-assets/dist/tiles`, served at `/map/tiles/{z}/{x}/{y}.pbf` |
 | `pnpm lint`                   | ESLint across the repo                                                                        |
 
-Server tests are run separately — see [Testing](#testing).
+Server tests are run separately, see [Testing](#testing).
 
 ## Contributing
 
-Open an issue or PR. Run `pnpm lint`, `pnpm check`, and (for server changes) `pnpm -F @georally/server test` before submitting. The codebase is consistently tabs-indented with no semicolons — match the existing style rather than reformatting.
+Open an issue or PR. Run `pnpm lint`, `pnpm check`, and (for server changes) `pnpm -F @georally/server test` before submitting. The codebase is consistently tabs-indented with no semicolons. Match the existing style rather than reformatting.

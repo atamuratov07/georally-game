@@ -77,9 +77,7 @@ export function GameHeader({
 			}
 			end={
 				<>
-					<span className='hidden sm:inline-flex'>
-						<TimerChip seconds={elapsed} label={t('game.elapsed')} />
-					</span>
+					<TimerChip seconds={elapsed} label={t('game.elapsed')} />
 					<Button
 						type='button'
 						variant='neutral'

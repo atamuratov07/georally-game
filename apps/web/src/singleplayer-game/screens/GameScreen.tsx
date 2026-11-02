@@ -41,7 +41,7 @@ export function GameScreen({
 	onPick,
 	onGiveUp,
 	onNext,
-}: GameScreenProps): JSX.Element {
+}: GameScreenProps) {
 	const { t } = useTranslation()
 	const language = useCurrentLocale()
 	const targetId = getTargetId(state)

@@ -33,7 +33,7 @@ function formatAwardedScore(scoreDelta: number): string {
 	return scoreDelta >= 0 ? `+${scoreDelta}` : String(scoreDelta)
 }
 
-function CorrectMark(): JSX.Element {
+function CorrectMark() {
 	return (
 		<svg
 			viewBox='0 0 512 444.81'
@@ -46,7 +46,7 @@ function CorrectMark(): JSX.Element {
 	)
 }
 
-function IncorrectMark(): JSX.Element {
+function IncorrectMark() {
 	return (
 		<svg
 			viewBox='0 0 477 512.55'
@@ -62,7 +62,7 @@ function IncorrectMark(): JSX.Element {
 	)
 }
 
-function ScoreMark({ isCorrect }: { isCorrect: boolean }): JSX.Element {
+function ScoreMark({ isCorrect }: { isCorrect: boolean }) {
 	return isCorrect ? <CorrectMark /> : <IncorrectMark />
 }
 
@@ -73,7 +73,7 @@ export function ScoreBanner({
 	awardedScore,
 	durationMs = SCORE_VISIBLE_DURATION_MS,
 	className,
-}: ScoreBannerProps): JSX.Element | null {
+}: ScoreBannerProps) {
 	const { t } = useTranslation()
 	const [snapshot, setSnapshot] = useState<ScoreBannerSnapshot | null>(null)
 	const [isVisible, setIsVisible] = useState(false)

@@ -9,7 +9,7 @@ export function ScreenShell({
 	center = false,
 	className,
 	...props
-}: ScreenShellProps): JSX.Element {
+}: ScreenShellProps) {
 	return (
 		<main
 			className={cn(

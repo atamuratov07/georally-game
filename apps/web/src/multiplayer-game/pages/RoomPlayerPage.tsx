@@ -79,7 +79,7 @@ function HostConnectionNotice({ hostConnected }: { hostConnected?: boolean }) {
 	)
 }
 
-export default function RoomPlayerPage(): JSX.Element {
+export default function RoomPlayerPage() {
 	const { t } = useTranslation()
 	const params = useParams<{ roomCode: string }>()
 	const roomCode = (params.roomCode ?? '').trim().toUpperCase()

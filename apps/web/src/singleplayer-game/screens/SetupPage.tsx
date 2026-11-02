@@ -31,7 +31,7 @@ const prefetchGame = () => {
 	import('./GamePage')
 }
 
-export default function SetupPage(): JSX.Element {
+export default function SetupPage() {
 	const { t } = useTranslation()
 	const navigate = useLocalizedNavigate()
 	const [config, setConfig] = useState<GameConfig>(DEFAULT_GAME_CONFIG)

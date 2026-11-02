@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { ButtonLink, ScreenShell, SurfacePanel } from '../../shared/ui'
 
-export function InvalidConfigScreen(): JSX.Element {
+export function InvalidConfigScreen() {
 	const { t } = useTranslation()
 
 	return (

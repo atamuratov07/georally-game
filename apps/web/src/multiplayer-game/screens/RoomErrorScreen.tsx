@@ -9,7 +9,7 @@ interface RoomErrorScreenProps {
 export function RoomErrorScreen({
 	message,
 	onRetry,
-}: RoomErrorScreenProps): JSX.Element {
+}: RoomErrorScreenProps) {
 	const { t } = useTranslation()
 	return (
 		<ScreenShell center className='px-5 py-8'>

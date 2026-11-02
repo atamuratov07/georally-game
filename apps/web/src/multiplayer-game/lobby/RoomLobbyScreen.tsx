@@ -24,7 +24,7 @@ interface RoomLobbyScreenProps {
 	onTerminateRoom?: () => void
 }
 
-function InvitePanel({ roomCode }: { roomCode: string }): JSX.Element {
+function InvitePanel({ roomCode }: { roomCode: string }) {
 	const { t } = useTranslation()
 
 	const inviteUrl = useMemo(() => {
@@ -74,7 +74,7 @@ function InvitePanel({ roomCode }: { roomCode: string }): JSX.Element {
 	)
 }
 
-function MemberTile({ member }: { member: VisibleMemberInfo }): JSX.Element {
+function MemberTile({ member }: { member: VisibleMemberInfo }) {
 	return (
 		<li className='flex min-w-0 flex-col items-center gap-3 text-center'>
 			<div
@@ -110,7 +110,7 @@ export function RoomLobbyScreen({
 	isReconnecting = false,
 	onStartGame,
 	onTerminateRoom,
-}: RoomLobbyScreenProps): JSX.Element {
+}: RoomLobbyScreenProps) {
 	const { t } = useTranslation()
 
 	const isHost = role === 'host'

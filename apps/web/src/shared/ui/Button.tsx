@@ -19,7 +19,7 @@ export function Button({
 	is3d = false,
 	className,
 	...props
-}: ButtonProps): JSX.Element {
+}: ButtonProps) {
 	return (
 		<button
 			className={getButtonClassName({
@@ -45,7 +45,7 @@ export function ButtonLink({
 	is3d = false,
 	className,
 	...props
-}: ButtonLinkProps): JSX.Element {
+}: ButtonLinkProps) {
 	return (
 		<LocalizedLink
 			className={getButtonClassName({

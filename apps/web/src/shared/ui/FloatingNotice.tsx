@@ -12,7 +12,7 @@ export function FloatingNotice({
 	className?: string
 	offsetTop?: 'default' | 'stacked' | 'compact'
 	children: ReactNode
-}): JSX.Element {
+}) {
 	return (
 		<motion.div
 			initial={{

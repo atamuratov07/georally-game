@@ -6,7 +6,7 @@ export function I18nDocumentSync({
 	children,
 }: {
 	children: ReactNode
-}): JSX.Element {
+}) {
 	const language = useAppLanguage()
 
 	useEffect(() => {

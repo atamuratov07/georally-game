@@ -15,7 +15,7 @@ interface LanguageSwitcherProps {
 export function LanguageSwitcher({
 	className,
 	tone = 'light',
-}: LanguageSwitcherProps): JSX.Element {
+}: LanguageSwitcherProps) {
 	const { t } = useTranslation()
 	const language = useCurrentLocale()
 	const navigate = useLocalizedNavigate()

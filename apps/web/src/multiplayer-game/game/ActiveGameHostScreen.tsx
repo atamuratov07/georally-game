@@ -43,7 +43,7 @@ function AnimatedScore({
 	score: number
 	submission: HostParticipantStanding['submission']
 	className?: string
-}): JSX.Element {
+}) {
 	const [display, setDisplay] = useState(score)
 	const previousValueRef = useRef(score)
 
@@ -95,7 +95,7 @@ function PlayerBadge({
 }: {
 	name: string
 	connected: boolean
-}): JSX.Element {
+}) {
 	const words = name.trim().split(/\s+/)
 	const initials = (
 		words.length === 1 ? words[0].slice(0, 2) : words[0][0] + words[1][0]
@@ -147,7 +147,7 @@ function SubmissionMark({
 	submission,
 }: {
 	submission: HostParticipantStanding['submission']
-}): JSX.Element | null {
+}) {
 	const { t } = useTranslation()
 
 	if (!submission) return null
@@ -192,7 +192,7 @@ function ParticipantRow({
 	standing: HostParticipantStanding
 	showSubmission: boolean
 	startedAt: number
-}): JSX.Element {
+}) {
 	return (
 		<motion.div
 			layout
@@ -249,7 +249,7 @@ export function ActiveGameHostScreen({
 	revealPending,
 	onAdvanceRound,
 	onRevealRound,
-}: ActiveGameHostScreenProps): JSX.Element {
+}: ActiveGameHostScreenProps) {
 	const { t } = useTranslation()
 	const language = useCurrentLocale()
 	const currentRound = getCurrentRound(game)

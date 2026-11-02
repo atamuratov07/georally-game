@@ -31,7 +31,7 @@ function getLoadErrorKey(errorCode: GameLoadErrorCode | null): string {
 	return 'singleplayer.loadErrors.default'
 }
 
-export default function GamePage(): JSX.Element {
+export default function GamePage() {
 	const [searchParams] = useSearchParams()
 	const configResult = useMemo(
 		() => parseGameConfig(searchParams),
@@ -44,7 +44,7 @@ export default function GamePage(): JSX.Element {
 	return <GameContent config={configResult.value} />
 }
 
-function GameContent({ config }: { config: GameConfig }): JSX.Element {
+function GameContent({ config }: { config: GameConfig }) {
 	const { t } = useTranslation()
 	const navigate = useLocalizedNavigate()
 	const {

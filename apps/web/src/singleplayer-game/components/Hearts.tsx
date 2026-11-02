@@ -14,7 +14,7 @@ interface HeartsProps {
 export function Hearts({
 	attemptsLeft,
 	maxAttempts,
-}: HeartsProps): JSX.Element {
+}: HeartsProps) {
 	const { t } = useTranslation()
 	const safeAttempts = Math.max(0, Math.min(attemptsLeft, maxAttempts))
 

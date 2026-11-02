@@ -10,7 +10,7 @@ export function IconButton({
 	className,
 	disabled,
 	...props
-}: IconButtonProps): JSX.Element {
+}: IconButtonProps) {
 	return (
 		<button
 			className={cn(

@@ -10,7 +10,7 @@ export function RoomLoadingScreen({
 	label,
 	title,
 	message,
-}: RoomLoadingScreenProps): JSX.Element {
+}: RoomLoadingScreenProps) {
 	return (
 		<ScreenShell center className='px-5 py-8'>
 			<SurfacePanel width='sm' className='text-center'>

@@ -26,7 +26,7 @@ const loadHostScreen = () =>
 const ActiveGameParticipantScreen = lazy(loadParticipantScreen)
 const ActiveGameHostScreen = lazy(loadHostScreen)
 
-export default function RoomHostPage(): JSX.Element {
+export default function RoomHostPage() {
 	const { t } = useTranslation()
 	const params = useParams<{ roomCode: string }>()
 	const navigate = useLocalizedNavigate()

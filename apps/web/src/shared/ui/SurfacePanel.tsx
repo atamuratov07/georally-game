@@ -19,7 +19,7 @@ export function SurfacePanel({
 	width = 'md',
 	className,
 	...props
-}: SurfacePanelProps): JSX.Element {
+}: SurfacePanelProps) {
 	return (
 		<section
 			className={cn(

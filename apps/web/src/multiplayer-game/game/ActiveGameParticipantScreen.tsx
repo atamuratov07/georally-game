@@ -24,7 +24,7 @@ export function ActiveGameParticipantScreen({
 	actionErrorMessage,
 	isReconnecting,
 	onSubmitAnswer,
-}: ActiveGameParticipantScreenProps): JSX.Element {
+}: ActiveGameParticipantScreenProps) {
 	const { t } = useTranslation()
 	const currentRound = getCurrentRound(game)
 	if (game.phase === 'completed' || !currentRound) {

@@ -8,7 +8,7 @@ interface RoomClosedScreenProps {
 
 export function RoomClosedScreen({
 	reason,
-}: RoomClosedScreenProps): JSX.Element {
+}: RoomClosedScreenProps) {
 	const { t } = useTranslation()
 	return (
 		<ScreenShell center className='px-5 py-8'>

@@ -37,7 +37,7 @@ export function CreateRoomForm({
 	pending,
 	submitError,
 	className,
-}: CreateRoomFormProps): JSX.Element {
+}: CreateRoomFormProps) {
 	const { t } = useTranslation()
 	const [hostName, setHostName] = useState('')
 	const [roomMode, setRoomMode] = useState<RoomMode>('group')

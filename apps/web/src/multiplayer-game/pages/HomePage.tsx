@@ -12,7 +12,7 @@ import { useLocalizedNavigate } from '../../app/useLocalizedNavigate'
 import { trackRoomCreated } from '../../shared/analytics/track'
 import { createRoom } from '../api/roomsApi'
 
-export default function HomePage(): JSX.Element {
+export default function HomePage() {
 	const { t } = useTranslation()
 	const navigate = useLocalizedNavigate()
 	const [createError, setCreateError] = useState<string | null>(null)

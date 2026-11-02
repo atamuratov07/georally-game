@@ -38,7 +38,7 @@ export function RoomFinishedScreen({
 	actionErrorMessage = null,
 	onPlayAgain,
 	onTerminateRoom,
-}: RoomFinishedScreenProps): JSX.Element {
+}: RoomFinishedScreenProps) {
 	const { t } = useTranslation()
 	let viewerEntry: GameLeaderboardEntry | null = null
 

@@ -10,7 +10,7 @@ interface ResultsListProps {
 export function ResultsList({
 	entries,
 	viewerMemberId,
-}: ResultsListProps): JSX.Element | null {
+}: ResultsListProps) {
 	const { t } = useTranslation()
 	if (!entries.length) {
 		return null

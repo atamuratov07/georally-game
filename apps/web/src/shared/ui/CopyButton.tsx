@@ -39,7 +39,7 @@ export function CopyButton({
 	variant = 'secondary',
 	size = 'md',
 	...props
-}: CopyButtonProps): JSX.Element {
+}: CopyButtonProps) {
 	const [copied, setCopied] = useState(false)
 	const resetTimerRef = useRef<number | null>(null)
 

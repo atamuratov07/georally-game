@@ -17,7 +17,7 @@ export function AlertMessage({
 	tone = 'info',
 	className,
 	...props
-}: AlertMessageProps): JSX.Element {
+}: AlertMessageProps) {
 	return (
 		<p
 			role={tone === 'error' ? 'alert' : undefined}

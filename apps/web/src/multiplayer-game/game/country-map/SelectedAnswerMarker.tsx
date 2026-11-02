@@ -1,6 +1,6 @@
 import { MapPin } from 'lucide-react'
 
-export function SelectedAnswerMarker(): JSX.Element {
+export function SelectedAnswerMarker() {
 	return (
 		<div
 			aria-hidden='true'

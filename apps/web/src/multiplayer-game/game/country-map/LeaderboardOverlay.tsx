@@ -14,7 +14,7 @@ export function RoomLeaderboardOverlay({
 	entries,
 	viewerParticipantId,
 	shownAt,
-}: RoomLeaderboardOverlayProps): JSX.Element | null {
+}: RoomLeaderboardOverlayProps) {
 	const { t } = useTranslation()
 	const showList = useTimestampGate(shownAt, LEADERBOARD_LIST_DELAY_MS)
 

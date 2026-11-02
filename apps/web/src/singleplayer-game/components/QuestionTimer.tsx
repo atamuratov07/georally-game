@@ -11,7 +11,7 @@ export function QuestionTimer({
 	isPlaying,
 	questionStartedAt,
 	questionResolvedAt,
-}: QuestionTimerProps): JSX.Element {
+}: QuestionTimerProps) {
 	const { t } = useTranslation()
 	const [now, setNow] = useState(() => Date.now())
 

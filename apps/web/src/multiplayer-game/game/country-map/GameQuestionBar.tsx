@@ -26,7 +26,7 @@ function QuestionBarChip({
 	label: string
 	value: string
 	className?: string
-}): JSX.Element {
+}) {
 	return (
 		<div
 			className={`rounded-full bg-white/12 px-3 py-2 text-left text-slate-100 ${className ?? ''}`}
@@ -43,7 +43,7 @@ function CountdownTimer({
 	deadlineAt,
 }: {
 	deadlineAt: number | null
-}): JSX.Element | null {
+}) {
 	const { t } = useTranslation()
 	const secondsLeft = useCountdown(deadlineAt)
 	const isUrgent = secondsLeft <= URGENT_COUNTDOWN_SECONDS
@@ -86,7 +86,7 @@ export function GameQuestionBar({
 	targetName,
 	targetFlagUrl,
 	deadlineAt,
-}: RoomGameHeaderProps): JSX.Element {
+}: RoomGameHeaderProps) {
 	const { t } = useTranslation()
 
 	return (

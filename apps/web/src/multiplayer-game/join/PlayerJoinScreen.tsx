@@ -27,7 +27,7 @@ export function PlayerJoinScreen({
 	submitError,
 	resumeMessage,
 	onJoin,
-}: PlayerJoinScreenProps): JSX.Element {
+}: PlayerJoinScreenProps) {
 	const { t } = useTranslation()
 	const [playerName, setPlayerName] = useState('')
 

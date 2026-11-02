@@ -17,7 +17,7 @@ export function GameResultModal({
 	totalCount,
 	onTryAgain,
 	onHome,
-}: GameResultModalProps): JSX.Element | null {
+}: GameResultModalProps) {
 	const { t } = useTranslation()
 
 	if (!open) {

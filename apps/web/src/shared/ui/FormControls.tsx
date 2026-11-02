@@ -30,7 +30,7 @@ export function Field({
 	children,
 	className,
 	labelClassName,
-}: FieldProps): JSX.Element {
+}: FieldProps) {
 	return (
 		<label className={cn('block', className)}>
 			<span
@@ -74,7 +74,7 @@ export function TextInput({
 	tone = 'light',
 	className,
 	...props
-}: TextInputProps): JSX.Element {
+}: TextInputProps) {
 	return (
 		<input
 			className={getControlClassName({ accent, tone, className })}
@@ -94,7 +94,7 @@ export function SelectControl({
 	tone = 'light',
 	className,
 	...props
-}: SelectControlProps): JSX.Element {
+}: SelectControlProps) {
 	return (
 		<select
 			className={getControlClassName({ accent, tone, className })}

@@ -31,7 +31,7 @@ export function CountryMapGameScreen({
 	showCountryInfo,
 	submitPending,
 	onSubmitAnswer,
-}: CountryMapGameScreenProps): JSX.Element {
+}: CountryMapGameScreenProps) {
 	const { t } = useTranslation()
 	const language = useCurrentLocale()
 	const { mapProps } = useGameMap({

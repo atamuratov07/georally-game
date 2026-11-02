@@ -1,6 +1,6 @@
 import type { GameConfig } from '@georally/game-domain/multiplayer'
 import { Gauge, Globe2, ListChecks, Timer } from 'lucide-react'
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { SelectControl } from '../../shared/ui'
 import {
 	DIFFICULTY_OPTIONS,
@@ -21,12 +21,12 @@ interface GameConfigPanelProps {
 }
 
 interface ConfigFieldProps {
-	icon: JSX.Element
+	icon: ReactNode
 	label: string
-	children: JSX.Element
+	children: ReactNode
 }
 
-function ConfigField({ icon, label, children }: ConfigFieldProps): JSX.Element {
+function ConfigField({ icon, label, children }: ConfigFieldProps) {
 	return (
 		<label className='group block rounded-2xl border border-slate-200 bg-white/88 p-4 shadow-[0_14px_34px_rgba(15,23,42,0.08)] transition hover:border-amber-300/80 hover:bg-white'>
 			<span className='mb-3 flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.18em] text-slate-500'>
@@ -45,7 +45,7 @@ export function GameConfigPanel({
 	formId,
 	requireQuestionDuration,
 	onStartGame,
-}: GameConfigPanelProps): JSX.Element {
+}: GameConfigPanelProps) {
 	const { t } = useTranslation()
 
 	const [config, setConfig] = useState<GameConfig>(() =>

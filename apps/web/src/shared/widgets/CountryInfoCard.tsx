@@ -42,7 +42,7 @@ function Tag({
 }: {
 	label: string
 	tone: CountryTagTone
-}): JSX.Element {
+}) {
 	const styles = TAG_STYLES[tone]
 
 	return (
@@ -60,7 +60,7 @@ function InfoRow({
 }: {
 	label: string
 	value: string
-}): JSX.Element {
+}) {
 	return (
 		<div className='flex items-baseline justify-between gap-3'>
 			<p className='text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500'>
@@ -73,7 +73,7 @@ function InfoRow({
 	)
 }
 
-export function CountryInfoCard({ info }: { info: CountryInfo }): JSX.Element {
+export function CountryInfoCard({ info }: { info: CountryInfo }) {
 	const { t } = useTranslation()
 	const language = useCurrentLocale()
 	const unknownLabel = t('common.unknown')

@@ -94,7 +94,7 @@ function MapRendererInner({
 	disabled = false,
 	className,
 	resetViewKey = null,
-}: MapRendererProps): JSX.Element {
+}: MapRendererProps) {
 	const { t } = useTranslation()
 	const language = useCurrentLocale()
 	const mapRef = useRef<MapRef | null>(null)

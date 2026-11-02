@@ -23,7 +23,7 @@ export function GameHeader({
 	questionStartedAt,
 	questionResolvedAt,
 	onGiveUp,
-}: GameHeaderBarProps): JSX.Element {
+}: GameHeaderBarProps) {
 	const { t } = useTranslation()
 	const progressLabel = questionCount
 		? t('singleplayer.questionProgress', {

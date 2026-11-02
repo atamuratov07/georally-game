@@ -46,8 +46,8 @@ export default function HomePage() {
 	const { t } = useTranslation()
 
 	return (
-		<div className='fixed inset-0 overflow-y-auto'>
-			<div className='relative min-h-full'>
+		<div className='relative min-h-dvh'>
+			<div>
 				<SkyBackground />
 				<div className='relative'>
 					<AppHeader />

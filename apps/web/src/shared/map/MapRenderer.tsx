@@ -21,7 +21,10 @@ import {
 import { cn } from '../utils'
 import { CONTINENT_VIEW_PRESETS } from './continent-view'
 import {
+	ARCHIPELAGO_FILL_LAYER_ID,
+	ARCHIPELAGO_SOURCE_ID,
 	BASE_STYLE_LAYER_ID,
+	buildArchipelagoLayers,
 	buildCapitalLabelLayer,
 	buildCountryLabelLayer,
 	buildDimLayer,
@@ -62,7 +65,7 @@ const INITIAL_VIEW_STATE = {
 
 const MAP_STYLE = { width: '100%', height: '100%' }
 
-const INTERACTIVE_LAYER_IDS = [BASE_STYLE_LAYER_ID]
+const INTERACTIVE_LAYER_IDS = [BASE_STYLE_LAYER_ID, ARCHIPELAGO_FILL_LAYER_ID]
 
 const transformRequest = (url: string) => {
 	const absoluteUrl = url.startsWith('/')
@@ -187,6 +190,10 @@ function MapRendererInner({
 					},
 					{ hover },
 				)
+				map.setFeatureState(
+					{ source: ARCHIPELAGO_SOURCE_ID, id: countryId },
+					{ hover },
+				)
 			} catch (error) {
 				console.warn('Failed to update hover state:', error)
 			}
@@ -289,6 +296,11 @@ function MapRendererInner({
 	const selectionLineLayer = useMemo(
 		() => buildSelectionLineLayer(selectedId, selectedId !== null),
 		[selectedId],
+	)
+
+	const archipelagoLayers = useMemo(
+		() => buildArchipelagoLayers(interactiveIds, highlights, selectedId),
+		[interactiveIds, highlights, selectedId],
 	)
 
 	const dimLayer = useMemo(() => {
@@ -523,6 +535,11 @@ function MapRendererInner({
 			>
 				<NavigationControl showCompass={false} position='top-left' />
 
+				<Layer {...archipelagoLayers.fill} beforeId={BASE_STYLE_LAYER_ID} />
+				<Layer
+					{...archipelagoLayers.outline}
+					beforeId={BASE_STYLE_LAYER_ID}
+				/>
 				<Layer {...dimLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
 				<Layer {...highlightLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
 				<Layer {...selectionFillLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />

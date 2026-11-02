@@ -1,6 +1,7 @@
 import { animate } from 'motion'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { celebrate } from '@/shared/lib/confetti'
 import {
 	Button,
 	Dialog,
@@ -44,6 +45,10 @@ export function GameResultModal({
 	onHome,
 }: GameResultModalProps) {
 	const { t } = useTranslation()
+
+	useEffect(() => {
+		if (open) celebrate()
+	}, [open])
 
 	return (
 		<Dialog open={open}>

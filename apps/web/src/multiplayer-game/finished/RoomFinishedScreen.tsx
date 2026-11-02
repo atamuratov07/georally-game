@@ -1,10 +1,12 @@
 import type { RoomFinishedView } from '@georally/game-domain/multiplayer'
 import { motion } from 'motion/react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LocalizedLink } from '@/app/LocalizedLink'
 import { PageShell } from '@/shared/layout'
 import { Button, Card, CardHeader, CardTitle, TextButton } from '@/shared/ui'
 import { RankingList } from '@/shared/widgets/RankingList'
+import { celebrate } from '@/shared/lib/confetti'
 import { cn } from '@/shared/utils'
 import { RoomNotices } from '@/shared/widgets/RoomNotices'
 import { getLeaderboardEntries } from '../model/gameSelectors'
@@ -77,6 +79,10 @@ export function RoomFinishedScreen({
 		...entry,
 		colorIndex: colorIndexes.get(entry.participantId),
 	}))
+
+	useEffect(() => {
+		celebrate()
+	}, [])
 
 	return (
 		<PageShell width='md'>

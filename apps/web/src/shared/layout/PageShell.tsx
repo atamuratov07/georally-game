@@ -26,7 +26,7 @@ export function PageShell({
 	children,
 }: PageShellProps) {
 	return (
-		<div className='fixed inset-0 flex flex-col overflow-y-auto'>
+		<div className='relative flex min-h-dvh flex-col'>
 			<SkyBackground />
 			<AppHeader className='relative'>{headerActions}</AppHeader>
 			<main

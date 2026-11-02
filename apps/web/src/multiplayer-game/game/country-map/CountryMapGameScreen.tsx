@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useCurrentLocale } from '@/app/LocaleContext'
 import { getCountryName } from '@/shared/i18n'
 import { MapRenderer } from '@/shared/map/MapRenderer'
-import { GameHud, TimerChip } from '@/shared/widgets/GameHud'
+import { GameHud } from '@/shared/widgets/GameHud'
 import { ScoreBanner } from '@/shared/widgets/ScoreBanner'
 import {
 	getLeaderboardEntries,
@@ -13,24 +13,9 @@ import {
 	type CurrentRoundView,
 } from '../../model/gameSelectors'
 import { getMemberColorIndexes } from '../../model/roomSelectors'
-import { useCountdown } from '../hooks/useCountdown'
+import { Countdown } from '../Countdown'
 import { RoomLeaderboardOverlay } from './LeaderboardOverlay'
 import { useGameMap } from './useGameMap'
-
-const URGENT_COUNTDOWN_SECONDS = 5
-
-function Countdown({ deadlineAt }: { deadlineAt: number }) {
-	const { t } = useTranslation()
-	const secondsLeft = useCountdown(deadlineAt)
-
-	return (
-		<TimerChip
-			seconds={secondsLeft}
-			urgent={secondsLeft <= URGENT_COUNTDOWN_SECONDS}
-			label={t('game.timeLeft')}
-		/>
-	)
-}
 
 interface CountryMapGameScreenProps {
 	game: ActiveGameParticipantView

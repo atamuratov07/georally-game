@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { AppHeader } from '@/shared/layout'
+import { AppHeader, SkyBackground } from '@/shared/layout'
 import { Button } from '@/shared/ui'
 import { cn } from '@/shared/utils'
 import { LocalizedLink } from './LocalizedLink'
@@ -48,6 +48,7 @@ export default function HomePage() {
 	return (
 		<div className='fixed inset-0 overflow-y-auto'>
 			<div className='relative min-h-full'>
+				<SkyBackground />
 				<div className='relative'>
 					<AppHeader />
 

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/shared/utils'
 import { AppHeader } from './AppHeader'
+import { SkyBackground } from './SkyBackground'
 
 const WIDTH_CLASSES = {
 	sm: 'max-w-md',
@@ -26,10 +27,11 @@ export function PageShell({
 }: PageShellProps) {
 	return (
 		<div className='fixed inset-0 flex flex-col overflow-y-auto'>
-			<AppHeader>{headerActions}</AppHeader>
+			<SkyBackground />
+			<AppHeader className='relative'>{headerActions}</AppHeader>
 			<main
 				className={cn(
-					'mx-auto flex w-full flex-1 flex-col px-2.5 pt-2 pb-12 sm:px-6 sm:pt-6',
+					'relative mx-auto flex w-full flex-1 flex-col px-2.5 pt-2 pb-12 sm:px-6 sm:pt-6',
 					WIDTH_CLASSES[width],
 					center && 'justify-center sm:pb-24',
 					className,

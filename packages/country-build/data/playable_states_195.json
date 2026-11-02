@@ -313,5 +313,21 @@
 		"UZB",
 		"VEN",
 		"YEM"
-	]
+	],
+	"archipelagos": {
+		"ATG": 25,
+		"BHS": 57,
+		"COM": 30,
+		"CPV": 100,
+		"FSM": 170,
+		"KIR": 150,
+		"MDV": 70,
+		"MHL": 150,
+		"PLW": 40,
+		"STP": 95,
+		"SYC": 125,
+		"TON": 90,
+		"TUV": 85,
+		"VCT": 15
+	}
 }

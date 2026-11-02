@@ -197,6 +197,7 @@ georally-game/
 |   |       |-- 05_make_tilesjson.mjs
 |   |       |-- 06_build_registry.mjs
 |   |       |-- 06_build_registry.sh
+|   |       |-- 07_build_archipelago_outlines.mjs
 |   |       `-- lib/
 |   |           |-- cache.mjs
 |   |           |-- continent.mjs

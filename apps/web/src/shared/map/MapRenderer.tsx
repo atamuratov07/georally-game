@@ -27,6 +27,8 @@ import {
 	buildDimLayer,
 	buildGeolinesLablelLayer,
 	buildHighlightLayer,
+	buildSelectionFillLayer,
+	buildSelectionLineLayer,
 	capitalDotLayer,
 	hoverLayer,
 	LABELS_BOTTOM_LAYER_ID,
@@ -271,9 +273,23 @@ function MapRendererInner({
 
 	// Layers ================================================
 
+	const selectedId =
+		highlights.find(highlight => highlight.tone === 'selected')?.countryId ??
+		null
+
 	const highlightLayer = useMemo(() => {
-		return buildHighlightLayer(highlights)
-	}, [highlights])
+		return buildHighlightLayer(highlights, selectedId)
+	}, [highlights, selectedId])
+
+	const selectionFillLayer = useMemo(
+		() => buildSelectionFillLayer(selectedId, selectedId !== null),
+		[selectedId],
+	)
+
+	const selectionLineLayer = useMemo(
+		() => buildSelectionLineLayer(selectedId, selectedId !== null),
+		[selectedId],
+	)
 
 	const dimLayer = useMemo(() => {
 		return buildDimLayer(interactiveIds, true)
@@ -502,6 +518,8 @@ function MapRendererInner({
 
 				<Layer {...dimLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
 				<Layer {...highlightLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
+				<Layer {...selectionFillLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
+				<Layer {...selectionLineLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
 				<Layer {...hoverLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
 				<Layer {...geolinesLabelLayer} />
 				<Layer {...capitalDotLayer} filter={labelFilter} />

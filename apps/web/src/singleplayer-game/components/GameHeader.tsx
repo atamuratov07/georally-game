@@ -1,4 +1,4 @@
-import { Flag, LogOut } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LocalizedLink } from '@/app/LocalizedLink'
@@ -13,7 +13,6 @@ interface GameHeaderProps {
 	isPlaying: boolean
 	questionStartedAt: number
 	questionResolvedAt: number | null
-	onGiveUp: () => void
 }
 
 function useElapsedSeconds(
@@ -42,7 +41,6 @@ export function GameHeader({
 	isPlaying,
 	questionStartedAt,
 	questionResolvedAt,
-	onGiveUp,
 }: GameHeaderProps) {
 	const { t } = useTranslation()
 	const elapsed = useElapsedSeconds(
@@ -75,24 +73,7 @@ export function GameHeader({
 					</LocalizedLink>
 				</Button>
 			}
-			end={
-				<>
-					<TimerChip seconds={elapsed} label={t('game.elapsed')} />
-					<Button
-						type='button'
-						variant='neutral'
-						className='h-11 px-3 sm:px-4'
-						aria-label={t('singleplayer.giveUp')}
-						onClick={onGiveUp}
-						disabled={!isPlaying}
-					>
-						<Flag aria-hidden='true' />
-						<span className='hidden md:inline'>
-							{t('singleplayer.giveUp')}
-						</span>
-					</Button>
-				</>
-			}
+			end={<TimerChip seconds={elapsed} label={t('game.elapsed')} />}
 		/>
 	)
 }

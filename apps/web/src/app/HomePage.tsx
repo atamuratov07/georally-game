@@ -1,8 +1,11 @@
+import { lazy, Suspense } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { AppHeader } from '@/shared/layout'
 import { Button } from '@/shared/ui'
 import { cn } from '@/shared/utils'
 import { LocalizedLink } from './LocalizedLink'
+
+const HeroGlobe = lazy(() => import('./landing/HeroGlobe'))
 
 const MODE_POINTS = ['point1', 'point2', 'point3'] as const
 
@@ -30,6 +33,14 @@ const STEPS = [
 	{ n: 2, color: 'text-grape-500' },
 	{ n: 3, color: 'text-coral-500' },
 ] as const
+
+function GlobePlaceholder() {
+	return (
+		<div className='mx-auto w-full max-w-[440px] pt-16'>
+			<div className='aspect-square w-full rounded-full bg-ocean-200' />
+		</div>
+	)
+}
 
 export default function HomePage() {
 	const { t } = useTranslation()
@@ -69,6 +80,9 @@ export default function HomePage() {
 									</Button>
 								</div>
 							</div>
+							<Suspense fallback={<GlobePlaceholder />}>
+								<HeroGlobe />
+							</Suspense>
 						</section>
 
 						<section

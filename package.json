@@ -14,6 +14,7 @@
 		"build:tippecanoe-image": "docker build -t tippecanoe:latest packages/country-build/docker",
 		"build:data": "pnpm -F @georally/country-build build:data",
 		"build:country-registry": "pnpm -F @georally/country-build build:registry --out-dir ../../packages/country-catalog/generated",
+		"build:archipelago-outlines": "pnpm -F @georally/country-build build:outlines",
 		"build:map-assets": "pnpm -F @georally/country-build build:tiles --tiles-dir ../../packages/map-assets/dist/tiles --tiles-url-template /map/tiles/{z}/{x}/{y}.pbf",
 		"lint": "eslint ."
 	},

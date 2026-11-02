@@ -352,6 +352,11 @@
 				"countries": "ISO_N3"
 			}
 		},
+		"archipelagos": {
+			"type": "geojson",
+			"data": "/map/archipelagos.geojson",
+			"promoteId": "ISO_N3"
+		},
 		"crimea": {
 			"type": "geojson",
 			"data": {

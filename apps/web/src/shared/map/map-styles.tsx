@@ -2,6 +2,7 @@ import type { CountryInfo } from '@georally/country-catalog'
 import { countryCatalog } from '@georally/country-catalog'
 import type {
 	DataDrivenPropertyValueSpecification,
+	ExpressionSpecification,
 	FilterSpecification,
 } from 'maplibre-gl'
 import type {
@@ -30,6 +31,9 @@ export const COUNTRY_LABEL_LAYER_ID = 'countries-label'
 export const CAPITAL_LABEL_LAYER_ID = 'capitals-label'
 export const CAPITAL_DOT_LAYER_ID = 'capitals-dot'
 export const GEOLINES_LABEL_LAYER_ID = 'geolines-label'
+export const ARCHIPELAGO_SOURCE_ID = 'archipelagos'
+export const ARCHIPELAGO_FILL_LAYER_ID = 'archipelagos-fill'
+export const ARCHIPELAGO_OUTLINE_LAYER_ID = 'archipelagos-outline'
 export const LABELS_BOTTOM_LAYER_ID = 'geolines'
 
 export const WRONG_FILL = '#fb5f4c'
@@ -327,6 +331,76 @@ export const capitalDotLayer: CircleLayerSpecification = {
 		'circle-stroke-color': '#ffffff',
 		'circle-stroke-width': 1,
 	},
+}
+
+// Drawn under the country fills, so they show over sea only and land keeps priority on click;
+export function buildArchipelagoLayers(
+	interactiveIds: ReadonlySet<string>,
+	highlights: readonly MapHighlight[],
+	selectedId: string | null,
+): { fill: FillLayerSpecification; outline: LineLayerSpecification } {
+	const toneById = new Map<string, string>()
+	for (const highlight of highlights) {
+		toneById.set(
+			highlight.countryId,
+			highlight.tone === 'selected' && highlight.countryId === selectedId
+				? SELECTION_FILL
+				: {
+						correct: REVEALED_FILL,
+						wrong: WRONG_FILL,
+						selected: SELECTED_FILL,
+					}[highlight.tone],
+		)
+	}
+	const visibleIds = new Set([...interactiveIds, ...toneById.keys()])
+	const isoN3: ExpressionSpecification = ['to-string', ['get', 'ISO_N3']]
+	const isHovered: ExpressionSpecification = [
+		'boolean',
+		['feature-state', 'hover'],
+		false,
+	]
+	const hasTone: ExpressionSpecification | boolean =
+		toneById.size > 0
+			? ['in', isoN3, ['literal', [...toneById.keys()]]]
+			: false
+	const toneColor = (fallback: string): ExpressionSpecification | string =>
+		toneById.size > 0
+			? ([
+					'match',
+					isoN3,
+					...[...toneById].flat(),
+					fallback,
+				] as ExpressionSpecification)
+			: fallback
+	const filter: FilterSpecification = [
+		'in',
+		isoN3,
+		['literal', [...visibleIds]],
+	]
+
+	return {
+		fill: {
+			id: ARCHIPELAGO_FILL_LAYER_ID,
+			type: 'fill',
+			source: ARCHIPELAGO_SOURCE_ID,
+			filter,
+			paint: {
+				'fill-color': ['case', isHovered, '#9b6cfb', toneColor('#ffffff')],
+				'fill-opacity': ['case', isHovered, 0.3, hasTone, 0.4, 0],
+			},
+		},
+		outline: {
+			id: ARCHIPELAGO_OUTLINE_LAYER_ID,
+			type: 'line',
+			source: ARCHIPELAGO_SOURCE_ID,
+			filter,
+			layout: { 'line-join': 'round' },
+			paint: {
+				'line-color': ['case', isHovered, '#5527aa', toneColor('#1077B0')],
+				'line-width': ['interpolate', ['linear'], ['zoom'], 1, 1, 6, 2],
+			},
+		},
+	}
 }
 
 function countryFilter(countryId: string | null): FilterSpecification {

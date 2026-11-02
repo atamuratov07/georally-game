@@ -57,6 +57,11 @@ const getLocaleInputs = () => {
 export default defineConfig({
 	plugins: [react(), tailwindcss(), pbfHeaders()],
 	base: '/',
+	resolve: {
+		alias: {
+			'@': resolve(__dirname, 'src'),
+		},
+	},
 	optimizeDeps: {
 		exclude: ['maplibre-gl'],
 	},

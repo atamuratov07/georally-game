@@ -92,11 +92,17 @@ export function TimerChip({
 			aria-label={`${label}: ${formatClock(seconds)}`}
 			key={urgent ? seconds : 'calm'}
 			className={cn(
-				'inline-flex items-center gap-1.5 px-1 text-xl font-black tabular-nums',
-				urgent ? 'animate-bump text-coral-400' : 'text-sunflower-300',
+				'inline-flex h-8 items-center gap-1 rounded-full px-2.5 text-base font-black text-white tabular-nums shadow-[0_3px_0_0_var(--edge)] [text-shadow:0_1px_0_var(--edge)] sm:h-9 sm:gap-1.5 sm:px-3 sm:text-lg',
+				urgent
+					? 'animate-bump bg-coral-500 [--edge:var(--color-coral-700)]'
+					: 'bg-sunflower-500 [--edge:var(--color-sunflower-700)]',
 			)}
 		>
-			<Timer aria-hidden='true' className='size-5' strokeWidth={2.75} />
+			<Timer
+				aria-hidden='true'
+				className='size-4 sm:size-4.5'
+				strokeWidth={2.75}
+			/>
 			{formatClock(seconds)}
 		</span>
 	)

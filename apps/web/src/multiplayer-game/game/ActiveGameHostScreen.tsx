@@ -11,6 +11,7 @@ import { StatusScreen } from '@/shared/layout'
 import { Avatar, Button, Card } from '@/shared/ui'
 import { cn } from '@/shared/utils'
 import { GameHud } from '@/shared/widgets/GameHud'
+import { Countdown } from './Countdown'
 import { RoomNotices } from '@/shared/widgets/RoomNotices'
 import {
 	getCurrentRound,
@@ -222,7 +223,7 @@ export function ActiveGameHostScreen({
 				completed={game.currentQuestionNumber - (isOpen ? 1 : 0)}
 				targetName={targetName}
 				targetFlagUrl={targetCountry?.flagUrl}
-				end={
+				start={
 					isOpen ? (
 						<span
 							className='inline-flex items-center gap-1.5 px-1 text-xl font-black text-ocean-300 tabular-nums'
@@ -238,6 +239,11 @@ export function ActiveGameHostScreen({
 							/>
 							{game.answeredCount}/{game.participantCount}
 						</span>
+					) : null
+				}
+				end={
+					isOpen && currentRound.deadlineAt !== null ? (
+						<Countdown deadlineAt={currentRound.deadlineAt} />
 					) : null
 				}
 			/>

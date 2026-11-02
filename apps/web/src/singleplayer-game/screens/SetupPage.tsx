@@ -9,17 +9,16 @@ import { createSearchParams } from 'react-router-dom'
 import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
 import { BackLink, PageShell } from '@/shared/layout'
 import { Button, Card, CardHeader, CardTitle } from '@/shared/ui'
+import { RegionPicker } from '@/shared/widgets/region-map/RegionPicker'
 import {
 	difficultyOptions,
 	numberOptions,
-	scopeOptions,
 } from '@/shared/widgets/settingOptions'
 import { SettingToggleGroup } from '@/shared/widgets/SettingToggleGroup'
 import {
 	ATTEMPTS_PER_QUESTION_OPTIONS,
 	DIFFICULTY_OPTIONS,
 	QUESTION_COUNT_OPTIONS,
-	SCOPE_OPTIONS,
 } from '../core/config'
 
 const prefetchGame = () => {
@@ -63,10 +62,9 @@ export default function SetupPage() {
 				</CardHeader>
 
 				<div className='flex flex-col gap-6'>
-					<SettingToggleGroup
+					<RegionPicker
 						label={t('settings.region')}
 						value={config.scope}
-						options={scopeOptions(t, SCOPE_OPTIONS)}
 						onChange={scope => update({ scope })}
 					/>
 					<SettingToggleGroup

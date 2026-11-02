@@ -5,10 +5,10 @@ import {
 import { useEffect, useState, type SubmitEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Card, CardHeader, CardTitle } from '@/shared/ui'
+import { RegionPicker } from '@/shared/widgets/region-map/RegionPicker'
 import {
 	difficultyOptions,
 	numberOptions,
-	scopeOptions,
 } from '@/shared/widgets/settingOptions'
 import {
 	SettingToggleGroup,
@@ -20,7 +20,6 @@ import {
 	QUESTION_COUNT_OPTIONS,
 	QUESTION_DURATION_MS_OPTIONS,
 	saveRoomGameConfig,
-	SCOPE_OPTIONS,
 } from '../model/gameConfig'
 
 const TIMER_OFF = 0
@@ -89,10 +88,9 @@ export function GameConfigPanel({
 				</CardHeader>
 
 				<div className='flex flex-col gap-6'>
-					<SettingToggleGroup
+					<RegionPicker
 						label={t('settings.region')}
 						value={config.scope}
-						options={scopeOptions(t, SCOPE_OPTIONS)}
 						onChange={scope => update({ scope })}
 					/>
 					<SettingToggleGroup

@@ -68,6 +68,13 @@ export default defineConfig({
 	build: {
 		rollupOptions: {
 			input: getLocaleInputs(),
+			treeshake: {
+				// The UI primitives are pure component modules. Without this, the
+				// top-level `cva()` calls keep every primitive re-exported from the
+				// `shared/ui` barrel in the chunk of whichever page imports it.
+				moduleSideEffects: (id, external) =>
+					external || !id.includes('/src/shared/ui/'),
+			},
 		},
 	},
 })

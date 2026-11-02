@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -11,9 +11,8 @@ import { RoomErrorScreen } from '../screens/RoomErrorScreen'
 import { RoomLoadingScreen } from '../screens/RoomLoadingScreen'
 import { getMembersById } from '../model/roomSelectors'
 
-import { AnimatePresence } from 'motion/react'
-import { FloatingNotice } from '../../shared/ui/FloatingNotice'
-import { CheckIcon, LoaderIcon } from 'lucide-react'
+import { toast } from 'sonner'
+import { PendingToastIcon } from '@/shared/ui/sonner'
 
 const loadParticipantScreen = () =>
 	import('../game/ActiveGameParticipantScreen').then(module => ({
@@ -22,64 +21,41 @@ const loadParticipantScreen = () =>
 
 const ActiveGameParticipantScreen = lazy(loadParticipantScreen)
 
+const HOST_CONNECTION_TOAST_ID = 'host-connection'
+const HOST_RECONNECTED_TOAST_ID = 'host-reconnected'
+
 function HostConnectionNotice({ hostConnected }: { hostConnected?: boolean }) {
 	const { t } = useTranslation()
-	const [notice, setNotice] = useState<'disconnected' | 'reconnected' | null>(
-		null,
-	)
-	const prevHostConnected = useRef<boolean | undefined>(undefined)
+	const wasDisconnected = useRef(false)
 
 	useEffect(() => {
 		if (!hostConnected) {
-			setNotice('disconnected')
-		} else if (prevHostConnected.current === false) {
-			setNotice('reconnected')
-			const timer = setTimeout(() => {
-				setNotice(null)
-			}, 1000)
-
-			return () => clearTimeout(timer)
-		} else {
-			setNotice(null)
+			wasDisconnected.current = true
+			toast(t('multiplayer.game.hostDisconnected'), {
+				id: HOST_CONNECTION_TOAST_ID,
+				duration: Infinity,
+				icon: <PendingToastIcon />,
+			})
+		} else if (wasDisconnected.current) {
+			wasDisconnected.current = false
+			toast.dismiss(HOST_CONNECTION_TOAST_ID)
+			toast.success(t('multiplayer.game.hostReconnected'), {
+				id: HOST_RECONNECTED_TOAST_ID,
+				duration: 1500,
+			})
 		}
+	}, [hostConnected, t])
 
-		prevHostConnected.current = hostConnected
-	}, [hostConnected])
-	return (
-		<>
-			{notice === 'reconnected' && (
-				<AnimatePresence mode='wait'>
-					<FloatingNotice
-						tone='neutral'
-						offsetTop='compact'
-						className='flex gap-2 items-center'
-					>
-						<CheckIcon className='text-xl stroke-3' />
-						<p>{t('multiplayer.game.hostReconnected')}</p>
-					</FloatingNotice>
-				</AnimatePresence>
-			)}
-			{notice === 'disconnected' && (
-				<AnimatePresence mode='wait'>
-					<FloatingNotice
-						tone='error'
-						offsetTop='compact'
-						className='flex gap-2 items-center'
-					>
-						<LoaderIcon className='animate-spin text-xl stroke-3' />
-						<p>
-							{t('multiplayer.game.hostDisconnectedTitle')}
-							<br />
-							{t('multiplayer.game.hostDisconnectedSubtitle')}
-						</p>
-					</FloatingNotice>
-				</AnimatePresence>
-			)}
-		</>
-	)
+	useEffect(() => {
+		return () => {
+			toast.dismiss(HOST_CONNECTION_TOAST_ID)
+		}
+	}, [])
+
+	return null
 }
 
-export default function RoomPlayerPage(): JSX.Element {
+export default function RoomPlayerPage() {
 	const { t } = useTranslation()
 	const params = useParams<{ roomCode: string }>()
 	const roomCode = (params.roomCode ?? '').trim().toUpperCase()
@@ -101,13 +77,7 @@ export default function RoomPlayerPage(): JSX.Element {
 	}, [state])
 
 	if (state.status === 'connecting') {
-		return (
-			<RoomLoadingScreen
-				label={t('multiplayer.room')}
-				title={t('multiplayer.loading.connecting')}
-				message={t('multiplayer.loading.connectingMessage')}
-			/>
-		)
+		return <RoomLoadingScreen title={t('multiplayer.loading.connecting')} />
 	}
 
 	if (state.status === 'closed') {
@@ -142,13 +112,7 @@ export default function RoomPlayerPage(): JSX.Element {
 	const isReconnecting = state.status === 'reconnecting'
 
 	if (!room) {
-		return (
-			<RoomLoadingScreen
-				label={t('multiplayer.room')}
-				title={t('multiplayer.loading.reconnecting')}
-				message={t('multiplayer.loading.reconnectingMessage')}
-			/>
-		)
+		return <RoomLoadingScreen title={t('multiplayer.loading.reconnecting')} />
 	}
 
 	const hostConnected = getMembersById(room.members).get(
@@ -168,6 +132,8 @@ export default function RoomPlayerPage(): JSX.Element {
 				<RoomLobbyScreen
 					role='player'
 					roomCode={roomCode}
+					roomMode={room.roomMode}
+					viewerMemberId={room.viewerMemberId}
 					members={room.members}
 					actionErrorMessage={actionErrorMessage}
 					isReconnecting={isReconnecting}
@@ -194,11 +160,7 @@ export default function RoomPlayerPage(): JSX.Element {
 		)
 	}
 	const gameLoadingFallback = (
-		<RoomLoadingScreen
-			label={t('multiplayer.room')}
-			title={t('multiplayer.loading.starting')}
-			message={t('multiplayer.loading.startingMessage')}
-		/>
+		<RoomLoadingScreen title={t('multiplayer.loading.starting')} />
 	)
 
 	return (

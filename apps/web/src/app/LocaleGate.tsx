@@ -12,7 +12,7 @@ import { LocaleProvider } from './LocaleContext'
 
 const KNOWN_PATTERNS = appRoutes.map(route => '/' + (route.path ?? ''))
 
-export function LocaleGate(): JSX.Element {
+export function LocaleGate() {
 	const location = useLocation()
 	const { i18n } = useTranslation()
 	const segments = location.pathname.split('/').filter(Boolean)
@@ -52,7 +52,7 @@ function LocalizedRoutes({
 }: {
 	locale: AppLanguage
 	rest: { pathname: string; search: string; hash: string }
-}): JSX.Element | null {
+}) {
 	const { i18n } = useTranslation()
 	const segment = toLocaleSegment(locale)
 

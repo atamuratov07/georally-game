@@ -1,22 +1,28 @@
+import type { CreateRoomRequest } from '@georally/game-protocol'
+import { Crown, LogIn } from 'lucide-react'
 import { useCallback, useState } from 'react'
-import { ButtonLink, ScreenShell } from '../../shared/ui'
+import { useTranslation } from 'react-i18next'
+import { useSearchParams } from 'react-router-dom'
+import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
+import { trackRoomCreated } from '@/shared/analytics/track'
+import { BackLink, PageShell } from '@/shared/layout'
+import { Card, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui'
 import { formatGatewayErrorMessage } from '../api/errors'
+import { createRoom } from '../api/roomsApi'
 import { CreateRoomForm } from '../create/CreateRoomForm'
 import { JoinRoomForm } from '../join/JoinRoomForm'
 import { saveRoomSession } from '../session/sessionStorage'
-import type { RoomSession } from '../session/types'
-import type { CreateRoomRequest } from '@georally/game-protocol'
-import { LanguageSwitcher } from '../../shared/i18n'
-import { useTranslation } from 'react-i18next'
-import { useLocalizedNavigate } from '../../app/useLocalizedNavigate'
-import { trackRoomCreated } from '../../shared/analytics/track'
-import { createRoom } from '../api/roomsApi'
 
-export default function HomePage(): JSX.Element {
+type MultiplayerTab = 'join' | 'host'
+
+export default function HomePage() {
 	const { t } = useTranslation()
 	const navigate = useLocalizedNavigate()
+	const [searchParams, setSearchParams] = useSearchParams()
 	const [createError, setCreateError] = useState<string | null>(null)
 	const [isCreating, setIsCreating] = useState(false)
+	const tab: MultiplayerTab =
+		searchParams.get('tab') === 'host' ? 'host' : 'join'
 
 	const handleCreateRoom = useCallback(
 		async (values: CreateRoomRequest) => {
@@ -29,12 +35,7 @@ export default function HomePage(): JSX.Element {
 					roomMode: values.roomMode,
 				})
 
-				const storedSession: RoomSession = {
-					...response,
-					savedAt: Date.now(),
-				}
-
-				saveRoomSession(storedSession)
+				saveRoomSession({ ...response, savedAt: Date.now() })
 				trackRoomCreated(values.roomMode)
 				navigate(`/multiplayer/host/${response.roomCode}`)
 			} catch (error) {
@@ -47,27 +48,43 @@ export default function HomePage(): JSX.Element {
 	)
 
 	return (
-		<ScreenShell className='px-5 py-8 sm:px-8'>
-			<div className='mx-auto max-w-6xl'>
-				<div className='mb-6 flex flex-wrap items-center justify-between gap-3'>
-					<ButtonLink to='/' variant='nav' size='pill'>
-						<span aria-hidden='true'>&larr;</span>
-						{t('multiplayer.toModes')}
-					</ButtonLink>
+		<PageShell width='lg'>
+			<BackLink to='/'>{t('common.home')}</BackLink>
+			<h1 className='sr-only'>{t('multiplayer.title')}</h1>
+			<Tabs
+				value={tab}
+				onValueChange={value => {
+					setSearchParams(value === 'host' ? { tab: 'host' } : {}, {
+						replace: true,
+					})
+				}}
+			>
+				<TabsList className='mx-auto max-w-md'>
+					<TabsTrigger value='join'>
+						<LogIn aria-hidden='true' />
+						{t('multiplayer.tabs.join')}
+					</TabsTrigger>
+					<TabsTrigger value='host'>
+						<Crown aria-hidden='true' />
+						{t('multiplayer.tabs.host')}
+					</TabsTrigger>
+				</TabsList>
 
-					<LanguageSwitcher className='py-2.5 shadow-none text-slate-700 bg-white/85 border-slate-300' />
-				</div>
-
-				<div className='grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] [&>*:first-child]:order-1 [&>*:last-child]:order-2 lg:[&>*:first-child]:order-2 lg:[&>*:last-child]:order-1'>
-					<JoinRoomForm className='lg:order-1' />
-					<CreateRoomForm
-						onSubmit={handleCreateRoom}
-						pending={isCreating}
-						submitError={createError}
-						className='lg:order-2'
-					/>
-				</div>
-			</div>
-		</ScreenShell>
+				<TabsContent value='join'>
+					<Card className='mx-auto max-w-md animate-pop-in'>
+						<JoinRoomForm />
+					</Card>
+				</TabsContent>
+				<TabsContent value='host'>
+					<Card className='animate-pop-in'>
+						<CreateRoomForm
+							onSubmit={handleCreateRoom}
+							pending={isCreating}
+							submitError={createError}
+						/>
+					</Card>
+				</TabsContent>
+			</Tabs>
+		</PageShell>
 	)
 }

@@ -1,9 +1,13 @@
 import type { CountryInfo } from '@georally/country-catalog'
 import { countryCatalog } from '@georally/country-catalog'
-import type { DataDrivenPropertyValueSpecification } from 'maplibre-gl'
+import type {
+	DataDrivenPropertyValueSpecification,
+	FilterSpecification,
+} from 'maplibre-gl'
 import type {
 	CircleLayerSpecification,
 	FillLayerSpecification,
+	LineLayerSpecification,
 	SymbolLayerSpecification,
 } from 'react-map-gl/maplibre'
 import { getCountryCapital, getCountryName, type AppLanguage } from '../i18n'
@@ -19,6 +23,8 @@ export const GEOLINES_LAYER = 'geolines'
 export const BASE_STYLE_LAYER_ID = 'countries-fill'
 export const HOVER_LAYER_ID = 'countries-hovered'
 export const HIGHLIGHT_LAYER_ID = 'countries-highlighted'
+export const SELECTION_FILL_LAYER_ID = 'countries-selection-fill'
+export const SELECTION_LINE_LAYER_ID = 'countries-selection-line'
 export const DIM_LAYER_ID = 'countries-dimmed'
 export const COUNTRY_LABEL_LAYER_ID = 'countries-label'
 export const CAPITAL_LABEL_LAYER_ID = 'capitals-label'
@@ -26,9 +32,12 @@ export const CAPITAL_DOT_LAYER_ID = 'capitals-dot'
 export const GEOLINES_LABEL_LAYER_ID = 'geolines-label'
 export const LABELS_BOTTOM_LAYER_ID = 'geolines'
 
-export const WRONG_FILL = '#f87171'
-export const REVEALED_FILL = '#22c55e'
-export const SELECTED_FILL = '#6366f1'
+export const WRONG_FILL = '#fb5f4c'
+export const REVEALED_FILL = '#3fa625'
+export const SELECTION_FILL = '#ffc01a'
+export const SELECTION_EDGE = '#a86200'
+const SELECTION_FADE_MS = 350
+export const SELECTED_FILL = '#8148f0'
 
 export type FillColorExpression = NonNullable<
 	FillLayerSpecification['paint']
@@ -88,9 +97,13 @@ function buildCatalogTextField(
 
 export function buildHighlightLayer(
 	markers: readonly MapHighlight[],
+	/** Drawn by the selection layers instead, so it can fade in. */
+	selectedId?: string | null,
 ): FillLayerSpecification {
 	const cases: string[] = []
 	for (const marker of markers) {
+		if (marker.tone === 'selected' && marker.countryId === selectedId)
+			continue
 		cases.push(
 			marker.countryId,
 			{ correct: REVEALED_FILL, wrong: WRONG_FILL, selected: SELECTED_FILL }[
@@ -155,8 +168,8 @@ export const hoverLayer: FillLayerSpecification = {
 	source: SOURCE_ID,
 	'source-layer': COUNTRY_LAYER,
 	paint: {
-		'fill-outline-color': '#484896',
-		'fill-color': '#6e599f',
+		'fill-outline-color': '#5527aa',
+		'fill-color': '#9b6cfb',
 		'fill-opacity': [
 			'case',
 			['boolean', ['feature-state', 'hover'], false],
@@ -314,4 +327,56 @@ export const capitalDotLayer: CircleLayerSpecification = {
 		'circle-stroke-color': '#ffffff',
 		'circle-stroke-width': 1,
 	},
+}
+
+function countryFilter(countryId: string | null): FilterSpecification {
+	return ['==', ['to-string', ['get', 'ISO_N3']], countryId ?? '__none__']
+}
+
+export function buildSelectionFillLayer(
+	countryId: string | null,
+	visible: boolean,
+): FillLayerSpecification {
+	return {
+		id: SELECTION_FILL_LAYER_ID,
+		type: 'fill',
+		source: SOURCE_ID,
+		'source-layer': COUNTRY_LAYER,
+		filter: countryFilter(countryId),
+		paint: {
+			'fill-color': SELECTION_FILL,
+			'fill-opacity': visible ? 0.95 : 0,
+			'fill-opacity-transition': { duration: SELECTION_FADE_MS, delay: 0 },
+		},
+	}
+}
+
+export function buildSelectionLineLayer(
+	countryId: string | null,
+	visible: boolean,
+): LineLayerSpecification {
+	return {
+		id: SELECTION_LINE_LAYER_ID,
+		type: 'line',
+		source: SOURCE_ID,
+		'source-layer': COUNTRY_LAYER,
+		filter: countryFilter(countryId),
+		layout: { 'line-join': 'round' },
+		paint: {
+			'line-color': SELECTION_EDGE,
+			'line-width': [
+				'interpolate',
+				['linear'],
+				['zoom'],
+				1,
+				1,
+				4,
+				1.5,
+				6,
+				2,
+			],
+			'line-opacity': visible ? 1 : 0,
+			'line-opacity-transition': { duration: SELECTION_FADE_MS, delay: 0 },
+		},
+	}
 }

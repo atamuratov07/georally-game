@@ -1,19 +1,36 @@
 import type { ActiveGameParticipantView } from '@georally/game-domain/multiplayer/game'
 import type { VisibleMemberInfo } from '@georally/game-domain/multiplayer/room'
 import { useMemo } from 'react'
-import { MapRenderer } from '../../../shared/map/MapRenderer'
-import { ScoreBanner } from '../../../shared/widgets/ScoreBanner'
+import { useTranslation } from 'react-i18next'
+import { useCurrentLocale } from '@/app/LocaleContext'
+import { getCountryName } from '@/shared/i18n'
+import { MapRenderer } from '@/shared/map/MapRenderer'
+import { GameHud, TimerChip } from '@/shared/widgets/GameHud'
+import { ScoreBanner } from '@/shared/widgets/ScoreBanner'
 import {
 	getLeaderboardEntries,
 	getTargetCountryInfo,
 	type CurrentRoundView,
 } from '../../model/gameSelectors'
-import { GameQuestionBar } from './GameQuestionBar'
+import { getMemberColorIndexes } from '../../model/roomSelectors'
+import { useCountdown } from '../hooks/useCountdown'
 import { RoomLeaderboardOverlay } from './LeaderboardOverlay'
 import { useGameMap } from './useGameMap'
-import { useTranslation } from 'react-i18next'
-import { getCountryName } from '../../../shared/i18n'
-import { useCurrentLocale } from '../../../app/LocaleContext'
+
+const URGENT_COUNTDOWN_SECONDS = 5
+
+function Countdown({ deadlineAt }: { deadlineAt: number }) {
+	const { t } = useTranslation()
+	const secondsLeft = useCountdown(deadlineAt)
+
+	return (
+		<TimerChip
+			seconds={secondsLeft}
+			urgent={secondsLeft <= URGENT_COUNTDOWN_SECONDS}
+			label={t('game.timeLeft')}
+		/>
+	)
+}
 
 interface CountryMapGameScreenProps {
 	game: ActiveGameParticipantView
@@ -31,7 +48,7 @@ export function CountryMapGameScreen({
 	showCountryInfo,
 	submitPending,
 	onSubmitAnswer,
-}: CountryMapGameScreenProps): JSX.Element {
+}: CountryMapGameScreenProps) {
 	const { t } = useTranslation()
 	const language = useCurrentLocale()
 	const { mapProps } = useGameMap({
@@ -40,10 +57,13 @@ export function CountryMapGameScreen({
 		onSubmitAnswer,
 		showCountryInfo,
 	})
-	const leaderboardEntries = useMemo(
-		() => getLeaderboardEntries(game, members, 5),
-		[game, members],
-	)
+	const leaderboardEntries = useMemo(() => {
+		const colorIndexes = getMemberColorIndexes(members)
+		return getLeaderboardEntries(game, members, 5).map(entry => ({
+			...entry,
+			colorIndex: colorIndexes.get(entry.participantId),
+		}))
+	}, [game, members])
 	const evaluatedSubmission =
 		game.phase === 'open' ? null : game.viewerSubmission
 	const scoreBannerTriggerKey =
@@ -56,41 +76,45 @@ export function CountryMapGameScreen({
 	const targetInfo = getTargetCountryInfo(game)
 	const targetName = targetInfo
 		? getCountryName(targetInfo, language)
-		: t('multiplayer.game.countryFallback')
+		: t('game.countryFallback')
+	const deadlineAt = game.phase === 'open' ? currentRound.deadlineAt : null
 
 	return (
-		<section className='flex h-full flex-col overflow-hidden bg-slate-950 text-white'>
-			<main className='relative min-h-0 flex-1'>
-				<MapRenderer {...mapProps} />
-			</main>
-
-			<GameQuestionBar
-				progressLabel={`${currentRound.currentQuestionNumber} / ${currentRound.questionCount}`}
-				questionLabel={
-					game.phase === 'open'
-						? t('multiplayer.game.findCountry')
-						: t('multiplayer.game.correctAnswer')
+		<section className='flex h-full flex-col overflow-hidden bg-paper'>
+			<GameHud
+				current={currentRound.currentQuestionNumber}
+				total={currentRound.questionCount}
+				completed={
+					currentRound.currentQuestionNumber -
+					(game.phase === 'open' ? 1 : 0)
 				}
 				targetName={targetName}
 				targetFlagUrl={targetInfo?.flagUrl}
-				deadlineAt={game.phase === 'open' ? currentRound.deadlineAt : null}
+				end={
+					deadlineAt !== null ? (
+						<Countdown deadlineAt={deadlineAt} />
+					) : null
+				}
 			/>
 
-			<ScoreBanner
-				triggerKey={scoreBannerTriggerKey}
-				isCorrect={isCorrect}
-				totalScore={game.viewerScore}
-				awardedScore={awardedScore}
-				className='top-10'
-			/>
+			<main className='relative min-h-0 flex-1'>
+				<MapRenderer {...mapProps} />
 
-			{game.phase === 'leaderboard' ? (
-				<RoomLeaderboardOverlay
-					entries={leaderboardEntries}
-					viewerParticipantId={game.viewerParticipantId}
-					shownAt={game.leaderboardShownAt}
+				<ScoreBanner
+					triggerKey={scoreBannerTriggerKey}
+					isCorrect={isCorrect}
+					totalScore={game.viewerScore}
+					awardedScore={awardedScore}
 				/>
-			) : null}
+
+				{game.phase === 'leaderboard' ? (
+					<RoomLeaderboardOverlay
+						entries={leaderboardEntries}
+						viewerParticipantId={game.viewerParticipantId}
+						shownAt={game.leaderboardShownAt}
+					/>
+				) : null}
+			</main>
 		</section>
 	)
 }

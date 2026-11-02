@@ -1,17 +1,28 @@
-import type { GameConfig } from '@georally/game-domain/multiplayer'
-import { Gauge, Globe2, ListChecks, Timer } from 'lucide-react'
-import { useEffect, useState, type FormEvent } from 'react'
-import { SelectControl } from '../../shared/ui'
+import {
+	DEFAULT_GAME_CONFIG,
+	type GameConfig,
+} from '@georally/game-domain/multiplayer'
+import { useEffect, useState, type SubmitEvent } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Card, CardHeader, CardTitle } from '@/shared/ui'
+import { RegionPicker } from '@/shared/widgets/region-map/RegionPicker'
+import {
+	difficultyOptions,
+	numberOptions,
+} from '@/shared/widgets/settingOptions'
+import {
+	SettingToggleGroup,
+	type SettingOption,
+} from '@/shared/widgets/SettingToggleGroup'
 import {
 	DIFFICULTY_OPTIONS,
 	loadRoomGameConfig,
 	QUESTION_COUNT_OPTIONS,
 	QUESTION_DURATION_MS_OPTIONS,
 	saveRoomGameConfig,
-	SCOPE_OPTIONS,
 } from '../model/gameConfig'
-import { useTranslation } from 'react-i18next'
-import { getDifficultyLabel, getScopeLabel } from '../../shared/i18n'
+
+const TIMER_OFF = 0
 
 interface GameConfigPanelProps {
 	roomCode: string
@@ -20,34 +31,13 @@ interface GameConfigPanelProps {
 	onStartGame: (config: GameConfig) => void
 }
 
-interface ConfigFieldProps {
-	icon: JSX.Element
-	label: string
-	children: JSX.Element
-}
-
-function ConfigField({ icon, label, children }: ConfigFieldProps): JSX.Element {
-	return (
-		<label className='group block rounded-2xl border border-slate-200 bg-white/88 p-4 shadow-[0_14px_34px_rgba(15,23,42,0.08)] transition hover:border-amber-300/80 hover:bg-white'>
-			<span className='mb-3 flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.18em] text-slate-500'>
-				<span className='grid h-8 w-8 place-items-center rounded-xl bg-amber-100 text-amber-700 transition group-hover:bg-amber-200'>
-					{icon}
-				</span>
-				{label}
-			</span>
-			{children}
-		</label>
-	)
-}
-
 export function GameConfigPanel({
 	roomCode,
 	formId,
 	requireQuestionDuration,
 	onStartGame,
-}: GameConfigPanelProps): JSX.Element {
+}: GameConfigPanelProps) {
 	const { t } = useTranslation()
-
 	const [config, setConfig] = useState<GameConfig>(() =>
 		loadRoomGameConfig(roomCode),
 	)
@@ -60,130 +50,74 @@ export function GameConfigPanel({
 		saveRoomGameConfig(roomCode, config)
 	}, [roomCode, config])
 
-	function handleSubmit(event: FormEvent<HTMLFormElement>) {
-		event.preventDefault()
-		onStartGame(config)
+	// Group rooms need a timer; fall back to the default if none was saved.
+	const effectiveConfig: GameConfig =
+		requireQuestionDuration && !config.questionDurationMs
+			? {
+					...config,
+					questionDurationMs: DEFAULT_GAME_CONFIG.questionDurationMs,
+				}
+			: config
+
+	function update(patch: Partial<GameConfig>) {
+		setConfig(current => ({ ...current, ...patch }))
 	}
 
+	function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
+		event.preventDefault()
+		onStartGame(effectiveConfig)
+	}
+
+	const timerOptions: SettingOption<number>[] = [
+		...(requireQuestionDuration
+			? []
+			: [{ value: TIMER_OFF, label: t('settings.timerOff') }]),
+		...QUESTION_DURATION_MS_OPTIONS.map(ms => ({
+			value: ms,
+			label: t('settings.seconds', { count: ms / 1000 }),
+		})),
+	]
+
 	return (
-		<form
-			id={formId}
-			className='mx-auto mt-6 w-full max-w-5xl overflow-hidden rounded-[26px] border border-white/70 bg-white/94 text-left shadow-[0_24px_72px_rgba(15,23,42,0.14)] backdrop-blur'
-			onSubmit={handleSubmit}
-		>
-			<div className='border-b border-slate-200/80 bg-linear-to-br from-white via-amber-50/80 to-teal-50/70 px-5 py-4 sm:px-6'>
-				<p className='text-[11px] font-black uppercase tracking-[0.22em] text-amber-700'>
-					{t('multiplayer.config.title')}
-				</p>
-				<h2 className='mt-1 text-2xl font-black tracking-tight text-slate-950'>
-					{t('multiplayer.config.questions')}
-				</h2>
-			</div>
+		<Card asChild>
+			<form id={formId} onSubmit={handleSubmit}>
+				<CardHeader>
+					<CardTitle className='text-xl sm:text-2xl'>
+						{t('multiplayer.lobby.settings')}
+					</CardTitle>
+				</CardHeader>
 
-			<div className='grid gap-3 p-4 sm:grid-cols-2 sm:p-5 lg:grid-cols-4'>
-				<ConfigField
-					icon={
-						<ListChecks aria-hidden='true' size={17} strokeWidth={2.4} />
-					}
-					label={t('multiplayer.config.questions')}
-				>
-					<SelectControl
-						value={config.questionCount}
-						className='h-12 rounded-2xl border-slate-200 bg-slate-50 font-black'
-						onChange={event => {
-							setConfig(current => ({
-								...current,
-								questionCount: Number(event.target.value),
-							}))
-						}}
-					>
-						{QUESTION_COUNT_OPTIONS.map(option => (
-							<option key={option} value={option}>
-								{option}
-							</option>
-						))}
-					</SelectControl>
-				</ConfigField>
-
-				<ConfigField
-					icon={<Timer aria-hidden='true' size={17} strokeWidth={2.4} />}
-					label={t('multiplayer.config.timer')}
-				>
-					<SelectControl
-						value={config.questionDurationMs}
-						className='h-12 rounded-2xl border-slate-200 bg-slate-50 font-black'
-						onChange={event => {
-							const newValue = event.target.value
-								? Number(event.target.value)
-								: undefined
-							setConfig(current => {
-								return {
-									...current,
-									questionDurationMs: newValue,
-								}
-							})
-						}}
-					>
-						{!requireQuestionDuration && (
-							<option key={'no-timer'} value={''}>
-								{t('multiplayer.config.withoutTimer')}
-							</option>
-						)}
-						{QUESTION_DURATION_MS_OPTIONS.map(option => (
-							<option key={option} value={option}>
-								{t('multiplayer.config.seconds', {
-									count: option / 1000,
-								})}
-							</option>
-						))}
-					</SelectControl>
-				</ConfigField>
-
-				<ConfigField
-					icon={<Globe2 aria-hidden='true' size={17} strokeWidth={2.4} />}
-					label={t('multiplayer.config.region')}
-				>
-					<SelectControl
+				<div className='flex flex-col gap-6'>
+					<RegionPicker
+						label={t('settings.region')}
 						value={config.scope}
-						className='h-12 rounded-2xl border-slate-200 bg-slate-50 font-black'
-						onChange={event => {
-							setConfig(current => ({
-								...current,
-								scope: event.target.value as GameConfig['scope'],
-							}))
-						}}
-					>
-						{SCOPE_OPTIONS.map(option => (
-							<option key={option.value} value={option.value}>
-								{getScopeLabel(t, option.value)}
-							</option>
-						))}
-					</SelectControl>
-				</ConfigField>
-
-				<ConfigField
-					icon={<Gauge aria-hidden='true' size={17} strokeWidth={2.4} />}
-					label={t('multiplayer.config.difficulty')}
-				>
-					<SelectControl
+						onChange={scope => update({ scope })}
+					/>
+					<SettingToggleGroup
+						label={t('settings.difficulty')}
 						value={config.difficulty}
-						className='h-12 rounded-2xl border-slate-200 bg-slate-50 font-black'
-						onChange={event => {
-							setConfig(current => ({
-								...current,
-								difficulty: event.target
-									.value as GameConfig['difficulty'],
-							}))
-						}}
-					>
-						{DIFFICULTY_OPTIONS.map(option => (
-							<option key={option.value} value={option.value}>
-								{getDifficultyLabel(t, option.value)}
-							</option>
-						))}
-					</SelectControl>
-				</ConfigField>
-			</div>
-		</form>
+						options={difficultyOptions(t, DIFFICULTY_OPTIONS)}
+						onChange={difficulty => update({ difficulty })}
+					/>
+					<SettingToggleGroup
+						label={t('settings.questions')}
+						value={config.questionCount}
+						options={numberOptions(QUESTION_COUNT_OPTIONS)}
+						onChange={questionCount => update({ questionCount })}
+					/>
+					<SettingToggleGroup
+						label={t('settings.timer')}
+						tone='grape'
+						value={effectiveConfig.questionDurationMs ?? TIMER_OFF}
+						options={timerOptions}
+						onChange={ms =>
+							update({
+								questionDurationMs: ms === TIMER_OFF ? undefined : ms,
+							})
+						}
+					/>
+				</div>
+			</form>
+		</Card>
 	)
 }

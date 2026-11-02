@@ -26,7 +26,7 @@ const loadHostScreen = () =>
 const ActiveGameParticipantScreen = lazy(loadParticipantScreen)
 const ActiveGameHostScreen = lazy(loadHostScreen)
 
-export default function RoomHostPage(): JSX.Element {
+export default function RoomHostPage() {
 	const { t } = useTranslation()
 	const params = useParams<{ roomCode: string }>()
 	const navigate = useLocalizedNavigate()
@@ -75,24 +75,12 @@ export default function RoomHostPage(): JSX.Element {
 	}, [state])
 
 	if (state.status === 'connecting') {
-		return (
-			<RoomLoadingScreen
-				label={t('multiplayer.room')}
-				title={t('multiplayer.loading.connecting')}
-				message={t('multiplayer.loading.connectingMessage')}
-			/>
-		)
+		return <RoomLoadingScreen title={t('multiplayer.loading.connecting')} />
 	}
 
 	if (state.status === 'closed') {
 		if (state.reason === 'host_terminated') {
-			return (
-				<RoomLoadingScreen
-					label={t('multiplayer.room')}
-					title={t('multiplayer.loading.closed')}
-					message={t('multiplayer.loading.closedRedirect')}
-				/>
-			)
+			return <RoomLoadingScreen title={t('multiplayer.loading.closed')} />
 		}
 
 		return <RoomClosedScreen reason={state.reason} />
@@ -113,13 +101,7 @@ export default function RoomHostPage(): JSX.Element {
 	const isReconnecting = state.status === 'reconnecting'
 
 	if (!room) {
-		return (
-			<RoomLoadingScreen
-				label={t('multiplayer.room')}
-				title={t('multiplayer.loading.reconnecting')}
-				message={t('multiplayer.loading.reconnectingMessage')}
-			/>
-		)
+		return <RoomLoadingScreen title={t('multiplayer.loading.reconnecting')} />
 	}
 
 	const requireQuestionDuration = room.roomMode === 'group'
@@ -128,6 +110,8 @@ export default function RoomHostPage(): JSX.Element {
 			<RoomLobbyScreen
 				role='host'
 				roomCode={roomCode}
+				roomMode={room.roomMode}
+				viewerMemberId={room.viewerMemberId}
 				requireQuestionDuration={requireQuestionDuration}
 				members={room.members}
 				startPending={actionPending === 'start'}
@@ -168,11 +152,7 @@ export default function RoomHostPage(): JSX.Element {
 	}
 
 	const gameLoadingFallback = (
-		<RoomLoadingScreen
-			label={t('multiplayer.room')}
-			title={t('multiplayer.loading.starting')}
-			message={t('multiplayer.loading.startingMessage')}
-		/>
+		<RoomLoadingScreen title={t('multiplayer.loading.starting')} />
 	)
 
 	if (room.roomMode === 'group') {

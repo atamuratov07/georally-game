@@ -18,7 +18,7 @@ import { MapRenderer } from '../../shared/map/MapRenderer'
 import type { MapHighlightTone, MapRendererProps } from '../../shared/map/types'
 import { ScoreBanner } from '../../shared/widgets/ScoreBanner'
 import { CountryInfoCard } from '../../shared/widgets/CountryInfoCard'
-import { Button } from '../../shared/ui'
+import { Button } from '@/shared/ui'
 import { GameHeader } from '../components/GameHeader'
 import { Hearts } from '../components/Hearts'
 import { useTranslation } from 'react-i18next'
@@ -41,7 +41,7 @@ export function GameScreen({
 	onPick,
 	onGiveUp,
 	onNext,
-}: GameScreenProps): JSX.Element {
+}: GameScreenProps) {
 	const { t } = useTranslation()
 	const language = useCurrentLocale()
 	const targetId = getTargetId(state)
@@ -121,15 +121,11 @@ export function GameScreen({
 	}, [state.phase, totalScore])
 
 	return (
-		<section className='flex h-full flex-col overflow-hidden'>
+		<section className='flex h-full flex-col overflow-hidden bg-paper'>
 			<GameHeader
 				questionIndex={questionIndex}
 				questionCount={questionCount}
-				targetName={
-					targetInfo
-						? getCountryName(targetInfo, language)
-						: t('singleplayer.gameFinished')
-				}
+				targetName={targetInfo ? getCountryName(targetInfo, language) : ''}
 				targetFlagUrl={targetInfo?.flagUrl}
 				isPlaying={state.phase === 'playing'}
 				questionStartedAt={questionStartedAt}
@@ -148,7 +144,7 @@ export function GameScreen({
 				/>
 
 				{showHearts ? (
-					<div className='absolute right-4 top-4 z-20'>
+					<div className='absolute top-2 right-3 z-20'>
 						<Hearts
 							attemptsLeft={attemptsLeft}
 							maxAttempts={state.config.attemptsPerQuestion}
@@ -157,16 +153,16 @@ export function GameScreen({
 				) : null}
 
 				{state.phase === 'revealed' ? (
-					<div className='absolute bottom-8 left-1/2 z-20 -translate-x-1/2'>
+					<div className='absolute inset-x-0 bottom-8 z-20 flex justify-center px-4'>
 						<Button
 							type='button'
-							variant='teal'
-							size='sm'
-							is3d
-							className='px-4 py-2.5'
+							variant='ocean'
+							size='lg'
+							className='animate-pop-in px-10 [--drop:0_14px_30px_-8px_rgb(24_34_61/0.4)]'
+							autoFocus
 							onClick={onNext}
 						>
-							{t('singleplayer.nextQuestion')}
+							{t('singleplayer.next')}
 						</Button>
 					</div>
 				) : null}

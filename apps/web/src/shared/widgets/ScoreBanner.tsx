@@ -1,15 +1,30 @@
 import { animate } from 'motion'
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
+import { cn } from '@/shared/utils'
 
 const SCORE_VISIBLE_DURATION_MS = 3000
 const ENTER_DURATION_S = 0.4
 const ENTER_DURATION_MS = ENTER_DURATION_S * 1000
 const SCORE_EASE = [0.22, 1, 0.36, 1] as const
-const AWARD_REVEAL_DELAY_MS = 0.2
+const AWARD_REVEAL_DELAY_MS = 200
 const AWARD_VISIBLE_DURATION_MS = 800
 const SCORE_COUNT_DURATION_S = 0.72
+
+/** Written the way a hand draws them: the check left to right, the cross top-left stroke first. */
+const CHECK_STROKES = ['M4 12.5 9.5 18 20 6']
+const CROSS_STROKES = ['M6 6 18 18', 'M18 6 6 18']
+const DRAW_START_S = 0.12
+const STROKE_DURATION_S = { check: 0.42, cross: 0.2 }
+const STROKE_GAP_S = 0.06
+const DRAW_EASE = [0.65, 0, 0.35, 1] as const
+
+const OUTLINED_TEXT: CSSProperties = {
+	WebkitTextStroke: '8px var(--color-ink)',
+	paintOrder: 'stroke fill',
+	textShadow: '0 6px 0 var(--color-ink)',
+}
 
 type ScoreBannerTriggerKey = number | string
 
@@ -33,37 +48,82 @@ function formatAwardedScore(scoreDelta: number): string {
 	return scoreDelta >= 0 ? `+${scoreDelta}` : String(scoreDelta)
 }
 
-function CorrectMark(): JSX.Element {
-	return (
-		<svg
-			viewBox='0 0 512 444.81'
-			fill='currentColor'
-			aria-hidden='true'
-			className='h-12 w-[3.4rem] translate-x-2 text-emerald-400 sm:h-14 sm:w-16'
-		>
-			<path d='M104.42 183.22c31.76 18.29 52.42 33.49 77.03 60.61C245.27 141.1 314.54 84.19 404.62 3.4l8.81-3.4H512C379.83 146.79 277.36 267.82 185.61 444.81 137.84 342.68 95.26 272.18 0 206.81l104.42-23.59z' />
-		</svg>
-	)
-}
+function ResultMark({ isCorrect }: { isCorrect: boolean }) {
+	const { t } = useTranslation()
+	const strokes = isCorrect ? CHECK_STROKES : CROSS_STROKES
+	const strokeDuration = STROKE_DURATION_S[isCorrect ? 'check' : 'cross']
+	const drawEnd =
+		DRAW_START_S +
+		strokes.length * strokeDuration +
+		(strokes.length - 1) * STROKE_GAP_S
+	const layers = [
+		{
+			width: 7,
+			offsetY: 1.3,
+			className: isCorrect ? 'stroke-grass-800' : 'stroke-coral-800',
+		},
+		{ width: 7, offsetY: 0, className: 'stroke-white' },
+		{
+			width: 4,
+			offsetY: 0,
+			className: isCorrect ? 'stroke-grass-500' : 'stroke-coral-500',
+		},
+	]
 
-function IncorrectMark(): JSX.Element {
 	return (
-		<svg
-			viewBox='0 0 477 512.55'
-			fill='none'
-			aria-hidden='true'
-			className='h-12 w-[3.2rem] text-rose-500 drop-shadow-[0_10px_28px_rgba(15,23,42,0.28)] sm:h-14 sm:w-[3.7rem]'
+		<motion.span
+			role='img'
+			aria-label={isCorrect ? t('game.correct') : t('game.incorrect')}
+			className='relative block size-24 sm:size-28'
+			initial={{ scale: 0.6, opacity: 0 }}
+			animate={{ scale: 1, opacity: 1 }}
+			transition={{ type: 'spring', stiffness: 520, damping: 24 }}
 		>
-			<path
-				fill='currentColor'
-				d='M366.76 187.49c-24.98 25.3-46.02 46.99-64.72 66.8 41.13 47.31 82.57 91.21 159.57 160.49 10.58 9.52 16.34 18.15 15.26 26.89-1.12 9.04-8.97 16.03-25.51 21.42l-.54.14c-105.31 34.11-91.92 13.16-158.66-68.87-21.91-24.69-40.46-46.2-57.13-65.72-37.96 44.38-74.46 91.19-133.98 166.84-8.81 11.19-17.04 17.5-25.83 17.01-9.1-.52-16.59-7.89-23.06-24.05l-.18-.52c-40.96-102.84-19.2-90.84 58.26-162.86 24.98-25.3 46.02-46.99 64.72-66.8-41.13-47.31-82.57-91.2-159.57-160.49C4.81 88.25-.95 79.62.13 70.88c1.12-9.04 8.97-16.03 25.51-21.42l.54-.14c105.31-34.11 91.92-13.16 158.66 68.87 21.9 24.69 40.46 46.2 57.13 65.72 37.96-44.38 74.46-91.19 133.98-166.84C384.76 5.88 392.99-.43 401.78.06c9.1.52 16.59 7.89 23.06 24.05l.18.52c40.96 102.84 19.2 90.84-58.26 162.86z'
-			/>
-		</svg>
+			<motion.svg
+				viewBox='0 0 24 24'
+				fill='none'
+				strokeLinecap='round'
+				strokeLinejoin='round'
+				className='size-full overflow-visible'
+				animate={
+					isCorrect
+						? { scale: [1, 1.14, 1] }
+						: { x: [0, -9, 9, -6, 6, -3, 0] }
+				}
+				transition={{
+					delay: drawEnd,
+					duration: isCorrect ? 0.3 : 0.42,
+					ease: 'easeOut',
+				}}
+			>
+				{layers.map(layer =>
+					strokes.map((d, index) => {
+						const delay =
+							DRAW_START_S + index * (strokeDuration + STROKE_GAP_S)
+						return (
+							<motion.path
+								key={`${layer.className}-${d}`}
+								d={d}
+								strokeWidth={layer.width}
+								transform={`translate(0 ${layer.offsetY})`}
+								className={layer.className}
+								initial={{ pathLength: 0, opacity: 0 }}
+								animate={{ pathLength: 1, opacity: 1 }}
+								transition={{
+									pathLength: {
+										delay,
+										duration: strokeDuration,
+										ease: DRAW_EASE,
+									},
+									opacity: { delay, duration: 0.01 },
+								}}
+							/>
+						)
+					}),
+				)}
+			</motion.svg>
+		</motion.span>
 	)
-}
-
-function ScoreMark({ isCorrect }: { isCorrect: boolean }): JSX.Element {
-	return isCorrect ? <CorrectMark /> : <IncorrectMark />
 }
 
 export function ScoreBanner({
@@ -73,13 +133,14 @@ export function ScoreBanner({
 	awardedScore,
 	durationMs = SCORE_VISIBLE_DURATION_MS,
 	className,
-}: ScoreBannerProps): JSX.Element | null {
+}: ScoreBannerProps) {
 	const { t } = useTranslation()
 	const [snapshot, setSnapshot] = useState<ScoreBannerSnapshot | null>(null)
 	const [isVisible, setIsVisible] = useState(false)
 	const lastTriggerKeyRef = useRef<ScoreBannerTriggerKey | null>(null)
 	const [score, setScore] = useState(totalScore - awardedScore)
 	const [showAward, setShowAward] = useState(false)
+	const [bumpCount, setBumpCount] = useState(0)
 
 	useEffect(() => {
 		if (triggerKey === null) {
@@ -129,11 +190,12 @@ export function ScoreBanner({
 			return
 		}
 
-		awardRevealTimeoutId = setTimeout(() => {
+		awardRevealTimeoutId = window.setTimeout(() => {
 			setShowAward(true)
 
-			awardHideTimeoutId = setTimeout(() => {
+			awardHideTimeoutId = window.setTimeout(() => {
 				setShowAward(false)
+				setBumpCount(count => count + 1)
 
 				stopCounting = animate(initialScore, snapshot.totalScore, {
 					duration: SCORE_COUNT_DURATION_S,
@@ -158,7 +220,10 @@ export function ScoreBanner({
 
 	return (
 		<div
-			className={`pointer-events-none absolute top-3 left-1/2 z-20 -translate-x-1/2 select-none ${className ?? ''}`}
+			className={cn(
+				'pointer-events-none absolute top-6 left-1/2 z-20 -translate-x-1/2 select-none',
+				className,
+			)}
 		>
 			<AnimatePresence
 				mode='wait'
@@ -169,69 +234,59 @@ export function ScoreBanner({
 				}}
 			>
 				{isVisible ? (
-					<div
+					<motion.div
 						key={snapshot.key}
-						className='relative text-center text-white'
+						className='relative flex flex-col items-center'
+						initial={{ opacity: 0, y: -12 }}
+						animate={{ opacity: 1, y: 0 }}
+						exit={{ opacity: 0, y: -16, scale: 0.9 }}
+						transition={{ duration: ENTER_DURATION_S, ease: SCORE_EASE }}
 					>
-						<motion.div
-							aria-hidden='true'
-							className='absolute top-1/2 left-1/2 -z-10 h-40 w-28 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-slate-950/85 blur-2xl'
-							initial={{ opacity: 0, scale: 0.1 }}
-							animate={{ opacity: 1, scale: 1 }}
-							exit={{ opacity: 0, scale: 0.1 }}
-							transition={{
-								duration: ENTER_DURATION_S,
-								ease: SCORE_EASE,
-							}}
-						/>
+						{snapshot.isCorrect !== null ? (
+							<ResultMark isCorrect={snapshot.isCorrect} />
+						) : null}
 
-						<motion.div
-							className='flex justify-center'
-							initial={{ opacity: 0, y: -10 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -10 }}
-							transition={{
-								duration: ENTER_DURATION_S,
-								ease: SCORE_EASE,
-							}}
-						>
-							{snapshot.isCorrect !== null ? (
-								<ScoreMark isCorrect={snapshot.isCorrect} />
-							) : null}
-						</motion.div>
-
-						<motion.div
-							className='relative mx-auto mt-6 w-fit tabular-nums text-white'
-							initial={{ opacity: 0, y: -10 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -10 }}
-							transition={{
-								duration: ENTER_DURATION_S,
-								ease: SCORE_EASE,
-							}}
-						>
-							<p className='-mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-slate-400'>
-								{t('score.yourScore')}
-							</p>
-							<p className='text-[clamp(1.5rem,8vw,2.5rem)] font-black'>
+						<div className='relative mt-1'>
+							<motion.p
+								key={bumpCount}
+								aria-label={`${t('game.score')}: ${snapshot.totalScore}`}
+								className='text-5xl font-black text-white tabular-nums sm:text-6xl'
+								style={OUTLINED_TEXT}
+								animate={
+									bumpCount > 0 ? { scale: [1, 1.3, 1] } : undefined
+								}
+								transition={{ duration: 0.45, ease: 'easeOut' }}
+							>
 								{score}
-							</p>
+							</motion.p>
 
-							{showAward ? (
-								<motion.p
-									initial={{ opacity: 0, x: 12 }}
-									animate={{ opacity: 1, x: 0 }}
-									transition={{
-										duration: 0.28,
-										ease: SCORE_EASE,
-									}}
-									className='absolute top-1/2 left-full -translate-y-1/2 text-xl font-black text-amber-300'
-								>
-									{formatAwardedScore(snapshot.awardedScore)}
-								</motion.p>
-							) : null}
-						</motion.div>
-					</div>
+							<AnimatePresence>
+								{showAward ? (
+									<motion.span
+										key='award'
+										aria-hidden='true'
+										className='absolute top-1/2 left-full ml-5 -translate-y-1/2 text-3xl font-black whitespace-nowrap text-sunflower-300 tabular-nums sm:text-4xl'
+										style={OUTLINED_TEXT}
+										initial={{ opacity: 0, scale: 0.4, x: 16 }}
+										animate={{ opacity: 1, scale: 1, x: 0 }}
+										exit={{
+											opacity: 0,
+											scale: 0.4,
+											x: -48,
+											transition: { duration: 0.3, ease: 'easeIn' },
+										}}
+										transition={{
+											type: 'spring',
+											stiffness: 520,
+											damping: 16,
+										}}
+									>
+										{formatAwardedScore(snapshot.awardedScore)}
+									</motion.span>
+								) : null}
+							</AnimatePresence>
+						</div>
+					</motion.div>
 				) : null}
 			</AnimatePresence>
 		</div>

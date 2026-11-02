@@ -14,7 +14,11 @@ import Map, {
 	type MapRef,
 	type ProjectionSpecification,
 } from 'react-map-gl/maplibre'
-import { IconButton } from '../ui'
+import {
+	Toggle as TogglePrimitive,
+	ToggleGroup as ToggleGroupPrimitive,
+} from 'radix-ui'
+import { cn } from '../utils'
 import { CONTINENT_VIEW_PRESETS } from './continent-view'
 import {
 	BASE_STYLE_LAYER_ID,
@@ -23,6 +27,8 @@ import {
 	buildDimLayer,
 	buildGeolinesLablelLayer,
 	buildHighlightLayer,
+	buildSelectionFillLayer,
+	buildSelectionLineLayer,
 	capitalDotLayer,
 	hoverLayer,
 	LABELS_BOTTOM_LAYER_ID,
@@ -83,6 +89,20 @@ function hasWrongHighlight(
 	})
 }
 
+function mapControlClass(isCurrent: boolean): string {
+	return cn(
+		'grid size-11 place-items-center rounded-control border-2 transition-[translate,box-shadow,background-color,color] duration-150',
+		'disabled:cursor-not-allowed disabled:opacity-45',
+		isCurrent
+			? 'translate-y-1 cursor-default border-line-strong bg-paper-deep text-muted'
+			: [
+					'border-ocean-600 bg-ocean-500 text-white shadow-[0_4px_0_0_var(--color-ocean-700)]',
+					'enabled:hover:-translate-y-0.5 enabled:hover:shadow-[0_6px_0_0_var(--color-ocean-700)]',
+					'enabled:active:translate-y-1 enabled:active:shadow-none',
+				],
+	)
+}
+
 function MapRendererInner({
 	onPick,
 	interactiveIds,
@@ -94,7 +114,7 @@ function MapRendererInner({
 	disabled = false,
 	className,
 	resetViewKey = null,
-}: MapRendererProps): JSX.Element {
+}: MapRendererProps) {
 	const { t } = useTranslation()
 	const language = useCurrentLocale()
 	const mapRef = useRef<MapRef | null>(null)
@@ -253,9 +273,23 @@ function MapRendererInner({
 
 	// Layers ================================================
 
+	const selectedId =
+		highlights.find(highlight => highlight.tone === 'selected')?.countryId ??
+		null
+
 	const highlightLayer = useMemo(() => {
-		return buildHighlightLayer(highlights)
-	}, [highlights])
+		return buildHighlightLayer(highlights, selectedId)
+	}, [highlights, selectedId])
+
+	const selectionFillLayer = useMemo(
+		() => buildSelectionFillLayer(selectedId, selectedId !== null),
+		[selectedId],
+	)
+
+	const selectionLineLayer = useMemo(
+		() => buildSelectionLineLayer(selectedId, selectedId !== null),
+		[selectedId],
+	)
 
 	const dimLayer = useMemo(() => {
 		return buildDimLayer(interactiveIds, true)
@@ -462,7 +496,7 @@ function MapRendererInner({
 
 	return (
 		<div
-			className={`relative h-full w-full overflow-hidden ${isGlobeProjection ? 'bg-[#08162F]' : ''} ${className}`}
+			className={`relative h-full w-full overflow-hidden ${isGlobeProjection ? 'bg-ocean-900' : ''} ${className}`}
 		>
 			<Map
 				ref={mapRef}
@@ -480,14 +514,12 @@ function MapRendererInner({
 				interactiveLayerIds={INTERACTIVE_LAYER_IDS}
 				onError={handleError}
 			>
-				<NavigationControl
-					showCompass={false}
-					position='top-left'
-					style={{ marginTop: 130 }}
-				/>
+				<NavigationControl showCompass={false} position='top-left' />
 
 				<Layer {...dimLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
 				<Layer {...highlightLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
+				<Layer {...selectionFillLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
+				<Layer {...selectionLineLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
 				<Layer {...hoverLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
 				<Layer {...geolinesLabelLayer} />
 				<Layer {...capitalDotLayer} filter={labelFilter} />
@@ -529,54 +561,68 @@ function MapRendererInner({
 			</Map>
 
 			{popupElement && isRevealSettled ? (
-				<div className='absolute top-17 right-2 z-10'>
-					<IconButton
-						type='button'
-						aria-label={
-							isCardHidden ? t('map.info.show') : t('map.info.hide')
-						}
+				<div className='absolute top-15 right-3 z-10'>
+					<TogglePrimitive.Root
+						aria-label={t('map.info.show')}
 						title={isCardHidden ? t('map.info.show') : t('map.info.hide')}
-						aria-pressed={!isCardHidden}
-						onClick={() => setIsCardHidden(hidden => !hidden)}
-						className='relative'
+						pressed={!isCardHidden}
+						onPressedChange={pressed => setIsCardHidden(!pressed)}
+						className={mapControlClass(!isCardHidden)}
 					>
-						{!isCardHidden ? (
-							<span className='absolute top-1/2  left-1/2 -translate-1/2 rotate-45 block w-8 h-0.5 rounded-full bg-white' />
-						) : null}
-						<Info aria-hidden='true' size={24} strokeWidth={2} />
-					</IconButton>
+						<Info
+							aria-hidden='true'
+							className='size-6'
+							strokeWidth={2.25}
+						/>
+					</TogglePrimitive.Root>
 				</div>
 			) : null}
 
-			<div className='absolute top-3.5 left-2 z-10 flex flex-col gap-2'>
-				<IconButton
-					type='button'
+			<ToggleGroupPrimitive.Root
+				type='single'
+				orientation='vertical'
+				className='absolute top-3 left-3 z-10 flex flex-col gap-2'
+				value={isGlobeProjection ? 'globe' : 'flat'}
+				onValueChange={value => {
+					if (value === 'flat' && !isMercatorProjection) {
+						switchProjection(MERCATOR_PROJECTION)
+					} else if (value === 'globe' && !isGlobeProjection) {
+						switchProjection(GLOBE_PROJECTION)
+					}
+				}}
+			>
+				<ToggleGroupPrimitive.Item
+					value='flat'
 					aria-label={t('map.projection.flat')}
 					title={t('map.projection.flat')}
-					active={isMercatorProjection}
-					disabled={isMercatorProjection}
-					onClick={() => switchProjection(MERCATOR_PROJECTION)}
+					className={mapControlClass(isMercatorProjection)}
 				>
-					<MapIcon aria-hidden='true' size={24} strokeWidth={2} />
-				</IconButton>
-				<IconButton
-					type='button'
+					<MapIcon
+						aria-hidden='true'
+						className='size-6'
+						strokeWidth={2.25}
+					/>
+				</ToggleGroupPrimitive.Item>
+				<ToggleGroupPrimitive.Item
+					value='globe'
 					aria-label={t('map.projection.globe')}
 					title={t('map.projection.globe')}
-					active={isGlobeProjection}
-					onClick={() => {
-						if (!isGlobeProjection && !isContinentChosen) {
-							switchProjection(GLOBE_PROJECTION)
-						}
-					}}
-					disabled={isGlobeProjection || isContinentChosen}
+					disabled={isContinentChosen}
+					className={mapControlClass(isGlobeProjection)}
 				>
-					<Globe aria-hidden='true' size={24} strokeWidth={2} />
-				</IconButton>
-			</div>
+					<Globe
+						aria-hidden='true'
+						className='size-6'
+						strokeWidth={2.25}
+					/>
+				</ToggleGroupPrimitive.Item>
+			</ToggleGroupPrimitive.Root>
 
 			{hasFailure ? (
-				<div className='absolute top-3 left-1/2 z-11 -translate-x-1/2 rounded-lg bg-slate-900/90 px-2.5 py-2 text-xs text-white'>
+				<div
+					role='alert'
+					className='absolute top-3 left-1/2 z-11 -translate-x-1/2 rounded-full border-2 border-coral-600 bg-coral-500 px-4 py-1.5 text-sm font-extrabold text-white'
+				>
 					{t('map.error')}
 				</div>
 			) : null}

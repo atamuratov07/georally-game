@@ -1,6 +1,6 @@
-import { CheckIcon, CopyIcon } from 'lucide-react'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { Button, type ButtonProps } from './Button'
+import { Check, Copy } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Button, type ButtonProps } from './button'
 
 async function copyText(value: string): Promise<boolean> {
 	if (navigator.clipboard?.writeText) {
@@ -27,19 +27,16 @@ async function copyText(value: string): Promise<boolean> {
 
 export interface CopyButtonProps extends Omit<ButtonProps, 'onClick'> {
 	textToCopy: string
-	copiedChildren?: ReactNode
 	resetDelayMs?: number
 }
 
 export function CopyButton({
 	textToCopy,
-	copiedChildren,
 	children,
 	resetDelayMs = 1600,
-	variant = 'secondary',
-	size = 'md',
+	variant = 'neutral',
 	...props
-}: CopyButtonProps): JSX.Element {
+}: CopyButtonProps) {
 	const [copied, setCopied] = useState(false)
 	const resetTimerRef = useRef<number | null>(null)
 
@@ -58,7 +55,7 @@ export function CopyButton({
 
 		const didCopy = await copyText(textToCopy)
 		setCopied(didCopy)
-		resetTimerRef.current = setTimeout(() => {
+		resetTimerRef.current = window.setTimeout(() => {
 			setCopied(false)
 			resetTimerRef.current = null
 		}, resetDelayMs)
@@ -67,19 +64,14 @@ export function CopyButton({
 	return (
 		<Button
 			type='button'
-			variant={variant}
-			size={size}
+			variant={copied ? 'grass' : variant}
 			onClick={() => {
 				void handleCopy()
 			}}
 			{...props}
 		>
-			{copied ? (
-				<CheckIcon aria-hidden='true' size={18} strokeWidth={2} />
-			) : (
-				<CopyIcon aria-hidden='true' size={18} strokeWidth={2} />
-			)}
-			{copied && copiedChildren ? copiedChildren : children}
+			{copied ? <Check aria-hidden='true' /> : <Copy aria-hidden='true' />}
+			{children}
 		</Button>
 	)
 }

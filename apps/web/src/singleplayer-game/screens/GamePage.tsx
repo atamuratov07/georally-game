@@ -6,7 +6,10 @@ import {
 } from '@georally/game-domain/singleplayer'
 import { useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Button, ButtonLink, ScreenShell, SurfacePanel } from '../../shared/ui'
+import { MapPinOff } from 'lucide-react'
+import { LocalizedLink } from '@/app/LocalizedLink'
+import { StatusScreen } from '@/shared/layout'
+import { Button, TextButton } from '@/shared/ui'
 import { GameResultModal } from '../components/GameResultModal'
 import { parseGameConfig } from '../core/config'
 import { useGameSession, type GameLoadErrorCode } from '../core/useGameSession'
@@ -31,7 +34,7 @@ function getLoadErrorKey(errorCode: GameLoadErrorCode | null): string {
 	return 'singleplayer.loadErrors.default'
 }
 
-export default function GamePage(): JSX.Element {
+export default function GamePage() {
 	const [searchParams] = useSearchParams()
 	const configResult = useMemo(
 		() => parseGameConfig(searchParams),
@@ -44,7 +47,7 @@ export default function GamePage(): JSX.Element {
 	return <GameContent config={configResult.value} />
 }
 
-function GameContent({ config }: { config: GameConfig }): JSX.Element {
+function GameContent({ config }: { config: GameConfig }) {
 	const { t } = useTranslation()
 	const navigate = useLocalizedNavigate()
 	const {
@@ -60,32 +63,32 @@ function GameContent({ config }: { config: GameConfig }): JSX.Element {
 
 	if (loadErrorCode || !gameData) {
 		return (
-			<ScreenShell center className='px-5 py-8'>
-				<SurfacePanel>
-					<p className='text-[11px] font-black uppercase tracking-[0.22em] text-rose-700'>
-						{t('singleplayer.title')}
-					</p>
-					<h1 className='mt-3 text-3xl font-black tracking-tight text-slate-950'>
-						{t('singleplayer.unavailableTitle')}
-					</h1>
-					<p className='mt-3 text-sm leading-7 text-slate-600'>
-						{t(getLoadErrorKey(loadErrorCode))}
-					</p>
-					<div className='mt-6 flex flex-wrap gap-3'>
-						<Button type='button' variant='teal' onClick={handleTryAgain}>
+			<StatusScreen
+				tone='coral'
+				icon={<MapPinOff />}
+				title={t(getLoadErrorKey(loadErrorCode))}
+				actions={
+					<>
+						<TextButton asChild>
+							<LocalizedLink to='/singleplayer'>
+								{t('singleplayer.changeSettings')}
+							</LocalizedLink>
+						</TextButton>
+						<Button
+							type='button'
+							variant='ocean'
+							onClick={handleTryAgain}
+						>
 							{t('common.retry')}
 						</Button>
-						<ButtonLink to='/singleplayer' variant='secondary'>
-							{t('singleplayer.changeSettings')}
-						</ButtonLink>
-					</div>
-				</SurfacePanel>
-			</ScreenShell>
+					</>
+				}
+			/>
 		)
 	}
 
 	return (
-		<div className='fixed inset-0 overflow-hidden bg-slate-950'>
+		<div className='fixed inset-0 overflow-hidden'>
 			<GameScreen
 				state={engineState}
 				eligibleIds={eligibleIds}

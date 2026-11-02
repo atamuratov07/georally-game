@@ -35,6 +35,12 @@ export function getMemberName(
 	return getMembersById(members).get(memberId)?.name ?? memberId
 }
 
+export function getMemberColorIndexes(
+	members: readonly { memberId: string }[],
+): Map<string, number> {
+	return new Map(members.map((member, index) => [member.memberId, index]))
+}
+
 export function formatClosedReason(reason: RoomClosedEvent['reason']): string {
 	if (reason === 'host_terminated') {
 		return i18n.t('multiplayer.closed.hostTerminated')

@@ -101,7 +101,7 @@ function PlayersCard({
 			</CardHeader>
 
 			<ul className='grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-3'>
-				{members.map(member => (
+				{members.map((member, index) => (
 					<li
 						key={member.memberId}
 						className={cn(
@@ -113,6 +113,7 @@ function PlayersCard({
 							<Avatar
 								name={member.name}
 								size='lg'
+								colorIndex={index}
 								offline={!member.connected}
 							/>
 							{member.isHost ? (

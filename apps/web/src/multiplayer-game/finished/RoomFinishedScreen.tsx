@@ -8,6 +8,7 @@ import { RankingList } from '@/shared/widgets/RankingList'
 import { cn } from '@/shared/utils'
 import { RoomNotices } from '@/shared/widgets/RoomNotices'
 import { getLeaderboardEntries } from '../model/gameSelectors'
+import { getMemberColorIndexes } from '../model/roomSelectors'
 
 interface RoomFinishedScreenCapabilities {
 	canPlayAgain: boolean
@@ -67,7 +68,15 @@ export function RoomFinishedScreen({
 	const isClassroomHost =
 		room.roomMode === 'classroom' && room.viewerRole === 'host'
 	const viewerEntry = isClassroomHost ? null : room.viewerLeaderboardEntry
-	const entries = getLeaderboardEntries(room.lastGameResult, room.members, 5)
+	const colorIndexes = getMemberColorIndexes(room.members)
+	const entries = getLeaderboardEntries(
+		room.lastGameResult,
+		room.members,
+		5,
+	).map(entry => ({
+		...entry,
+		colorIndex: colorIndexes.get(entry.participantId),
+	}))
 
 	return (
 		<PageShell width='md'>

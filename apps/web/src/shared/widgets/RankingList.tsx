@@ -8,6 +8,7 @@ export interface RankingEntry {
 	name: string
 	score: number
 	correctCount: number
+	colorIndex?: number
 }
 
 const MEDAL_CLASSES: Record<number, string> = {
@@ -49,7 +50,11 @@ export function RankingList({
 						>
 							{entry.rank}
 						</span>
-						<Avatar name={entry.name} size='sm' />
+						<Avatar
+							name={entry.name}
+							size='sm'
+							colorIndex={entry.colorIndex}
+						/>
 						<span className='min-w-0 flex-1'>
 							<span className='block truncate font-extrabold'>
 								{entry.name}

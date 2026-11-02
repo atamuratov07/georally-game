@@ -1,73 +1,79 @@
+import BoringAvatar from 'boring-avatars'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { Avatar as AvatarPrimitive } from 'radix-ui'
 import type { ComponentProps } from 'react'
 import { cn } from '@/shared/utils'
 
-const AVATAR_TONES = [
-	'border-ocean-600 bg-ocean-400 text-white',
-	'border-grass-600 bg-grass-400 text-white',
-	'border-sunflower-500 bg-sunflower-300 text-sunflower-900',
-	'border-coral-600 bg-coral-400 text-white',
-	'border-grape-600 bg-grape-400 text-white',
-] as const
+const AVATAR_COLORS = ['#3a9cff', '#5ec43a', '#ffc01a', '#fb5f4c', '#9b6cfb']
+
+/** boring-avatars' name hash (v2), used to steer which colour a face gets. */
+function hashName(name: string): number {
+	let hash = 0
+	for (let i = 0; i < name.length; i++) {
+		hash = (hash << 5) - hash + name.charCodeAt(i)
+		hash = hash & hash
+	}
+	return Math.abs(hash)
+}
+
+/**
+ * Rotates the palette so the face's main colour is `AVATAR_COLORS[colorIndex]`.
+ * The beam avatar takes its main colour from `colors[hash % length]`, so the
+ * rotation makes neighbouring players in a room get different colours.
+ */
+function paletteFor(name: string, colorIndex: number | undefined): string[] {
+	if (colorIndex === undefined) return AVATAR_COLORS
+	const length = AVATAR_COLORS.length
+	const shift = (((colorIndex - hashName(name)) % length) + length) % length
+	return AVATAR_COLORS.map((_, i) => AVATAR_COLORS[(i + shift) % length])
+}
 
 const avatarVariants = cva(
-	'relative flex shrink-0 items-center justify-center rounded-full select-none',
+	'relative inline-flex shrink-0 overflow-hidden rounded-full shadow-[0_3px_0_0_rgb(24_34_61/0.18)] select-none',
 	{
 		variants: {
 			size: {
-				sm: 'size-9 text-sm',
-				md: 'size-12 text-lg',
-				lg: 'size-18 text-2xl sm:size-20 sm:text-3xl',
+				sm: 'size-9',
+				md: 'size-12',
+				lg: 'size-18 sm:size-20',
 			},
 		},
 		defaultVariants: { size: 'md' },
 	},
 )
 
-function hashName(name: string): number {
-	let hash = 0
-	for (const char of name) {
-		hash = (hash * 31 + char.codePointAt(0)!) | 0
-	}
-	return Math.abs(hash)
-}
-
-function getInitials(name: string): string {
-	const words = name.trim().split(/\s+/).filter(Boolean)
-	if (words.length === 0) return '?'
-	if (words.length === 1) return [...words[0]].slice(0, 2).join('')
-	return [...words[0]][0] + [...words[1]][0]
-}
-
 function Avatar({
 	name,
 	size,
 	offline = false,
+	colorIndex,
 	className,
 	...props
-}: ComponentProps<typeof AvatarPrimitive.Root> &
+}: ComponentProps<'span'> &
 	VariantProps<typeof avatarVariants> & {
 		name: string
 		offline?: boolean
+		/** Position in the room, so players in one room get different colours. */
+		colorIndex?: number
 	}) {
 	return (
-		<AvatarPrimitive.Root
+		<span
 			data-slot='avatar'
-			className={cn(avatarVariants({ size }), className)}
+			className={cn(
+				avatarVariants({ size }),
+				offline && 'opacity-60 grayscale',
+				className,
+			)}
 			{...props}
 		>
-			<AvatarPrimitive.Fallback
-				className={cn(
-					'flex size-full items-center justify-center rounded-full border-2 font-black uppercase',
-					offline
-						? 'border-line-strong bg-paper-deep text-muted'
-						: AVATAR_TONES[hashName(name) % AVATAR_TONES.length],
-				)}
-			>
-				{getInitials(name)}
-			</AvatarPrimitive.Fallback>
-		</AvatarPrimitive.Root>
+			<BoringAvatar
+				name={name}
+				variant='beam'
+				colors={paletteFor(name, colorIndex)}
+				size='100%'
+				title={false}
+				aria-hidden='true'
+			/>
+		</span>
 	)
 }
 

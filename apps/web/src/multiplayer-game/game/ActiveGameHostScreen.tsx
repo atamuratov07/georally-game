@@ -18,6 +18,7 @@ import {
 	getTargetCountryInfo,
 	type HostParticipantStanding,
 } from '../model/gameSelectors'
+import { getMemberColorIndexes } from '../model/roomSelectors'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 const ROW_LAYOUT_TRANSITION = { duration: 0.5, ease: EASE } as ValueTransition
@@ -129,10 +130,12 @@ function SubmissionResult({
 
 function ParticipantRow({
 	standing,
+	colorIndex,
 	showSubmission,
 	startedAt,
 }: {
 	standing: HostParticipantStanding
+	colorIndex: number | undefined
 	showSubmission: boolean
 	startedAt: number
 }) {
@@ -154,6 +157,7 @@ function ParticipantRow({
 				<Avatar
 					name={standing.name}
 					size='sm'
+					colorIndex={colorIndex}
 					offline={!standing.connected}
 				/>
 				<span className='truncate font-extrabold'>{standing.name}</span>
@@ -199,6 +203,7 @@ export function ActiveGameHostScreen({
 	const isOpen = game.phase === 'open'
 	const isLastRound = game.currentQuestionNumber === game.questionCount
 	const standings = getHostStandings(game, members)
+	const colorIndexes = getMemberColorIndexes(members)
 	const targetCountry = getTargetCountryInfo(game)
 	const targetName = targetCountry
 		? getCountryName(targetCountry, language)
@@ -260,6 +265,7 @@ export function ActiveGameHostScreen({
 							<ParticipantRow
 								key={standing.participantId}
 								standing={standing}
+								colorIndex={colorIndexes.get(standing.participantId)}
 								startedAt={game.startedAt}
 								showSubmission={!isOpen}
 							/>

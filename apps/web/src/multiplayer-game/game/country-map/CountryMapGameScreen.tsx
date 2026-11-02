@@ -12,6 +12,7 @@ import {
 	getTargetCountryInfo,
 	type CurrentRoundView,
 } from '../../model/gameSelectors'
+import { getMemberColorIndexes } from '../../model/roomSelectors'
 import { useCountdown } from '../hooks/useCountdown'
 import { RoomLeaderboardOverlay } from './LeaderboardOverlay'
 import { useGameMap } from './useGameMap'
@@ -56,10 +57,13 @@ export function CountryMapGameScreen({
 		onSubmitAnswer,
 		showCountryInfo,
 	})
-	const leaderboardEntries = useMemo(
-		() => getLeaderboardEntries(game, members, 5),
-		[game, members],
-	)
+	const leaderboardEntries = useMemo(() => {
+		const colorIndexes = getMemberColorIndexes(members)
+		return getLeaderboardEntries(game, members, 5).map(entry => ({
+			...entry,
+			colorIndex: colorIndexes.get(entry.participantId),
+		}))
+	}, [game, members])
 	const evaluatedSubmission =
 		game.phase === 'open' ? null : game.viewerSubmission
 	const scoreBannerTriggerKey =

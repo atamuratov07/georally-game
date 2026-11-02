@@ -1,10 +1,10 @@
 import type { GameParticipantView } from '@georally/game-domain/multiplayer/game'
 import type { VisibleMemberInfo } from '@georally/game-domain/multiplayer/room'
-import { CountryMapGameScreen } from './country-map/CountryMapGameScreen'
-import { getCurrentRound } from '../model/gameSelectors'
-import { AnimatePresence } from 'motion/react'
-import { FloatingNotice } from '../../shared/ui/FloatingNotice'
 import { useTranslation } from 'react-i18next'
+import { StatusScreen } from '@/shared/layout'
+import { RoomNotices } from '@/shared/widgets/RoomNotices'
+import { getCurrentRound } from '../model/gameSelectors'
+import { CountryMapGameScreen } from './country-map/CountryMapGameScreen'
 
 interface ActiveGameParticipantScreenProps {
 	game: GameParticipantView
@@ -27,37 +27,17 @@ export function ActiveGameParticipantScreen({
 }: ActiveGameParticipantScreenProps) {
 	const { t } = useTranslation()
 	const currentRound = getCurrentRound(game)
+
 	if (game.phase === 'completed' || !currentRound) {
-		return (
-			<main className='grid h-full place-items-center bg-slate-950 px-5 py-8 text-white'>
-				<p className='text-sm font-semibold text-slate-300'>
-					{t('multiplayer.game.finishing')}
-				</p>
-			</main>
-		)
+		return <StatusScreen title={t('multiplayer.game.finishing')} />
 	}
 
-	// Add a game.kind switch here when the domain exposes multiple variants.
 	return (
 		<>
-			<AnimatePresence mode='wait'>
-				{isReconnecting ? (
-					<FloatingNotice>
-						{t('multiplayer.lobby.reconnecting')}
-					</FloatingNotice>
-				) : null}
-			</AnimatePresence>
-
-			<AnimatePresence mode='wait'>
-				{actionErrorMessage ? (
-					<FloatingNotice
-						tone='error'
-						offsetTop={isReconnecting ? 'stacked' : 'default'}
-					>
-						{actionErrorMessage}
-					</FloatingNotice>
-				) : null}
-			</AnimatePresence>
+			<RoomNotices
+				isReconnecting={isReconnecting}
+				actionErrorMessage={actionErrorMessage}
+			/>
 
 			<CountryMapGameScreen
 				game={game}

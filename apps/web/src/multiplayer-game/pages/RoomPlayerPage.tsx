@@ -12,8 +12,8 @@ import { RoomLoadingScreen } from '../screens/RoomLoadingScreen'
 import { getMembersById } from '../model/roomSelectors'
 
 import { AnimatePresence } from 'motion/react'
-import { FloatingNotice } from '../../shared/ui/FloatingNotice'
-import { CheckIcon, LoaderIcon } from 'lucide-react'
+import { FloatingNotice } from '@/shared/ui'
+import { Check, LoaderCircle } from 'lucide-react'
 
 const loadParticipantScreen = () =>
 	import('../game/ActiveGameParticipantScreen').then(module => ({
@@ -36,7 +36,7 @@ function HostConnectionNotice({ hostConnected }: { hostConnected?: boolean }) {
 			setNotice('reconnected')
 			const timer = setTimeout(() => {
 				setNotice(null)
-			}, 1000)
+			}, 1500)
 
 			return () => clearTimeout(timer)
 		} else {
@@ -45,37 +45,24 @@ function HostConnectionNotice({ hostConnected }: { hostConnected?: boolean }) {
 
 		prevHostConnected.current = hostConnected
 	}, [hostConnected])
+
 	return (
-		<>
-			{notice === 'reconnected' && (
-				<AnimatePresence mode='wait'>
-					<FloatingNotice
-						tone='neutral'
-						offsetTop='compact'
-						className='flex gap-2 items-center'
-					>
-						<CheckIcon className='text-xl stroke-3' />
-						<p>{t('multiplayer.game.hostReconnected')}</p>
-					</FloatingNotice>
-				</AnimatePresence>
-			)}
-			{notice === 'disconnected' && (
-				<AnimatePresence mode='wait'>
-					<FloatingNotice
-						tone='error'
-						offsetTop='compact'
-						className='flex gap-2 items-center'
-					>
-						<LoaderIcon className='animate-spin text-xl stroke-3' />
-						<p>
-							{t('multiplayer.game.hostDisconnectedTitle')}
-							<br />
-							{t('multiplayer.game.hostDisconnectedSubtitle')}
-						</p>
-					</FloatingNotice>
-				</AnimatePresence>
-			)}
-		</>
+		<AnimatePresence>
+			{notice === 'reconnected' ? (
+				<FloatingNotice key='reconnected' icon={<Check />}>
+					{t('multiplayer.game.hostReconnected')}
+				</FloatingNotice>
+			) : null}
+			{notice === 'disconnected' ? (
+				<FloatingNotice
+					key='disconnected'
+					tone='error'
+					icon={<LoaderCircle className='animate-spin' />}
+				>
+					{t('multiplayer.game.hostDisconnected')}
+				</FloatingNotice>
+			) : null}
+		</AnimatePresence>
 	)
 }
 
@@ -101,13 +88,7 @@ export default function RoomPlayerPage() {
 	}, [state])
 
 	if (state.status === 'connecting') {
-		return (
-			<RoomLoadingScreen
-				label={t('multiplayer.room')}
-				title={t('multiplayer.loading.connecting')}
-				message={t('multiplayer.loading.connectingMessage')}
-			/>
-		)
+		return <RoomLoadingScreen title={t('multiplayer.loading.connecting')} />
 	}
 
 	if (state.status === 'closed') {
@@ -142,13 +123,7 @@ export default function RoomPlayerPage() {
 	const isReconnecting = state.status === 'reconnecting'
 
 	if (!room) {
-		return (
-			<RoomLoadingScreen
-				label={t('multiplayer.room')}
-				title={t('multiplayer.loading.reconnecting')}
-				message={t('multiplayer.loading.reconnectingMessage')}
-			/>
-		)
+		return <RoomLoadingScreen title={t('multiplayer.loading.reconnecting')} />
 	}
 
 	const hostConnected = getMembersById(room.members).get(
@@ -168,6 +143,8 @@ export default function RoomPlayerPage() {
 				<RoomLobbyScreen
 					role='player'
 					roomCode={roomCode}
+					roomMode={room.roomMode}
+					viewerMemberId={room.viewerMemberId}
 					members={room.members}
 					actionErrorMessage={actionErrorMessage}
 					isReconnecting={isReconnecting}
@@ -194,11 +171,7 @@ export default function RoomPlayerPage() {
 		)
 	}
 	const gameLoadingFallback = (
-		<RoomLoadingScreen
-			label={t('multiplayer.room')}
-			title={t('multiplayer.loading.starting')}
-			message={t('multiplayer.loading.startingMessage')}
-		/>
+		<RoomLoadingScreen title={t('multiplayer.loading.starting')} />
 	)
 
 	return (

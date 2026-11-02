@@ -1,44 +1,16 @@
-type ClassDictionary = Record<string, boolean | null | undefined>
+import { clsx, type ClassValue } from 'clsx'
+import { extendTailwindMerge } from 'tailwind-merge'
 
-export type ClassValue =
-	| string
-	| number
-	| false
-	| null
-	| undefined
-	| ClassDictionary
-	| ClassValue[]
+const twMerge = extendTailwindMerge({
+	extend: {
+		theme: {
+			radius: ['control', 'card'],
+		},
+	},
+})
 
-function appendClassValue(value: ClassValue, classes: string[]): void {
-	if (!value) {
-		return
-	}
+export type { ClassValue }
 
-	if (Array.isArray(value)) {
-		for (const item of value) {
-			appendClassValue(item, classes)
-		}
-		return
-	}
-
-	if (typeof value === 'object') {
-		for (const [className, enabled] of Object.entries(value)) {
-			if (enabled) {
-				classes.push(className)
-			}
-		}
-		return
-	}
-
-	classes.push(String(value))
-}
-
-export function cn(...values: ClassValue[]): string {
-	const classes: string[] = []
-
-	for (const value of values) {
-		appendClassValue(value, classes)
-	}
-
-	return classes.join(' ')
+export function cn(...inputs: ClassValue[]): string {
+	return twMerge(clsx(inputs))
 }

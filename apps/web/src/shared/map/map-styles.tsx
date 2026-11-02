@@ -26,9 +26,9 @@ export const CAPITAL_DOT_LAYER_ID = 'capitals-dot'
 export const GEOLINES_LABEL_LAYER_ID = 'geolines-label'
 export const LABELS_BOTTOM_LAYER_ID = 'geolines'
 
-export const WRONG_FILL = '#f87171'
-export const REVEALED_FILL = '#22c55e'
-export const SELECTED_FILL = '#6366f1'
+export const WRONG_FILL = '#fb5f4c'
+export const REVEALED_FILL = '#3fa625'
+export const SELECTED_FILL = '#8148f0'
 
 export type FillColorExpression = NonNullable<
 	FillLayerSpecification['paint']
@@ -155,8 +155,8 @@ export const hoverLayer: FillLayerSpecification = {
 	source: SOURCE_ID,
 	'source-layer': COUNTRY_LAYER,
 	paint: {
-		'fill-outline-color': '#484896',
-		'fill-color': '#6e599f',
+		'fill-outline-color': '#5527aa',
+		'fill-color': '#9b6cfb',
 		'fill-opacity': [
 			'case',
 			['boolean', ['feature-state', 'hover'], false],

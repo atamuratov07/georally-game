@@ -27,48 +27,18 @@ function populationLabel(
 
 type CountryTagTone = 'independent' | 'unMember'
 
-const TAG_STYLES: Record<CountryTagTone, { className: string }> = {
-	independent: {
-		className: 'border-emerald-200 bg-emerald-50/90 text-emerald-800',
-	},
-	unMember: {
-		className: 'border-sky-200 bg-sky-50/90 text-sky-800',
-	},
+const TAG_CLASSES: Record<CountryTagTone, string> = {
+	independent: 'bg-grass-100 text-grass-800',
+	unMember: 'bg-ocean-100 text-ocean-800',
 }
 
-function Tag({
-	label,
-	tone,
-}: {
-	label: string
-	tone: CountryTagTone
-}) {
-	const styles = TAG_STYLES[tone]
-
-	return (
-		<span
-			className={`rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.16em] ${styles?.className ?? 'border-slate-200 bg-slate-100 text-slate-700'}`}
-		>
-			{label}
-		</span>
-	)
-}
-
-function InfoRow({
-	label,
-	value,
-}: {
-	label: string
-	value: string
-}) {
+function InfoRow({ label, value }: { label: string; value: string }) {
 	return (
 		<div className='flex items-baseline justify-between gap-3'>
-			<p className='text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500'>
+			<dt className='text-[10px] font-extrabold tracking-[0.12em] text-muted uppercase'>
 				{label}
-			</p>
-			<p className='text-right text-sm font-black leading-snug text-slate-950'>
-				{value}
-			</p>
+			</dt>
+			<dd className='text-right text-sm leading-snug font-black'>{value}</dd>
 		</div>
 	)
 }
@@ -96,72 +66,59 @@ export function CountryInfoCard({ info }: { info: CountryInfo }) {
 		unknownLabel,
 	)
 
-	const continentLabel = t(`countryInfo.continent.${info.continent}`)
-
-	const tags = [
-		info.independent
-			? {
-					tone: 'independent',
-					label: t('countryInfo.tags.independent'),
-				}
-			: null,
-		info.unMember
-			? {
-					tone: 'unMember',
-					label: t('countryInfo.tags.unMember'),
-				}
-			: null,
-	].filter(
-		(value): value is { tone: CountryTagTone; label: string } =>
-			value !== null,
-	)
+	const tags: CountryTagTone[] = []
+	if (info.independent) tags.push('independent')
+	if (info.unMember) tags.push('unMember')
 
 	return (
-		<article className='w-70 overflow-hidden rounded-3xl bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(241,245,249,0.96))] text-slate-950 shadow-[0_22px_48px_rgba(15,23,42,0.16)] backdrop-blur'>
-			<div className='relative h-auto overflow-hidden bg-slate-300'>
+		<article className='w-68 animate-pop-in overflow-hidden rounded-3xl bg-white text-ink shadow-[0_0_0_2px_white,0_22px_48px_-10px_rgb(24_34_61/0.35)]'>
+			<div className='relative aspect-[16/10] overflow-hidden bg-paper-deep'>
 				{info.flagUrl ? (
 					<img
 						src={info.flagUrl}
 						alt={t('countryInfo.flagAlt', { country: displayName })}
-						className='h-full w-full object-contain'
+						className='size-full object-cover'
 					/>
-				) : (
-					<div className='h-full w-full bg-slate-200' />
-				)}
-				<div className='absolute inset-0 bg-[linear-gradient(180deg,rgba(15,23,42,0.12),rgba(15,23,42,0.74))]' />
+				) : null}
+				<div className='absolute inset-0 bg-[linear-gradient(180deg,rgb(24_34_61/0.05)_30%,rgb(24_34_61/0.8))]' />
 
-				<div className='absolute inset-x-0 top-0 flex justify-start p-3'>
-					<span className='rounded-full bg-white/16 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white backdrop-blur-md'>
-						{continentLabel}
-					</span>
-				</div>
+				<span className='absolute top-2.5 left-2.5 rounded-full bg-ink/35 px-2.5 py-1 text-[10px] font-black tracking-[0.14em] text-white uppercase backdrop-blur-md'>
+					{t(`countryInfo.continent.${info.continent}`)}
+				</span>
 
 				<div className='absolute inset-x-0 bottom-0 p-3.5'>
-					<h2 className='text-xl font-black leading-tight text-white'>
+					<h2 className='text-xl leading-tight font-black text-white'>
 						{displayName}
 					</h2>
-					<p className='mt-1 text-sm font-semibold text-white/88'>
+					<p className='text-sm font-bold text-white/85'>
 						{displayCapital}
 					</p>
 				</div>
 			</div>
 
-			<div className='space-y-2.5 px-3.5 py-3'>
+			<div className='flex flex-col gap-2 px-3.5 py-3'>
 				{tags.length > 0 ? (
-					<div className='flex flex-wrap gap-1.5 pb-2'>
+					<div className='flex flex-wrap gap-1.5 pb-1'>
 						{tags.map(tag => (
-							<Tag key={tag.tone} tone={tag.tone} label={tag.label} />
+							<span
+								key={tag}
+								className={`rounded-full px-2 py-0.5 text-[9px] font-black tracking-[0.14em] uppercase ${TAG_CLASSES[tag]}`}
+							>
+								{t(`countryInfo.tags.${tag}`)}
+							</span>
 						))}
 					</div>
 				) : null}
-				<InfoRow
-					label={t('countryInfo.population')}
-					value={displayPopulation}
-				/>
-				<InfoRow
-					label={t('countryInfo.currency')}
-					value={displayCurrency}
-				/>
+				<dl className='flex flex-col gap-1.5'>
+					<InfoRow
+						label={t('countryInfo.population')}
+						value={displayPopulation}
+					/>
+					<InfoRow
+						label={t('countryInfo.currency')}
+						value={displayCurrency}
+					/>
+				</dl>
 			</div>
 		</article>
 	)

@@ -130,7 +130,6 @@ export function GameScreen({
 				isPlaying={state.phase === 'playing'}
 				questionStartedAt={questionStartedAt}
 				questionResolvedAt={questionResolvedAt}
-				onGiveUp={onGiveUp}
 			/>
 
 			<main className='relative min-h-0 flex-1'>
@@ -152,8 +151,8 @@ export function GameScreen({
 					</div>
 				) : null}
 
-				{state.phase === 'revealed' ? (
-					<div className='absolute inset-x-0 bottom-8 z-20 flex justify-center px-4'>
+				<div className='absolute inset-x-0 bottom-8 z-20 flex justify-center px-4'>
+					{state.phase === 'revealed' ? (
 						<Button
 							type='button'
 							variant='ocean'
@@ -164,8 +163,18 @@ export function GameScreen({
 						>
 							{t('singleplayer.next')}
 						</Button>
-					</div>
-				) : null}
+					) : state.phase === 'playing' ? (
+						<Button
+							type='button'
+							variant='neutral'
+							size='sm'
+							className='[--drop:0_14px_30px_-8px_rgb(24_34_61/0.35)]'
+							onClick={onGiveUp}
+						>
+							{t('singleplayer.giveUp')}
+						</Button>
+					) : null}
+				</div>
 			</main>
 		</section>
 	)

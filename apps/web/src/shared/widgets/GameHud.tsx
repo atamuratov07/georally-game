@@ -28,26 +28,24 @@ export function GameHud({
 
 	return (
 		<header className='relative z-20 shrink-0 bg-slate-950 text-white'>
-			<div className='mx-auto grid w-full max-w-5xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-3 py-2.5 sm:gap-4 sm:px-5'>
-				<div className='flex items-center gap-2'>{start}</div>
+			<div className='mx-auto grid w-full max-w-5xl grid-cols-[minmax(max-content,1fr)_minmax(0,auto)_minmax(max-content,1fr)] items-center gap-x-2 gap-y-1 px-3 py-2.5 sm:gap-x-4 sm:px-5'>
+				<div className='col-start-1 row-start-1 flex items-center gap-2'>
+					{start}
+				</div>
 
-				<div
-					className='flex min-w-0 flex-col items-center text-center'
-					aria-live='polite'
-				>
+				<div className='max-sm:contents sm:col-start-2 sm:row-start-1 sm:flex sm:min-w-0 sm:flex-col sm:items-center'>
 					<p
-						className='text-xs font-extrabold text-white/60 tabular-nums'
+						className='col-start-2 row-start-1 text-center text-xs font-extrabold text-white/60 tabular-nums'
 						aria-label={t('game.progress', { current, total })}
 					>
 						{current}/{total}
 					</p>
 					<h1
 						key={targetName}
-						className={cn(
-							'flex max-w-full animate-pop-in items-center gap-2 text-xl leading-tight font-black tracking-tight transition-colors duration-300 sm:text-3xl',
-						)}
+						aria-live='polite'
+						className='flex max-w-full min-w-0 animate-pop-in items-center justify-center gap-2 text-center text-xl leading-tight font-black tracking-tight max-sm:col-span-3 max-sm:row-start-2 sm:text-3xl'
 					>
-						<span className='truncate'>{targetName}</span>
+						<span className='text-balance sm:truncate'>{targetName}</span>
 						{targetFlagUrl ? (
 							<img
 								src={targetFlagUrl}
@@ -58,7 +56,9 @@ export function GameHud({
 					</h1>
 				</div>
 
-				<div className='flex items-center justify-end gap-2'>{end}</div>
+				<div className='col-start-3 row-start-1 flex items-center justify-end gap-2'>
+					{end}
+				</div>
 			</div>
 
 			<div aria-hidden='true' className='h-1 w-full bg-white/10'>
@@ -92,11 +92,17 @@ export function TimerChip({
 			aria-label={`${label}: ${formatClock(seconds)}`}
 			key={urgent ? seconds : 'calm'}
 			className={cn(
-				'inline-flex items-center gap-1.5 px-1 text-xl font-black tabular-nums',
-				urgent ? 'animate-bump text-coral-400' : 'text-sunflower-300',
+				'inline-flex h-8 items-center gap-1 rounded-full px-2.5 text-base font-black text-white tabular-nums shadow-[0_3px_0_0_var(--edge)] [text-shadow:0_1px_0_var(--edge)] sm:h-9 sm:gap-1.5 sm:px-3 sm:text-lg',
+				urgent
+					? 'animate-bump bg-coral-500 [--edge:var(--color-coral-700)]'
+					: 'bg-sunflower-500 [--edge:var(--color-sunflower-700)]',
 			)}
 		>
-			<Timer aria-hidden='true' className='size-5' strokeWidth={2.75} />
+			<Timer
+				aria-hidden='true'
+				className='size-4 sm:size-4.5'
+				strokeWidth={2.75}
+			/>
 			{formatClock(seconds)}
 		</span>
 	)

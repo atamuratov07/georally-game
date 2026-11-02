@@ -422,6 +422,12 @@ function MapRendererInner({
 
 	const handleLoad = useCallback(() => {
 		setIsLoaded(true)
+		// MapLibre opens compact attribution expanded until the first move; start
+		// it collapsed so it does not sit under the bottom action button.
+		mapRef.current
+			?.getContainer()
+			.querySelector('.maplibregl-ctrl-attrib')
+			?.classList.remove('maplibregl-compact-show')
 	}, [])
 	const handleError = useCallback((event: ErrorEvent) => {
 		console.error('Maplibre error:', event.error)
@@ -500,6 +506,7 @@ function MapRendererInner({
 		>
 			<Map
 				ref={mapRef}
+				attributionControl={{ compact: true }}
 				initialViewState={INITIAL_VIEW_STATE}
 				mapStyle={MAP_STYLE_URL}
 				style={MAP_STYLE}

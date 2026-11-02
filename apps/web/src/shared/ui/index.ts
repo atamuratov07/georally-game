@@ -18,7 +18,6 @@ export {
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
 } from './dropdown-menu'
-export { FloatingNotice } from './floating-notice'
 export { IconTile, type IconTileTone } from './icon-tile'
 export { Input } from './input'
 export { InputOTP, InputOTPGroup, InputOTPSlot } from './input-otp'

@@ -1,8 +1,10 @@
-import { LoaderCircle } from 'lucide-react'
-import { AnimatePresence } from 'motion/react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useTransientMessage } from '@/shared/hooks/useTransientMessage'
-import { FloatingNotice } from '@/shared/ui'
+import { toast } from 'sonner'
+import { PendingToastIcon } from '@/shared/ui/sonner'
+
+const RECONNECTING_TOAST_ID = 'room-reconnecting'
+const ACTION_ERROR_TOAST_ID = 'room-action-error'
 
 export function RoomNotices({
 	isReconnecting,
@@ -12,27 +14,23 @@ export function RoomNotices({
 	actionErrorMessage: string | null
 }) {
 	const { t } = useTranslation()
-	const errorMessage = useTransientMessage(actionErrorMessage)
 
-	return (
-		<AnimatePresence>
-			{isReconnecting ? (
-				<FloatingNotice
-					key='reconnecting'
-					icon={<LoaderCircle className='animate-spin' />}
-				>
-					{t('multiplayer.lobby.reconnecting')}
-				</FloatingNotice>
-			) : null}
-			{errorMessage ? (
-				<FloatingNotice
-					key='error'
-					tone='error'
-					offset={isReconnecting ? 1 : 0}
-				>
-					{errorMessage}
-				</FloatingNotice>
-			) : null}
-		</AnimatePresence>
-	)
+	useEffect(() => {
+		if (!isReconnecting) return
+		toast(t('multiplayer.lobby.reconnecting'), {
+			id: RECONNECTING_TOAST_ID,
+			duration: Infinity,
+			icon: <PendingToastIcon />,
+		})
+		return () => {
+			toast.dismiss(RECONNECTING_TOAST_ID)
+		}
+	}, [isReconnecting, t])
+
+	useEffect(() => {
+		if (!actionErrorMessage) return
+		toast.error(actionErrorMessage, { id: ACTION_ERROR_TOAST_ID })
+	}, [actionErrorMessage])
+
+	return null
 }

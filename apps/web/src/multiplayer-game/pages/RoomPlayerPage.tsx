@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -11,9 +11,8 @@ import { RoomErrorScreen } from '../screens/RoomErrorScreen'
 import { RoomLoadingScreen } from '../screens/RoomLoadingScreen'
 import { getMembersById } from '../model/roomSelectors'
 
-import { AnimatePresence } from 'motion/react'
-import { FloatingNotice } from '@/shared/ui'
-import { Check, LoaderCircle } from 'lucide-react'
+import { toast } from 'sonner'
+import { PendingToastIcon } from '@/shared/ui/sonner'
 
 const loadParticipantScreen = () =>
 	import('../game/ActiveGameParticipantScreen').then(module => ({
@@ -22,48 +21,38 @@ const loadParticipantScreen = () =>
 
 const ActiveGameParticipantScreen = lazy(loadParticipantScreen)
 
+const HOST_CONNECTION_TOAST_ID = 'host-connection'
+const HOST_RECONNECTED_TOAST_ID = 'host-reconnected'
+
 function HostConnectionNotice({ hostConnected }: { hostConnected?: boolean }) {
 	const { t } = useTranslation()
-	const [notice, setNotice] = useState<'disconnected' | 'reconnected' | null>(
-		null,
-	)
-	const prevHostConnected = useRef<boolean | undefined>(undefined)
+	const wasDisconnected = useRef(false)
 
 	useEffect(() => {
 		if (!hostConnected) {
-			setNotice('disconnected')
-		} else if (prevHostConnected.current === false) {
-			setNotice('reconnected')
-			const timer = setTimeout(() => {
-				setNotice(null)
-			}, 1500)
-
-			return () => clearTimeout(timer)
-		} else {
-			setNotice(null)
+			wasDisconnected.current = true
+			toast(t('multiplayer.game.hostDisconnected'), {
+				id: HOST_CONNECTION_TOAST_ID,
+				duration: Infinity,
+				icon: <PendingToastIcon />,
+			})
+		} else if (wasDisconnected.current) {
+			wasDisconnected.current = false
+			toast.dismiss(HOST_CONNECTION_TOAST_ID)
+			toast.success(t('multiplayer.game.hostReconnected'), {
+				id: HOST_RECONNECTED_TOAST_ID,
+				duration: 1500,
+			})
 		}
+	}, [hostConnected, t])
 
-		prevHostConnected.current = hostConnected
-	}, [hostConnected])
+	useEffect(() => {
+		return () => {
+			toast.dismiss(HOST_CONNECTION_TOAST_ID)
+		}
+	}, [])
 
-	return (
-		<AnimatePresence>
-			{notice === 'reconnected' ? (
-				<FloatingNotice key='reconnected' icon={<Check />}>
-					{t('multiplayer.game.hostReconnected')}
-				</FloatingNotice>
-			) : null}
-			{notice === 'disconnected' ? (
-				<FloatingNotice
-					key='disconnected'
-					tone='error'
-					icon={<LoaderCircle className='animate-spin' />}
-				>
-					{t('multiplayer.game.hostDisconnected')}
-				</FloatingNotice>
-			) : null}
-		</AnimatePresence>
-	)
+	return null
 }
 
 export default function RoomPlayerPage() {

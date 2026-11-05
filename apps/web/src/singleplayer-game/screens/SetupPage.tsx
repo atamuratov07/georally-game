@@ -1,7 +1,7 @@
 import {
 	DEFAULT_GAME_CONFIG,
 	type GameConfig,
-} from '@georally/game-domain/singleplayer'
+} from '@georally/game-domain/singleplayer/locate'
 import { Play } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'

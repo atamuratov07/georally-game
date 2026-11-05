@@ -157,8 +157,9 @@ georally-game/
 |   |   `-- src/
 |   |       |-- index.ts
 |   |       |-- shared/                  # base types, result, errors, random, time
-|   |       |-- catalog/                 # country eligibility selectors
-|   |       |-- singleplayer/            # local state machine
+|   |       |-- catalog/                 # country eligibility selectors, question set selection
+|   |       |-- singleplayer/
+|   |       |   `-- locate/              # local state machine of the find-on-the-map mode
 |   |       `-- multiplayer/
 |   |           |-- orchestration.ts     # room + game commands combined (start, submit, reveal, advance)
 |   |           |-- errors.ts

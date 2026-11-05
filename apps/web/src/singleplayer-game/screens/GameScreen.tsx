@@ -12,7 +12,7 @@ import {
 	getWrongPicks,
 	isPickAllowed,
 	type GameState,
-} from '@georally/game-domain/singleplayer'
+} from '@georally/game-domain/singleplayer/locate'
 import { useEffect, useMemo, useRef } from 'react'
 import { MapRenderer } from '../../shared/map/MapRenderer'
 import type { MapHighlightTone, MapRendererProps } from '../../shared/map/types'

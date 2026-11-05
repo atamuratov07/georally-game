@@ -1,4 +1,4 @@
-import { elapsedSeconds } from '../shared/time'
+import { elapsedSeconds } from '../../shared/time'
 
 const BASE_QUESTION_SCORE = 100
 const TIME_PENALTY_PER_SECOND = 5

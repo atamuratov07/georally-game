@@ -23,4 +23,8 @@ export {
 	hasCountry,
 	selectEligibleCountryIds,
 } from './catalog/selectors'
+export {
+	prepareQuestionSet,
+	type QuestionSet,
+} from './catalog/questionSet'
 export { type CountryPool, type CountryPoolEntry } from './catalog/types'

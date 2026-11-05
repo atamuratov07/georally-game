@@ -1,4 +1,4 @@
-import type { CountryId, GameQuestionSetConfig } from '../shared/types'
+import type { CountryId, GameQuestionSetConfig } from '../../shared/types'
 
 export type GamePhase = 'idle' | 'playing' | 'revealed' | 'finished'
 

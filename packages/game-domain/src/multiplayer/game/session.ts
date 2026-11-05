@@ -1,8 +1,8 @@
-import { selectEligibleCountryIds } from '../../catalog/selectors'
+import { prepareQuestionSet } from '../../catalog/questionSet'
 import type { CountryPool } from '../../catalog/types'
 import type { SessionPreparationError } from '../errors'
-import { pickRandomIds, type RandomNumberGenerator } from '../../shared/random'
-import { err, ok, type Result } from '../../shared/result'
+import type { RandomNumberGenerator } from '../../shared/random'
+import { ok, type Result } from '../../shared/result'
 import type { GameConfig, GameSession } from './types'
 
 export function prepareGameSession(
@@ -10,22 +10,12 @@ export function prepareGameSession(
 	config: GameConfig,
 	rng: RandomNumberGenerator = Math.random,
 ): Result<GameSession, SessionPreparationError> {
-	const eligibleIds = selectEligibleCountryIds(pool, config)
-	if (eligibleIds.length === 0) {
-		return err({
-			code: 'no_eligible_countries',
-		})
+	const questionSet = prepareQuestionSet(pool, config, rng)
+	if (!questionSet.ok) {
+		return questionSet
 	}
 
-	if (eligibleIds.length < config.questionCount) {
-		return err({
-			code: 'insufficient_eligible_countries',
-			questionCount: config.questionCount,
-			countryCount: eligibleIds.length,
-		})
-	}
-
-	const questionIds = pickRandomIds(eligibleIds, config.questionCount, rng)
+	const { eligibleIds, questionIds } = questionSet.value
 
 	return ok({
 		config: {

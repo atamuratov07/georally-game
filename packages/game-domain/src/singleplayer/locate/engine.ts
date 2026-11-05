@@ -1,4 +1,4 @@
-import { assertNever } from '../shared/errors'
+import { assertNever } from '../../shared/errors'
 import { calculateQuestionScore } from './score'
 import { getAttemptsLeft, getTargetId } from './selectors'
 import type {

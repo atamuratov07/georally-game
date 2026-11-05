@@ -1,5 +1,8 @@
 import { useEffect, useRef } from 'react'
-import type { GameConfig, GameState } from '@georally/game-domain/singleplayer'
+import type {
+	GameConfig,
+	GameState,
+} from '@georally/game-domain/singleplayer/locate'
 import {
 	trackSingleplayerGameEnd,
 	trackSingleplayerGameStart,

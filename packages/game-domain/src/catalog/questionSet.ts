@@ -1,15 +1,20 @@
-import { selectEligibleCountryIds } from '../catalog/selectors'
-import type { CountryPool } from '../catalog/types'
 import type { SessionPreparationError } from '../shared/errors'
 import { pickRandomIds, type RandomNumberGenerator } from '../shared/random'
 import { err, ok, type Result } from '../shared/result'
-import type { GameConfig, GameSession } from './types'
+import type { CountryId, GameQuestionSetConfig } from '../shared/types'
+import { selectEligibleCountryIds } from './selectors'
+import type { CountryPool } from './types'
 
-export function prepareGameSession(
+export interface QuestionSet {
+	eligibleIds: CountryId[]
+	questionIds: CountryId[]
+}
+
+export function prepareQuestionSet(
 	pool: CountryPool,
-	config: GameConfig,
+	config: GameQuestionSetConfig,
 	rng: RandomNumberGenerator = Math.random,
-): Result<GameSession, SessionPreparationError> {
+): Result<QuestionSet, SessionPreparationError> {
 	const eligibleIds = selectEligibleCountryIds(pool, config)
 	if (eligibleIds.length === 0) {
 		return err({
@@ -28,12 +33,6 @@ export function prepareGameSession(
 	const questionIds = pickRandomIds(eligibleIds, config.questionCount, rng)
 
 	return ok({
-		config: {
-			questionCount: config.questionCount,
-			attemptsPerQuestion: config.attemptsPerQuestion,
-			difficulty: config.difficulty,
-			scope: config.scope,
-		},
 		eligibleIds,
 		questionIds,
 	})

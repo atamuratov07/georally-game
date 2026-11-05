@@ -3,6 +3,7 @@ import type {
 	GameContinent,
 	GameDifficulty,
 } from '@georally/game-domain'
+import type { AnswerLanguage } from '@georally/game-domain/answers'
 
 export type CatalogLanguage = 'en' | 'ru' | 'uz-Latn'
 
@@ -40,3 +41,10 @@ export interface CountryCatalogPayload {
 	countriesById: Map<CountryId, CountryInfo>
 	countryIds: CountryId[]
 }
+
+export type AliasNames = Partial<Record<AnswerLanguage, string[]>>
+
+export type AliasesPayload = Record<
+	CountryId,
+	AliasNames & { voice?: AliasNames }
+>

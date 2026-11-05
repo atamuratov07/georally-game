@@ -8,7 +8,8 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsup",
-		"check": "tsc -p tsconfig.json --noEmit"
+		"check": "tsc -p tsconfig.json --noEmit",
+		"test": "vitest run"
 	},
 	"exports": {
 		".": {
@@ -22,6 +23,12 @@
 			"development": "./src/types.ts",
 			"import": "./dist/types.js",
 			"default": "./dist/types.js"
+		},
+		"./aliases": {
+			"types": "./src/aliases.ts",
+			"development": "./src/aliases.ts",
+			"import": "./dist/aliases.js",
+			"default": "./dist/aliases.js"
 		}
 	},
 	"sideEffects": false,
@@ -29,6 +36,7 @@
 		"@georally/game-domain": "workspace:*"
 	},
 	"devDependencies": {
-		"tsup": "^8.5.1"
+		"tsup": "^8.5.1",
+		"vitest": "^4.1.10"
 	}
 }

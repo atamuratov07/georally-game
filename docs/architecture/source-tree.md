@@ -175,11 +175,15 @@ georally-game/
 |   |       |-- responses.ts             # response/event types
 |   |       `-- index.ts
 |   |-- country-catalog/
+|   |   |-- data/
+|   |   |   `-- aliases.json             # hand-curated extra answer names
 |   |   |-- generated/
 |   |   |   `-- countries.json           # playable countries, written by country-build
 |   |   `-- src/
 |   |       |-- index.ts                 # re-exports
 |   |       |-- catalog.ts               # in-memory catalog + country pool
+|   |       |-- aliases.ts               # registry names + aliases → answer entries
+|   |       |-- aliases.test.ts
 |   |       `-- types.ts
 |   |-- country-build/
 |   |   |-- data/

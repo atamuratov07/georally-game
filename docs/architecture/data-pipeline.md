@@ -103,6 +103,8 @@ Every playable country must have, in all three languages, a name, a label, a cap
 
 `tiles.json` lists the layers and fields of the actual tiles: `05_make_tilesjson.mjs` reads them from the `metadata.json` that `tile-join` writes and removes that file. Every property is a string. Text properties follow `label_<language>`, with the language tag lowercased and `-` turned into `_`.
 
+**Cache busting.** nginx (and `public/_headers`) serves tiles with `Cache-Control: public, max-age=31536000, immutable`, so browsers never ask for a tile URL again once they have it. `05_make_tilesjson.mjs` therefore appends `?v=<hash>` to the tile URL template, where the hash covers every `.pbf` file's path and bytes. `tiles.json` itself is served `no-cache`, so after a rebuild every browser switches to the new URLs at once; an unchanged tile set keeps the same hash. The map fonts are also `immutable` under fixed URLs: if the glyph files ever change, version the `glyphs` URL in `style.json` the same way.
+
 | Layer | Features | Properties |
 | --- | --- | --- |
 | `countries` | every base country, plus playable countries missing from the base | `adm0_a3` (Natural Earth's code) on every country; `iso_n3` on playable countries, an empty string on the rest |

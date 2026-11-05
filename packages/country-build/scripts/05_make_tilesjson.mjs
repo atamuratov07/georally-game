@@ -1,10 +1,24 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import crypto from 'node:crypto'
 import {
 	ensureDir,
 	parseOutDir,
 	readTilesUrlTemplate,
 } from './lib/output-paths.mjs'
+
+function hashTiles(dir) {
+	const hash = crypto.createHash('sha256')
+	for (const file of fs
+		.readdirSync(dir, { recursive: true })
+		.filter(f => f.endsWith('.pbf'))
+		.map(f => f.split(path.sep).join('/'))
+		.sort()) {
+		hash.update(file).update(fs.readFileSync(path.join(dir, file)))
+	}
+
+	return hash.digest('hex').slice(0, 12)
+}
 
 const tilesDir = parseOutDir('tiles')
 const tilesUrlTemplate = readTilesUrlTemplate()
@@ -24,7 +38,7 @@ const tilejson = {
 	bounds: [-180, -85.051129, 180, 85.05112900000002],
 	attribution:
 		'MapLibre demotiles base geometry; Natural Earth fallback; REST Countries; Wikidata',
-	tiles: [tilesUrlTemplate],
+	tiles: [`${tilesUrlTemplate}?v=${hashTiles(tilesDir)}`],
 	center: [0, 2.5444437451708134e-14, 1],
 	vector_layers: JSON.parse(metadata.json).vector_layers.map(
 		({ id, minzoom, maxzoom, fields }) => ({ id, minzoom, maxzoom, fields }),

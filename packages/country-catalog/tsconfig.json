@@ -9,5 +9,5 @@
 		"verbatimModuleSyntax": true,
 		"resolveJsonModule": true
 	},
-	"include": ["src", "generated"]
+	"include": ["src", "generated", "data"]
 }

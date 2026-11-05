@@ -40,6 +40,8 @@ georally-game/
 |       |-- nginx.conf                  # production nginx: static client, proxies /socket.io/, /api/, /health
 |       |-- package.json
 |       |-- vite.config.ts
+|       |-- vite/
+|       |   `-- regionMap.ts            # serves virtual:region-map: region outlines projected at bundle time
 |       |-- index.html
 |       |-- locales/                    # one Vite entry per locale: en.html, ru.html, uz.html
 |       |-- public/
@@ -85,7 +87,9 @@ georally-game/
 |           |   |   `-- cn.ts
 |           |   `-- widgets/
 |           |       |-- CountryInfoCard.tsx
-|           |       `-- ScoreBanner.tsx
+|           |       |-- ScoreBanner.tsx
+|           |       `-- region-map/
+|           |           `-- RegionPicker.tsx  # continent picker drawn from virtual:region-map
 |           |-- singleplayer-game/
 |           |   |-- index.ts
 |           |   |-- core/
@@ -157,8 +161,10 @@ georally-game/
 |   |   `-- src/
 |   |       |-- index.ts
 |   |       |-- shared/                  # base types, result, errors, random, time
-|   |       |-- catalog/                 # country eligibility selectors
-|   |       |-- singleplayer/            # local state machine
+|   |       |-- catalog/                 # country eligibility selectors, question set selection
+|   |       |-- answers/                 # typed and spoken answer matcher (Name It)
+|   |       |-- singleplayer/
+|   |       |   `-- locate/              # local state machine of the find-on-the-map mode
 |   |       `-- multiplayer/
 |   |           |-- orchestration.ts     # room + game commands combined (start, submit, reveal, advance)
 |   |           |-- errors.ts
@@ -173,11 +179,16 @@ georally-game/
 |   |       |-- responses.ts             # response/event types
 |   |       `-- index.ts
 |   |-- country-catalog/
+|   |   |-- data/
+|   |   |   `-- aliases.json             # hand-curated extra answer names
 |   |   |-- generated/
-|   |   |   |-- countries.registry.json
-|   |   |   `-- countries.playable.json
+|   |   |   |-- countries.json           # playable countries, written by country-build
+|   |   |   `-- regions.geojson          # continent outlines, written by country-build
 |   |   `-- src/
-|   |       |-- index.ts                 # builds in-memory catalog + country pool
+|   |       |-- index.ts                 # re-exports
+|   |       |-- catalog.ts               # in-memory catalog + country pool
+|   |       |-- aliases.ts               # registry names + aliases → answer entries
+|   |       |-- aliases.test.ts
 |   |       `-- types.ts
 |   |-- country-build/
 |   |   |-- data/
@@ -196,16 +207,15 @@ georally-game/
 |   |       |-- 04_build_tiles.sh
 |   |       |-- 05_make_tilesjson.mjs
 |   |       |-- 06_build_registry.mjs
-|   |       |-- 06_build_registry.sh
 |   |       |-- 07_build_archipelago_outlines.mjs
+|   |       |-- 08_build_regions.mjs
 |   |       `-- lib/
 |   |           |-- cache.mjs
 |   |           |-- continent.mjs
-|   |           |-- output-paths.mjs
+|   |           |-- output-paths.mjs     # the shared --out option
 |   |           |-- restcountries.mjs
-|   |           |-- uz-latn.mjs
+|   |           |-- uz-latn.mjs          # Uzbek apostrophe normalization
 |   |           `-- wdqs.mjs
-|   `-- map-assets/                      # generated map tiles, written by country-build
 |-- docs/
 |   |-- architecture/                    # this folder
 |   `-- proposals/                       # reviewed improvements, not yet implemented

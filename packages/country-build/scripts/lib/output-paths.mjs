@@ -5,8 +5,6 @@ import { fileURLToPath } from 'node:url'
 const libDir = path.dirname(fileURLToPath(import.meta.url))
 const packageRootDir = path.resolve(libDir, '..', '..')
 
-const DEFAULT_REGISTRY_OUT_DIR = path.join(packageRootDir, 'dist')
-const DEFAULT_TILES_DIR = path.join(packageRootDir, 'dist', 'tiles')
 const DEFAULT_TILES_URL_TEMPLATE = '/map/tiles/{z}/{x}/{y}.pbf'
 
 function readOption(args, optionName) {
@@ -45,23 +43,13 @@ export function ensureDir(dirPath) {
 	fs.mkdirSync(dirPath, { recursive: true })
 }
 
-export function parseRegistryOutputOptions(args = process.argv.slice(2)) {
-	return {
-		outDir: resolveOptionPath(
-			readOption(args, '--out-dir'),
-			DEFAULT_REGISTRY_OUT_DIR,
-		),
-	}
+export function parseOutDir(defaultSubdir = '', args = process.argv.slice(2)) {
+	return resolveOptionPath(
+		readOption(args, '--out'),
+		path.join(packageRootDir, 'dist', defaultSubdir),
+	)
 }
 
-export function parseTilesOutputOptions(args = process.argv.slice(2)) {
-	return {
-		tilesDir: resolveOptionPath(
-			readOption(args, '--tiles-dir'),
-			DEFAULT_TILES_DIR,
-		),
-		tilesUrlTemplate:
-			readOption(args, '--tiles-url-template') ??
-			DEFAULT_TILES_URL_TEMPLATE,
-	}
+export function readTilesUrlTemplate(args = process.argv.slice(2)) {
+	return readOption(args, '--tiles-url-template') ?? DEFAULT_TILES_URL_TEMPLATE
 }

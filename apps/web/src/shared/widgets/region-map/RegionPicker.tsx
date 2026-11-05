@@ -4,7 +4,7 @@ import { useId, useState, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getScopeLabel } from '@/shared/i18n'
 import { cn } from '@/shared/utils'
-import { REGION_MAP_VIEWBOX, REGION_PATHS } from './regionPaths'
+import { REGION_MAP_VIEWBOX, REGION_PATHS } from 'virtual:region-map'
 
 type Continent = keyof typeof REGION_PATHS
 

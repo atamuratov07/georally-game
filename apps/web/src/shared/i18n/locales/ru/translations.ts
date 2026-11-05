@@ -6,7 +6,6 @@ const translations = {
 	common: {
 		home: 'На главную',
 		retry: 'Повторить',
-		unknown: 'Неизвестно',
 	},
 	landing: {
 		heroTitle: 'Найди любую страну <hl>на карте</hl>',

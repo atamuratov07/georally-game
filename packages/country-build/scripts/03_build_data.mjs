@@ -1,40 +1,24 @@
-/* This is the core script.
-
-It does all of this:
-
-* loads the original Demotiles z6 country polygons,
-* loads current Natural Earth countries and populated places ZIPs,
-* fetches REST Countries v5 for cca2, cca3, ccn3, capital, capitalInfo, continents, and translations,
-* fetches Wikidata for Russian country and capital labels,
-* validates your 195 playable roster,
-* assigns difficulty,
-* builds a countries join CSV keyed by ADM0_A3,
-* rebuilds centroids.geojson using original demotiles centroids when possible,
-* builds capitals.geojson,
-* creates supplemental country polygons only for playable states missing from the base,
-* creates the geolines join CSV keyed by name,
-* writes validator reports and exits with failure if any required fields are still missing. REST Countries’ current docs require the fields filter on /countries/v5?response_fields=, and Wikidata’s SPARQL service returns JSON when requested with Accept: application/sparql-results+json.
- */
-
 import pointOnFeature from '@turf/point-on-feature'
 import fs from 'node:fs'
 import shp from 'shpjs'
-import { canonicalizeContinent } from './lib/continent.mjs'
-import { firstUzLatnLabel } from './lib/uz-latn.mjs'
-import { cleanWdLabel, fetchWdqsJson } from './lib/wdqs.mjs'
+import { canonicalizeContinent, isGameContinent } from './lib/continent.mjs'
 import {
 	extractCapitalCoords,
 	fetchRestcountriesJson,
 	pickPrimaryCapital,
+	pickPrimaryCurrency,
 } from './lib/restcountries.mjs'
+import { normalizeUzLatn } from './lib/uz-latn.mjs'
+import { cleanWdLabel, fetchWdqsJson } from './lib/wdqs.mjs'
 
 const BASE_COUNTRIES = 'build/base_countries.geojson'
 const BASE_CENTROIDS_NDJSON = 'build/base_centroids_z0.geojson'
 const NE_COUNTRIES_ZIP = 'upstream/ne_110m_admin_0_countries.zip'
-const NE_PLACES_ZIP = 'upstream/ne_110m_populated_places.zip'
 const PLAYABLE_JSON = 'data/playable_states_195.json'
 const OVERRIDES_JSON = 'data/manual_overrides.json'
-const LOCALES = ['en', 'ru', 'uz']
+
+const LANGUAGES = ['en', 'ru', 'uz-Latn']
+const WIKIDATA_LANGUAGES = { en: 'En', ru: 'Ru', 'uz-Latn': 'Uz' }
 
 fs.mkdirSync('build', { recursive: true })
 
@@ -66,15 +50,14 @@ function firstArrayValue(v) {
 	return Array.isArray(v) && v.length ? v[0] : ''
 }
 
-function csvEscape(v) {
-	if (v === null || v === undefined) return ''
-	const s = String(v)
-	return /[",\n]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s
+function csvQuote(v) {
+	const s = String(v ?? '')
+	return s === '' ? '' : `"${s.replaceAll('"', '""')}"`
 }
 
 function writeCsv(path, header, rows) {
 	const out = [header.join(',')]
-	for (const row of rows) out.push(row.map(csvEscape).join(','))
+	for (const row of rows) out.push(row.map(csvQuote).join(','))
 	fs.writeFileSync(path, out.join('\n'), 'utf8')
 }
 
@@ -189,10 +172,6 @@ function pickNeA3(p) {
 	)
 }
 
-function pickNeIsoA2(p) {
-	return firstNonEmpty(normalizeIsoToken(p.ISO_A2), normalizeIsoToken(p.WB_A2))
-}
-
 function pickNeIsoN3(p) {
 	return firstNonEmpty(
 		normalizeIsoToken(p.ISO_N3),
@@ -201,141 +180,147 @@ function pickNeIsoN3(p) {
 	)
 }
 
-function pickNeName(p) {
-	return firstNonEmpty(p.NAME_LONG, p.ADMIN, p.NAME, p.SOVEREIGNT, p.BRK_NAME)
+function tileField(prefix, language) {
+	return `${prefix}_${language.toLowerCase().replace('-', '_')}`
 }
 
-function pickNeAbbrev(p) {
-	return firstNonEmpty(p.ABBREV, p.BRK_NAME, p.NAME)
-}
-
-function pickNeContinent(p) {
-	return firstNonEmpty(p.CONTINENT, p.REGION_UN)
-}
-
-function pickPlaceA3(p) {
-	return firstNonEmpty(p.ADM0_A3, p.SOV_A3, p.SOV0_A3, p.ISO_A3)
-}
-
-function isAdmin0Capital(p) {
-	return (
-		p.FEATURECLA === 'Admin-0 capital' ||
-		p.FEATURECLA === 'Admin-0 capital alt'
+function localizedTileProps(prefix, texts) {
+	return Object.fromEntries(
+		LANGUAGES.map(language => [tileField(prefix, language), texts[language]]),
 	)
 }
 
-function buildCapitalFallbackMap(placesFc) {
-	const map = new Map()
+function normalizeNameKey(v) {
+	return String(v ?? '')
+		.normalize('NFKD')
+		.toLowerCase()
+		.replace(/[^\p{Lu}\p{Ll}\p{Lt}\p{Lo}\p{N}]/gu, '')
+}
 
-	for (const feat of placesFc.features ?? []) {
-		const p = feat.properties ?? {}
-		if (!isAdmin0Capital(p)) continue
-
-		const a3 = pickPlaceA3(p)
-		if (!a3) continue
-
-		const rank = Number(firstNonEmpty(p.SCALERANK, 999))
-		const altPenalty = p.FEATURECLA === 'Admin-0 capital alt' ? 1 : 0
-		const score = rank + altPenalty
-
-		const prev = map.get(a3)
-		if (!prev || score < prev.score) {
-			map.set(a3, {
-				score,
-				name: firstNonEmpty(p.NAME, p.NAMEASCII, ''),
-				coordinates: feat.geometry?.coordinates ?? null,
-			})
-		}
-	}
-
-	return map
+function localize(language, text) {
+	const trimmed = String(text ?? '').trim()
+	return language === 'uz-Latn' ? normalizeUzLatn(trimmed) : trimmed
 }
 
 const playable = validatePlayable(readJson(PLAYABLE_JSON))
 const overrides = readJson(OVERRIDES_JSON)
 const baseCountries = readJson(BASE_COUNTRIES)
 const neCountriesFc = await loadZipAsFeatureCollection(NE_COUNTRIES_ZIP)
-const nePlacesFc = await loadZipAsFeatureCollection(NE_PLACES_ZIP)
 
 const restCountries = await fetchRestcountriesJson({
-	cacheKey: 'rc-tiles-data',
+	cacheKey: 'rc-countries',
 	fields: [
-		'codes.alpha_2,codes.alpha_3,codes.ccn3',
+		'codes.alpha_3,codes.ccn3',
 		'names.common,names.translations',
 		'capitals',
 		'continents',
+		'flag.url_svg,flag.url_png',
+		'classification.sovereign,classification.un_member',
+		'population',
+		'currencies',
 	],
 })
 
+const restByN3 = new Map()
 const restByA3 = new Map()
 for (const row of restCountries) {
-	if (row?.codes?.alpha_3) restByA3.set(row.codes.alpha_3, row)
+	const n3 = normalizeIsoToken(row?.codes?.ccn3)
+	if (n3 && !restByN3.has(n3)) restByN3.set(n3, row)
+	const a3 = row?.codes?.alpha_3
+	if (a3 && !restByA3.has(a3)) restByA3.set(a3, row)
 }
 
-function buildLabelQuery(locale) {
-	return `
+const wikidata = await fetchWdqsJson({
+	cacheKey: 'wdqs-country-capital-names',
+	query: `
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-PREFIX bd: <http://www.bigdata.com/rdf#>
-PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?iso3 ?countryLabel ?capitalLabel WHERE {
+SELECT ?iso3 ?countryEn ?countryRu ?countryUz ?capital ?capitalEn ?capitalRu ?capitalUz WHERE {
   ?country wdt:P298 ?iso3 .
+  OPTIONAL { ?country rdfs:label ?countryEn FILTER(LANG(?countryEn) = "en") }
+  OPTIONAL { ?country rdfs:label ?countryRu FILTER(LANG(?countryRu) = "ru") }
+  OPTIONAL { ?country rdfs:label ?countryUz FILTER(LANG(?countryUz) = "uz") }
   OPTIONAL {
     ?country wdt:P36 ?capital .
+    OPTIONAL { ?capital rdfs:label ?capitalEn FILTER(LANG(?capitalEn) = "en") }
+    OPTIONAL { ?capital rdfs:label ?capitalRu FILTER(LANG(?capitalRu) = "ru") }
+    OPTIONAL { ?capital rdfs:label ?capitalUz FILTER(LANG(?capitalUz) = "uz") }
   }
-
-  SERVICE wikibase:label {
-    bd:serviceParam wikibase:language "${locale}" .
-  }
 }
-`
-}
-
-const wikidata = []
-for (const locale of LOCALES) {
-	wikidata.push(
-		await fetchWdqsJson({
-			cacheKey: `wdqs-country-capital-labels-${locale}`,
-			query: buildLabelQuery(locale),
-		}),
-	)
-}
-
-const wdByA3 = new Map()
-wikidata.forEach((localeRes, i) => {
-	const locale = LOCALES[i]
-
-	for (const row of localeRes.results.bindings ?? []) {
-		const a3 = row.iso3?.value?.trim()
-		if (!a3) continue
-		if (!wdByA3.has(a3)) {
-			wdByA3.set(a3, { countryLabel: {}, capitalLabel: {} })
-		}
-		const entry = wdByA3.get(a3)
-		entry.countryLabel[locale] = cleanWdLabel(row?.countryLabel?.value)
-		entry.capitalLabel[locale] = cleanWdLabel(row?.capitalLabel?.value)
-	}
+`,
 })
 
-for (const row of wdByA3.values()) {
-	row.countryLabel = {
-		ru: row.countryLabel?.ru || '',
-		uz: firstUzLatnLabel(row.countryLabel?.uz, row.countryLabel?.en),
+const wdByIsoA3 = new Map()
+for (const row of wikidata.results.bindings ?? []) {
+	const isoA3 = row.iso3?.value?.trim()
+	if (!isoA3) continue
+	if (!wdByIsoA3.has(isoA3)) {
+		wdByIsoA3.set(isoA3, {
+			names: Object.fromEntries(
+				LANGUAGES.map(language => [language, new Set()]),
+			),
+			capitals: new Map(),
+		})
 	}
-	row.capitalLabel = {
-		ru: row.capitalLabel?.ru || '',
-		uz: firstUzLatnLabel(row.capitalLabel?.uz, row.capitalLabel?.en),
+
+	const entry = wdByIsoA3.get(isoA3)
+	for (const language of LANGUAGES) {
+		const suffix = WIKIDATA_LANGUAGES[language]
+		const name = cleanWdLabel(row[`country${suffix}`]?.value)
+		if (name) entry.names[language].add(localize(language, name))
 	}
+
+	const capitalUri = row.capital?.value
+	if (capitalUri && !entry.capitals.has(capitalUri)) {
+		entry.capitals.set(
+			capitalUri,
+			Object.fromEntries(
+				LANGUAGES.map(language => [
+					language,
+					localize(
+						language,
+						cleanWdLabel(
+							row[`capital${WIKIDATA_LANGUAGES[language]}`]?.value,
+						),
+					),
+				]),
+			),
+		)
+	}
+}
+
+const currencyNames = Object.fromEntries(
+	LANGUAGES.map(language => {
+		const displayNames = new Intl.DisplayNames([language], {
+			type: 'currency',
+			fallback: 'none',
+		})
+		const resolved = displayNames.resolvedOptions().locale
+		if (resolved.split('-')[0] !== language.split('-')[0]) {
+			throw new Error(
+				`Intl has no ${language} currency names (resolved to ${resolved}).`,
+			)
+		}
+		return [language, displayNames]
+	}),
+)
+
+function currencySymbol(code, language) {
+	return new Intl.NumberFormat(language, {
+		style: 'currency',
+		currency: code,
+		currencyDisplay: 'narrowSymbol',
+	})
+		.formatToParts(0)
+		.find(part => part.type === 'currency').value
 }
 
 const neByA3 = new Map()
 for (const feat of neCountriesFc.features ?? []) {
-	const p = feat.properties ?? {}
-	const a3 = pickNeA3(p)
+	const a3 = pickNeA3(feat.properties ?? {})
 	if (a3 && !neByA3.has(a3)) neByA3.set(a3, feat)
 }
-
-const capitalFallbackByA3 = buildCapitalFallbackMap(nePlacesFc)
 
 const baseByA3 = new Map()
 for (const feat of baseCountries.features ?? []) {
@@ -430,279 +415,274 @@ function buildCentroidGeometry(a3, props, geometry) {
 	return centroidPoint.geometry
 }
 
-function toSeedRecord(props) {
+const errors = []
+
+function requireText(a3, field, value) {
+	if (typeof value !== 'string' || value.trim() === '') {
+		errors.push(`${a3}: no ${field}`)
+	}
+	return value
+}
+
+function pickWikidataName(a3, wd, language) {
+	const names = [...(wd?.names[language] ?? [])]
+	if (names.length > 1) {
+		errors.push(
+			`${a3}: several Wikidata names (${language}): ${names.join(' | ')}`,
+		)
+		return ''
+	}
+	return names[0] ?? ''
+}
+
+function pickWikidataCapital(a3, wd, capitalName) {
+	const capitals = [...(wd?.capitals.values() ?? [])]
+	const key = normalizeNameKey(capitalName)
+	const matching = capitals.filter(
+		capital => normalizeNameKey(capital.en) === key,
+	)
+	if (matching.length === 1) return matching[0]
+
+	errors.push(
+		`${a3}: cannot match capital "${capitalName}" among Wikidata capitals: ${capitals.map(capital => capital.en).join(' | ') || 'none'}`,
+	)
+	return {}
+}
+
+function buildCapital(a3, ov, rest, wd) {
+	const restCapital = pickPrimaryCapital(rest)
+	const overridden = ov.capital?.name ?? {}
+	const en = overridden.en || restCapital?.name
+	const needsWikidata = LANGUAGES.some(
+		language => language !== 'en' && !overridden[language],
+	)
+	const wdCapital = needsWikidata ? pickWikidataCapital(a3, wd, en) : {}
+
 	return {
-		ADM0_A3: String(props.ADM0_A3),
-		NAME: String(props.NAME),
-		NAME_RU: String(props.NAME_RU),
-		NAME_UZ_LATN: String(props.NAME_UZ_LATN),
-		CAPITAL: String(props.CAPITAL),
-		CAPITAL_RU: String(props.CAPITAL_RU),
-		CAPITAL_UZ_LATN: String(props.CAPITAL_UZ_LATN),
-		CONTINENT: String(props.CONTINENT),
-		ISO_A2: String(props.ISO_A2),
-		ISO_N3: String(props.ISO_N3),
-		DIFFICULTY: String(props.DIFFICULTY),
-		PLAYABLE: Number(props.PLAYABLE) === 1 ? 1 : 0,
+		name: {
+			en: localize('en', en),
+			ru: localize('ru', overridden.ru || wdCapital.ru),
+			'uz-Latn': localize(
+				'uz-Latn',
+				overridden['uz-Latn'] || wdCapital['uz-Latn'],
+			),
+		},
+		coordinates: ov.capital?.coordinates ?? extractCapitalCoords(restCapital),
 	}
 }
 
-function buildCountryRecord({ a3, baseFeat, neFeat }) {
-	const base = baseFeat?.properties ?? {}
-	const ne = neFeat?.properties ?? {}
-	const rest = restByA3.get(a3) ?? null
-	const wd = wdByA3.get(a3) ?? {}
-	const ov = overrides.countries?.[a3] ?? {}
-	const capFallback = capitalFallbackByA3.get(a3) ?? null
-
-	const playableFlag = playable.allSet.has(a3) ? 1 : 0
-	const difficulty = playable.difficultyByA3.get(a3) ?? 'hard'
-
-	const NAME = firstNonEmpty(
-		ov.NAME,
-		base.NAME,
-		pickNeName(ne),
-		rest?.names?.common,
+function buildCurrency(a3, ov, rest) {
+	const code = firstNonEmpty(
+		ov.currencyCode,
+		pickPrimaryCurrency(rest?.currencies)?.code,
 	)
-
-	const ABBREV = firstNonEmpty(ov.ABBREV, base.ABBREV, pickNeAbbrev(ne), NAME)
-
-	const NAME_RU = firstNonEmpty(
-		ov.NAME_RU,
-		wd?.countryLabel?.['ru'],
-		rest?.names?.translations?.rus?.common,
-	)
-
-	const NAME_UZ_LATN = firstUzLatnLabel(
-		ov.NAME_UZ_LATN,
-		wd?.countryLabel?.['uz'],
-		rest?.names?.translations?.uzb?.common,
-		NAME,
-	)
-
-	const primaryCapital = pickPrimaryCapital(rest)
-
-	const CAPITAL = firstNonEmpty(
-		ov.CAPITAL,
-		primaryCapital?.name,
-		ne.CAPITAL,
-		capFallback?.name,
-	)
-
-	const CAPITAL_RU = firstNonEmpty(ov.CAPITAL_RU, wd?.capitalLabel?.['ru'])
-	const CAPITAL_UZ_LATN = firstUzLatnLabel(
-		ov.CAPITAL_UZ_LATN,
-		wd?.capitalLabel?.['uz'],
-		CAPITAL,
-	)
-
-	let CAPITAL_COORDS = null
-	if (Array.isArray(ov.CAPITAL_COORDS) && ov.CAPITAL_COORDS.length === 2) {
-		CAPITAL_COORDS = ov.CAPITAL_COORDS
-	} else if (extractCapitalCoords(primaryCapital)) {
-		CAPITAL_COORDS = extractCapitalCoords(primaryCapital)
-	} else if (capFallback?.coordinates) {
-		CAPITAL_COORDS = capFallback.coordinates
+	if (!code) {
+		errors.push(`${a3}: no currency`)
+		return null
 	}
 
-	const ISO_A2 = firstNonEmpty(
-		ov.ISO_A2,
-		pickNeIsoA2(ne),
-		rest?.codes?.alpha_2,
+	return {
+		code,
+		name: Object.fromEntries(
+			LANGUAGES.map(language => [
+				language,
+				localize(language, currencyNames[language].of(code)),
+			]),
+		),
+		symbol: Object.fromEntries(
+			LANGUAGES.map(language => [language, currencySymbol(code, language)]),
+		),
+	}
+}
+
+function buildCountry(a3, baseFeat, neFeat) {
+	const base = baseFeat?.properties ?? {}
+	const ne = neFeat?.properties ?? {}
+	const ov = overrides.countries?.[a3] ?? {}
+
+	const id = firstNonEmpty(
+		normalizeIsoToken(ov.isoN3),
+		pickNeIsoN3(ne),
+		normalizeIsoToken(restByA3.get(a3)?.codes?.ccn3),
 	)
+	const rest = restByN3.get(id)
+	if (!rest) {
+		errors.push(`${a3}: no REST Countries entry for ISO_N3 "${id}"`)
+		return null
+	}
+	const wd = wdByIsoA3.get(rest.codes.alpha_3)
 
-	const ISO_N3 = firstNonEmpty(ov.ISO_N3, pickNeIsoN3(ne), rest?.codes?.ccn3)
+	const name = {
+		en: localize(
+			'en',
+			ov.name?.en || rest.names?.common || pickWikidataName(a3, wd, 'en'),
+		),
+		ru: localize(
+			'ru',
+			ov.name?.ru ||
+				rest.names?.translations?.rus?.common ||
+				pickWikidataName(a3, wd, 'ru'),
+		),
+		'uz-Latn': localize(
+			'uz-Latn',
+			ov.name?.['uz-Latn'] || pickWikidataName(a3, wd, 'uz-Latn'),
+		),
+	}
+	const label = {
+		en: localize('en', firstNonEmpty(ov.label?.en, base.NAME, name.en)),
+		ru: localize('ru', firstNonEmpty(ov.label?.ru, name.ru)),
+		'uz-Latn': localize(
+			'uz-Latn',
+			firstNonEmpty(ov.label?.['uz-Latn'], name['uz-Latn']),
+		),
+	}
 
-	const CONTINENT = canonicalizeContinent(
+	const continent = canonicalizeContinent(
 		firstNonEmpty(
-			ov.CONTINENT,
 			base.CONTINENT,
-			pickNeContinent(ne),
-			firstArrayValue(rest?.continents),
+			ne.CONTINENT,
+			ne.REGION_UN,
+			firstArrayValue(rest.continents),
 		),
 		a3,
 	)
-
-	const props = {
-		NAME,
-		NAME_RU,
-		NAME_UZ_LATN,
-		CAPITAL,
-		CAPITAL_RU,
-		CAPITAL_UZ_LATN,
-		ABBREV,
-		ADM0_A3: a3,
-		ISO_A2,
-		ISO_N3,
-		CONTINENT,
-		DIFFICULTY: difficulty,
-		PLAYABLE: playableFlag,
+	if (!isGameContinent(continent)) {
+		errors.push(`${a3}: unsupported continent "${continent}"`)
 	}
 
-	const missing = []
-	for (const key of [
-		'NAME',
-		'NAME_RU',
-		'NAME_UZ_LATN',
-		'CAPITAL',
-		'CAPITAL_RU',
-		'CAPITAL_UZ_LATN',
-		'ADM0_A3',
-		'ISO_A2',
-		'ISO_N3',
-		'CONTINENT',
-		'DIFFICULTY',
-	]) {
-		if (!props[key]) missing.push(key)
-	}
-	if (!CAPITAL_COORDS) missing.push('CAPITAL_COORDS')
+	const capital = buildCapital(a3, ov, rest, wd)
+	if (!capital.coordinates) errors.push(`${a3}: no capital coordinates`)
 
-	return { props, CAPITAL_COORDS, missing }
-}
-
-const joinRows = []
-const centroids = []
-const capitals = []
-const supplementalCountries = []
-const countrySeed = []
-const validatorFailures = []
-const missingPlayableGeometry = []
-
-for (const [a3, baseFeat] of [...baseByA3.entries()].sort()) {
-	const neFeat = neByA3.get(a3) ?? null
-	const record = buildCountryRecord({ a3, baseFeat, neFeat })
-
-	if (record.missing.length) {
-		validatorFailures.push({
-			ADM0_A3: a3,
-			NAME: baseFeat.properties?.NAME ?? '',
-			MISSING: record.missing.join('|'),
-		})
-	}
-
-	joinRows.push([
+	const country = {
 		a3,
-		record.props.NAME,
-		record.props.NAME_RU,
-		record.props.NAME_UZ_LATN,
-		record.props.CAPITAL,
-		record.props.CAPITAL_RU,
-		record.props.CAPITAL_UZ_LATN,
-		record.props.ISO_A2,
-		record.props.ISO_N3,
-		record.props.CONTINENT,
-		record.props.DIFFICULTY,
-		record.props.PLAYABLE,
-	])
+		id,
+		name,
+		label,
+		capital,
+		currency: buildCurrency(a3, ov, rest),
+		continent,
+		difficulty: playable.difficultyByA3.get(a3),
+		population: rest.population,
+		flagUrl: firstNonEmpty(rest.flag?.url_svg, rest.flag?.url_png),
+		independent: rest.classification?.sovereign,
+		unMember: rest.classification?.un_member,
+	}
 
-	countrySeed.push(toSeedRecord(record.props))
+	if (!/^\d{3}$/.test(id))
+		errors.push(`${a3}: ISO_N3 "${id}" is not three digits`)
+	for (const language of LANGUAGES) {
+		requireText(a3, `name.${language}`, name[language])
+		requireText(a3, `label.${language}`, label[language])
+		requireText(a3, `capital.${language}`, capital.name[language])
+		requireText(a3, `currency.${language}`, country.currency?.name[language])
+	}
+	requireText(a3, 'flag', country.flagUrl)
+	if (typeof country.population !== 'number')
+		errors.push(`${a3}: no population`)
+	if (typeof country.independent !== 'boolean')
+		errors.push(`${a3}: no sovereignty`)
+	if (typeof country.unMember !== 'boolean')
+		errors.push(`${a3}: no UN membership`)
 
-	centroids.push({
-		type: 'Feature',
-		properties: record.props,
-		geometry: buildCentroidGeometry(a3, record.props, baseFeat.geometry),
-	})
-
-	capitals.push({
-		type: 'Feature',
-		properties: record.props,
-		geometry: {
-			type: 'Point',
-			coordinates: record.CAPITAL_COORDS ?? [0, 0],
-		},
-	})
+	return country
 }
 
-const missingPlayableFromBase = playable.all.filter(a3 => !baseByA3.has(a3))
-
-for (const a3 of missingPlayableFromBase) {
-	const neFeat = neByA3.get(a3) ?? null
-	if (!neFeat) {
-		missingPlayableGeometry.push({ ADM0_A3: a3 })
+const countries = []
+const supplementalCountries = []
+for (const a3 of playable.all) {
+	const baseFeat = baseByA3.get(a3)
+	const neFeat = neByA3.get(a3)
+	const geometry = baseFeat?.geometry ?? neFeat?.geometry
+	if (!geometry) {
+		errors.push(`${a3}: no geometry`)
 		continue
 	}
 
-	const record = buildCountryRecord({ a3, baseFeat: null, neFeat })
+	const country = buildCountry(a3, baseFeat, neFeat)
+	if (!country) continue
 
-	if (record.missing.length) {
-		validatorFailures.push({
-			ADM0_A3: a3,
-			NAME: pickNeName(neFeat.properties ?? {}),
-			MISSING: record.missing.join('|'),
+	country.centroid = buildCentroidGeometry(
+		a3,
+		{ ADM0_A3: a3 },
+		geometry,
+	).coordinates
+	countries.push(country)
+
+	if (!baseFeat) {
+		supplementalCountries.push({
+			type: 'Feature',
+			properties: { adm0_a3: a3, iso_n3: country.id },
+			geometry,
 		})
 	}
-
-	supplementalCountries.push({
-		type: 'Feature',
-		properties: record.props,
-		geometry: neFeat.geometry,
-	})
-
-	centroids.push({
-		type: 'Feature',
-		properties: record.props,
-		geometry: buildCentroidGeometry(a3, record.props, neFeat.geometry),
-	})
-
-	capitals.push({
-		type: 'Feature',
-		properties: record.props,
-		geometry: {
-			type: 'Point',
-			coordinates: record.CAPITAL_COORDS ?? [0, 0],
-		},
-	})
 }
 
-const seedByA3 = new Map()
-
-for (const row of countrySeed) {
-	seedByA3.set(row.ADM0_A3, row)
+const seenIds = new Map()
+for (const country of countries) {
+	const other = seenIds.get(country.id)
+	if (other)
+		errors.push(
+			`${country.a3}: ISO_N3 ${country.id} is also used by ${other}`,
+		)
+	seenIds.set(country.id, country.a3)
 }
 
-const countrySeedSorted = [...seedByA3.values()].sort((a, b) =>
-	a.ADM0_A3.localeCompare(b.ADM0_A3),
+const geolines = Object.entries(overrides.geolines ?? {}).map(
+	([baseName, texts]) => {
+		for (const language of LANGUAGES) {
+			requireText(`geoline "${baseName}"`, language, texts[language])
+		}
+		return [baseName, ...LANGUAGES.map(language => texts[language])]
+	},
 )
 
-writeJson('build/country_seed.json', countrySeedSorted)
+if (errors.length > 0) {
+	console.error(
+		`Build blocked: ${errors.length} problem(s). Nothing was written.`,
+	)
+	for (const error of errors) console.error(`  ${error}`)
+	process.exit(1)
+}
 
+countries.sort((a, b) => a.id.localeCompare(b.id))
+
+writeJson('build/countries.json', countries)
+
+const idByA3 = new Map(countries.map(country => [country.a3, country.id]))
 writeCsv(
-	'build/join_adm0.csv',
-	[
-		'ADM0_A3',
-		'NAME',
-		'NAME_RU',
-		'NAME_UZ_LATN',
-		'CAPITAL',
-		'CAPITAL_RU',
-		'CAPITAL_UZ_LATN',
-		'ISO_A2',
-		'ISO_N3',
-		'CONTINENT',
-		'DIFFICULTY',
-		'PLAYABLE',
-	],
-	joinRows,
+	'build/countries_join.csv',
+	['ADM0_A3', 'adm0_a3', 'iso_n3'],
+	[...baseByA3.keys()].sort().map(a3 => [a3, a3, idByA3.get(a3) ?? '']),
 )
 
 writeCsv(
 	'build/geolines_join.csv',
-	['name', 'name_ru', 'name_uz_latn'],
-	Object.values(overrides.geolines ?? {}).map(geoline => [
-		geoline['en'],
-		geoline['ru'],
-		geoline['uz-latn'],
-	]),
+	['name', ...LANGUAGES.map(language => tileField('label', language))],
+	geolines,
 )
 
 writeJson('build/centroids.geojson', {
 	type: 'FeatureCollection',
-	features: centroids,
+	features: countries.map(country => ({
+		type: 'Feature',
+		properties: {
+			iso_n3: country.id,
+			...localizedTileProps('label', country.label),
+		},
+		geometry: { type: 'Point', coordinates: country.centroid },
+	})),
 })
 
 writeJson('build/capitals.geojson', {
 	type: 'FeatureCollection',
-	features: capitals,
+	features: countries.map(country => ({
+		type: 'Feature',
+		properties: {
+			iso_n3: country.id,
+			...localizedTileProps('label', country.capital.name),
+		},
+		geometry: { type: 'Point', coordinates: country.capital.coordinates },
+	})),
 })
 
 writeJson('build/supplemental_countries.geojson', {
@@ -710,46 +690,16 @@ writeJson('build/supplemental_countries.geojson', {
 	features: supplementalCountries,
 })
 
-writeCsv(
-	'build/validator_country_failures.csv',
-	['ADM0_A3', 'NAME', 'MISSING'],
-	validatorFailures.map(r => [r.ADM0_A3, r.NAME, r.MISSING]),
-)
-
-writeCsv(
-	'build/missing_playable_geometry.csv',
-	['ADM0_A3'],
-	missingPlayableGeometry.map(r => [r.ADM0_A3]),
-)
-
-writeJson('build/centroid_audit.json', {
-	source_file: BASE_CENTROIDS_NDJSON,
-	...centroidMatchStats,
-	mapped_a3_with_original_centroids: originalCentroidByA3.size,
-	base_country_count: baseByA3.size,
-	...centroidSourceStats,
-})
-
-writeJson('build/playable_base_audit.json', {
-	playable_count: playable.all.length,
+const report = {
+	country_count: countries.length,
 	easy_count: playable.easyCount,
 	medium_count: playable.mediumCount,
 	hard_count: playable.hardCount,
-	base_country_count: baseByA3.size,
-	missing_playable_from_base_count: missingPlayableFromBase.length,
-	missing_playable_from_base: missingPlayableFromBase,
 	supplemental_country_count: supplementalCountries.length,
-	validator_failure_count: validatorFailures.length,
-	missing_playable_geometry_count: missingPlayableGeometry.length,
-})
-
-if (missingPlayableGeometry.length > 0 || validatorFailures.length > 0) {
-	console.error('Build blocked.')
-	console.error(
-		'Inspect build/playable_base_audit.json, build/validator_country_failures.csv, and build/missing_playable_geometry.csv',
-	)
-	process.exit(1)
+	...centroidMatchStats,
+	...centroidSourceStats,
 }
+writeJson('build/build_data_report.json', report)
 
 console.log('OK')
-console.log(JSON.stringify(readJson('build/playable_base_audit.json'), null, 2))
+console.log(JSON.stringify(report, null, 2))

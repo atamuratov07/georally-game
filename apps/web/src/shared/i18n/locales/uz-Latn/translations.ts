@@ -6,7 +6,6 @@ const translations = {
 	common: {
 		home: 'Bosh sahifa',
 		retry: 'Qayta urinish',
-		unknown: "Noma'lum",
 	},
 	landing: {
 		heroTitle: 'Har bir davlatni <hl>xaritada</hl> toping',

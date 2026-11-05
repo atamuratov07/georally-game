@@ -3,66 +3,48 @@ import type {
 	GameContinent,
 	GameDifficulty,
 } from '@georally/game-domain'
+import type { AnswerLanguage } from '@georally/game-domain/answers'
 
-export interface RegistryCountry {
-	id: CountryId
-	name: string
-	name_ru: string
-	name_uz_latn: string
-	capital: string
-	capital_ru: string
-	capital_uz_latn: string
-	continent: GameContinent
-	population: number
-	centroid_lng: number
-	centroid_lat: number
-	currency: string
-	currency_ru: string
-	currency_uz_latn: string
-	flag_url: string
-	playable: boolean
-	difficulty: GameDifficulty
-	independent: boolean
-	un_member: boolean
-}
+export type CatalogLanguage = 'en' | 'ru' | 'uz-Latn'
 
-interface CountryRegistryPayloadBase {
-	version: number
-	generated_at: string
-	countries: RegistryCountry[]
-}
+export type LocalizedText = Readonly<Record<CatalogLanguage, string>>
 
-export interface CountryRegistryPayload extends CountryRegistryPayloadBase {
-	country_count: number
-}
-
-export interface PlayableCountryRegistryPayload extends CountryRegistryPayloadBase {
-	playable_count: number
+export interface CountryCurrency {
+	code: string
+	name: LocalizedText
+	symbol: LocalizedText
 }
 
 export interface CountryInfo {
 	id: CountryId
-	name: string
-	nameRu: string
-	nameUzLatn: string
-	capital: string
-	capitalRu: string
-	capitalUzLatn: string
+	name: LocalizedText
+	capital: LocalizedText
+	currency: CountryCurrency
 	continent: GameContinent
+	difficulty: GameDifficulty
 	population: number
 	centroidLng: number
 	centroidLat: number
-	currency: string
-	currencyRu: string
-	currencyUzLatn: string
-	playable: boolean
-	difficulty: GameDifficulty
+	flagUrl: string
 	independent: boolean
 	unMember: boolean
-	flagUrl: string
+}
+
+export interface CountryRegistryPayload {
+	version: number
+	generated_at: string
+	country_count: number
+	countries: CountryInfo[]
 }
 
 export interface CountryCatalogPayload {
 	countriesById: Map<CountryId, CountryInfo>
 	countryIds: CountryId[]
 }
+
+export type AliasNames = Partial<Record<AnswerLanguage, string[]>>
+
+export type AliasesPayload = Record<
+	CountryId,
+	AliasNames & { voice?: AliasNames }
+>

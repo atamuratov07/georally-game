@@ -3,7 +3,7 @@ import {
 	getQuestionCount,
 	getScore,
 	type GameConfig,
-} from '@georally/game-domain/singleplayer'
+} from '@georally/game-domain/singleplayer/locate'
 import { useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { MapPinOff } from 'lucide-react'

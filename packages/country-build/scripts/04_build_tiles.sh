@@ -6,11 +6,11 @@ TILES_URL_TEMPLATE="/map/tiles/{z}/{x}/{y}.pbf"
 
 while [ "$#" -gt 0 ]; do
     case "$1" in
-    --tiles-dir)
+    --out)
         TILES_DIR="$2"
         shift 2
         ;;
-    --tiles-dir=*)
+    --out=*)
         TILES_DIR="${1#*=}"
         shift
         ;;
@@ -46,14 +46,16 @@ rm -f \
 rm -rf "$TILES_DIR"
 mkdir -p "$TILES_DIR"
 
-# 1) Patch original geolines with localized labels
+# 1) Patch original geolines with localized labels, dropping the date line
 ./tools/tile-join -f -o build/base_geolines_patched.mbtiles \
-    -c build/geolines_join.csv \
+    -j '{ "geolines": ["!=", "name", "International Date Line"] }' \
+    -c build/geolines_join.csv -x name \
     upstream/maplibre.mbtiles
 
-# 2) Patch original countries with added attributes
+# 2) Patch original countries with their codes and ISO numeric ids
 ./tools/tile-join -f -o build/base_attrs_patched.mbtiles \
-    -c build/join_adm0.csv \
+    -c build/countries_join.csv \
+    -x ADM0_A3 -x ABBREV -x CONTINENT -x NAME -x fid \
     build/base_geolines_patched.mbtiles
 
 # 3) Keep only countries + geolines from the patched base
@@ -96,5 +98,5 @@ fi
 
 # 8) Generate tiles.json file
 node scripts/05_make_tilesjson.mjs \
-    --tiles-dir "$TILES_DIR" \
+    --out "$TILES_DIR" \
     --tiles-url-template "$TILES_URL_TEMPLATE"

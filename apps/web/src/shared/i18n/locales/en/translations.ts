@@ -6,7 +6,6 @@ const translations = {
 	common: {
 		home: 'Home',
 		retry: 'Try again',
-		unknown: 'Unknown',
 	},
 	landing: {
 		heroTitle: 'Find every country <hl>on the map</hl>',

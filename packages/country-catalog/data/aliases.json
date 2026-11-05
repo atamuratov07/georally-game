@@ -1,0 +1,523 @@
+{
+	"012": {
+		"uz": [
+			"Aljir"
+		]
+	},
+	"044": {
+		"ru": [
+			"Багамы"
+		],
+		"uz": [
+			"Bagama orollari"
+		]
+	},
+	"051": {
+		"uz": [
+			"Armeniya"
+		]
+	},
+	"070": {
+		"en": [
+			"Bosnia-Herzegovina",
+			"Bosnia"
+		],
+		"ru": [
+			"Босния"
+		],
+		"uz": [
+			"Bosniya"
+		]
+	},
+	"104": {
+		"en": [
+			"Burma"
+		],
+		"ru": [
+			"Бирма"
+		],
+		"uz": [
+			"Birma"
+		]
+	},
+	"112": {
+		"ru": [
+			"Белоруссия"
+		],
+		"uz": [
+			"Belorussiya"
+		]
+	},
+	"132": {
+		"en": [
+			"Cape Verde"
+		],
+		"ru": [
+			"Острова Зелёного Мыса"
+		]
+	},
+	"140": {
+		"en": [
+			"CAR"
+		],
+		"ru": [
+			"ЦАР"
+		]
+	},
+	"152": {
+		"voice": {
+			"en": [
+				"chilly"
+			]
+		}
+	},
+	"156": {
+		"en": [
+			"People's Republic of China",
+			"PRC"
+		],
+		"ru": [
+			"КНР"
+		],
+		"uz": [
+			"Xitoy",
+			"XXR"
+		]
+	},
+	"174": {
+		"ru": [
+			"Коморские Острова"
+		],
+		"uz": [
+			"Komor orollari",
+			"Komor"
+		]
+	},
+	"178": {
+		"en": [
+			"Congo-Brazzaville",
+			"Congo Republic",
+			"Congo"
+		],
+		"ru": [
+			"Конго",
+			"Конго-Браззавиль"
+		],
+		"uz": [
+			"Kongo"
+		]
+	},
+	"180": {
+		"en": [
+			"Democratic Republic of the Congo",
+			"DRC",
+			"Congo-Kinshasa",
+			"Congo"
+		],
+		"ru": [
+			"ДР Конго",
+			"ДРК",
+			"Конго-Киншаса",
+			"Конго"
+		],
+		"uz": [
+			"KDR",
+			"Kongo"
+		]
+	},
+	"203": {
+		"en": [
+			"Czech Republic"
+		],
+		"ru": [
+			"Чешская Республика"
+		],
+		"uz": [
+			"Chexiya Respublikasi"
+		],
+		"voice": {
+			"en": [
+				"check republic"
+			]
+		}
+	},
+	"214": {
+		"ru": [
+			"Доминикана"
+		],
+		"uz": [
+			"Dominikana"
+		]
+	},
+	"222": {
+		"en": [
+			"Salvador"
+		],
+		"ru": [
+			"Эль-Сальвадор"
+		]
+	},
+	"250": {
+		"uz": [
+			"Frantsiya"
+		]
+	},
+	"268": {
+		"uz": [
+			"Gruziya"
+		]
+	},
+	"270": {
+		"uz": [
+			"Gambiya"
+		]
+	},
+	"276": {
+		"ru": [
+			"ФРГ"
+		]
+	},
+	"300": {
+		"uz": [
+			"Gretsiya"
+		],
+		"voice": {
+			"en": [
+				"grease"
+			]
+		}
+	},
+	"336": {
+		"uz": [
+			"Vatikan"
+		]
+	},
+	"348": {
+		"uz": [
+			"Vengriya"
+		],
+		"voice": {
+			"en": [
+				"hungry"
+			]
+		}
+	},
+	"356": {
+		"uz": [
+			"Indiya"
+		]
+	},
+	"364": {
+		"voice": {
+			"en": [
+				"i ran"
+			]
+		}
+	},
+	"372": {
+		"en": [
+			"Republic of Ireland"
+		]
+	},
+	"384": {
+		"en": [
+			"Ivory Coast"
+		],
+		"ru": [
+			"Берег Слоновой Кости"
+		],
+		"uz": [
+			"Kot-d'Ivuar"
+		]
+	},
+	"400": {
+		"uz": [
+			"Urdun"
+		]
+	},
+	"408": {
+		"en": [
+			"DPRK",
+			"Democratic People's Republic of Korea",
+			"Korea"
+		],
+		"ru": [
+			"КНДР",
+			"Корейская Народно-Демократическая Республика",
+			"Корея"
+		],
+		"uz": [
+			"Shimoliy Koreya",
+			"KXDR",
+			"Koreya"
+		]
+	},
+	"410": {
+		"en": [
+			"Republic of Korea",
+			"Korea"
+		],
+		"ru": [
+			"Республика Корея",
+			"Корея"
+		],
+		"uz": [
+			"Janubiy Koreya",
+			"Koreya"
+		]
+	},
+	"417": {
+		"en": [
+			"Kyrgyz Republic"
+		],
+		"ru": [
+			"Киргизия"
+		]
+	},
+	"462": {
+		"uz": [
+			"Maldiv orollari",
+			"Maldiv"
+		]
+	},
+	"466": {
+		"voice": {
+			"en": [
+				"molly"
+			]
+		}
+	},
+	"480": {
+		"uz": [
+			"Mavrikiy"
+		]
+	},
+	"498": {
+		"ru": [
+			"Молдавия"
+		]
+	},
+	"504": {
+		"uz": [
+			"Marokko"
+		]
+	},
+	"512": {
+		"voice": {
+			"en": [
+				"oh man",
+				"omen"
+			]
+		}
+	},
+	"528": {
+		"en": [
+			"Holland"
+		],
+		"ru": [
+			"Королевство Нидерландов",
+			"Голландия"
+		],
+		"uz": [
+			"Niderlandiya",
+			"Gollandiya"
+		]
+	},
+	"583": {
+		"en": [
+			"Federated States of Micronesia"
+		],
+		"ru": [
+			"Микронезия"
+		],
+		"uz": [
+			"Mikroneziya"
+		]
+	},
+	"608": {
+		"uz": [
+			"Filippinlar"
+		]
+	},
+	"626": {
+		"en": [
+			"East Timor"
+		],
+		"ru": [
+			"Тимор-Лешти"
+		]
+	},
+	"643": {
+		"ru": [
+			"Российская Федерация",
+			"РФ"
+		],
+		"uz": [
+			"Rossiya Federatsiyasi"
+		]
+	},
+	"659": {
+		"en": [
+			"Saint Kitts"
+		],
+		"ru": [
+			"Сент-Киттс и Невис",
+			"Сент-Китс"
+		],
+		"uz": [
+			"Sent-Kits va Nevis"
+		]
+	},
+	"662": {
+		"uz": [
+			"Sent-Lyusiya"
+		]
+	},
+	"670": {
+		"en": [
+			"Saint Vincent and Grenadines",
+			"Saint Vincent"
+		],
+		"ru": [
+			"Сент-Винсент"
+		],
+		"uz": [
+			"Sent Vinsent"
+		]
+	},
+	"682": {
+		"uz": [
+			"Saudiya"
+		]
+	},
+	"690": {
+		"ru": [
+			"Сейшелы"
+		]
+	},
+	"694": {
+		"uz": [
+			"Serra-Leone"
+		]
+	},
+	"704": {
+		"en": [
+			"Viet Nam"
+		],
+		"uz": [
+			"Vetnam"
+		]
+	},
+	"710": {
+		"ru": [
+			"ЮАР",
+			"Южно-Африканская Республика"
+		],
+		"uz": [
+			"Janubiy Afrika",
+			"JAR"
+		]
+	},
+	"748": {
+		"en": [
+			"Swaziland"
+		],
+		"ru": [
+			"Свазиленд"
+		],
+		"uz": [
+			"Svazilend"
+		]
+	},
+	"752": {
+		"uz": [
+			"Shvesiya"
+		]
+	},
+	"756": {
+		"uz": [
+			"Shveytsariya"
+		]
+	},
+	"760": {
+		"uz": [
+			"Siriya"
+		]
+	},
+	"768": {
+		"voice": {
+			"en": [
+				"to go"
+			]
+		}
+	},
+	"784": {
+		"en": [
+			"UAE",
+			"Emirates"
+		],
+		"ru": [
+			"ОАЭ",
+			"Эмираты"
+		],
+		"uz": [
+			"BAA",
+			"Arab Amirliklari"
+		]
+	},
+	"792": {
+		"en": [
+			"Turkiye"
+		]
+	},
+	"795": {
+		"ru": [
+			"Туркмения"
+		]
+	},
+	"807": {
+		"ru": [
+			"Македония"
+		],
+		"uz": [
+			"Makedoniya"
+		]
+	},
+	"826": {
+		"en": [
+			"UK",
+			"Great Britain",
+			"Britain",
+			"England"
+		],
+		"ru": [
+			"Соединённое Королевство",
+			"Британия",
+			"Англия"
+		],
+		"uz": [
+			"Buyuk Britaniya",
+			"Britaniya",
+			"Angliya"
+		]
+	},
+	"840": {
+		"en": [
+			"United States of America",
+			"USA",
+			"US",
+			"America"
+		],
+		"ru": [
+			"Соединённые Штаты Америки",
+			"Соединённые Штаты",
+			"Америка",
+			"Штаты"
+		],
+		"uz": [
+			"AQSh",
+			"Amerika",
+			"Qo'shma Shtatlar"
+		]
+	}
+}

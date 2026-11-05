@@ -10,7 +10,7 @@ import {
 	reduceGameState,
 	type GameConfig,
 	type GameState,
-} from '@georally/game-domain/singleplayer'
+} from '@georally/game-domain/singleplayer/locate'
 import { useCallback, useEffect, useReducer, useState } from 'react'
 import { useSingleplayerGameAnalytics } from '../../shared/analytics/useSingleplayerGameAnalytics'
 

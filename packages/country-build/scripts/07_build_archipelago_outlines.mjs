@@ -9,27 +9,24 @@ import { featureCollection, multiPolygon, polygon } from '@turf/helpers'
 import union from '@turf/union'
 import fs from 'node:fs'
 import path from 'node:path'
-import { resolvePackagePath } from './lib/output-paths.mjs'
+import {
+	ensureDir,
+	parseOutDir,
+	resolvePackagePath,
+} from './lib/output-paths.mjs'
 
 const DUMP_DIR = resolvePackagePath('build', 'tmp_base_country_tiles')
-const OUT_FILE = resolvePackagePath(
-	'..',
-	'..',
-	'apps',
-	'web',
-	'public',
-	'map',
-	'archipelagos.geojson',
-)
+const outDir = parseOutDir()
+const OUT_FILE = path.join(outDir, 'archipelagos.geojson')
 const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8'))
 
 const { all, archipelagos } = readJson(
 	resolvePackagePath('data', 'playable_states_195.json'),
 )
-const seedByA3 = new Map(
-	readJson(resolvePackagePath('build', 'country_seed.json')).map(row => [
-		row.ADM0_A3,
-		row,
+const idByA3 = new Map(
+	readJson(resolvePackagePath('build', 'countries.json')).map(country => [
+		country.a3,
+		country.id,
 	]),
 )
 for (const a3 of Object.keys(archipelagos)) {
@@ -113,10 +110,10 @@ const features = Object.entries(archipelagos)
 				).length >= 2,
 		)
 		return multiPolygon(shiftLng(outlines, centreLng), {
-			ISO_N3: seedByA3.get(a3).ISO_N3,
-			ADM0_A3: a3,
+			iso_n3: idByA3.get(a3),
 		})
 	})
 
+ensureDir(outDir)
 fs.writeFileSync(OUT_FILE, `${JSON.stringify(featureCollection(features))}\n`)
 console.log(`Wrote ${OUT_FILE} with ${features.length} outlines`)

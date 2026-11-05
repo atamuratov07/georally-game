@@ -1,8 +1,13 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { ensureDir, parseTilesOutputOptions } from './lib/output-paths.mjs'
+import {
+	ensureDir,
+	parseOutDir,
+	readTilesUrlTemplate,
+} from './lib/output-paths.mjs'
 
-const { tilesDir, tilesUrlTemplate } = parseTilesOutputOptions()
+const tilesDir = parseOutDir('tiles')
+const tilesUrlTemplate = readTilesUrlTemplate()
 
 const metadataPath = path.join(tilesDir, 'metadata.json')
 const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf8'))

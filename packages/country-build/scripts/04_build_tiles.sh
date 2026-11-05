@@ -6,11 +6,11 @@ TILES_URL_TEMPLATE="/map/tiles/{z}/{x}/{y}.pbf"
 
 while [ "$#" -gt 0 ]; do
     case "$1" in
-    --tiles-dir)
+    --out)
         TILES_DIR="$2"
         shift 2
         ;;
-    --tiles-dir=*)
+    --out=*)
         TILES_DIR="${1#*=}"
         shift
         ;;
@@ -98,5 +98,5 @@ fi
 
 # 8) Generate tiles.json file
 node scripts/05_make_tilesjson.mjs \
-    --tiles-dir "$TILES_DIR" \
+    --out "$TILES_DIR" \
     --tiles-url-template "$TILES_URL_TEMPLATE"

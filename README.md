@@ -61,8 +61,7 @@ georally-game/
 │   ├── game-domain/       # pure game rules & state machines, no framework deps
 │   ├── game-protocol/     # socket event names, ack types, zod schemas
 │   ├── country-catalog/   # generated playable-country metadata
-│   ├── country-build/     # offline pipeline that produces the catalog + map tiles
-│   └── map-assets/        # generated map tiles land here (dist/ is gitignored)
+│   └── country-build/     # offline pipeline that produces the catalog + map tiles
 ├── docs/
 │   ├── architecture/      # deep-dive docs, see Architecture below
 │   └── proposals/         # reviewed improvements, not yet implemented
@@ -100,8 +99,9 @@ pnpm dev:server
 
 ```bash
 pnpm build:data                  # country-build's data step
-pnpm build:country-registry      # write packages/country-catalog/generated/*
-pnpm build:map-assets            # write tiles into packages/map-assets/dist/tiles
+pnpm build:country-registry      # write packages/country-catalog/generated/countries.json
+pnpm build:regions               # write packages/country-catalog/generated/regions.geojson
+pnpm build:map-tiles             # write tiles into apps/web/public/map/tiles
 ```
 
 ## Configuration
@@ -215,7 +215,6 @@ graph LR
 
     subgraph BuildPackages
         BUILD["@georally/country-build<br/>offline data + tiles pipeline"]
-        ASSETS["map-assets<br/>generated map tile storage"]
     end
 
     WEB --> DOMAIN
@@ -227,8 +226,7 @@ graph LR
     PROTOCOL --> DOMAIN
     CATALOG --> DOMAIN
     BUILD -->|writes generated JSON| CATALOG
-    BUILD -->|writes tiles| ASSETS
-    ASSETS -.->|checked-in export| WEB
+    BUILD -->|writes tiles| WEB
 ```
 
 | Doc                                                                                      | Covers                                                                           |
@@ -259,8 +257,9 @@ All run from the repo root:
 | `pnpm build:game-domain`      | Builds `@georally/game-domain`                                                                |
 | `pnpm build:tippecanoe-image` | Builds the Dockerized `tippecanoe` image used by the map-tile pipeline                        |
 | `pnpm build:data`             | Runs `@georally/country-build`'s data build step                                              |
-| `pnpm build:country-registry` | Generates `packages/country-catalog/generated/*`                                              |
-| `pnpm build:map-assets`       | Generates tiles into `packages/map-assets/dist/tiles`, served at `/map/tiles/{z}/{x}/{y}.pbf` |
+| `pnpm build:country-registry` | Generates `packages/country-catalog/generated/countries.json`                                 |
+| `pnpm build:regions`          | Generates `packages/country-catalog/generated/regions.geojson`                                |
+| `pnpm build:map-tiles`        | Generates tiles into `apps/web/public/map/tiles`, served at `/map/tiles/{z}/{x}/{y}.pbf`     |
 | `pnpm lint`                   | ESLint across the repo                                                                        |
 
 Server tests are run separately, see [Testing](#testing).

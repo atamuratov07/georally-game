@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
 import fs from 'fs'
 import { resolve } from 'path'
+import { regionMap } from './vite/regionMap'
 
 function pbfHeaders(): Plugin {
 	const isTilePbf = (urlPath: string) =>
@@ -55,7 +56,7 @@ const getLocaleInputs = () => {
 
 // https://vite.dev/config/
 export default defineConfig({
-	plugins: [react(), tailwindcss(), pbfHeaders()],
+	plugins: [react(), tailwindcss(), pbfHeaders(), regionMap()],
 	base: '/',
 	resolve: {
 		alias: {

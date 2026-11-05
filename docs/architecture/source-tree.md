@@ -40,6 +40,8 @@ georally-game/
 |       |-- nginx.conf                  # production nginx: static client, proxies /socket.io/, /api/, /health
 |       |-- package.json
 |       |-- vite.config.ts
+|       |-- vite/
+|       |   `-- regionMap.ts            # serves virtual:region-map: region outlines projected at bundle time
 |       |-- index.html
 |       |-- locales/                    # one Vite entry per locale: en.html, ru.html, uz.html
 |       |-- public/
@@ -85,7 +87,9 @@ georally-game/
 |           |   |   `-- cn.ts
 |           |   `-- widgets/
 |           |       |-- CountryInfoCard.tsx
-|           |       `-- ScoreBanner.tsx
+|           |       |-- ScoreBanner.tsx
+|           |       `-- region-map/
+|           |           `-- RegionPicker.tsx  # continent picker drawn from virtual:region-map
 |           |-- singleplayer-game/
 |           |   |-- index.ts
 |           |   |-- core/
@@ -178,7 +182,8 @@ georally-game/
 |   |   |-- data/
 |   |   |   `-- aliases.json             # hand-curated extra answer names
 |   |   |-- generated/
-|   |   |   `-- countries.json           # playable countries, written by country-build
+|   |   |   |-- countries.json           # playable countries, written by country-build
+|   |   |   `-- regions.geojson          # continent outlines, written by country-build
 |   |   `-- src/
 |   |       |-- index.ts                 # re-exports
 |   |       |-- catalog.ts               # in-memory catalog + country pool
@@ -203,14 +208,14 @@ georally-game/
 |   |       |-- 05_make_tilesjson.mjs
 |   |       |-- 06_build_registry.mjs
 |   |       |-- 07_build_archipelago_outlines.mjs
+|   |       |-- 08_build_regions.mjs
 |   |       `-- lib/
 |   |           |-- cache.mjs
 |   |           |-- continent.mjs
-|   |           |-- output-paths.mjs
+|   |           |-- output-paths.mjs     # the shared --out option
 |   |           |-- restcountries.mjs
 |   |           |-- uz-latn.mjs          # Uzbek apostrophe normalization
 |   |           `-- wdqs.mjs
-|   `-- map-assets/                      # generated map tiles, written by country-build
 |-- docs/
 |   |-- architecture/                    # this folder
 |   `-- proposals/                       # reviewed improvements, not yet implemented

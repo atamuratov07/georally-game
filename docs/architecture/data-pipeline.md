@@ -1,18 +1,20 @@
 # Data & asset pipeline
 
-`@georally/country-build` is an offline preparation package. It is not part of the normal web/server runtime, but it explains where the local country catalog and map files come from. It's invoked through root-level scripts: `pnpm build:data`, `pnpm build:country-registry`, `pnpm build:map-assets` and `pnpm build:archipelago-outlines`. Stages 01 and 02 have no root script and are run by hand from `packages/country-build`.
+`@georally/country-build` is an offline preparation package. It is not part of the normal web/server runtime, but it explains where the local country catalog and map files come from. It's invoked through root-level scripts: `pnpm build:data`, `pnpm build:country-registry`, `pnpm build:regions`, `pnpm build:map-tiles` and `pnpm build:archipelago-outlines`. Stages 01 and 02 have no root script and are run by hand from `packages/country-build`.
 
 ```mermaid
 graph TD
     Upstream["Natural Earth countries zip + MapLibre demotiles mbtiles + REST Countries + Wikidata"]
     BuildData["03_build_data.mjs<br/>(pnpm build:data)"]
     Countries["build/countries.json<br/>one record per playable country"]
-    BuildTiles["04_build_tiles.sh<br/>(pnpm build:map-assets)"]
+    BuildTiles["04_build_tiles.sh<br/>(pnpm build:map-tiles)"]
     TileJson["05_make_tilesjson.mjs<br/>invoked by 04_build_tiles.sh"]
     BuildRegistry["06_build_registry.mjs<br/>(pnpm build:country-registry)"]
     CatalogJson["packages/country-catalog/generated/countries.json"]
     BuildOutlines["07_build_archipelago_outlines.mjs<br/>(pnpm build:archipelago-outlines)"]
-    Assets["packages/map-assets/dist/tiles"]
+    BuildRegions["08_build_regions.mjs<br/>(pnpm build:regions)"]
+    CatalogRegions["packages/country-catalog/generated/regions.geojson"]
+    RegionPlugin["apps/web/vite/regionMap.ts<br/>virtual:region-map, at bundle time"]
     WebMap["apps/web/public/map/**<br/>checked-in static export"]
 
     Upstream --> BuildData
@@ -20,36 +22,39 @@ graph TD
     Countries --> BuildTiles
     Countries --> BuildRegistry
     Countries --> BuildOutlines
+    Countries --> BuildRegions
     BuildTiles --> TileJson
-    BuildTiles --> Assets
-    TileJson --> Assets
-    Assets -.-> WebMap
+    BuildTiles --> WebMap
+    TileJson --> WebMap
     BuildRegistry --> CatalogJson
     BuildOutlines --> WebMap
+    BuildRegions --> CatalogRegions
+    CatalogRegions --> RegionPlugin
 ```
 
-Stage 03 is the only stage that fetches data and the only one that validates it. It joins every source into one record per playable country, checks that nothing is missing, and only then writes. The later stages are projections of those records: 04 into map tiles, 06 into the catalog registry, 07 into archipelago outlines. None of them fills in a missing value.
+Stage 03 is the only stage that fetches data and the only one that validates it. It joins every source into one record per playable country, checks that nothing is missing, and only then writes. The later stages are projections of those records: 04 into map tiles, 06 into the catalog registry, 07 into archipelago outlines, 08 into continent shapes. None of them fills in a missing value.
 
 ## Stages
 
-Run from `packages/country-build`, in this order. Intermediate files go to `build/` (gitignored); only stage 06's `--out-dir` and stage 04's `--tiles-dir` can be moved.
+Run from `packages/country-build`, in this order. Intermediate files go to `build/` (gitignored).
+
+**Outputs stay inside the package unless told otherwise.** Every stage that produces a deliverable (04, 06, 07, 08) takes `--out <directory>` and writes into `dist/` (or `dist/tiles` for 04) inside the package by default; no script knows where other packages live. Only the root scripts in `package.json` choose destinations elsewhere in the repo. Stage 04 empties its output directory first.
 
 | Stage | Input | Output | Network |
 | --- | --- | --- | --- |
 | `01_get_fallback_sources.sh` | none | `upstream/ne_110m_admin_0_countries.zip` | Natural Earth (`naciscdn.org`), only if the zip is missing; it's committed |
 | `02_prepare_base.sh` → `02b_dump_base_country_tiles.sh` → `02c_merge_base_countries.mjs` | `upstream/maplibre.mbtiles` | `build/base_geolines_z0.geojson`, `build/base_centroids_z0.geojson`, one dump per zoom-6 tile in `build/tmp_base_country_tiles/`, `build/base_countries.geojson` | None; `tippecanoe-decode` / `tippecanoe-enumerate` in Docker |
 | `03_build_data.mjs` (`pnpm build:data`) | `build/base_countries.geojson`, `build/base_centroids_z0.geojson`, the Natural Earth zip, `data/manual_overrides.json`, `data/playable_states_195.json` | `build/countries.json`, `build/countries_join.csv`, `build/geolines_join.csv`, `build/centroids.geojson`, `build/capitals.geojson`, `build/supplemental_countries.geojson`, `build/build_data_report.json` | REST Countries (`rc-countries`, paged 100 per request) and one Wikidata Query Service request (`wdqs-country-capital-names`) |
-| `04_build_tiles.sh` → `05_make_tilesjson.mjs` (`pnpm build:map-assets`) | `upstream/maplibre.mbtiles` and the stage 03 outputs | `build/*.mbtiles`, `build/world_complete.mbtiles`, the `.pbf` tile directory and `tiles.json` | None; `tile-join` and `tippecanoe` in Docker, one container per call |
-| `06_build_registry.mjs` (`pnpm build:country-registry`) | `build/countries.json` | `countries.json` in `--out-dir` | None |
-| `07_build_archipelago_outlines.mjs` (`pnpm build:archipelago-outlines`) | `build/tmp_base_country_tiles` (the zoom-6 tile dump from 02b), `build/countries.json`, `data/playable_states_195.json` (the `archipelagos` buffers) | `apps/web/public/map/archipelagos.geojson` | None |
+| `04_build_tiles.sh` → `05_make_tilesjson.mjs` (`pnpm build:map-tiles`) | `upstream/maplibre.mbtiles` and the stage 03 outputs | `build/*.mbtiles`, `build/world_complete.mbtiles`; the `.pbf` tile directory and `tiles.json` in `--out` | None; `tile-join` and `tippecanoe` in Docker, one container per call |
+| `06_build_registry.mjs` (`pnpm build:country-registry`) | `build/countries.json` | `countries.json` in `--out` | None |
+| `07_build_archipelago_outlines.mjs` (`pnpm build:archipelago-outlines`) | `build/tmp_base_country_tiles` (the zoom-6 tile dump from 02b), `build/countries.json`, `data/playable_states_195.json` (the `archipelagos` buffers) | `archipelagos.geojson` in `--out` | None |
+| `08_build_regions.mjs` (`pnpm build:regions`) | the Natural Earth zip, `build/countries.json` | `regions.geojson` in `--out` | None |
 
 **Cache.** `scripts/lib/cache.mjs` keeps every API response in `build/cache/<key>.json` and reads it first: a run requests an API only when that file is missing, or when `COUNTRY_BUILD_REFRESH=1` is set (for example `COUNTRY_BUILD_REFRESH=1 pnpm build:data`). A request overwrites the file on success; if it fails (HTTP error, network error, or a 429 after the retries), the client falls back to the file when there is one. The Wikidata client sends a descriptive `User-Agent` and retries a 429 after `Retry-After`; the REST Countries client needs `RESTCOUNTRIES_API_KEY` in `packages/country-build/.env` only when it actually requests, and does not retry.
 
 **Docker.** Stages 02 and 04 need the `tippecanoe:latest` image (`pnpm build:tippecanoe-image`, which clones and compiles tippecanoe 2.79.0). The wrappers in `tools/` start one container per call; `02b` decodes the zoom-6 tiles in one container, one `tippecanoe-decode` per CPU at a time.
 
 **Skipping stage 02.** Its output depends only on `upstream/maplibre.mbtiles`, the 02 scripts and the tippecanoe image. `02_prepare_base.sh` writes `build/base.stamp` with a hash of those, and skips the stage when the stamp matches and its three outputs exist. Delete `build/base.stamp` to force a rebuild.
-
-**Publishing tiles.** `pnpm build:map-assets` writes to `packages/map-assets/dist/tiles` (gitignored). The web app serves the checked-in copy in `apps/web/public/map/tiles`; mirror it after a rebuild with `rsync -a --delete packages/map-assets/dist/tiles/ apps/web/public/map/tiles/`.
 
 ## Sources and joins
 
@@ -134,9 +139,19 @@ Every playable country must have, in all three languages, a name, a label, a cap
 
 Localized fields are keyed by the app's locale tags, so the web app reads `country.name[language]` directly.
 
+### Regions
+
+`packages/country-catalog/generated/regions.geojson` holds one feature per game continent, with a `continent` property and the continent's merged outline in longitude and latitude. It's raw data: no projection, size, rounding or removal of small islands.
+
+- Shapes are Natural Earth 1:110m countries. Playable countries take the continent the game gives them (`build/countries.json`); every other shape gets `canonicalizeContinent`, which throws on anything it doesn't know, so no shape can go missing silently. Antarctica is left out because it isn't a game scope.
+- Countries are merged per continent on their shared borders (`topojson-server` and `topojson-client`), which dissolves internal borders exactly. Before merging, `geoStitch` removes Natural Earth's cuts along the 180° meridian, so Chukotka and Fiji stay whole.
+- The geometry follows d3-geo's spherical conventions: outer rings wind clockwise, and shapes may cross the 180° meridian. Tools that expect RFC 7946 GeoJSON would need to rewind and split it.
+
+The catalog exports the file as `@georally/country-catalog/regions.geojson`, and its index never imports it, so no runtime code loads it. The web app's Vite plugin `apps/web/vite/regionMap.ts` reads it at bundle time and serves the `virtual:region-map` module: SVG paths per continent and their `viewBox`. The projection (Equal Earth, rotated 11° so the seam falls in the Bering Strait), the 800 px width, the removal of islands smaller than 3 px² and the rounding all live there, and the browser receives only finished path strings.
+
 ### Other outputs
 
-- `packages/map-assets/dist/tiles` — the generated vector tiles and `tiles.json`, written by `pnpm build:map-assets`, which passes `--tiles-dir` and `--tiles-url-template /map/tiles/{z}/{x}/{y}.pbf` down to `country-build`. This `dist/` directory is gitignored.
+- `apps/web/public/map/tiles` — the generated vector tiles and `tiles.json`, written by `pnpm build:map-tiles`, which passes `--out` and `--tiles-url-template /map/tiles/{z}/{x}/{y}.pbf` down to `country-build`.
 - `apps/web/public/map/archipelagos.geojson` — outlines around countries spread over many small islands, one MultiPolygon per country with an `iso_n3` property. `archipelagos` in `data/playable_states_195.json` lists the countries with a buffer in km: islands closer than twice the buffer merge into one shape that follows the island chain, and a part around a lone island is dropped. The map draws them under the country fills, as a pickable area with an outline.
 - `apps/web/public/map/**` — a static export (style.json, vector tiles, glyph PBFs) that _is_ checked into the repo and served directly by the web app.
 
@@ -146,5 +161,6 @@ Localized fields are keyed by the app's locale tags, so the web app reads `count
 | --- | --- | --- |
 | `pnpm build:data` | `@georally/country-build`'s `build:data` script (`node --env-file=.env scripts/03_build_data.mjs`) | `build/countries.json` and the tile inputs |
 | `pnpm build:country-registry` | `@georally/country-build`'s `build:registry` script (`node scripts/06_build_registry.mjs`) | `packages/country-catalog/generated/countries.json` |
-| `pnpm build:map-assets` | `@georally/country-build`'s `build:tiles` script (`bash scripts/04_build_tiles.sh`) | `packages/map-assets/dist/tiles/**` |
+| `pnpm build:regions` | `@georally/country-build`'s `build:regions` script (`node scripts/08_build_regions.mjs`) | `packages/country-catalog/generated/regions.geojson` |
+| `pnpm build:map-tiles` | `@georally/country-build`'s `build:tiles` script (`bash scripts/04_build_tiles.sh`) | `apps/web/public/map/tiles/**` |
 | `pnpm build:archipelago-outlines` | `@georally/country-build`'s `build:outlines` script (`node scripts/07_build_archipelago_outlines.mjs`) | `apps/web/public/map/archipelagos.geojson` |

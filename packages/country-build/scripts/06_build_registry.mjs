@@ -2,13 +2,13 @@ import fs from 'node:fs'
 import path from 'node:path'
 import {
 	ensureDir,
-	parseRegistryOutputOptions,
+	parseOutDir,
 	resolvePackagePath,
 } from './lib/output-paths.mjs'
 
 const COUNTRIES_JSON = resolvePackagePath('build', 'countries.json')
 
-const { outDir } = parseRegistryOutputOptions()
+const outDir = parseOutDir()
 
 if (!fs.existsSync(COUNTRIES_JSON)) {
 	throw new Error(`Missing ${COUNTRIES_JSON}. Run build:data first.`)

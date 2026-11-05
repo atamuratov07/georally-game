@@ -29,7 +29,8 @@
 			"development": "./src/aliases.ts",
 			"import": "./dist/aliases.js",
 			"default": "./dist/aliases.js"
-		}
+		},
+		"./regions.geojson": "./generated/regions.geojson"
 	},
 	"sideEffects": false,
 	"dependencies": {

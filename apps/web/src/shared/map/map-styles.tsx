@@ -1,5 +1,3 @@
-import type { CountryInfo } from '@georally/country-catalog'
-import { countryCatalog } from '@georally/country-catalog'
 import type {
 	DataDrivenPropertyValueSpecification,
 	ExpressionSpecification,
@@ -11,7 +9,7 @@ import type {
 	LineLayerSpecification,
 	SymbolLayerSpecification,
 } from 'react-map-gl/maplibre'
-import { getCountryCapital, getCountryName, type AppLanguage } from '../i18n'
+import type { AppLanguage } from '../i18n'
 import type { MapHighlight } from './types'
 
 export const SOURCE_ID = 'world'
@@ -58,45 +56,8 @@ type TextFieldLayoutValue = NonNullable<
 	SymbolLayerSpecification['layout']
 >['text-field']
 
-function localizedTextField(
-	language: AppLanguage,
-	fields: { en: string; ru: string; uzLatn: string },
-): TextFieldLayoutValue {
-	const preferredFields = {
-		'uz-Latn': [fields.uzLatn, fields.ru, fields.en],
-		en: [fields.en, fields.ru, fields.uzLatn],
-		ru: [fields.ru, fields.en, fields.uzLatn],
-	}[language]
-
-	return [
-		'coalesce',
-		...preferredFields.map(field => ['get', field]),
-	] as TextFieldLayoutValue
-}
-
-function buildCatalogTextField(
-	resolveText: (country: CountryInfo) => string,
-	fallback: TextFieldLayoutValue,
-): TextFieldLayoutValue {
-	const cases: string[] = []
-	for (const id of countryCatalog.countryIds) {
-		const country = countryCatalog.countriesById.get(id)
-		const text = country ? resolveText(country).trim() : ''
-		if (text) {
-			cases.push(id, text)
-		}
-	}
-
-	if (cases.length === 0) {
-		return fallback
-	}
-
-	return [
-		'match',
-		['to-string', ['get', 'ISO_N3']],
-		...cases,
-		fallback,
-	] as TextFieldLayoutValue
+function labelTextField(language: AppLanguage): TextFieldLayoutValue {
+	return ['get', `label_${language.toLowerCase().replace('-', '_')}`]
 }
 
 export function buildHighlightLayer(
@@ -126,7 +87,7 @@ export function buildHighlightLayer(
 				cases.length > 0
 					? ([
 							'match',
-							['to-string', ['get', 'ISO_N3']],
+							['to-string', ['get', 'iso_n3']],
 							...cases,
 							'transparent',
 						] as FillColorExpression)
@@ -147,7 +108,7 @@ export function buildDimLayer(
 			? 0.75
 			: ([
 					'match',
-					['to-string', ['get', 'ISO_N3']],
+					['get', 'iso_n3'],
 					[...interactiveIds],
 					0,
 					0.75,
@@ -186,15 +147,6 @@ export const hoverLayer: FillLayerSpecification = {
 export function buildCountryLabelLayer(
 	language: AppLanguage,
 ): SymbolLayerSpecification {
-	const countryTextField = buildCatalogTextField(
-		country => getCountryName(country, language),
-		localizedTextField(language, {
-			en: 'NAME',
-			ru: 'NAME_RU',
-			uzLatn: 'NAME_UZ_LATN',
-		}),
-	)
-
 	return {
 		id: COUNTRY_LABEL_LAYER_ID,
 		type: 'symbol',
@@ -204,7 +156,7 @@ export function buildCountryLabelLayer(
 		minzoom: 2,
 		maxzoom: 24,
 		layout: {
-			'text-field': countryTextField,
+			'text-field': labelTextField(language),
 			'text-font': ['Noto Sans Bold'],
 			'text-size': {
 				type: 'exponential',
@@ -238,15 +190,6 @@ export function buildCountryLabelLayer(
 export function buildCapitalLabelLayer(
 	language: AppLanguage,
 ): SymbolLayerSpecification {
-	const capitalTextField = buildCatalogTextField(
-		country => getCountryCapital(country, language),
-		localizedTextField(language, {
-			en: 'CAPITAL',
-			ru: 'CAPITAL_RU',
-			uzLatn: 'CAPITAL_UZ_LATN',
-		}),
-	)
-
 	return {
 		id: CAPITAL_LABEL_LAYER_ID,
 		type: 'symbol',
@@ -254,7 +197,7 @@ export function buildCapitalLabelLayer(
 		'source-layer': CAPITALS_LAYER,
 		minzoom: 3,
 		layout: {
-			'text-field': capitalTextField,
+			'text-field': labelTextField(language),
 			'text-font': ['Noto Sans Regular'],
 			'text-size': {
 				type: 'exponential',
@@ -274,12 +217,6 @@ export function buildCapitalLabelLayer(
 export function buildGeolinesLablelLayer(
 	language: AppLanguage,
 ): SymbolLayerSpecification {
-	const geolinesTextField = localizedTextField(language, {
-		en: 'name',
-		ru: 'name_ru',
-		uzLatn: 'name_uz_latn',
-	})
-
 	return {
 		id: GEOLINES_LABEL_LAYER_ID,
 		type: 'symbol',
@@ -295,7 +232,7 @@ export function buildGeolinesLablelLayer(
 			'text-halo-width': 1,
 		},
 		layout: {
-			'text-field': geolinesTextField,
+			'text-field': labelTextField(language),
 			'text-font': ['Noto Sans Regular'],
 			'text-size': {
 				type: 'exponential',
@@ -353,7 +290,7 @@ export function buildArchipelagoLayers(
 		)
 	}
 	const visibleIds = new Set([...interactiveIds, ...toneById.keys()])
-	const isoN3: ExpressionSpecification = ['to-string', ['get', 'ISO_N3']]
+	const isoN3: ExpressionSpecification = ['get', 'iso_n3']
 	const isHovered: ExpressionSpecification = [
 		'boolean',
 		['feature-state', 'hover'],
@@ -404,7 +341,7 @@ export function buildArchipelagoLayers(
 }
 
 function countryFilter(countryId: string | null): FilterSpecification {
-	return ['==', ['to-string', ['get', 'ISO_N3']], countryId ?? '__none__']
+	return ['==', ['get', 'iso_n3'], countryId ?? '__none__']
 }
 
 export function buildSelectionFillLayer(

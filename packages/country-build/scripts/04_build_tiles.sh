@@ -46,14 +46,16 @@ rm -f \
 rm -rf "$TILES_DIR"
 mkdir -p "$TILES_DIR"
 
-# 1) Patch original geolines with localized labels
+# 1) Patch original geolines with localized labels, dropping the date line
 ./tools/tile-join -f -o build/base_geolines_patched.mbtiles \
-    -c build/geolines_join.csv \
+    -j '{ "geolines": ["!=", "name", "International Date Line"] }' \
+    -c build/geolines_join.csv -x name \
     upstream/maplibre.mbtiles
 
-# 2) Patch original countries with added attributes
+# 2) Patch original countries with their codes and ISO numeric ids
 ./tools/tile-join -f -o build/base_attrs_patched.mbtiles \
-    -c build/join_adm0.csv \
+    -c build/countries_join.csv \
+    -x ADM0_A3 -x ABBREV -x CONTINENT -x NAME -x fid \
     build/base_geolines_patched.mbtiles
 
 # 3) Keep only countries + geolines from the patched base

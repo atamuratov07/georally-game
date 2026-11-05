@@ -8,23 +8,6 @@ import {
 } from '../i18n'
 import { useCurrentLocale } from '../../app/LocaleContext'
 
-function textOrUnknown(value: string, unknownLabel: string): string {
-	const normalized = value.trim()
-	return normalized ? normalized : unknownLabel
-}
-
-function populationLabel(
-	value: number,
-	locale: string,
-	unknownLabel: string,
-): string {
-	if (!Number.isFinite(value) || value <= 0) {
-		return unknownLabel
-	}
-
-	return value.toLocaleString(locale)
-}
-
 type CountryTagTone = 'independent' | 'unMember'
 
 const TAG_CLASSES: Record<CountryTagTone, string> = {
@@ -46,24 +29,9 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 export function CountryInfoCard({ info }: { info: CountryInfo }) {
 	const { t } = useTranslation()
 	const language = useCurrentLocale()
-	const unknownLabel = t('common.unknown')
-
-	const displayName = textOrUnknown(
-		getCountryName(info, language),
-		unknownLabel,
-	)
-	const displayCapital = textOrUnknown(
-		getCountryCapital(info, language),
-		unknownLabel,
-	)
-	const displayCurrency = textOrUnknown(
-		getCountryCurrency(info, language),
-		unknownLabel,
-	)
-	const displayPopulation = populationLabel(
-		info.population,
+	const displayName = getCountryName(info, language)
+	const displayPopulation = info.population.toLocaleString(
 		toFormattingLocale(language),
-		unknownLabel,
 	)
 
 	const tags: CountryTagTone[] = []
@@ -73,13 +41,11 @@ export function CountryInfoCard({ info }: { info: CountryInfo }) {
 	return (
 		<article className='w-68 animate-pop-in overflow-hidden rounded-3xl bg-white text-ink shadow-[0_0_0_2px_white,0_22px_48px_-10px_rgb(24_34_61/0.35)]'>
 			<div className='relative aspect-[16/10] overflow-hidden bg-paper-deep'>
-				{info.flagUrl ? (
-					<img
-						src={info.flagUrl}
-						alt={t('countryInfo.flagAlt', { country: displayName })}
-						className='size-full object-cover'
-					/>
-				) : null}
+				<img
+					src={info.flagUrl}
+					alt={t('countryInfo.flagAlt', { country: displayName })}
+					className='size-full object-cover'
+				/>
 				<div className='absolute inset-0 bg-[linear-gradient(180deg,rgb(24_34_61/0.05)_30%,rgb(24_34_61/0.8))]' />
 
 				<span className='absolute top-2.5 left-2.5 rounded-full bg-ink/35 px-2.5 py-1 text-[10px] font-black tracking-[0.14em] text-white uppercase backdrop-blur-md'>
@@ -91,7 +57,7 @@ export function CountryInfoCard({ info }: { info: CountryInfo }) {
 						{displayName}
 					</h2>
 					<p className='text-sm font-bold text-white/85'>
-						{displayCapital}
+						{getCountryCapital(info, language)}
 					</p>
 				</div>
 			</div>
@@ -116,7 +82,7 @@ export function CountryInfoCard({ info }: { info: CountryInfo }) {
 					/>
 					<InfoRow
 						label={t('countryInfo.currency')}
-						value={displayCurrency}
+						value={getCountryCurrency(info, language)}
 					/>
 				</dl>
 			</div>

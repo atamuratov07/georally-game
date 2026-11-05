@@ -26,10 +26,10 @@ const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8'))
 const { all, archipelagos } = readJson(
 	resolvePackagePath('data', 'playable_states_195.json'),
 )
-const seedByA3 = new Map(
-	readJson(resolvePackagePath('build', 'country_seed.json')).map(row => [
-		row.ADM0_A3,
-		row,
+const idByA3 = new Map(
+	readJson(resolvePackagePath('build', 'countries.json')).map(country => [
+		country.a3,
+		country.id,
 	]),
 )
 for (const a3 of Object.keys(archipelagos)) {
@@ -113,8 +113,7 @@ const features = Object.entries(archipelagos)
 				).length >= 2,
 		)
 		return multiPolygon(shiftLng(outlines, centreLng), {
-			ISO_N3: seedByA3.get(a3).ISO_N3,
-			ADM0_A3: a3,
+			iso_n3: idByA3.get(a3),
 		})
 	})
 

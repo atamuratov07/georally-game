@@ -176,10 +176,10 @@ georally-game/
 |   |       `-- index.ts
 |   |-- country-catalog/
 |   |   |-- generated/
-|   |   |   |-- countries.registry.json
-|   |   |   `-- countries.playable.json
+|   |   |   `-- countries.json           # playable countries, written by country-build
 |   |   `-- src/
-|   |       |-- index.ts                 # builds in-memory catalog + country pool
+|   |       |-- index.ts                 # re-exports
+|   |       |-- catalog.ts               # in-memory catalog + country pool
 |   |       `-- types.ts
 |   |-- country-build/
 |   |   |-- data/
@@ -198,14 +198,13 @@ georally-game/
 |   |       |-- 04_build_tiles.sh
 |   |       |-- 05_make_tilesjson.mjs
 |   |       |-- 06_build_registry.mjs
-|   |       |-- 06_build_registry.sh
 |   |       |-- 07_build_archipelago_outlines.mjs
 |   |       `-- lib/
 |   |           |-- cache.mjs
 |   |           |-- continent.mjs
 |   |           |-- output-paths.mjs
 |   |           |-- restcountries.mjs
-|   |           |-- uz-latn.mjs
+|   |           |-- uz-latn.mjs          # Uzbek apostrophe normalization
 |   |           `-- wdqs.mjs
 |   `-- map-assets/                      # generated map tiles, written by country-build
 |-- docs/

@@ -336,10 +336,10 @@ function MapRendererInner({
 
 	const labelFilter = useMemo<FilterSpecification>(() => {
 		if (!labelIds.length) {
-			return ['==', ['to-string', ['get', 'ISO_N3']], '__none__']
+			return ['==', ['get', 'iso_n3'], '__none__']
 		}
 
-		return ['in', ['to-string', ['get', 'ISO_N3']], ['literal', labelIds]]
+		return ['in', ['get', 'iso_n3'], ['literal', labelIds]]
 	}, [labelIds])
 
 	// Handlers ================================================

@@ -4,6 +4,9 @@ import { ensureDir, parseTilesOutputOptions } from './lib/output-paths.mjs'
 
 const { tilesDir, tilesUrlTemplate } = parseTilesOutputOptions()
 
+const metadataPath = path.join(tilesDir, 'metadata.json')
+const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf8'))
+
 const tilejson = {
 	tilejson: '2.0.0',
 	name: 'world',
@@ -18,86 +21,13 @@ const tilejson = {
 		'MapLibre demotiles base geometry; Natural Earth fallback; REST Countries; Wikidata',
 	tiles: [tilesUrlTemplate],
 	center: [0, 2.5444437451708134e-14, 1],
-	vector_layers: [
-		{
-			id: 'geolines',
-			description: 'original demotiles geolines with localized names',
-			minzoom: 0,
-			maxzoom: 4,
-			fields: {
-				name: 'String',
-				name_ru: 'String',
-				name_uz_latn: 'String',
-			},
-		},
-		{
-			id: 'countries',
-			description:
-				'original demotiles countries plus missing sovereign supplements',
-			minzoom: 0,
-			maxzoom: 6,
-			fields: {
-				NAME: 'String',
-				NAME_RU: 'String',
-				NAME_UZ_LATN: 'String',
-				CAPITAL: 'String',
-				CAPITAL_RU: 'String',
-				CAPITAL_UZ_LATN: 'String',
-				ABBREV: 'String',
-				ADM0_A3: 'String',
-				ISO_A2: 'String',
-				ISO_N3: 'String',
-				CONTINENT: 'String',
-				DIFFICULTY: 'String',
-				PLAYABLE: 'Number',
-			},
-		},
-		{
-			id: 'centroids',
-			description: 'rebuilt country label points keyed by ADM0_A3',
-			minzoom: 0,
-			maxzoom: 6,
-			fields: {
-				NAME: 'String',
-				NAME_RU: 'String',
-				NAME_UZ_LATN: 'String',
-				CAPITAL: 'String',
-				CAPITAL_RU: 'String',
-				CAPITAL_UZ_LATN: 'String',
-				ABBREV: 'String',
-				ADM0_A3: 'String',
-				ISO_A2: 'String',
-				ISO_N3: 'String',
-				CONTINENT: 'String',
-				DIFFICULTY: 'String',
-				PLAYABLE: 'Number',
-			},
-		},
-		{
-			id: 'capitals',
-			description: 'capital points',
-			minzoom: 0,
-			maxzoom: 6,
-			fields: {
-				NAME: 'String',
-				NAME_RU: 'String',
-				NAME_UZ_LATN: 'String',
-				CAPITAL: 'String',
-				CAPITAL_RU: 'String',
-				CAPTIAL_UZ_LATN: 'String',
-				ABBREV: 'String',
-				ADM0_A3: 'String',
-				ISO_A2: 'String',
-				ISO_N3: 'String',
-				CONTINENT: 'String',
-				DIFFICULTY: 'String',
-				PLAYABLE: 'Number',
-			},
-		},
-	],
+	vector_layers: JSON.parse(metadata.json).vector_layers.map(
+		({ id, minzoom, maxzoom, fields }) => ({ id, minzoom, maxzoom, fields }),
+	),
 }
 
 ensureDir(tilesDir)
 const outputPath = path.join(tilesDir, 'tiles.json')
 fs.writeFileSync(outputPath, JSON.stringify(tilejson, null, 2), 'utf8')
+fs.rmSync(metadataPath)
 console.log(`Wrote ${outputPath}`)

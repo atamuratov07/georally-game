@@ -4,7 +4,7 @@
 	"type": "commonjs",
 	"scripts": {
 		"build:data": "node --env-file=.env scripts/03_build_data.mjs",
-		"build:registry": "bash scripts/06_build_registry.sh",
+		"build:registry": "node scripts/06_build_registry.mjs",
 		"build:outlines": "node scripts/07_build_archipelago_outlines.mjs",
 		"build:tiles": "bash scripts/04_build_tiles.sh"
 	},

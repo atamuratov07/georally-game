@@ -1,216 +1,172 @@
 {
 	"countries": {
-		"ALD": {
-			"NAME_RU": "Аландские острова",
-			"CAPITAL": "Mariehamn",
-			"CAPITAL_RU": "Мариехамн",
-			"ISO_A2": "AX",
-			"ISO_N3": "248",
-			"CAPITAL_COORDS": [19.944, 60.097]
+		"ATG": {
+			"capital": {
+				"name": {
+					"ru": "Сент-Джонс",
+					"uz-Latn": "Sent-Jons"
+				}
+			}
 		},
-		"ATA": {
-			"CAPITAL": "N/A",
-			"CAPITAL_RU": "Нет столицы",
-			"CAPITAL_COORDS": [0, -82]
+		"BDI": {
+			"capital": {
+				"name": {
+					"uz-Latn": "Gitega"
+				}
+			}
 		},
-		"ATC": {
-			"NAME_RU": "Острова Ашмор и Картье",
-			"CAPITAL": "N/A",
-			"CAPITAL_RU": "Нет столицы",
-			"ISO_A2": "-99",
-			"ISO_N3": "-99",
-			"CAPITAL_COORDS": [123.55, -12.24]
+		"CIV": {
+			"name": {
+				"en": "Côte d'Ivoire"
+			}
 		},
-		"BJN": {
-			"NAME_RU": "Бахо-Нуэво",
-			"CAPITAL": "N/A",
-			"CAPITAL_RU": "Нет столицы",
-			"ISO_A2": "-99",
-			"ISO_N3": "-99",
-			"CAPITAL_COORDS": [-78.65, 15.9]
+		"COD": {
+			"name": {
+				"en": "DR Congo"
+			}
 		},
-		"CLP": {
-			"NAME_RU": "Остров Клиппертон",
-			"CAPITAL": "N/A",
-			"CAPITAL_RU": "Нет столицы",
-			"ISO_A2": "-99",
-			"ISO_N3": "-99",
-			"CAPITAL_COORDS": [-109.22, 10.3]
+		"COG": {
+			"name": {
+				"en": "Republic of the Congo"
+			}
 		},
-		"CNM": {
-			"NAME_RU": "Буферная зона ООН на Кипре",
-			"CAPITAL": "Nicosia",
-			"CAPITAL_RU": "Никосия",
-			"ISO_A2": "-99",
-			"ISO_N3": "-99",
-			"CAPITAL_COORDS": [33.36, 35.17]
+		"GNQ": {
+			"capital": {
+				"name": {
+					"ru": "Малабо",
+					"uz-Latn": "Malabo"
+				}
+			}
 		},
-		"CSI": {
-			"NAME_RU": "Острова Кораллового моря",
-			"CAPITAL": "N/A",
-			"CAPITAL_RU": "Нет столицы",
-			"ISO_A2": "-99",
-			"ISO_N3": "-99",
-			"CAPITAL_COORDS": [152.5, -18]
+		"KGZ": {
+			"name": {
+				"ru": "Кыргызстан"
+			}
 		},
-		"CYN": {
-			"NAME_RU": "Северный Кипр",
-			"CAPITAL": "North Nicosia",
-			"CAPITAL_RU": "Северная Никосия",
-			"CAPITAL_COORDS": [33.36, 35.19]
+		"KIR": {
+			"capital": {
+				"name": {
+					"uz-Latn": "Janubiy Tarava"
+				}
+			}
 		},
-		"ESB": {
-			"NAME_RU": "Декелия",
-			"CAPITAL": "Dhekelia",
-			"CAPITAL_RU": "Декелия",
-			"ISO_A2": "-99",
-			"ISO_N3": "-99",
-			"CAPITAL_COORDS": [33.74, 34.98]
+		"LKA": {
+			"capital": {
+				"name": {
+					"uz-Latn": "Shri-Jayavardenepura-Kotte"
+				}
+			}
 		},
-		"FRA": {
-			"ISO_A2": "FR",
-			"ISO_N3": "250"
+		"MDA": {
+			"name": {
+				"ru": "Молдова"
+			}
 		},
-		"HKG": {
-			"CAPITAL_RU": "Гонконг"
+		"MKD": {
+			"label": {
+				"en": "North Macedonia"
+			}
 		},
-		"HMD": {
-			"CAPITAL": "N/A",
-			"CAPITAL_RU": "Нет столицы",
-			"CAPITAL_COORDS": [73.5, -53.1]
+		"MNG": {
+			"capital": {
+				"name": {
+					"en": "Ulaanbaatar"
+				}
+			}
 		},
-		"IOA": {
-			"NAME_RU": "Территория в Индийском океане",
-			"CAPITAL": "Diego Garcia",
-			"CAPITAL_RU": "Диего-Гарсия",
-			"ISO_A2": "IO",
-			"ISO_N3": "086",
-			"CAPITAL_COORDS": [72.41, -7.31]
-		},
-		"KAB": {
-			"NAME_RU": "Байконур",
-			"CAPITAL": "Baikonur",
-			"CAPITAL_RU": "Байконур",
-			"ISO_A2": "-99",
-			"ISO_N3": "-99",
-			"CAPITAL_COORDS": [63.305, 45.617]
-		},
-		"KAS": {
-			"NAME_RU": "Ледник Сиачен",
-			"CAPITAL": "N/A",
-			"CAPITAL_RU": "Нет столицы",
-			"ISO_A2": "-99",
-			"ISO_N3": "-99",
-			"CAPITAL_COORDS": [77, 35.4]
-		},
-		"KOS": {
-			"NAME_RU": "Косово",
-			"CAPITAL_RU": "Приштина"
-		},
-		"MAC": {
-			"CAPITAL": "Macao",
-			"CAPITAL_RU": "Макао",
-			"CAPITAL_COORDS": [113.5439, 22.1987]
+		"NGA": {
+			"capital": {
+				"name": {
+					"uz-Latn": "Abuja"
+				}
+			}
 		},
 		"NOR": {
-			"ISO_A2": "NO",
-			"ISO_N3": "578"
+			"capital": {
+				"name": {
+					"uz-Latn": "Oslo"
+				}
+			}
 		},
-		"PGA": {
-			"NAME_RU": "Острова Спратли",
-			"CAPITAL": "N/A",
-			"CAPITAL_RU": "Нет столицы",
-			"ISO_A2": "-99",
-			"ISO_N3": "-99",
-			"CAPITAL_COORDS": [114.3, 10.2]
+		"NRU": {
+			"capital": {
+				"name": {
+					"ru": "Ярен",
+					"uz-Latn": "Yaren"
+				}
+			},
+			"name": {
+				"en": "Nauru"
+			}
 		},
 		"PSX": {
-			"REST_CCA3": "PSE",
-			"NAME_RU": "Палестина",
-			"CAPITAL": "Jerusalem",
-			"CAPITAL_RU": "Иерусалим",
-			"CAPITAL_COORDS": [35.2137, 31.7683]
+			"name": {
+				"uz-Latn": "Falastin"
+			},
+			"capital": {
+				"name": {
+					"en": "Jerusalem",
+					"ru": "Иерусалим",
+					"uz-Latn": "Quddus"
+				},
+				"coordinates": [
+					35.2137,
+					31.7683
+				]
+			},
+			"currencyCode": "ILS"
 		},
-		"SAH": {
-			"NAME_RU": "Западная Сахара",
-			"CAPITAL_RU": "Бир-Лелу"
+		"SMR": {
+			"capital": {
+				"name": {
+					"en": "San Marino"
+				}
+			}
 		},
-		"SCR": {
-			"NAME_RU": "Риф Скарборо",
-			"CAPITAL": "N/A",
-			"CAPITAL_RU": "Нет столицы",
-			"ISO_A2": "-99",
-			"ISO_N3": "-99",
-			"CAPITAL_COORDS": [117.75, 15.12]
+		"SWZ": {
+			"label": {
+				"en": "Eswatini"
+			},
+			"name": {
+				"ru": "Эсватини"
+			}
 		},
-		"SDS": {
-			"REST_CCA3": "SSD",
-			"NAME_RU": "Южный Судан",
-			"CAPITAL": "Juba",
-			"CAPITAL_RU": "Джуба",
-			"CAPITAL_COORDS": [31.5825, 4.8517]
+		"TKM": {
+			"name": {
+				"ru": "Туркменистан"
+			}
 		},
-		"SER": {
-			"NAME_RU": "Серранилья",
-			"CAPITAL": "N/A",
-			"CAPITAL_RU": "Нет столицы",
-			"ISO_A2": "-99",
-			"ISO_N3": "-99",
-			"CAPITAL_COORDS": [-79.85, 15.83]
-		},
-		"SOL": {
-			"NAME_RU": "Сомалиленд",
-			"CAPITAL_RU": "Харгейса"
-		},
-		"UMI": {
-			"CAPITAL_RU": "Вашингтон",
-			"CAPITAL_COORDS": [-77.0365, 38.8977]
-		},
-		"USG": {
-			"NAME_RU": "Гуантанамо",
-			"CAPITAL": "Guantanamo Bay",
-			"CAPITAL_RU": "Гуантанамо",
-			"ISO_A2": "-99",
-			"ISO_N3": "-99",
-			"CAPITAL_COORDS": [-75.1, 19.9]
-		},
-		"VAT": {
-			"CAPITAL_RU": "Ватикан"
-		},
-		"WSB": {
-			"NAME_RU": "Акротири",
-			"CAPITAL": "Akrotiri",
-			"CAPITAL_RU": "Акротири",
-			"ISO_A2": "-99",
-			"ISO_N3": "-99",
-			"CAPITAL_COORDS": [32.963, 34.59]
+		"USA": {
+			"name": {
+				"ru": "США"
+			}
 		}
 	},
 	"geolines": {
 		"Equator": {
 			"en": "Equator",
 			"ru": "Экватор",
-			"uz-latn": "Ekvator"
+			"uz-Latn": "Ekvator"
 		},
 		"Tropic of Cancer": {
 			"en": "Tropic of Cancer",
 			"ru": "Северный тропик",
-			"uz-latn": "Shimoliy tropik"
+			"uz-Latn": "Shimoliy tropik"
 		},
 		"Tropic of Capricorn": {
 			"en": "Tropic of Capricorn",
 			"ru": "Южный тропик",
-			"uz-latn": "Janubiy tropik"
+			"uz-Latn": "Janubiy tropik"
 		},
 		"Arctic Circle": {
 			"en": "Arctic Circle",
 			"ru": "Северный полярный круг",
-			"uz-latn": "Shimoliy qutb doirasi"
+			"uz-Latn": "Shimoliy qutb doirasi"
 		},
 		"Antarctic Circle": {
 			"en": "Antarctic Circle",
 			"ru": "Южный полярный круг",
-			"uz-latn": "Janubiy qutb doirasi"
+			"uz-Latn": "Janubiy qutb doirasi"
 		}
 	}
 }

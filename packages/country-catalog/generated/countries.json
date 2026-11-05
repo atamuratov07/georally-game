@@ -1,0 +1,6637 @@
+{
+  "version": 2,
+  "generated_at": "2026-11-05T07:29:30.363Z",
+  "country_count": 195,
+  "countries": [
+    {
+      "id": "004",
+      "name": {
+        "en": "Afghanistan",
+        "ru": "Афганистан",
+        "uz-Latn": "Afgʻoniston"
+      },
+      "capital": {
+        "en": "Kabul",
+        "ru": "Кабул",
+        "uz-Latn": "Qobul"
+      },
+      "currency": {
+        "code": "AFN",
+        "name": {
+          "en": "Afghan Afghani",
+          "ru": "афгани",
+          "uz-Latn": "Afgʻoniston afgʻoniysi"
+        },
+        "symbol": {
+          "en": "؋",
+          "ru": "؋",
+          "uz-Latn": "؋"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 43844000,
+      "centroidLng": 66.005859,
+      "centroidLat": 33.870416,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/af.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "008",
+      "name": {
+        "en": "Albania",
+        "ru": "Албания",
+        "uz-Latn": "Albaniya"
+      },
+      "capital": {
+        "en": "Tirana",
+        "ru": "Тирана",
+        "uz-Latn": "Tirana"
+      },
+      "currency": {
+        "code": "ALL",
+        "name": {
+          "en": "Albanian Lek",
+          "ru": "албанский лек",
+          "uz-Latn": "Albaniya leki"
+        },
+        "symbol": {
+          "en": "ALL",
+          "ru": "ALL",
+          "uz-Latn": "ALL"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 2335930,
+      "centroidLng": 20.039062,
+      "centroidLat": 40.913513,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/al.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "012",
+      "name": {
+        "en": "Algeria",
+        "ru": "Алжир",
+        "uz-Latn": "Jazoir"
+      },
+      "capital": {
+        "en": "Algiers",
+        "ru": "Алжир",
+        "uz-Latn": "Jazoir"
+      },
+      "currency": {
+        "code": "DZD",
+        "name": {
+          "en": "Algerian Dinar",
+          "ru": "алжирский динар",
+          "uz-Latn": "Jazoir dinori"
+        },
+        "symbol": {
+          "en": "DZD",
+          "ru": "DZD",
+          "uz-Latn": "DZD"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "easy",
+      "population": 47400000,
+      "centroidLng": 2.636719,
+      "centroidLat": 28.149503,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/dz.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "020",
+      "name": {
+        "en": "Andorra",
+        "ru": "Андорра",
+        "uz-Latn": "Andorra"
+      },
+      "capital": {
+        "en": "Andorra la Vella",
+        "ru": "Андорра-ла-Велья",
+        "uz-Latn": "Andorra-la-Velya"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "hard",
+      "population": 90105,
+      "centroidLng": 1.582031,
+      "centroidLat": 42.55308,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ad.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "024",
+      "name": {
+        "en": "Angola",
+        "ru": "Ангола",
+        "uz-Latn": "Angola"
+      },
+      "capital": {
+        "en": "Luanda",
+        "ru": "Луанда",
+        "uz-Latn": "Luanda"
+      },
+      "currency": {
+        "code": "AOA",
+        "name": {
+          "en": "Angolan Kwanza",
+          "ru": "ангольская кванза",
+          "uz-Latn": "Angola kvanzasi"
+        },
+        "symbol": {
+          "en": "Kz",
+          "ru": "Kz",
+          "uz-Latn": "Kz"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 38778554,
+      "centroidLng": 17.578125,
+      "centroidLat": -12.297068,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ao.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "028",
+      "name": {
+        "en": "Antigua and Barbuda",
+        "ru": "Антигуа и Барбуда",
+        "uz-Latn": "Antigua va Barbuda"
+      },
+      "capital": {
+        "en": "Saint John's",
+        "ru": "Сент-Джонс",
+        "uz-Latn": "Sent-Jons"
+      },
+      "currency": {
+        "code": "XCD",
+        "name": {
+          "en": "East Caribbean Dollar",
+          "ru": "восточно-карибский доллар",
+          "uz-Latn": "Sharqiy Karib dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "hard",
+      "population": 106365,
+      "centroidLng": -61.787109,
+      "centroidLat": 17.308688,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ag.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "031",
+      "name": {
+        "en": "Azerbaijan",
+        "ru": "Азербайджан",
+        "uz-Latn": "Ozarbayjon"
+      },
+      "capital": {
+        "en": "Baku",
+        "ru": "Баку",
+        "uz-Latn": "Boku"
+      },
+      "currency": {
+        "code": "AZN",
+        "name": {
+          "en": "Azerbaijani Manat",
+          "ru": "азербайджанский манат",
+          "uz-Latn": "Ozarbayjon manati"
+        },
+        "symbol": {
+          "en": "₼",
+          "ru": "₼",
+          "uz-Latn": "₼"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 10273450,
+      "centroidLng": 47.548828,
+      "centroidLat": 40.313043,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/az.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "032",
+      "name": {
+        "en": "Argentina",
+        "ru": "Аргентина",
+        "uz-Latn": "Argentina"
+      },
+      "capital": {
+        "en": "Buenos Aires",
+        "ru": "Буэнос-Айрес",
+        "uz-Latn": "Buenos Ayres"
+      },
+      "currency": {
+        "code": "ARS",
+        "name": {
+          "en": "Argentine Peso",
+          "ru": "аргентинский песо",
+          "uz-Latn": "Argentina pesosi"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "south-america",
+      "difficulty": "easy",
+      "population": 46466688,
+      "centroidLng": -63.984375,
+      "centroidLat": -36.244273,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ar.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "036",
+      "name": {
+        "en": "Australia",
+        "ru": "Австралия",
+        "uz-Latn": "Avstraliya"
+      },
+      "capital": {
+        "en": "Canberra",
+        "ru": "Канберра",
+        "uz-Latn": "Kanberra"
+      },
+      "currency": {
+        "code": "AUD",
+        "name": {
+          "en": "Australian Dollar",
+          "ru": "австралийский доллар",
+          "uz-Latn": "Avstraliya dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "oceania",
+      "difficulty": "easy",
+      "population": 27921150,
+      "centroidLng": 134.472656,
+      "centroidLat": -25.720735,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/au.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "040",
+      "name": {
+        "en": "Austria",
+        "ru": "Австрия",
+        "uz-Latn": "Avstriya"
+      },
+      "capital": {
+        "en": "Vienna",
+        "ru": "Вена",
+        "uz-Latn": "Vena"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 9217573,
+      "centroidLng": 14.589844,
+      "centroidLat": 47.635784,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/at.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "044",
+      "name": {
+        "en": "Bahamas",
+        "ru": "Багамские Острова",
+        "uz-Latn": "Bagamalar"
+      },
+      "capital": {
+        "en": "Nassau",
+        "ru": "Нассау",
+        "uz-Latn": "Nassau"
+      },
+      "currency": {
+        "code": "BSD",
+        "name": {
+          "en": "Bahamian Dollar",
+          "ru": "багамский доллар",
+          "uz-Latn": "Bagama dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "hard",
+      "population": 398165,
+      "centroidLng": -76.552734,
+      "centroidLat": 24.20689,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/bs.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "048",
+      "name": {
+        "en": "Bahrain",
+        "ru": "Бахрейн",
+        "uz-Latn": "Bahrayn"
+      },
+      "capital": {
+        "en": "Manama",
+        "ru": "Манама",
+        "uz-Latn": "Manama"
+      },
+      "currency": {
+        "code": "BHD",
+        "name": {
+          "en": "Bahraini Dinar",
+          "ru": "бахрейнский динар",
+          "uz-Latn": "Bahrayn dinori"
+        },
+        "symbol": {
+          "en": "BHD",
+          "ru": "BHD",
+          "uz-Latn": "BHD"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 1603260,
+      "centroidLng": 50.537109,
+      "centroidLat": 26.037042,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/bh.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "050",
+      "name": {
+        "en": "Bangladesh",
+        "ru": "Бангладеш",
+        "uz-Latn": "Bangladesh"
+      },
+      "capital": {
+        "en": "Dhaka",
+        "ru": "Дакка",
+        "uz-Latn": "Dakka"
+      },
+      "currency": {
+        "code": "BDT",
+        "name": {
+          "en": "Bangladeshi Taka",
+          "ru": "бангладешская така",
+          "uz-Latn": "Bangladesh takasi"
+        },
+        "symbol": {
+          "en": "৳",
+          "ru": "৳",
+          "uz-Latn": "৳"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 169828911,
+      "centroidLng": 90,
+      "centroidLat": 24.126702,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/bd.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "051",
+      "name": {
+        "en": "Armenia",
+        "ru": "Армения",
+        "uz-Latn": "Armaniston"
+      },
+      "capital": {
+        "en": "Yerevan",
+        "ru": "Ереван",
+        "uz-Latn": "Yerevan"
+      },
+      "currency": {
+        "code": "AMD",
+        "name": {
+          "en": "Armenian Dram",
+          "ru": "армянский драм",
+          "uz-Latn": "Armaniston drami"
+        },
+        "symbol": {
+          "en": "֏",
+          "ru": "֏",
+          "uz-Latn": "֏"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "hard",
+      "population": 3103900,
+      "centroidLng": 44.912109,
+      "centroidLat": 40.313043,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/am.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "052",
+      "name": {
+        "en": "Barbados",
+        "ru": "Барбадос",
+        "uz-Latn": "Barbados"
+      },
+      "capital": {
+        "en": "Bridgetown",
+        "ru": "Бриджтаун",
+        "uz-Latn": "Bridjtaun"
+      },
+      "currency": {
+        "code": "BBD",
+        "name": {
+          "en": "Barbadian Dollar",
+          "ru": "барбадосский доллар",
+          "uz-Latn": "Barbados dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "hard",
+      "population": 261692,
+      "centroidLng": -59.589844,
+      "centroidLat": 13.154376,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/bb.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "056",
+      "name": {
+        "en": "Belgium",
+        "ru": "Бельгия",
+        "uz-Latn": "Belgiya"
+      },
+      "capital": {
+        "en": "Brussels",
+        "ru": "Брюссель",
+        "uz-Latn": "Bryussel"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "easy",
+      "population": 11942772,
+      "centroidLng": 4.482422,
+      "centroidLat": 50.736455,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/be.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "064",
+      "name": {
+        "en": "Bhutan",
+        "ru": "Бутан",
+        "uz-Latn": "Butan"
+      },
+      "capital": {
+        "en": "Thimphu",
+        "ru": "Тхимпху",
+        "uz-Latn": "Tximpxu"
+      },
+      "currency": {
+        "code": "BTN",
+        "name": {
+          "en": "Bhutanese Ngultrum",
+          "ru": "бутанский нгултрум",
+          "uz-Latn": "Butan ngultrumi"
+        },
+        "symbol": {
+          "en": "BTN",
+          "ru": "BTN",
+          "uz-Latn": "BTN"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "hard",
+      "population": 790718,
+      "centroidLng": 90.439453,
+      "centroidLat": 27.371767,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/bt.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "068",
+      "name": {
+        "en": "Bolivia",
+        "ru": "Боливия",
+        "uz-Latn": "Boliviya"
+      },
+      "capital": {
+        "en": "Sucre",
+        "ru": "Сукре",
+        "uz-Latn": "Sukre"
+      },
+      "currency": {
+        "code": "BOB",
+        "name": {
+          "en": "Bolivian Boliviano",
+          "ru": "боливийский боливиано",
+          "uz-Latn": "Boliviya bolivianosi"
+        },
+        "symbol": {
+          "en": "Bs",
+          "ru": "Bs",
+          "uz-Latn": "Bs"
+        }
+      },
+      "continent": "south-america",
+      "difficulty": "medium",
+      "population": 11365333,
+      "centroidLng": -64.6875,
+      "centroidLat": -16.720385,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/bo.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "070",
+      "name": {
+        "en": "Bosnia and Herzegovina",
+        "ru": "Босния и Герцеговина",
+        "uz-Latn": "Bosniya va Gersegovina"
+      },
+      "capital": {
+        "en": "Sarajevo",
+        "ru": "Сараево",
+        "uz-Latn": "Sarayevo"
+      },
+      "currency": {
+        "code": "BAM",
+        "name": {
+          "en": "Bosnia-Herzegovina Convertible Mark",
+          "ru": "конвертируемая марка Боснии и Герцеговины",
+          "uz-Latn": "Bosniya va Gertsegovina ayirboshlash markasi"
+        },
+        "symbol": {
+          "en": "KM",
+          "ru": "KM",
+          "uz-Latn": "KM"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 3412000,
+      "centroidLng": 17.753906,
+      "centroidLat": 44.150681,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ba.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "072",
+      "name": {
+        "en": "Botswana",
+        "ru": "Ботсвана",
+        "uz-Latn": "Botsvana"
+      },
+      "capital": {
+        "en": "Gaborone",
+        "ru": "Габороне",
+        "uz-Latn": "Gaborone"
+      },
+      "currency": {
+        "code": "BWP",
+        "name": {
+          "en": "Botswanan Pula",
+          "ru": "ботсванская пула",
+          "uz-Latn": "Botsvana pulasi"
+        },
+        "symbol": {
+          "en": "P",
+          "ru": "P",
+          "uz-Latn": "P"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 2515633,
+      "centroidLng": 24.257812,
+      "centroidLat": -22.512557,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/bw.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "076",
+      "name": {
+        "en": "Brazil",
+        "ru": "Бразилия",
+        "uz-Latn": "Braziliya"
+      },
+      "capital": {
+        "en": "Brasília",
+        "ru": "Бразилиа",
+        "uz-Latn": "Brazilia"
+      },
+      "currency": {
+        "code": "BRL",
+        "name": {
+          "en": "Brazilian Real",
+          "ru": "бразильский реал",
+          "uz-Latn": "Braziliya reali"
+        },
+        "symbol": {
+          "en": "R$",
+          "ru": "R$",
+          "uz-Latn": "R$"
+        }
+      },
+      "continent": "south-america",
+      "difficulty": "easy",
+      "population": 214211951,
+      "centroidLng": -53.085938,
+      "centroidLat": -10.746969,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/br.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "084",
+      "name": {
+        "en": "Belize",
+        "ru": "Белиз",
+        "uz-Latn": "Beliz"
+      },
+      "capital": {
+        "en": "Belmopan",
+        "ru": "Бельмопан",
+        "uz-Latn": "Belmopan"
+      },
+      "currency": {
+        "code": "BZD",
+        "name": {
+          "en": "Belize Dollar",
+          "ru": "белизский доллар",
+          "uz-Latn": "Beliz dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "hard",
+      "population": 418982,
+      "centroidLng": -88.681641,
+      "centroidLat": 17.056785,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/bz.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "090",
+      "name": {
+        "en": "Solomon Islands",
+        "ru": "Соломоновы Острова",
+        "uz-Latn": "Solomon Orollari"
+      },
+      "capital": {
+        "en": "Honiara",
+        "ru": "Хониара",
+        "uz-Latn": "Xoniara"
+      },
+      "currency": {
+        "code": "SBD",
+        "name": {
+          "en": "Solomon Islands Dollar",
+          "ru": "доллар Соломоновых Островов",
+          "uz-Latn": "Solomon orollari dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "oceania",
+      "difficulty": "hard",
+      "population": 828857,
+      "centroidLng": 159.609375,
+      "centroidLat": -8.928487,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/sb.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "096",
+      "name": {
+        "en": "Brunei",
+        "ru": "Бруней",
+        "uz-Latn": "Bruney"
+      },
+      "capital": {
+        "en": "Bandar Seri Begawan",
+        "ru": "Бандар-Сери-Бегаван",
+        "uz-Latn": "Bandar-Seri-Begavan"
+      },
+      "currency": {
+        "code": "BND",
+        "name": {
+          "en": "Brunei Dollar",
+          "ru": "брунейский доллар",
+          "uz-Latn": "Bruney dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "hard",
+      "population": 458600,
+      "centroidLng": 114.697266,
+      "centroidLat": 4.477856,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/bn.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "100",
+      "name": {
+        "en": "Bulgaria",
+        "ru": "Болгария",
+        "uz-Latn": "Bolgariya"
+      },
+      "capital": {
+        "en": "Sofia",
+        "ru": "София",
+        "uz-Latn": "Sofiya"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 6423207,
+      "centroidLng": 25.224609,
+      "centroidLat": 42.747012,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/bg.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "104",
+      "name": {
+        "en": "Myanmar",
+        "ru": "Мьянма",
+        "uz-Latn": "Myanma"
+      },
+      "capital": {
+        "en": "Naypyidaw",
+        "ru": "Нейпьидо",
+        "uz-Latn": "Neypido"
+      },
+      "currency": {
+        "code": "MMK",
+        "name": {
+          "en": "Myanmar Kyat",
+          "ru": "мьянманский кьят",
+          "uz-Latn": "Myanma kyati"
+        },
+        "symbol": {
+          "en": "K",
+          "ru": "K",
+          "uz-Latn": "K"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 51375327,
+      "centroidLng": 96.503906,
+      "centroidLat": 21.207459,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/mm.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "108",
+      "name": {
+        "en": "Burundi",
+        "ru": "Бурунди",
+        "uz-Latn": "Burundi"
+      },
+      "capital": {
+        "en": "Gitega",
+        "ru": "Гитега",
+        "uz-Latn": "Gitega"
+      },
+      "currency": {
+        "code": "BIF",
+        "name": {
+          "en": "Burundian Franc",
+          "ru": "бурундийский франк",
+          "uz-Latn": "Burundi franki"
+        },
+        "symbol": {
+          "en": "BIF",
+          "ru": "BIF",
+          "uz-Latn": "BIF"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 12332788,
+      "centroidLng": 29.882812,
+      "centroidLat": -3.425692,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/bi.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "112",
+      "name": {
+        "en": "Belarus",
+        "ru": "Беларусь",
+        "uz-Latn": "Belarus"
+      },
+      "capital": {
+        "en": "Minsk",
+        "ru": "Минск",
+        "uz-Latn": "Minsk"
+      },
+      "currency": {
+        "code": "BYN",
+        "name": {
+          "en": "Belarusian Ruble",
+          "ru": "белорусский рубль",
+          "uz-Latn": "Belarus rubli"
+        },
+        "symbol": {
+          "en": "BYN",
+          "ru": "р.",
+          "uz-Latn": "р."
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 9056080,
+      "centroidLng": 28.037109,
+      "centroidLat": 53.540307,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/by.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "116",
+      "name": {
+        "en": "Cambodia",
+        "ru": "Камбоджа",
+        "uz-Latn": "Kambodja"
+      },
+      "capital": {
+        "en": "Phnom Penh",
+        "ru": "Пномпень",
+        "uz-Latn": "Pnompen"
+      },
+      "currency": {
+        "code": "KHR",
+        "name": {
+          "en": "Cambodian Riel",
+          "ru": "камбоджийский риель",
+          "uz-Latn": "Kambodja rieli"
+        },
+        "symbol": {
+          "en": "៛",
+          "ru": "៛",
+          "uz-Latn": "៛"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 17816143,
+      "centroidLng": 104.941406,
+      "centroidLat": 12.811801,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/kh.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "120",
+      "name": {
+        "en": "Cameroon",
+        "ru": "Камерун",
+        "uz-Latn": "Kamerun"
+      },
+      "capital": {
+        "en": "Yaoundé",
+        "ru": "Яунде",
+        "uz-Latn": "Yaunde"
+      },
+      "currency": {
+        "code": "XAF",
+        "name": {
+          "en": "Central African CFA Franc",
+          "ru": "франк КФА BEAC",
+          "uz-Latn": "Markaziy Afrika CFA franki"
+        },
+        "symbol": {
+          "en": "FCFA",
+          "ru": "FCFA",
+          "uz-Latn": "FCFA"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "medium",
+      "population": 29442327,
+      "centroidLng": 12.041016,
+      "centroidLat": 5.353521,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/cm.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "124",
+      "name": {
+        "en": "Canada",
+        "ru": "Канада",
+        "uz-Latn": "Kanada"
+      },
+      "capital": {
+        "en": "Ottawa",
+        "ru": "Оттава",
+        "uz-Latn": "Ottava"
+      },
+      "currency": {
+        "code": "CAD",
+        "name": {
+          "en": "Canadian Dollar",
+          "ru": "канадский доллар",
+          "uz-Latn": "Kanada dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "easy",
+      "population": 41798407,
+      "centroidLng": -97.558594,
+      "centroidLat": 53.956086,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ca.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "132",
+      "name": {
+        "en": "Cabo Verde",
+        "ru": "Кабо-Верде",
+        "uz-Latn": "Kabo Verde"
+      },
+      "capital": {
+        "en": "Praia",
+        "ru": "Прая",
+        "uz-Latn": "Praya"
+      },
+      "currency": {
+        "code": "CVE",
+        "name": {
+          "en": "Cape Verdean Escudo",
+          "ru": "эскудо Кабо-Верде",
+          "uz-Latn": "Kabo-Verde eskudosi"
+        },
+        "symbol": {
+          "en": "CVE",
+          "ru": "CVE",
+          "uz-Latn": "CVE"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 491233,
+      "centroidLng": -23.994141,
+      "centroidLat": 15.961329,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/cv.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "140",
+      "name": {
+        "en": "Central African Republic",
+        "ru": "Центральноафриканская Республика",
+        "uz-Latn": "Markaziy Afrika Respublikasi"
+      },
+      "capital": {
+        "en": "Bangui",
+        "ru": "Банги",
+        "uz-Latn": "Bangi"
+      },
+      "currency": {
+        "code": "XAF",
+        "name": {
+          "en": "Central African CFA Franc",
+          "ru": "франк КФА BEAC",
+          "uz-Latn": "Markaziy Afrika CFA franki"
+        },
+        "symbol": {
+          "en": "FCFA",
+          "ru": "FCFA",
+          "uz-Latn": "FCFA"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 5513282,
+      "centroidLng": 20.478516,
+      "centroidLat": 6.577303,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/cf.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "144",
+      "name": {
+        "en": "Sri Lanka",
+        "ru": "Шри-Ланка",
+        "uz-Latn": "Shri-Lanka"
+      },
+      "capital": {
+        "en": "Sri Jayawardenepura Kotte",
+        "ru": "Шри-Джаяварденепура-Котте",
+        "uz-Latn": "Shri-Jayavardenepura-Kotte"
+      },
+      "currency": {
+        "code": "LKR",
+        "name": {
+          "en": "Sri Lankan Rupee",
+          "ru": "шри-ланкийская рупия",
+          "uz-Latn": "Shri-Lanka rupiyasi"
+        },
+        "symbol": {
+          "en": "Rs",
+          "ru": "Rs",
+          "uz-Latn": "Rs"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 21756000,
+      "centroidLng": 80.683594,
+      "centroidLat": 7.623887,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/lk.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "148",
+      "name": {
+        "en": "Chad",
+        "ru": "Чад",
+        "uz-Latn": "Chad"
+      },
+      "capital": {
+        "en": "N'Djamena",
+        "ru": "Нджамена",
+        "uz-Latn": "Njamena"
+      },
+      "currency": {
+        "code": "XAF",
+        "name": {
+          "en": "Central African CFA Franc",
+          "ru": "франк КФА BEAC",
+          "uz-Latn": "Markaziy Afrika CFA franki"
+        },
+        "symbol": {
+          "en": "FCFA",
+          "ru": "FCFA",
+          "uz-Latn": "FCFA"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 20031602,
+      "centroidLng": 18.632812,
+      "centroidLat": 15.36895,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/td.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "152",
+      "name": {
+        "en": "Chile",
+        "ru": "Чили",
+        "uz-Latn": "Chili"
+      },
+      "capital": {
+        "en": "Santiago",
+        "ru": "Сантьяго",
+        "uz-Latn": "Santiyago"
+      },
+      "currency": {
+        "code": "CLP",
+        "name": {
+          "en": "Chilean Peso",
+          "ru": "чилийский песо",
+          "uz-Latn": "Chili pesosi"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "south-america",
+      "difficulty": "medium",
+      "population": 20150948,
+      "centroidLng": -70.576172,
+      "centroidLat": -29.22889,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/cl.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "156",
+      "name": {
+        "en": "China",
+        "ru": "Китай",
+        "uz-Latn": "Xitoy Xalq Respublikasi"
+      },
+      "capital": {
+        "en": "Beijing",
+        "ru": "Пекин",
+        "uz-Latn": "Pekin"
+      },
+      "currency": {
+        "code": "CNY",
+        "name": {
+          "en": "Chinese Yuan",
+          "ru": "китайский юань",
+          "uz-Latn": "Xitoy yuani"
+        },
+        "symbol": {
+          "en": "¥",
+          "ru": "¥",
+          "uz-Latn": "¥"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "easy",
+      "population": 1404890000,
+      "centroidLng": 102.392578,
+      "centroidLat": 35.88905,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/cn.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "170",
+      "name": {
+        "en": "Colombia",
+        "ru": "Колумбия",
+        "uz-Latn": "Kolumbiya"
+      },
+      "capital": {
+        "en": "Bogotá",
+        "ru": "Богота",
+        "uz-Latn": "Bogota"
+      },
+      "currency": {
+        "code": "COP",
+        "name": {
+          "en": "Colombian Peso",
+          "ru": "колумбийский песо",
+          "uz-Latn": "Kolumbiya pesosi"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "south-america",
+      "difficulty": "medium",
+      "population": 53399171,
+      "centroidLng": -73.037109,
+      "centroidLat": 3.951941,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/co.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "174",
+      "name": {
+        "en": "Comoros",
+        "ru": "Коморы",
+        "uz-Latn": "Komoros"
+      },
+      "capital": {
+        "en": "Moroni",
+        "ru": "Морони",
+        "uz-Latn": "Moroni"
+      },
+      "currency": {
+        "code": "KMF",
+        "name": {
+          "en": "Comorian Franc",
+          "ru": "коморский франк",
+          "uz-Latn": "Komor orollari franki"
+        },
+        "symbol": {
+          "en": "CF",
+          "ru": "CF",
+          "uz-Latn": "CF"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 944388,
+      "centroidLng": 43.681641,
+      "centroidLat": -11.867351,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/km.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "178",
+      "name": {
+        "en": "Republic of the Congo",
+        "ru": "Республика Конго",
+        "uz-Latn": "Kongo Respublikasi"
+      },
+      "capital": {
+        "en": "Brazzaville",
+        "ru": "Браззавиль",
+        "uz-Latn": "Brazzavil"
+      },
+      "currency": {
+        "code": "XAF",
+        "name": {
+          "en": "Central African CFA Franc",
+          "ru": "франк КФА BEAC",
+          "uz-Latn": "Markaziy Afrika CFA franki"
+        },
+        "symbol": {
+          "en": "FCFA",
+          "ru": "FCFA",
+          "uz-Latn": "FCFA"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 6332961,
+      "centroidLng": 15.996094,
+      "centroidLat": 0,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/cg.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "180",
+      "name": {
+        "en": "DR Congo",
+        "ru": "Демократическая Республика Конго",
+        "uz-Latn": "Kongo Demokratik Respublikasi"
+      },
+      "capital": {
+        "en": "Kinshasa",
+        "ru": "Киншаса",
+        "uz-Latn": "Kinshasa"
+      },
+      "currency": {
+        "code": "CDF",
+        "name": {
+          "en": "Congolese Franc",
+          "ru": "конголезский франк",
+          "uz-Latn": "Kongo franki"
+        },
+        "symbol": {
+          "en": "CDF",
+          "ru": "CDF",
+          "uz-Latn": "CDF"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 116452000,
+      "centroidLng": 23.554688,
+      "centroidLat": -2.108899,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/cd.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "188",
+      "name": {
+        "en": "Costa Rica",
+        "ru": "Коста-Рика",
+        "uz-Latn": "Kosta Rika"
+      },
+      "capital": {
+        "en": "San José",
+        "ru": "Сан-Хосе",
+        "uz-Latn": "San Xose"
+      },
+      "currency": {
+        "code": "CRC",
+        "name": {
+          "en": "Costa Rican Colón",
+          "ru": "костариканский колон",
+          "uz-Latn": "Kosta-Rika koloni"
+        },
+        "symbol": {
+          "en": "₡",
+          "ru": "₡",
+          "uz-Latn": "₡"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "medium",
+      "population": 5160700,
+      "centroidLng": -84.199219,
+      "centroidLat": 10.055403,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/cr.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "191",
+      "name": {
+        "en": "Croatia",
+        "ru": "Хорватия",
+        "uz-Latn": "Xorvatiya"
+      },
+      "capital": {
+        "en": "Zagreb",
+        "ru": "Загреб",
+        "uz-Latn": "Zagreb"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 3874993,
+      "centroidLng": 16.611328,
+      "centroidLat": 45.644768,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/hr.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "192",
+      "name": {
+        "en": "Cuba",
+        "ru": "Куба",
+        "uz-Latn": "Kuba"
+      },
+      "capital": {
+        "en": "Havana",
+        "ru": "Гавана",
+        "uz-Latn": "Gavana"
+      },
+      "currency": {
+        "code": "CUP",
+        "name": {
+          "en": "Cuban Peso",
+          "ru": "кубинский песо",
+          "uz-Latn": "Kuba pesosi"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "medium",
+      "population": 9434593,
+      "centroidLng": -79.013672,
+      "centroidLat": 22.024546,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/cu.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "196",
+      "name": {
+        "en": "Cyprus",
+        "ru": "Кипр",
+        "uz-Latn": "Kipr"
+      },
+      "capital": {
+        "en": "Nicosia",
+        "ru": "Никосия",
+        "uz-Latn": "Nikosiya"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 983000,
+      "centroidLng": 32.958984,
+      "centroidLat": 34.885931,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/cy.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "203",
+      "name": {
+        "en": "Czechia",
+        "ru": "Чехия",
+        "uz-Latn": "Chexiya"
+      },
+      "capital": {
+        "en": "Prague",
+        "ru": "Прага",
+        "uz-Latn": "Praga"
+      },
+      "currency": {
+        "code": "CZK",
+        "name": {
+          "en": "Czech Koruna",
+          "ru": "чешская крона",
+          "uz-Latn": "Chexiya kronasi"
+        },
+        "symbol": {
+          "en": "Kč",
+          "ru": "Kč",
+          "uz-Latn": "Kč"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 10903655,
+      "centroidLng": 14.530792,
+      "centroidLat": 49.9449625,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/cz.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "204",
+      "name": {
+        "en": "Benin",
+        "ru": "Бенин",
+        "uz-Latn": "Benin"
+      },
+      "capital": {
+        "en": "Porto-Novo",
+        "ru": "Порто-Ново",
+        "uz-Latn": "Porto-Novo"
+      },
+      "currency": {
+        "code": "XOF",
+        "name": {
+          "en": "West African CFA Franc",
+          "ru": "франк КФА ВСЕАО",
+          "uz-Latn": "Gʻarbiy Afrika CFA franki"
+        },
+        "symbol": {
+          "en": "F CFA",
+          "ru": "F CFA",
+          "uz-Latn": "F CFA"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 13551992,
+      "centroidLng": 2.285156,
+      "centroidLat": 9.882275,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/bj.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "208",
+      "name": {
+        "en": "Denmark",
+        "ru": "Дания",
+        "uz-Latn": "Daniya"
+      },
+      "capital": {
+        "en": "Copenhagen",
+        "ru": "Копенгаген",
+        "uz-Latn": "Kopengagen"
+      },
+      "currency": {
+        "code": "DKK",
+        "name": {
+          "en": "Danish Krone",
+          "ru": "датская крона",
+          "uz-Latn": "Daniya kronasi"
+        },
+        "symbol": {
+          "en": "kr",
+          "ru": "kr",
+          "uz-Latn": "kr"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 6038638,
+      "centroidLng": 10.019531,
+      "centroidLat": 55.973798,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/dk.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "212",
+      "name": {
+        "en": "Dominica",
+        "ru": "Доминика",
+        "uz-Latn": "Dominika"
+      },
+      "capital": {
+        "en": "Roseau",
+        "ru": "Розо",
+        "uz-Latn": "Rozo"
+      },
+      "currency": {
+        "code": "XCD",
+        "name": {
+          "en": "East Caribbean Dollar",
+          "ru": "восточно-карибский доллар",
+          "uz-Latn": "Sharqiy Karib dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "hard",
+      "population": 65431,
+      "centroidLng": -61.347656,
+      "centroidLat": 15.45368,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/dm.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "214",
+      "name": {
+        "en": "Dominican Republic",
+        "ru": "Доминиканская Республика",
+        "uz-Latn": "Dominikana Respublikasi"
+      },
+      "capital": {
+        "en": "Santo Domingo",
+        "ru": "Санто-Доминго",
+        "uz-Latn": "Santa Domingo"
+      },
+      "currency": {
+        "code": "DOP",
+        "name": {
+          "en": "Dominican Peso",
+          "ru": "доминиканский песо",
+          "uz-Latn": "Dominikana pesosi"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "medium",
+      "population": 11532151,
+      "centroidLng": -70.136719,
+      "centroidLat": 18.895893,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/do.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "218",
+      "name": {
+        "en": "Ecuador",
+        "ru": "Эквадор",
+        "uz-Latn": "Ekvador"
+      },
+      "capital": {
+        "en": "Quito",
+        "ru": "Кито",
+        "uz-Latn": "Kito"
+      },
+      "currency": {
+        "code": "USD",
+        "name": {
+          "en": "US Dollar",
+          "ru": "доллар США",
+          "uz-Latn": "AQSH dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "south-america",
+      "difficulty": "medium",
+      "population": 18135478,
+      "centroidLng": -78.310547,
+      "centroidLat": -1.406109,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ec.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "222",
+      "name": {
+        "en": "El Salvador",
+        "ru": "Сальвадор",
+        "uz-Latn": "El Salvador"
+      },
+      "capital": {
+        "en": "San Salvador",
+        "ru": "Сан-Сальвадор",
+        "uz-Latn": "San-Salvador"
+      },
+      "currency": {
+        "code": "USD",
+        "name": {
+          "en": "US Dollar",
+          "ru": "доллар США",
+          "uz-Latn": "AQSH dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "hard",
+      "population": 6029976,
+      "centroidLng": -88.857422,
+      "centroidLat": 13.752725,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/sv.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "226",
+      "name": {
+        "en": "Equatorial Guinea",
+        "ru": "Экваториальная Гвинея",
+        "uz-Latn": "Ekvatorli Gvineya"
+      },
+      "capital": {
+        "en": "Malabo",
+        "ru": "Малабо",
+        "uz-Latn": "Malabo"
+      },
+      "currency": {
+        "code": "XAF",
+        "name": {
+          "en": "Central African CFA Franc",
+          "ru": "франк КФА BEAC",
+          "uz-Latn": "Markaziy Afrika CFA franki"
+        },
+        "symbol": {
+          "en": "FCFA",
+          "ru": "FCFA",
+          "uz-Latn": "FCFA"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 1795834,
+      "centroidLng": 10.371094,
+      "centroidLat": 1.669686,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/gq.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "231",
+      "name": {
+        "en": "Ethiopia",
+        "ru": "Эфиопия",
+        "uz-Latn": "Efiopiya"
+      },
+      "capital": {
+        "en": "Addis Ababa",
+        "ru": "Аддис-Абеба",
+        "uz-Latn": "Addis-Abeba"
+      },
+      "currency": {
+        "code": "ETB",
+        "name": {
+          "en": "Ethiopian Birr",
+          "ru": "эфиопский быр",
+          "uz-Latn": "Efiopiya biri"
+        },
+        "symbol": {
+          "en": "ETB",
+          "ru": "ETB",
+          "uz-Latn": "ETB"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "easy",
+      "population": 111652998,
+      "centroidLng": 39.638672,
+      "centroidLat": 8.581021,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/et.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "232",
+      "name": {
+        "en": "Eritrea",
+        "ru": "Эритрея",
+        "uz-Latn": "Eritreya"
+      },
+      "capital": {
+        "en": "Asmara",
+        "ru": "Асмэра",
+        "uz-Latn": "Asmera"
+      },
+      "currency": {
+        "code": "ERN",
+        "name": {
+          "en": "Eritrean Nakfa",
+          "ru": "эритрейская накфа",
+          "uz-Latn": "Eritreya nakfasi"
+        },
+        "symbol": {
+          "en": "ERN",
+          "ru": "ERN",
+          "uz-Latn": "ERN"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 3682669,
+      "centroidLng": 38.847656,
+      "centroidLat": 15.36895,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/er.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "233",
+      "name": {
+        "en": "Estonia",
+        "ru": "Эстония",
+        "uz-Latn": "Estoniya"
+      },
+      "capital": {
+        "en": "Tallinn",
+        "ru": "Таллин",
+        "uz-Latn": "Tallinn"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "hard",
+      "population": 1360745,
+      "centroidLng": 25.576172,
+      "centroidLat": 58.676938,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ee.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "242",
+      "name": {
+        "en": "Fiji",
+        "ru": "Фиджи",
+        "uz-Latn": "Fiji"
+      },
+      "capital": {
+        "en": "Suva",
+        "ru": "Сува",
+        "uz-Latn": "Suva"
+      },
+      "currency": {
+        "code": "FJD",
+        "name": {
+          "en": "Fijian Dollar",
+          "ru": "доллар Фиджи",
+          "uz-Latn": "Fiji dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "oceania",
+      "difficulty": "hard",
+      "population": 902623,
+      "centroidLng": 177.978516,
+      "centroidLat": -17.895114,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/fj.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "246",
+      "name": {
+        "en": "Finland",
+        "ru": "Финляндия",
+        "uz-Latn": "Finlandiya"
+      },
+      "capital": {
+        "en": "Helsinki",
+        "ru": "Хельсинки",
+        "uz-Latn": "Helsinki"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 5659324,
+      "centroidLng": 26.191406,
+      "centroidLat": 62.512318,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/fi.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "250",
+      "name": {
+        "en": "France",
+        "ru": "Франция",
+        "uz-Latn": "Fransiya"
+      },
+      "capital": {
+        "en": "Paris",
+        "ru": "Париж",
+        "uz-Latn": "Parij"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "easy",
+      "population": 69081996,
+      "centroidLng": 2.197266,
+      "centroidLat": 47.040182,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/fr.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "262",
+      "name": {
+        "en": "Djibouti",
+        "ru": "Джибути",
+        "uz-Latn": "Jibuti"
+      },
+      "capital": {
+        "en": "Djibouti",
+        "ru": "Джибути",
+        "uz-Latn": "Jibuti"
+      },
+      "currency": {
+        "code": "DJF",
+        "name": {
+          "en": "Djiboutian Franc",
+          "ru": "франк Джибути",
+          "uz-Latn": "Jibuti franki"
+        },
+        "symbol": {
+          "en": "DJF",
+          "ru": "DJF",
+          "uz-Latn": "DJF"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 1066809,
+      "centroidLng": 42.539062,
+      "centroidLat": 11.781325,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/dj.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "266",
+      "name": {
+        "en": "Gabon",
+        "ru": "Габон",
+        "uz-Latn": "Gabon"
+      },
+      "capital": {
+        "en": "Libreville",
+        "ru": "Либревиль",
+        "uz-Latn": "Librevil"
+      },
+      "currency": {
+        "code": "XAF",
+        "name": {
+          "en": "Central African CFA Franc",
+          "ru": "франк КФА BEAC",
+          "uz-Latn": "Markaziy Afrika CFA franki"
+        },
+        "symbol": {
+          "en": "FCFA",
+          "ru": "FCFA",
+          "uz-Latn": "FCFA"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 2469296,
+      "centroidLng": 11.601562,
+      "centroidLat": -0.615223,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ga.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "268",
+      "name": {
+        "en": "Georgia",
+        "ru": "Грузия",
+        "uz-Latn": "Gurjiston"
+      },
+      "capital": {
+        "en": "Tbilisi",
+        "ru": "Тбилиси",
+        "uz-Latn": "Tbilisi"
+      },
+      "currency": {
+        "code": "GEL",
+        "name": {
+          "en": "Georgian Lari",
+          "ru": "грузинский лари",
+          "uz-Latn": "Gruziya larisi"
+        },
+        "symbol": {
+          "en": "₾",
+          "ru": "ლ",
+          "uz-Latn": "₾"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 3657000,
+      "centroidLng": 43.505859,
+      "centroidLat": 42.163403,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ge.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "270",
+      "name": {
+        "en": "Gambia",
+        "ru": "Гамбия",
+        "uz-Latn": "Gambia"
+      },
+      "capital": {
+        "en": "Banjul",
+        "ru": "Банжул",
+        "uz-Latn": "Banjul"
+      },
+      "currency": {
+        "code": "GMD",
+        "name": {
+          "en": "Gambian Dalasi",
+          "ru": "гамбийский даласи",
+          "uz-Latn": "Gambiya dalasisi"
+        },
+        "symbol": {
+          "en": "GMD",
+          "ru": "GMD",
+          "uz-Latn": "GMD"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 2422712,
+      "centroidLng": -15.380859,
+      "centroidLat": 13.410994,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/gm.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "275",
+      "name": {
+        "en": "Palestine",
+        "ru": "Палестина",
+        "uz-Latn": "Falastin"
+      },
+      "capital": {
+        "en": "Jerusalem",
+        "ru": "Иерусалим",
+        "uz-Latn": "Quddus"
+      },
+      "currency": {
+        "code": "ILS",
+        "name": {
+          "en": "Israeli New Shekel",
+          "ru": "новый израильский шекель",
+          "uz-Latn": "Isroil yangi shekeli"
+        },
+        "symbol": {
+          "en": "₪",
+          "ru": "₪",
+          "uz-Latn": "₪"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "hard",
+      "population": 5557096,
+      "centroidLng": 35.2592465,
+      "centroidLat": 32.200540000000004,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ps.svg",
+      "independent": true,
+      "unMember": false
+    },
+    {
+      "id": "276",
+      "name": {
+        "en": "Germany",
+        "ru": "Германия",
+        "uz-Latn": "Germaniya"
+      },
+      "capital": {
+        "en": "Berlin",
+        "ru": "Берлин",
+        "uz-Latn": "Berlin"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "easy",
+      "population": 83298787,
+      "centroidLng": 10.371094,
+      "centroidLat": 51.124213,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/de.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "288",
+      "name": {
+        "en": "Ghana",
+        "ru": "Гана",
+        "uz-Latn": "Gana"
+      },
+      "capital": {
+        "en": "Accra",
+        "ru": "Аккра",
+        "uz-Latn": "Akkra"
+      },
+      "currency": {
+        "code": "GHS",
+        "name": {
+          "en": "Ghanaian Cedi",
+          "ru": "ганский седи",
+          "uz-Latn": "Gana sedisi"
+        },
+        "symbol": {
+          "en": "GH₵",
+          "ru": "GH₵",
+          "uz-Latn": "GH₵"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "medium",
+      "population": 34378768,
+      "centroidLng": -1.142578,
+      "centroidLat": 7.710992,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/gh.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "296",
+      "name": {
+        "en": "Kiribati",
+        "ru": "Кирибати",
+        "uz-Latn": "Kiribati"
+      },
+      "capital": {
+        "en": "South Tarawa",
+        "ru": "Южная Тарава",
+        "uz-Latn": "Janubiy Tarava"
+      },
+      "currency": {
+        "code": "AUD",
+        "name": {
+          "en": "Australian Dollar",
+          "ru": "австралийский доллар",
+          "uz-Latn": "Avstraliya dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "oceania",
+      "difficulty": "hard",
+      "population": 120740,
+      "centroidLng": -164.707031,
+      "centroidLat": -0.878872,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ki.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "300",
+      "name": {
+        "en": "Greece",
+        "ru": "Греция",
+        "uz-Latn": "Yunoniston"
+      },
+      "capital": {
+        "en": "Athens",
+        "ru": "Афины",
+        "uz-Latn": "Afina"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 10372335,
+      "centroidLng": 22.939453,
+      "centroidLat": 39.027719,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/gr.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "308",
+      "name": {
+        "en": "Grenada",
+        "ru": "Гренада",
+        "uz-Latn": "Grenada"
+      },
+      "capital": {
+        "en": "St. George's",
+        "ru": "Сент-Джорджес",
+        "uz-Latn": "Sent-jorjes"
+      },
+      "currency": {
+        "code": "XCD",
+        "name": {
+          "en": "East Caribbean Dollar",
+          "ru": "восточно-карибский доллар",
+          "uz-Latn": "Sharqiy Karib dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "hard",
+      "population": 109021,
+      "centroidLng": -61.699219,
+      "centroidLat": 12.125264,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/gd.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "320",
+      "name": {
+        "en": "Guatemala",
+        "ru": "Гватемала",
+        "uz-Latn": "Gvatemala"
+      },
+      "capital": {
+        "en": "Guatemala City",
+        "ru": "Гватемала",
+        "uz-Latn": "Gvatemala shahri"
+      },
+      "currency": {
+        "code": "GTQ",
+        "name": {
+          "en": "Guatemalan Quetzal",
+          "ru": "гватемальский кетсаль",
+          "uz-Latn": "Gvatemala ketsali"
+        },
+        "symbol": {
+          "en": "Q",
+          "ru": "Q",
+          "uz-Latn": "Q"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "medium",
+      "population": 18406359,
+      "centroidLng": -90.263672,
+      "centroidLat": 15.538376,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/gt.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "324",
+      "name": {
+        "en": "Guinea",
+        "ru": "Гвинея",
+        "uz-Latn": "Gvineya"
+      },
+      "capital": {
+        "en": "Conakry",
+        "ru": "Конакри",
+        "uz-Latn": "Konakri"
+      },
+      "currency": {
+        "code": "GNF",
+        "name": {
+          "en": "Guinean Franc",
+          "ru": "гвинейский франк",
+          "uz-Latn": "Gvineya franki"
+        },
+        "symbol": {
+          "en": "FG",
+          "ru": "FG",
+          "uz-Latn": "FG"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 17521167,
+      "centroidLng": -10.986328,
+      "centroidLat": 10.833306,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/gn.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "328",
+      "name": {
+        "en": "Guyana",
+        "ru": "Гайана",
+        "uz-Latn": "Gayana"
+      },
+      "capital": {
+        "en": "Georgetown",
+        "ru": "Джорджтаун",
+        "uz-Latn": "Jorjtaun"
+      },
+      "currency": {
+        "code": "GYD",
+        "name": {
+          "en": "Guyanaese Dollar",
+          "ru": "гайанский доллар",
+          "uz-Latn": "Gayana dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "south-america",
+      "difficulty": "hard",
+      "population": 956044,
+      "centroidLng": -58.886719,
+      "centroidLat": 5.090944,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/gy.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "332",
+      "name": {
+        "en": "Haiti",
+        "ru": "Гаити",
+        "uz-Latn": "Gaiti"
+      },
+      "capital": {
+        "en": "Port-au-Prince",
+        "ru": "Порт-о-Пренс",
+        "uz-Latn": "Port-o-Prens"
+      },
+      "currency": {
+        "code": "HTG",
+        "name": {
+          "en": "Haitian Gourde",
+          "ru": "гаитянский гурд",
+          "uz-Latn": "Gaiti gurdi"
+        },
+        "symbol": {
+          "en": "HTG",
+          "ru": "HTG",
+          "uz-Latn": "HTG"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "medium",
+      "population": 11867032,
+      "centroidLng": -73.037109,
+      "centroidLat": 18.812718,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ht.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "336",
+      "name": {
+        "en": "Vatican City",
+        "ru": "Ватикан",
+        "uz-Latn": "Vatikan shahri"
+      },
+      "capital": {
+        "en": "Vatican City",
+        "ru": "Ватикан",
+        "uz-Latn": "Vatikan shahri"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "hard",
+      "population": 882,
+      "centroidLng": 12.480469,
+      "centroidLat": 41.902277,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/va.svg",
+      "independent": true,
+      "unMember": false
+    },
+    {
+      "id": "340",
+      "name": {
+        "en": "Honduras",
+        "ru": "Гондурас",
+        "uz-Latn": "Gonduras"
+      },
+      "capital": {
+        "en": "Tegucigalpa",
+        "ru": "Тегусигальпа",
+        "uz-Latn": "Tegusigalpa"
+      },
+      "currency": {
+        "code": "HNL",
+        "name": {
+          "en": "Honduran Lempira",
+          "ru": "гондурасская лемпира",
+          "uz-Latn": "Gonduras lempirasi"
+        },
+        "symbol": {
+          "en": "L",
+          "ru": "L",
+          "uz-Latn": "L"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "medium",
+      "population": 10186738,
+      "centroidLng": -86.660156,
+      "centroidLat": 14.85985,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/hn.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "348",
+      "name": {
+        "en": "Hungary",
+        "ru": "Венгрия",
+        "uz-Latn": "Mojariston"
+      },
+      "capital": {
+        "en": "Budapest",
+        "ru": "Будапешт",
+        "uz-Latn": "Budapesht"
+      },
+      "currency": {
+        "code": "HUF",
+        "name": {
+          "en": "Hungarian Forint",
+          "ru": "венгерский форинт",
+          "uz-Latn": "Vengriya forinti"
+        },
+        "symbol": {
+          "en": "Ft",
+          "ru": "Ft",
+          "uz-Latn": "Ft"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 9488428,
+      "centroidLng": 19.423828,
+      "centroidLat": 47.15984,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/hu.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "352",
+      "name": {
+        "en": "Iceland",
+        "ru": "Исландия",
+        "uz-Latn": "Islandiya"
+      },
+      "capital": {
+        "en": "Reykjavik",
+        "ru": "Рейкьявик",
+        "uz-Latn": "Reykyavik"
+      },
+      "currency": {
+        "code": "ISK",
+        "name": {
+          "en": "Icelandic Króna",
+          "ru": "исландская крона",
+          "uz-Latn": "Islandiya kronasi"
+        },
+        "symbol": {
+          "en": "kr",
+          "ru": "kr",
+          "uz-Latn": "kr"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 396500,
+      "centroidLng": -18.632812,
+      "centroidLat": 64.997939,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/is.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "356",
+      "name": {
+        "en": "India",
+        "ru": "Индия",
+        "uz-Latn": "Hindiston"
+      },
+      "capital": {
+        "en": "New Delhi",
+        "ru": "Нью-Дели",
+        "uz-Latn": "Nyu Deli"
+      },
+      "currency": {
+        "code": "INR",
+        "name": {
+          "en": "Indian Rupee",
+          "ru": "индийская рупия",
+          "uz-Latn": "Hindiston rupiyasi"
+        },
+        "symbol": {
+          "en": "₹",
+          "ru": "₹",
+          "uz-Latn": "₹"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "easy",
+      "population": 1429404000,
+      "centroidLng": 79.628906,
+      "centroidLat": 22.917923,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/in.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "360",
+      "name": {
+        "en": "Indonesia",
+        "ru": "Индонезия",
+        "uz-Latn": "Indoneziya"
+      },
+      "capital": {
+        "en": "Jakarta",
+        "ru": "Джакарта",
+        "uz-Latn": "Jakarta"
+      },
+      "currency": {
+        "code": "IDR",
+        "name": {
+          "en": "Indonesian Rupiah",
+          "ru": "индонезийская рупия",
+          "uz-Latn": "Indoneziya rupiyasi"
+        },
+        "symbol": {
+          "en": "Rp",
+          "ru": "Rp",
+          "uz-Latn": "Rp"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "easy",
+      "population": 288315089,
+      "centroidLng": 119.970703,
+      "centroidLat": -4.214943,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/id.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "364",
+      "name": {
+        "en": "Iran",
+        "ru": "Иран",
+        "uz-Latn": "Eron"
+      },
+      "capital": {
+        "en": "Tehran",
+        "ru": "Тегеран",
+        "uz-Latn": "Tehron"
+      },
+      "currency": {
+        "code": "IRR",
+        "name": {
+          "en": "Iranian Rial",
+          "ru": "иранский риал",
+          "uz-Latn": "Eron riyoli"
+        },
+        "symbol": {
+          "en": "IRR",
+          "ru": "IRR",
+          "uz-Latn": "IRR"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "easy",
+      "population": 87134000,
+      "centroidLng": 54.316406,
+      "centroidLat": 32.546813,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ir.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "368",
+      "name": {
+        "en": "Iraq",
+        "ru": "Ирак",
+        "uz-Latn": "Iroq"
+      },
+      "capital": {
+        "en": "Baghdad",
+        "ru": "Багдад",
+        "uz-Latn": "Bagʻdod"
+      },
+      "currency": {
+        "code": "IQD",
+        "name": {
+          "en": "Iraqi Dinar",
+          "ru": "иракский динар",
+          "uz-Latn": "Iroq dinori"
+        },
+        "symbol": {
+          "en": "IQD",
+          "ru": "IQD",
+          "uz-Latn": "IQD"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "easy",
+      "population": 46118793,
+      "centroidLng": 42.978516,
+      "centroidLat": 32.990236,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/iq.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "372",
+      "name": {
+        "en": "Ireland",
+        "ru": "Ирландия",
+        "uz-Latn": "Irlandiya"
+      },
+      "capital": {
+        "en": "Dublin",
+        "ru": "Дублин",
+        "uz-Latn": "Dublin"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 5525600,
+      "centroidLng": -7.646484,
+      "centroidLat": 53.173119,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ie.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "376",
+      "name": {
+        "en": "Israel",
+        "ru": "Израиль",
+        "uz-Latn": "Isroil"
+      },
+      "capital": {
+        "en": "Jerusalem",
+        "ru": "Иерусалим",
+        "uz-Latn": "Quddus"
+      },
+      "currency": {
+        "code": "ILS",
+        "name": {
+          "en": "Israeli New Shekel",
+          "ru": "новый израильский шекель",
+          "uz-Latn": "Isroil yangi shekeli"
+        },
+        "symbol": {
+          "en": "₪",
+          "ru": "₪",
+          "uz-Latn": "₪"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "easy",
+      "population": 10305000,
+      "centroidLng": 34.892578,
+      "centroidLat": 30.977609,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/il.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "380",
+      "name": {
+        "en": "Italy",
+        "ru": "Италия",
+        "uz-Latn": "Italiya"
+      },
+      "capital": {
+        "en": "Rome",
+        "ru": "Рим",
+        "uz-Latn": "Rim"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "easy",
+      "population": 58943673,
+      "centroidLng": 12.65625,
+      "centroidLat": 42.875964,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/it.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "384",
+      "name": {
+        "en": "Côte d'Ivoire",
+        "ru": "Кот-д’Ивуар",
+        "uz-Latn": "Fil Suyak Sohili"
+      },
+      "capital": {
+        "en": "Yamoussoukro",
+        "ru": "Ямусукро",
+        "uz-Latn": "Yamusukro"
+      },
+      "currency": {
+        "code": "XOF",
+        "name": {
+          "en": "West African CFA Franc",
+          "ru": "франк КФА ВСЕАО",
+          "uz-Latn": "Gʻarbiy Afrika CFA franki"
+        },
+        "symbol": {
+          "en": "F CFA",
+          "ru": "F CFA",
+          "uz-Latn": "F CFA"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 33293101,
+      "centroidLng": -5.537109,
+      "centroidLat": 7.623887,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ci.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "388",
+      "name": {
+        "en": "Jamaica",
+        "ru": "Ямайка",
+        "uz-Latn": "Yamayka"
+      },
+      "capital": {
+        "en": "Kingston",
+        "ru": "Кингстон",
+        "uz-Latn": "Kingston"
+      },
+      "currency": {
+        "code": "JMD",
+        "name": {
+          "en": "Jamaican Dollar",
+          "ru": "ямайский доллар",
+          "uz-Latn": "Yamayka dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "medium",
+      "population": 2774538,
+      "centroidLng": -77.34375,
+      "centroidLat": 18.145852,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/jm.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "392",
+      "name": {
+        "en": "Japan",
+        "ru": "Япония",
+        "uz-Latn": "Yaponiya"
+      },
+      "capital": {
+        "en": "Tokyo",
+        "ru": "Токио",
+        "uz-Latn": "Tokio"
+      },
+      "currency": {
+        "code": "JPY",
+        "name": {
+          "en": "Japanese Yen",
+          "ru": "японская иена",
+          "uz-Latn": "Yaponiya iyenasi"
+        },
+        "symbol": {
+          "en": "¥",
+          "ru": "¥",
+          "uz-Latn": "¥"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "easy",
+      "population": 122650000,
+      "centroidLng": 139.394531,
+      "centroidLat": 36.879621,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/jp.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "398",
+      "name": {
+        "en": "Kazakhstan",
+        "ru": "Казахстан",
+        "uz-Latn": "Qozogʻiston"
+      },
+      "capital": {
+        "en": "Astana",
+        "ru": "Астана",
+        "uz-Latn": "Ostona"
+      },
+      "currency": {
+        "code": "KZT",
+        "name": {
+          "en": "Kazakhstani Tenge",
+          "ru": "казахский тенге",
+          "uz-Latn": "Qozogʻiston tengesi"
+        },
+        "symbol": {
+          "en": "₸",
+          "ru": "₸",
+          "uz-Latn": "₸"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 20618796,
+      "centroidLng": 67.324219,
+      "centroidLat": 48.166085,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/kz.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "400",
+      "name": {
+        "en": "Jordan",
+        "ru": "Иордания",
+        "uz-Latn": "Iordaniya"
+      },
+      "capital": {
+        "en": "Amman",
+        "ru": "Амман",
+        "uz-Latn": "Amman"
+      },
+      "currency": {
+        "code": "JOD",
+        "name": {
+          "en": "Jordanian Dinar",
+          "ru": "иорданский динар",
+          "uz-Latn": "Iordaniya dinori"
+        },
+        "symbol": {
+          "en": "JOD",
+          "ru": "JOD",
+          "uz-Latn": "JOD"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 11937000,
+      "centroidLng": 36.386719,
+      "centroidLat": 31.278551,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/jo.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "404",
+      "name": {
+        "en": "Kenya",
+        "ru": "Кения",
+        "uz-Latn": "Keniya"
+      },
+      "capital": {
+        "en": "Nairobi",
+        "ru": "Найроби",
+        "uz-Latn": "Nayrobi"
+      },
+      "currency": {
+        "code": "KES",
+        "name": {
+          "en": "Kenyan Shilling",
+          "ru": "кенийский шиллинг",
+          "uz-Latn": "Keniya shillingi"
+        },
+        "symbol": {
+          "en": "KES",
+          "ru": "KES",
+          "uz-Latn": "KES"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "medium",
+      "population": 54227015,
+      "centroidLng": 37.792969,
+      "centroidLat": 0.615223,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ke.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "408",
+      "name": {
+        "en": "North Korea",
+        "ru": "Северная Корея",
+        "uz-Latn": "Koreya Xalq Demokratik Respublikasi"
+      },
+      "capital": {
+        "en": "Pyongyang",
+        "ru": "Пхеньян",
+        "uz-Latn": "Pxenyan"
+      },
+      "currency": {
+        "code": "KPW",
+        "name": {
+          "en": "North Korean Won",
+          "ru": "северокорейская вона",
+          "uz-Latn": "Shimoliy Koreya voni"
+        },
+        "symbol": {
+          "en": "₩",
+          "ru": "₩",
+          "uz-Latn": "₩"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "hard",
+      "population": 25950000,
+      "centroidLng": 127.54303,
+      "centroidLat": 41.491092,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/kp.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "410",
+      "name": {
+        "en": "South Korea",
+        "ru": "Южная Корея",
+        "uz-Latn": "Koreya Respublikasi"
+      },
+      "capital": {
+        "en": "Seoul",
+        "ru": "Сеул",
+        "uz-Latn": "Seul"
+      },
+      "currency": {
+        "code": "KRW",
+        "name": {
+          "en": "South Korean Won",
+          "ru": "южнокорейская вона",
+          "uz-Latn": "Janubiy Koreya voni"
+        },
+        "symbol": {
+          "en": "₩",
+          "ru": "₩",
+          "uz-Latn": "₩"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "easy",
+      "population": 51106229,
+      "centroidLng": 127.04383849999999,
+      "centroidLat": 37.5670085,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/kr.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "414",
+      "name": {
+        "en": "Kuwait",
+        "ru": "Кувейт",
+        "uz-Latn": "Quvayt"
+      },
+      "capital": {
+        "en": "Kuwait City",
+        "ru": "Эль-Кувейт",
+        "uz-Latn": "Al-Quvayt"
+      },
+      "currency": {
+        "code": "KWD",
+        "name": {
+          "en": "Kuwaiti Dinar",
+          "ru": "кувейтский динар",
+          "uz-Latn": "Kuvayt dinori"
+        },
+        "symbol": {
+          "en": "KWD",
+          "ru": "KWD",
+          "uz-Latn": "KWD"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 4881254,
+      "centroidLng": 47.285156,
+      "centroidLat": 29.305561,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/kw.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "417",
+      "name": {
+        "en": "Kyrgyzstan",
+        "ru": "Кыргызстан",
+        "uz-Latn": "Qirgʻiziston"
+      },
+      "capital": {
+        "en": "Bishkek",
+        "ru": "Бишкек",
+        "uz-Latn": "Bishkek"
+      },
+      "currency": {
+        "code": "KGS",
+        "name": {
+          "en": "Kyrgyz Som",
+          "ru": "киргизский сом",
+          "uz-Latn": "Qirgʻiziston somi"
+        },
+        "symbol": {
+          "en": "⃀",
+          "ru": "⃀",
+          "uz-Latn": "⃀"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "hard",
+      "population": 7404300,
+      "centroidLng": 74.882812,
+      "centroidLat": 41.836828,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/kg.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "418",
+      "name": {
+        "en": "Laos",
+        "ru": "Лаос",
+        "uz-Latn": "Laos"
+      },
+      "capital": {
+        "en": "Vientiane",
+        "ru": "Вьентьян",
+        "uz-Latn": "Ventyan"
+      },
+      "currency": {
+        "code": "LAK",
+        "name": {
+          "en": "Laotian Kip",
+          "ru": "лаосский кип",
+          "uz-Latn": "Laos kipi"
+        },
+        "symbol": {
+          "en": "₭",
+          "ru": "₭",
+          "uz-Latn": "₭"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 7745000,
+      "centroidLng": 102.65625,
+      "centroidLat": 19.394068,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/la.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "422",
+      "name": {
+        "en": "Lebanon",
+        "ru": "Ливан",
+        "uz-Latn": "Livan"
+      },
+      "capital": {
+        "en": "Beirut",
+        "ru": "Бейрут",
+        "uz-Latn": "Bayrut"
+      },
+      "currency": {
+        "code": "LBP",
+        "name": {
+          "en": "Lebanese Pound",
+          "ru": "ливанский фунт",
+          "uz-Latn": "Livan funti"
+        },
+        "symbol": {
+          "en": "L£",
+          "ru": "L£",
+          "uz-Latn": "L£"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 5895466,
+      "centroidLng": 35.859375,
+      "centroidLat": 33.94336,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/lb.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "426",
+      "name": {
+        "en": "Lesotho",
+        "ru": "Лесото",
+        "uz-Latn": "Lesoto"
+      },
+      "capital": {
+        "en": "Maseru",
+        "ru": "Масеру",
+        "uz-Latn": "Maseru"
+      },
+      "currency": {
+        "code": "LSL",
+        "name": {
+          "en": "Lesotho Loti",
+          "ru": "лоти",
+          "uz-Latn": "Lesoto lotisi"
+        },
+        "symbol": {
+          "en": "LSL",
+          "ru": "LSL",
+          "uz-Latn": "LSL"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 2116427,
+      "centroidLng": 28.212891,
+      "centroidLat": -29.61167,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ls.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "428",
+      "name": {
+        "en": "Latvia",
+        "ru": "Латвия",
+        "uz-Latn": "Latviya"
+      },
+      "capital": {
+        "en": "Riga",
+        "ru": "Рига",
+        "uz-Latn": "Riga"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "hard",
+      "population": 1832100,
+      "centroidLng": 24.873047,
+      "centroidLat": 56.848972,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/lv.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "430",
+      "name": {
+        "en": "Liberia",
+        "ru": "Либерия",
+        "uz-Latn": "Liberiya"
+      },
+      "capital": {
+        "en": "Monrovia",
+        "ru": "Монровия",
+        "uz-Latn": "Monroviya"
+      },
+      "currency": {
+        "code": "LRD",
+        "name": {
+          "en": "Liberian Dollar",
+          "ru": "либерийский доллар",
+          "uz-Latn": "Liberiya dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 5248621,
+      "centroidLng": -9.404297,
+      "centroidLat": 6.227934,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/lr.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "434",
+      "name": {
+        "en": "Libya",
+        "ru": "Ливия",
+        "uz-Latn": "Liviya"
+      },
+      "capital": {
+        "en": "Tripoli",
+        "ru": "Триполи",
+        "uz-Latn": "Tarobulus al-Gʻarb"
+      },
+      "currency": {
+        "code": "LYD",
+        "name": {
+          "en": "Libyan Dinar",
+          "ru": "ливийский динар",
+          "uz-Latn": "Liviya dinori"
+        },
+        "symbol": {
+          "en": "LYD",
+          "ru": "LYD",
+          "uz-Latn": "LYD"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "medium",
+      "population": 7539852,
+      "centroidLng": 18.017578,
+      "centroidLat": 27.059126,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ly.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "438",
+      "name": {
+        "en": "Liechtenstein",
+        "ru": "Лихтенштейн",
+        "uz-Latn": "Lixtenshteyn"
+      },
+      "capital": {
+        "en": "Vaduz",
+        "ru": "Вадуц",
+        "uz-Latn": "Vaduz"
+      },
+      "currency": {
+        "code": "CHF",
+        "name": {
+          "en": "Swiss Franc",
+          "ru": "швейцарский франк",
+          "uz-Latn": "Shveytsariya franki"
+        },
+        "symbol": {
+          "en": "CHF",
+          "ru": "CHF",
+          "uz-Latn": "CHF"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "hard",
+      "population": 41228,
+      "centroidLng": 9.580078,
+      "centroidLat": 47.15984,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/li.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "440",
+      "name": {
+        "en": "Lithuania",
+        "ru": "Литва",
+        "uz-Latn": "Litva"
+      },
+      "capital": {
+        "en": "Vilnius",
+        "ru": "Вильнюс",
+        "uz-Latn": "Vilnyus"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 2887761,
+      "centroidLng": 23.730469,
+      "centroidLat": 55.429013,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/lt.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "442",
+      "name": {
+        "en": "Luxembourg",
+        "ru": "Люксембург",
+        "uz-Latn": "Lyuksemburg"
+      },
+      "capital": {
+        "en": "Luxembourg",
+        "ru": "Люксембург",
+        "uz-Latn": "Lyuksemburg (shahar)"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 690959,
+      "centroidLng": 6.064453,
+      "centroidLat": 49.781264,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/lu.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "450",
+      "name": {
+        "en": "Madagascar",
+        "ru": "Мадагаскар",
+        "uz-Latn": "Madagaskar"
+      },
+      "capital": {
+        "en": "Antananarivo",
+        "ru": "Антананариву",
+        "uz-Latn": "Antananarivu"
+      },
+      "currency": {
+        "code": "MGA",
+        "name": {
+          "en": "Malagasy Ariary",
+          "ru": "малагасийский ариари",
+          "uz-Latn": "Malagasi ariarisi"
+        },
+        "symbol": {
+          "en": "Ar",
+          "ru": "Ar",
+          "uz-Latn": "Ar"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 32658977,
+      "centroidLng": 46.669922,
+      "centroidLat": -19.394068,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/mg.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "454",
+      "name": {
+        "en": "Malawi",
+        "ru": "Малави",
+        "uz-Latn": "Malavi"
+      },
+      "capital": {
+        "en": "Lilongwe",
+        "ru": "Лилонгве",
+        "uz-Latn": "Lilongve"
+      },
+      "currency": {
+        "code": "MWK",
+        "name": {
+          "en": "Malawian Kwacha",
+          "ru": "малавийская квача",
+          "uz-Latn": "Malavi kvachasi"
+        },
+        "symbol": {
+          "en": "MWK",
+          "ru": "MWK",
+          "uz-Latn": "MWK"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 21201635,
+      "centroidLng": 33.925781,
+      "centroidLat": -13.325485,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/mw.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "458",
+      "name": {
+        "en": "Malaysia",
+        "ru": "Малайзия",
+        "uz-Latn": "Malayziya"
+      },
+      "capital": {
+        "en": "Kuala Lumpur",
+        "ru": "Куала-Лумпур",
+        "uz-Latn": "Kuala Lumpur"
+      },
+      "currency": {
+        "code": "MYR",
+        "name": {
+          "en": "Malaysian Ringgit",
+          "ru": "малайзийский ринггит",
+          "uz-Latn": "Malayziya ringgiti"
+        },
+        "symbol": {
+          "en": "RM",
+          "ru": "RM",
+          "uz-Latn": "RM"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 34389400,
+      "centroidLng": 108.193359,
+      "centroidLat": 4.039618,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/my.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "462",
+      "name": {
+        "en": "Maldives",
+        "ru": "Мальдивы",
+        "uz-Latn": "Maldivalar"
+      },
+      "capital": {
+        "en": "Malé",
+        "ru": "Мале",
+        "uz-Latn": "Male"
+      },
+      "currency": {
+        "code": "MVR",
+        "name": {
+          "en": "Maldivian Rufiyaa",
+          "ru": "мальдивская руфия",
+          "uz-Latn": "Maldiv rupiyasi"
+        },
+        "symbol": {
+          "en": "MVR",
+          "ru": "MVR",
+          "uz-Latn": "MVR"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 515132,
+      "centroidLng": 73.300781,
+      "centroidLat": 3.688855,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/mv.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "466",
+      "name": {
+        "en": "Mali",
+        "ru": "Мали",
+        "uz-Latn": "Mali"
+      },
+      "capital": {
+        "en": "Bamako",
+        "ru": "Бамако",
+        "uz-Latn": "Bamako"
+      },
+      "currency": {
+        "code": "XOF",
+        "name": {
+          "en": "West African CFA Franc",
+          "ru": "франк КФА ВСЕАО",
+          "uz-Latn": "Gʻarbiy Afrika CFA franki"
+        },
+        "symbol": {
+          "en": "F CFA",
+          "ru": "F CFA",
+          "uz-Latn": "F CFA"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 23929000,
+      "centroidLng": -1.845703,
+      "centroidLat": 17.14079,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ml.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "470",
+      "name": {
+        "en": "Malta",
+        "ru": "Мальта",
+        "uz-Latn": "Malta"
+      },
+      "capital": {
+        "en": "Valletta",
+        "ru": "Валлетта",
+        "uz-Latn": "Valletta"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 588254,
+      "centroidLng": 14.414062,
+      "centroidLat": 35.88905,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/mt.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "478",
+      "name": {
+        "en": "Mauritania",
+        "ru": "Мавритания",
+        "uz-Latn": "Mavritaniya"
+      },
+      "capital": {
+        "en": "Nouakchott",
+        "ru": "Нуакшот",
+        "uz-Latn": "Nuakshot"
+      },
+      "currency": {
+        "code": "MRU",
+        "name": {
+          "en": "Mauritanian Ouguiya",
+          "ru": "мавританская угия",
+          "uz-Latn": "Mavritaniya uqiyasi"
+        },
+        "symbol": {
+          "en": "MRU",
+          "ru": "MRU",
+          "uz-Latn": "MRU"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 4927532,
+      "centroidLng": -11.074219,
+      "centroidLat": 19.55979,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/mr.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "480",
+      "name": {
+        "en": "Mauritius",
+        "ru": "Маврикий",
+        "uz-Latn": "Mavritsiya"
+      },
+      "capital": {
+        "en": "Port Louis",
+        "ru": "Порт-Луи",
+        "uz-Latn": "Port-Lui"
+      },
+      "currency": {
+        "code": "MUR",
+        "name": {
+          "en": "Mauritian Rupee",
+          "ru": "маврикийская рупия",
+          "uz-Latn": "Mavritaniya rupiyasi"
+        },
+        "symbol": {
+          "en": "Rs",
+          "ru": "Rs",
+          "uz-Latn": "Rs"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 1240316,
+      "centroidLng": 57.832031,
+      "centroidLat": -20.220966,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/mu.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "484",
+      "name": {
+        "en": "Mexico",
+        "ru": "Мексика",
+        "uz-Latn": "Meksika"
+      },
+      "capital": {
+        "en": "Mexico City",
+        "ru": "Мехико",
+        "uz-Latn": "Mexiko shahri"
+      },
+      "currency": {
+        "code": "MXN",
+        "name": {
+          "en": "Mexican Peso",
+          "ru": "мексиканский песо",
+          "uz-Latn": "Meksika pesosi"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "easy",
+      "population": 131231919,
+      "centroidLng": -102.568359,
+      "centroidLat": 23.966176,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/mx.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "492",
+      "name": {
+        "en": "Monaco",
+        "ru": "Монако",
+        "uz-Latn": "Monako"
+      },
+      "capital": {
+        "en": "Monaco",
+        "ru": "Монако",
+        "uz-Latn": "Monako"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "hard",
+      "population": 38857,
+      "centroidLng": 7.382812,
+      "centroidLat": 43.771094,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/mc.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "496",
+      "name": {
+        "en": "Mongolia",
+        "ru": "Монголия",
+        "uz-Latn": "Moʻgʻuliston"
+      },
+      "capital": {
+        "en": "Ulaanbaatar",
+        "ru": "Улан-Батор",
+        "uz-Latn": "Ulan-Bator"
+      },
+      "currency": {
+        "code": "MNT",
+        "name": {
+          "en": "Mongolian Tugrik",
+          "ru": "монгольский тугрик",
+          "uz-Latn": "Mongoliya tugriki"
+        },
+        "symbol": {
+          "en": "₮",
+          "ru": "₮",
+          "uz-Latn": "₮"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 3591120,
+      "centroidLng": 103.095703,
+      "centroidLat": 46.800059,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/mn.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "498",
+      "name": {
+        "en": "Moldova",
+        "ru": "Молдова",
+        "uz-Latn": "Moldova"
+      },
+      "capital": {
+        "en": "Chișinău",
+        "ru": "Кишинёв",
+        "uz-Latn": "Kishinyov"
+      },
+      "currency": {
+        "code": "MDL",
+        "name": {
+          "en": "Moldovan Leu",
+          "ru": "молдавский лей",
+          "uz-Latn": "Moldova leyi"
+        },
+        "symbol": {
+          "en": "MDL",
+          "ru": "MDL",
+          "uz-Latn": "MDL"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 2365600,
+      "centroidLng": 28.476562,
+      "centroidLat": 47.219568,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/md.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "499",
+      "name": {
+        "en": "Montenegro",
+        "ru": "Черногория",
+        "uz-Latn": "Chernogoriya"
+      },
+      "capital": {
+        "en": "Podgorica",
+        "ru": "Подгорица",
+        "uz-Latn": "Podgoritsa"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 622902,
+      "centroidLng": 19.248047,
+      "centroidLat": 42.811522,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/me.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "504",
+      "name": {
+        "en": "Morocco",
+        "ru": "Марокко",
+        "uz-Latn": "Marokash"
+      },
+      "capital": {
+        "en": "Rabat",
+        "ru": "Рабат",
+        "uz-Latn": "Rabot"
+      },
+      "currency": {
+        "code": "MAD",
+        "name": {
+          "en": "Moroccan Dirham",
+          "ru": "марокканский дирхам",
+          "uz-Latn": "Marokash dirhami"
+        },
+        "symbol": {
+          "en": "MAD",
+          "ru": "MAD",
+          "uz-Latn": "MAD"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "easy",
+      "population": 37254695,
+      "centroidLng": -7.382812,
+      "centroidLat": 30.751278,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ma.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "508",
+      "name": {
+        "en": "Mozambique",
+        "ru": "Мозамбик",
+        "uz-Latn": "Mozambik"
+      },
+      "capital": {
+        "en": "Maputo",
+        "ru": "Мапуту",
+        "uz-Latn": "Maputu"
+      },
+      "currency": {
+        "code": "MZN",
+        "name": {
+          "en": "Mozambican Metical",
+          "ru": "мозамбикский метикал",
+          "uz-Latn": "Mozambik metikali"
+        },
+        "symbol": {
+          "en": "MZN",
+          "ru": "MZN",
+          "uz-Latn": "MZN"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 34958973,
+      "centroidLng": 34.892578,
+      "centroidLat": -17.811456,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/mz.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "512",
+      "name": {
+        "en": "Oman",
+        "ru": "Оман",
+        "uz-Latn": "Oman"
+      },
+      "capital": {
+        "en": "Muscat",
+        "ru": "Маскат",
+        "uz-Latn": "Maskat"
+      },
+      "currency": {
+        "code": "OMR",
+        "name": {
+          "en": "Omani Rial",
+          "ru": "оманский риал",
+          "uz-Latn": "Ummon riyoli"
+        },
+        "symbol": {
+          "en": "OMR",
+          "ru": "OMR",
+          "uz-Latn": "OMR"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 5398645,
+      "centroidLng": 56.865234,
+      "centroidLat": 20.96144,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/om.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "516",
+      "name": {
+        "en": "Namibia",
+        "ru": "Намибия",
+        "uz-Latn": "Namibiya"
+      },
+      "capital": {
+        "en": "Windhoek",
+        "ru": "Виндхук",
+        "uz-Latn": "Vindhuk"
+      },
+      "currency": {
+        "code": "NAD",
+        "name": {
+          "en": "Namibian Dollar",
+          "ru": "доллар Намибии",
+          "uz-Latn": "Namibiya dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 3022401,
+      "centroidLng": 17.050781,
+      "centroidLat": -20.715015,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/na.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "520",
+      "name": {
+        "en": "Nauru",
+        "ru": "Науру",
+        "uz-Latn": "Nauru"
+      },
+      "capital": {
+        "en": "Yaren",
+        "ru": "Ярен",
+        "uz-Latn": "Yaren"
+      },
+      "currency": {
+        "code": "AUD",
+        "name": {
+          "en": "Australian Dollar",
+          "ru": "австралийский доллар",
+          "uz-Latn": "Avstraliya dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "oceania",
+      "difficulty": "hard",
+      "population": 11680,
+      "centroidLng": 166.904297,
+      "centroidLat": -0.527336,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/nr.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "524",
+      "name": {
+        "en": "Nepal",
+        "ru": "Непал",
+        "uz-Latn": "Nepal"
+      },
+      "capital": {
+        "en": "Kathmandu",
+        "ru": "Катманду",
+        "uz-Latn": "Katmandu"
+      },
+      "currency": {
+        "code": "NPR",
+        "name": {
+          "en": "Nepalese Rupee",
+          "ru": "непальская рупия",
+          "uz-Latn": "Nepal rupiyasi"
+        },
+        "symbol": {
+          "en": "Rs",
+          "ru": "Rs",
+          "uz-Latn": "Rs"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 30034040,
+      "centroidLng": 83.935547,
+      "centroidLat": 28.22697,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/np.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "528",
+      "name": {
+        "en": "Netherlands",
+        "ru": "Нидерланды",
+        "uz-Latn": "Niderlandlar"
+      },
+      "capital": {
+        "en": "Amsterdam",
+        "ru": "Амстердам",
+        "uz-Latn": "Amsterdam"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "easy",
+      "population": 18171612,
+      "centroidLng": 5.712891,
+      "centroidLat": 52.321911,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/nl.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "548",
+      "name": {
+        "en": "Vanuatu",
+        "ru": "Вануату",
+        "uz-Latn": "Vanuatu"
+      },
+      "capital": {
+        "en": "Port Vila",
+        "ru": "Порт-Вила",
+        "uz-Latn": "Port-vila"
+      },
+      "currency": {
+        "code": "VUV",
+        "name": {
+          "en": "Vanuatu Vatu",
+          "ru": "вату Вануату",
+          "uz-Latn": "Vanuatu vatusi"
+        },
+        "symbol": {
+          "en": "VUV",
+          "ru": "VUV",
+          "uz-Latn": "VUV"
+        }
+      },
+      "continent": "oceania",
+      "difficulty": "hard",
+      "population": 321409,
+      "centroidLng": 167.695312,
+      "centroidLat": -16.214675,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/vu.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "554",
+      "name": {
+        "en": "New Zealand",
+        "ru": "Новая Зеландия",
+        "uz-Latn": "Yangi Zelandiya"
+      },
+      "capital": {
+        "en": "Wellington",
+        "ru": "Веллингтон",
+        "uz-Latn": "Vellington"
+      },
+      "currency": {
+        "code": "NZD",
+        "name": {
+          "en": "New Zealand Dollar",
+          "ru": "новозеландский доллар",
+          "uz-Latn": "Yangi Zelandiya dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "oceania",
+      "difficulty": "easy",
+      "population": 4993923,
+      "centroidLng": 173.056641,
+      "centroidLat": -41.967659,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/nz.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "558",
+      "name": {
+        "en": "Nicaragua",
+        "ru": "Никарагуа",
+        "uz-Latn": "Nikaragua"
+      },
+      "capital": {
+        "en": "Managua",
+        "ru": "Манагуа",
+        "uz-Latn": "Managua"
+      },
+      "currency": {
+        "code": "NIO",
+        "name": {
+          "en": "Nicaraguan Córdoba",
+          "ru": "никарагуанская кордоба",
+          "uz-Latn": "Nikaragua kordobasi"
+        },
+        "symbol": {
+          "en": "C$",
+          "ru": "C$",
+          "uz-Latn": "C$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "medium",
+      "population": 6874748,
+      "centroidLng": -85.253906,
+      "centroidLat": 12.811801,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ni.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "562",
+      "name": {
+        "en": "Niger",
+        "ru": "Нигер",
+        "uz-Latn": "Niger"
+      },
+      "capital": {
+        "en": "Niamey",
+        "ru": "Ниамей",
+        "uz-Latn": "Niamey"
+      },
+      "currency": {
+        "code": "XOF",
+        "name": {
+          "en": "West African CFA Franc",
+          "ru": "франк КФА ВСЕАО",
+          "uz-Latn": "Gʻarbiy Afrika CFA franki"
+        },
+        "symbol": {
+          "en": "F CFA",
+          "ru": "F CFA",
+          "uz-Latn": "F CFA"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 27522750,
+      "centroidLng": 9.404297,
+      "centroidLat": 17.392579,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ne.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "566",
+      "name": {
+        "en": "Nigeria",
+        "ru": "Нигерия",
+        "uz-Latn": "Nigeriya"
+      },
+      "capital": {
+        "en": "Abuja",
+        "ru": "Абуджа",
+        "uz-Latn": "Abuja"
+      },
+      "currency": {
+        "code": "NGN",
+        "name": {
+          "en": "Nigerian Naira",
+          "ru": "нигерийская найра",
+          "uz-Latn": "Nigeriya nayrasi"
+        },
+        "symbol": {
+          "en": "₦",
+          "ru": "₦",
+          "uz-Latn": "₦"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "easy",
+      "population": 223800000,
+      "centroidLng": 8.085938,
+      "centroidLat": 9.622414,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ng.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "578",
+      "name": {
+        "en": "Norway",
+        "ru": "Норвегия",
+        "uz-Latn": "Norvegiya"
+      },
+      "capital": {
+        "en": "Oslo",
+        "ru": "Осло",
+        "uz-Latn": "Oslo"
+      },
+      "currency": {
+        "code": "NOK",
+        "name": {
+          "en": "Norwegian Krone",
+          "ru": "норвежская крона",
+          "uz-Latn": "Norvegiya kronasi"
+        },
+        "symbol": {
+          "en": "kr",
+          "ru": "kr",
+          "uz-Latn": "kr"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "easy",
+      "population": 5636904,
+      "centroidLng": 9.052734,
+      "centroidLat": 61.270233,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/no.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "583",
+      "name": {
+        "en": "Micronesia",
+        "ru": "Федеративные Штаты Микронезии",
+        "uz-Latn": "Mikroneziya Federativ Shtatlari"
+      },
+      "capital": {
+        "en": "Palikir",
+        "ru": "Паликир",
+        "uz-Latn": "Palikir"
+      },
+      "currency": {
+        "code": "USD",
+        "name": {
+          "en": "US Dollar",
+          "ru": "доллар США",
+          "uz-Latn": "AQSH dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "oceania",
+      "difficulty": "hard",
+      "population": 75817,
+      "centroidLng": 155.214844,
+      "centroidLat": 7.100893,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/fm.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "584",
+      "name": {
+        "en": "Marshall Islands",
+        "ru": "Маршалловы Острова",
+        "uz-Latn": "Marshall Orollari"
+      },
+      "capital": {
+        "en": "Majuro",
+        "ru": "Маджуро",
+        "uz-Latn": "Majuro"
+      },
+      "currency": {
+        "code": "USD",
+        "name": {
+          "en": "US Dollar",
+          "ru": "доллар США",
+          "uz-Latn": "AQSH dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "oceania",
+      "difficulty": "hard",
+      "population": 37548,
+      "centroidLng": 170.068359,
+      "centroidLat": 7.100893,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/mh.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "585",
+      "name": {
+        "en": "Palau",
+        "ru": "Палау",
+        "uz-Latn": "Palau"
+      },
+      "capital": {
+        "en": "Ngerulmud",
+        "ru": "Нгерулмуд",
+        "uz-Latn": "Ngerulmud"
+      },
+      "currency": {
+        "code": "USD",
+        "name": {
+          "en": "US Dollar",
+          "ru": "доллар США",
+          "uz-Latn": "AQSH dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "oceania",
+      "difficulty": "hard",
+      "population": 16733,
+      "centroidLng": 134.296875,
+      "centroidLat": 7.188101,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/pw.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "586",
+      "name": {
+        "en": "Pakistan",
+        "ru": "Пакистан",
+        "uz-Latn": "Pokiston"
+      },
+      "capital": {
+        "en": "Islamabad",
+        "ru": "Исламабад",
+        "uz-Latn": "Islomobod"
+      },
+      "currency": {
+        "code": "PKR",
+        "name": {
+          "en": "Pakistani Rupee",
+          "ru": "пакистанская рупия",
+          "uz-Latn": "Pokiston rupiyasi"
+        },
+        "symbol": {
+          "en": "Rs",
+          "ru": "Rs",
+          "uz-Latn": "Rs"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "easy",
+      "population": 241499431,
+      "centroidLng": 69.345703,
+      "centroidLat": 29.916852,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/pk.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "591",
+      "name": {
+        "en": "Panama",
+        "ru": "Панама",
+        "uz-Latn": "Panama"
+      },
+      "capital": {
+        "en": "Panama City",
+        "ru": "Панама",
+        "uz-Latn": "Panama shahri"
+      },
+      "currency": {
+        "code": "PAB",
+        "name": {
+          "en": "Panamanian Balboa",
+          "ru": "панамский бальбоа",
+          "uz-Latn": "Panama balboasi"
+        },
+        "symbol": {
+          "en": "PAB",
+          "ru": "PAB",
+          "uz-Latn": "PAB"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "medium",
+      "population": 4064780,
+      "centroidLng": -80.244141,
+      "centroidLat": 8.581021,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/pa.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "598",
+      "name": {
+        "en": "Papua New Guinea",
+        "ru": "Папуа — Новая Гвинея",
+        "uz-Latn": "Papua Yangi Gvineya"
+      },
+      "capital": {
+        "en": "Port Moresby",
+        "ru": "Порт-Морсби",
+        "uz-Latn": "Port Morsbi"
+      },
+      "currency": {
+        "code": "PGK",
+        "name": {
+          "en": "Papua New Guinean Kina",
+          "ru": "кина Папуа – Новой Гвинеи",
+          "uz-Latn": "Papua – Yangi Gvineya kinasi"
+        },
+        "symbol": {
+          "en": "PGK",
+          "ru": "PGK",
+          "uz-Latn": "PGK"
+        }
+      },
+      "continent": "oceania",
+      "difficulty": "medium",
+      "population": 11781559,
+      "centroidLng": 144.84375,
+      "centroidLat": -6.053161,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/pg.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "600",
+      "name": {
+        "en": "Paraguay",
+        "ru": "Парагвай",
+        "uz-Latn": "Paragvay"
+      },
+      "capital": {
+        "en": "Asunción",
+        "ru": "Асунсьон",
+        "uz-Latn": "Asunsyon"
+      },
+      "currency": {
+        "code": "PYG",
+        "name": {
+          "en": "Paraguayan Guarani",
+          "ru": "парагвайский гуарани",
+          "uz-Latn": "Paragvay guaranisi"
+        },
+        "symbol": {
+          "en": "₲",
+          "ru": "₲",
+          "uz-Latn": "₲"
+        }
+      },
+      "continent": "south-america",
+      "difficulty": "medium",
+      "population": 6109644,
+      "centroidLng": -58.359375,
+      "centroidLat": -23.241346,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/py.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "604",
+      "name": {
+        "en": "Peru",
+        "ru": "Перу",
+        "uz-Latn": "Peru"
+      },
+      "capital": {
+        "en": "Lima",
+        "ru": "Лима",
+        "uz-Latn": "Lima"
+      },
+      "currency": {
+        "code": "PEN",
+        "name": {
+          "en": "Peruvian Sol",
+          "ru": "перуанский соль",
+          "uz-Latn": "Peru soli"
+        },
+        "symbol": {
+          "en": "PEN",
+          "ru": "PEN",
+          "uz-Latn": "PEN"
+        }
+      },
+      "continent": "south-america",
+      "difficulty": "medium",
+      "population": 34157732,
+      "centroidLng": -75.498047,
+      "centroidLat": -9.882275,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/pe.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "608",
+      "name": {
+        "en": "Philippines",
+        "ru": "Филиппины",
+        "uz-Latn": "Filippin"
+      },
+      "capital": {
+        "en": "Manila",
+        "ru": "Манила",
+        "uz-Latn": "Manila"
+      },
+      "currency": {
+        "code": "PHP",
+        "name": {
+          "en": "Philippine Peso",
+          "ru": "филиппинский песо",
+          "uz-Latn": "Filippin pesosi"
+        },
+        "symbol": {
+          "en": "₱",
+          "ru": "₱",
+          "uz-Latn": "₱"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "easy",
+      "population": 114849400,
+      "centroidLng": 122.871094,
+      "centroidLat": 11.781325,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ph.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "616",
+      "name": {
+        "en": "Poland",
+        "ru": "Польша",
+        "uz-Latn": "Polsha"
+      },
+      "capital": {
+        "en": "Warsaw",
+        "ru": "Варшава",
+        "uz-Latn": "Varshava"
+      },
+      "currency": {
+        "code": "PLN",
+        "name": {
+          "en": "Polish Zloty",
+          "ru": "польский злотый",
+          "uz-Latn": "Polsha zlotiyi"
+        },
+        "symbol": {
+          "en": "zł",
+          "ru": "zł",
+          "uz-Latn": "zł"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "easy",
+      "population": 37232000,
+      "centroidLng": 19.423828,
+      "centroidLat": 52.106505,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/pl.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "620",
+      "name": {
+        "en": "Portugal",
+        "ru": "Португалия",
+        "uz-Latn": "Portugaliya"
+      },
+      "capital": {
+        "en": "Lisbon",
+        "ru": "Лиссабон",
+        "uz-Latn": "Lissabon"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 11424031,
+      "centroidLng": -8.261719,
+      "centroidLat": 39.571822,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/pt.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "624",
+      "name": {
+        "en": "Guinea-Bissau",
+        "ru": "Гвинея-Бисау",
+        "uz-Latn": "Gvineya-Bissau"
+      },
+      "capital": {
+        "en": "Bissau",
+        "ru": "Бисау",
+        "uz-Latn": "Bisau"
+      },
+      "currency": {
+        "code": "XOF",
+        "name": {
+          "en": "West African CFA Franc",
+          "ru": "франк КФА ВСЕАО",
+          "uz-Latn": "Gʻarbiy Afrika CFA franki"
+        },
+        "symbol": {
+          "en": "F CFA",
+          "ru": "F CFA",
+          "uz-Latn": "F CFA"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 1890252,
+      "centroidLng": -14.941406,
+      "centroidLat": 12.039321,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/gw.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "626",
+      "name": {
+        "en": "Timor-Leste",
+        "ru": "Восточный Тимор",
+        "uz-Latn": "Sharqiy Timor"
+      },
+      "capital": {
+        "en": "Dili",
+        "ru": "Дили",
+        "uz-Latn": "Dili"
+      },
+      "currency": {
+        "code": "USD",
+        "name": {
+          "en": "US Dollar",
+          "ru": "доллар США",
+          "uz-Latn": "AQSH dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "hard",
+      "population": 1409452,
+      "centroidLng": 125.6719205,
+      "centroidLat": -8.818628,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/tl.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "634",
+      "name": {
+        "en": "Qatar",
+        "ru": "Катар",
+        "uz-Latn": "Qatar"
+      },
+      "capital": {
+        "en": "Doha",
+        "ru": "Доха",
+        "uz-Latn": "Doha"
+      },
+      "currency": {
+        "code": "QAR",
+        "name": {
+          "en": "Qatari Riyal",
+          "ru": "катарский риал",
+          "uz-Latn": "Qatar riyoli"
+        },
+        "symbol": {
+          "en": "QAR",
+          "ru": "QAR",
+          "uz-Latn": "QAR"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 3370611,
+      "centroidLng": 51.152344,
+      "centroidLat": 25.324167,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/qa.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "642",
+      "name": {
+        "en": "Romania",
+        "ru": "Румыния",
+        "uz-Latn": "Ruminiya"
+      },
+      "capital": {
+        "en": "Bucharest",
+        "ru": "Бухарест",
+        "uz-Latn": "Buharest"
+      },
+      "currency": {
+        "code": "RON",
+        "name": {
+          "en": "Romanian Leu",
+          "ru": "румынский лей",
+          "uz-Latn": "Ruminiya leyi"
+        },
+        "symbol": {
+          "en": "lei",
+          "ru": "L",
+          "uz-Latn": "lei"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 19041322,
+      "centroidLng": 24.960938,
+      "centroidLat": 45.828799,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ro.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "643",
+      "name": {
+        "en": "Russia",
+        "ru": "Россия",
+        "uz-Latn": "Rossiya"
+      },
+      "capital": {
+        "en": "Moscow",
+        "ru": "Москва",
+        "uz-Latn": "Moskva"
+      },
+      "currency": {
+        "code": "RUB",
+        "name": {
+          "en": "Russian Ruble",
+          "ru": "российский рубль",
+          "uz-Latn": "Rossiya rubli"
+        },
+        "symbol": {
+          "en": "₽",
+          "ru": "₽",
+          "uz-Latn": "₽"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "easy",
+      "population": 146028325,
+      "centroidLng": 96.679688,
+      "centroidLat": 61.980267,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ru.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "646",
+      "name": {
+        "en": "Rwanda",
+        "ru": "Руанда",
+        "uz-Latn": "Ruanda"
+      },
+      "capital": {
+        "en": "Kigali",
+        "ru": "Кигали",
+        "uz-Latn": "Kigali"
+      },
+      "currency": {
+        "code": "RWF",
+        "name": {
+          "en": "Rwandan Franc",
+          "ru": "франк Руанды",
+          "uz-Latn": "Ruanda franki"
+        },
+        "symbol": {
+          "en": "RF",
+          "ru": "RF",
+          "uz-Latn": "RF"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 14418145,
+      "centroidLng": 29.882812,
+      "centroidLat": -1.933227,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/rw.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "659",
+      "name": {
+        "en": "Saint Kitts and Nevis",
+        "ru": "Сент-Китс и Невис",
+        "uz-Latn": "Saint Kitts va Nevis"
+      },
+      "capital": {
+        "en": "Basseterre",
+        "ru": "Бастер",
+        "uz-Latn": "Baster"
+      },
+      "currency": {
+        "code": "XCD",
+        "name": {
+          "en": "East Caribbean Dollar",
+          "ru": "восточно-карибский доллар",
+          "uz-Latn": "Sharqiy Karib dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "hard",
+      "population": 54338,
+      "centroidLng": -62.666016,
+      "centroidLat": 17.308688,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/kn.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "662",
+      "name": {
+        "en": "Saint Lucia",
+        "ru": "Сент-Люсия",
+        "uz-Latn": "Saint Lucia"
+      },
+      "capital": {
+        "en": "Castries",
+        "ru": "Кастри",
+        "uz-Latn": "Kastri"
+      },
+      "currency": {
+        "code": "XCD",
+        "name": {
+          "en": "East Caribbean Dollar",
+          "ru": "восточно-карибский доллар",
+          "uz-Latn": "Sharqiy Karib dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "hard",
+      "population": 184100,
+      "centroidLng": -60.996094,
+      "centroidLat": 13.923404,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/lc.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "670",
+      "name": {
+        "en": "Saint Vincent and the Grenadines",
+        "ru": "Сент-Винсент и Гренадины",
+        "uz-Latn": "Sent Vinsent va Grenadinlar"
+      },
+      "capital": {
+        "en": "Kingstown",
+        "ru": "Кингстаун",
+        "uz-Latn": "Kingstaun"
+      },
+      "currency": {
+        "code": "XCD",
+        "name": {
+          "en": "East Caribbean Dollar",
+          "ru": "восточно-карибский доллар",
+          "uz-Latn": "Sharqiy Karib dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "hard",
+      "population": 109296,
+      "centroidLng": -61.171875,
+      "centroidLat": 13.239945,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/vc.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "674",
+      "name": {
+        "en": "San Marino",
+        "ru": "Сан-Марино",
+        "uz-Latn": "San Marino"
+      },
+      "capital": {
+        "en": "San Marino",
+        "ru": "Сан-Марино",
+        "uz-Latn": "San-Marino"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "hard",
+      "population": 34172,
+      "centroidLng": 12.480469,
+      "centroidLat": 43.961191,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/sm.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "678",
+      "name": {
+        "en": "São Tomé and Príncipe",
+        "ru": "Сан-Томе и Принсипи",
+        "uz-Latn": "San-Tome va Prinsipi"
+      },
+      "capital": {
+        "en": "São Tomé",
+        "ru": "Сан-Томе",
+        "uz-Latn": "San-Tome"
+      },
+      "currency": {
+        "code": "STN",
+        "name": {
+          "en": "São Tomé & Príncipe Dobra",
+          "ru": "добра Сан-Томе и Принсипи",
+          "uz-Latn": "San-Tome va Prinsipi dobrasi"
+        },
+        "symbol": {
+          "en": "Db",
+          "ru": "Db",
+          "uz-Latn": "Db"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 220372,
+      "centroidLng": 6.767578,
+      "centroidLat": 0.439449,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/st.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "682",
+      "name": {
+        "en": "Saudi Arabia",
+        "ru": "Саудовская Аравия",
+        "uz-Latn": "Saudiya Arabistoni"
+      },
+      "capital": {
+        "en": "Riyadh",
+        "ru": "Эр-Рияд",
+        "uz-Latn": "Ar-Riyod"
+      },
+      "currency": {
+        "code": "SAR",
+        "name": {
+          "en": "Saudi Riyal",
+          "ru": "саудовский риял",
+          "uz-Latn": "Saudiya Arabistoni riyoli"
+        },
+        "symbol": {
+          "en": "SAR",
+          "ru": "SAR",
+          "uz-Latn": "SAR"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "easy",
+      "population": 35325004,
+      "centroidLng": 44.560547,
+      "centroidLat": 24.126702,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/sa.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "686",
+      "name": {
+        "en": "Senegal",
+        "ru": "Сенегал",
+        "uz-Latn": "Senegal"
+      },
+      "capital": {
+        "en": "Dakar",
+        "ru": "Дакар",
+        "uz-Latn": "Dakar"
+      },
+      "currency": {
+        "code": "XOF",
+        "name": {
+          "en": "West African CFA Franc",
+          "ru": "франк КФА ВСЕАО",
+          "uz-Latn": "Gʻarbiy Afrika CFA franki"
+        },
+        "symbol": {
+          "en": "F CFA",
+          "ru": "F CFA",
+          "uz-Latn": "F CFA"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 19575061,
+      "centroidLng": -14.677734,
+      "centroidLat": 14.774883,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/sn.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "688",
+      "name": {
+        "en": "Serbia",
+        "ru": "Сербия",
+        "uz-Latn": "Serbiya"
+      },
+      "capital": {
+        "en": "Belgrade",
+        "ru": "Белград",
+        "uz-Latn": "Belgrad"
+      },
+      "currency": {
+        "code": "RSD",
+        "name": {
+          "en": "Serbian Dinar",
+          "ru": "сербский динар",
+          "uz-Latn": "Serbiya dinori"
+        },
+        "symbol": {
+          "en": "RSD",
+          "ru": "RSD",
+          "uz-Latn": "RSD"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 6532019,
+      "centroidLng": 20.830078,
+      "centroidLat": 44.21371,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/rs.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "690",
+      "name": {
+        "en": "Seychelles",
+        "ru": "Сейшельские Острова",
+        "uz-Latn": "Seyshell orollari"
+      },
+      "capital": {
+        "en": "Victoria",
+        "ru": "Виктория",
+        "uz-Latn": "Viktoriya"
+      },
+      "currency": {
+        "code": "SCR",
+        "name": {
+          "en": "Seychellois Rupee",
+          "ru": "сейшельская рупия",
+          "uz-Latn": "Seyshel rupiyasi"
+        },
+        "symbol": {
+          "en": "SCR",
+          "ru": "SCR",
+          "uz-Latn": "SCR"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 123565,
+      "centroidLng": 51.855469,
+      "centroidLat": -6.577303,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/sc.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "694",
+      "name": {
+        "en": "Sierra Leone",
+        "ru": "Сьерра-Леоне",
+        "uz-Latn": "Syerra Leone"
+      },
+      "capital": {
+        "en": "Freetown",
+        "ru": "Фритаун",
+        "uz-Latn": "Fritaun"
+      },
+      "currency": {
+        "code": "SLE",
+        "name": {
+          "en": "Sierra Leonean Leone",
+          "ru": "леоне",
+          "uz-Latn": "Syerra-Leone leonesi"
+        },
+        "symbol": {
+          "en": "SLE",
+          "ru": "SLE",
+          "uz-Latn": "SLE"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 8460512,
+      "centroidLng": -11.777344,
+      "centroidLat": 8.581021,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/sl.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "702",
+      "name": {
+        "en": "Singapore",
+        "ru": "Сингапур",
+        "uz-Latn": "Singapur"
+      },
+      "capital": {
+        "en": "Singapore",
+        "ru": "Сингапур",
+        "uz-Latn": "Singapur"
+      },
+      "currency": {
+        "code": "SGD",
+        "name": {
+          "en": "Singapore Dollar",
+          "ru": "сингапурский доллар",
+          "uz-Latn": "Singapur dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 6208500,
+      "centroidLng": 103.798828,
+      "centroidLat": 1.318243,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/sg.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "703",
+      "name": {
+        "en": "Slovakia",
+        "ru": "Словакия",
+        "uz-Latn": "Slovakiya"
+      },
+      "capital": {
+        "en": "Bratislava",
+        "ru": "Братислава",
+        "uz-Latn": "Bratislava"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 5403009,
+      "centroidLng": 19.511719,
+      "centroidLat": 48.69096,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/sk.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "704",
+      "name": {
+        "en": "Vietnam",
+        "ru": "Вьетнам",
+        "uz-Latn": "Vyetnam"
+      },
+      "capital": {
+        "en": "Hanoi",
+        "ru": "Ханой",
+        "uz-Latn": "Xanoy"
+      },
+      "currency": {
+        "code": "VND",
+        "name": {
+          "en": "Vietnamese Dong",
+          "ru": "вьетнамский донг",
+          "uz-Latn": "Vyetnam dongi"
+        },
+        "symbol": {
+          "en": "₫",
+          "ru": "₫",
+          "uz-Latn": "₫"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "easy",
+      "population": 102300000,
+      "centroidLng": 108.28125,
+      "centroidLat": 14.349548,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/vn.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "705",
+      "name": {
+        "en": "Slovenia",
+        "ru": "Словения",
+        "uz-Latn": "Sloveniya"
+      },
+      "capital": {
+        "en": "Ljubljana",
+        "ru": "Любляна",
+        "uz-Latn": "Lyublyana"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 2136385,
+      "centroidLng": 14.765625,
+      "centroidLat": 46.13417,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/si.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "706",
+      "name": {
+        "en": "Somalia",
+        "ru": "Сомали",
+        "uz-Latn": "Somali"
+      },
+      "capital": {
+        "en": "Mogadishu",
+        "ru": "Могадишо",
+        "uz-Latn": "Mogadisho"
+      },
+      "currency": {
+        "code": "SOS",
+        "name": {
+          "en": "Somali Shilling",
+          "ru": "сомалийский шиллинг",
+          "uz-Latn": "Somali shillingi"
+        },
+        "symbol": {
+          "en": "SOS",
+          "ru": "SOS",
+          "uz-Latn": "SOS"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 20305907,
+      "centroidLng": 45.175781,
+      "centroidLat": 3.951941,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/so.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "710",
+      "name": {
+        "en": "South Africa",
+        "ru": "Южная Африка",
+        "uz-Latn": "Janubiy Afrika Respublikasi"
+      },
+      "capital": {
+        "en": "Pretoria",
+        "ru": "Претория",
+        "uz-Latn": "Pretoriya"
+      },
+      "currency": {
+        "code": "ZAR",
+        "name": {
+          "en": "South African Rand",
+          "ru": "южноафриканский рэнд",
+          "uz-Latn": "Janubiy Afrika rendi"
+        },
+        "symbol": {
+          "en": "R",
+          "ru": "R",
+          "uz-Latn": "R"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "easy",
+      "population": 63015904,
+      "centroidLng": 23.027344,
+      "centroidLat": -30.524413,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/za.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "716",
+      "name": {
+        "en": "Zimbabwe",
+        "ru": "Зимбабве",
+        "uz-Latn": "Zimbabve"
+      },
+      "capital": {
+        "en": "Harare",
+        "ru": "Хараре",
+        "uz-Latn": "Xarare"
+      },
+      "currency": {
+        "code": "USD",
+        "name": {
+          "en": "US Dollar",
+          "ru": "доллар США",
+          "uz-Latn": "AQSH dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 16175966,
+      "centroidLng": 29.882812,
+      "centroidLat": -18.979026,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/zw.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "724",
+      "name": {
+        "en": "Spain",
+        "ru": "Испания",
+        "uz-Latn": "Ispaniya"
+      },
+      "capital": {
+        "en": "Madrid",
+        "ru": "Мадрид",
+        "uz-Latn": "Madrid"
+      },
+      "currency": {
+        "code": "EUR",
+        "name": {
+          "en": "Euro",
+          "ru": "евро",
+          "uz-Latn": "Yevro"
+        },
+        "symbol": {
+          "en": "€",
+          "ru": "€",
+          "uz-Latn": "€"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "easy",
+      "population": 49801559,
+      "centroidLng": -3.251953,
+      "centroidLat": 40.780541,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/es.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "728",
+      "name": {
+        "en": "South Sudan",
+        "ru": "Южный Судан",
+        "uz-Latn": "Janubiy Sudan"
+      },
+      "capital": {
+        "en": "Juba",
+        "ru": "Джуба",
+        "uz-Latn": "Juba"
+      },
+      "currency": {
+        "code": "SSP",
+        "name": {
+          "en": "South Sudanese Pound",
+          "ru": "южносуданский фунт",
+          "uz-Latn": "Janubiy Sudan funti"
+        },
+        "symbol": {
+          "en": "£",
+          "ru": "£",
+          "uz-Latn": "£"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 12703714,
+      "centroidLng": 26.178359999999998,
+      "centroidLat": 7.9634635,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ss.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "729",
+      "name": {
+        "en": "Sudan",
+        "ru": "Судан",
+        "uz-Latn": "Sudan"
+      },
+      "capital": {
+        "en": "Khartoum",
+        "ru": "Хартум",
+        "uz-Latn": "Xartum"
+      },
+      "currency": {
+        "code": "SDG",
+        "name": {
+          "en": "Sudanese Pound",
+          "ru": "суданский фунт",
+          "uz-Latn": "Sudan funti"
+        },
+        "symbol": {
+          "en": "SDG",
+          "ru": "SDG",
+          "uz-Latn": "SDG"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "medium",
+      "population": 53282719,
+      "centroidLng": 30.058594,
+      "centroidLat": 13.83808,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/sd.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "740",
+      "name": {
+        "en": "Suriname",
+        "ru": "Суринам",
+        "uz-Latn": "Surinam"
+      },
+      "capital": {
+        "en": "Paramaribo",
+        "ru": "Парамарибо",
+        "uz-Latn": "Paramaribo"
+      },
+      "currency": {
+        "code": "SRD",
+        "name": {
+          "en": "Surinamese Dollar",
+          "ru": "суринамский доллар",
+          "uz-Latn": "Surinam dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "south-america",
+      "difficulty": "hard",
+      "population": 616500,
+      "centroidLng": -55.898438,
+      "centroidLat": 3.951941,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/sr.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "748",
+      "name": {
+        "en": "Eswatini",
+        "ru": "Эсватини",
+        "uz-Latn": "Eswatini"
+      },
+      "capital": {
+        "en": "Mbabane",
+        "ru": "Мбабане",
+        "uz-Latn": "Mbabane"
+      },
+      "currency": {
+        "code": "SZL",
+        "name": {
+          "en": "Swazi Lilangeni",
+          "ru": "свазилендский лилангени",
+          "uz-Latn": "Svazilend lilangenisi"
+        },
+        "symbol": {
+          "en": "SZL",
+          "ru": "SZL",
+          "uz-Latn": "SZL"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 1235549,
+      "centroidLng": 31.449737499999998,
+      "centroidLat": -26.446250499999998,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/sz.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "752",
+      "name": {
+        "en": "Sweden",
+        "ru": "Швеция",
+        "uz-Latn": "Shvetsiya"
+      },
+      "capital": {
+        "en": "Stockholm",
+        "ru": "Стокгольм",
+        "uz-Latn": "Stokgolm"
+      },
+      "currency": {
+        "code": "SEK",
+        "name": {
+          "en": "Swedish Krona",
+          "ru": "шведская крона",
+          "uz-Latn": "Shvetsiya kronasi"
+        },
+        "symbol": {
+          "en": "kr",
+          "ru": "kr",
+          "uz-Latn": "kr"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "easy",
+      "population": 10621103,
+      "centroidLng": 17.929688,
+      "centroidLat": 65.109148,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/se.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "756",
+      "name": {
+        "en": "Switzerland",
+        "ru": "Швейцария",
+        "uz-Latn": "Shveysariya"
+      },
+      "capital": {
+        "en": "Bern",
+        "ru": "Берн",
+        "uz-Latn": "Bern"
+      },
+      "currency": {
+        "code": "CHF",
+        "name": {
+          "en": "Swiss Franc",
+          "ru": "швейцарский франк",
+          "uz-Latn": "Shveytsariya franki"
+        },
+        "symbol": {
+          "en": "CHF",
+          "ru": "CHF",
+          "uz-Latn": "CHF"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "easy",
+      "population": 9154896,
+      "centroidLng": 8.173828,
+      "centroidLat": 46.800059,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ch.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "760",
+      "name": {
+        "en": "Syria",
+        "ru": "Сирия",
+        "uz-Latn": "Suriya"
+      },
+      "capital": {
+        "en": "Damascus",
+        "ru": "Дамаск",
+        "uz-Latn": "Damashq"
+      },
+      "currency": {
+        "code": "SYP",
+        "name": {
+          "en": "Syrian Pound",
+          "ru": "сирийский фунт",
+          "uz-Latn": "Suriya funti"
+        },
+        "symbol": {
+          "en": "£",
+          "ru": "£",
+          "uz-Latn": "£"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "hard",
+      "population": 26472497,
+      "centroidLng": 38.671875,
+      "centroidLat": 35.317366,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/sy.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "762",
+      "name": {
+        "en": "Tajikistan",
+        "ru": "Таджикистан",
+        "uz-Latn": "Tojikiston"
+      },
+      "capital": {
+        "en": "Dushanbe",
+        "ru": "Душанбе",
+        "uz-Latn": "Dushanbe"
+      },
+      "currency": {
+        "code": "TJS",
+        "name": {
+          "en": "Tajikistani Somoni",
+          "ru": "таджикский сомони",
+          "uz-Latn": "Tojikiston somoniysi"
+        },
+        "symbol": {
+          "en": "TJS",
+          "ru": "TJS",
+          "uz-Latn": "TJS"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "hard",
+      "population": 10721000,
+      "centroidLng": 71.103516,
+      "centroidLat": 38.891033,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/tj.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "764",
+      "name": {
+        "en": "Thailand",
+        "ru": "Таиланд",
+        "uz-Latn": "Tailand"
+      },
+      "capital": {
+        "en": "Bangkok",
+        "ru": "Бангкок",
+        "uz-Latn": "Bangkok"
+      },
+      "currency": {
+        "code": "THB",
+        "name": {
+          "en": "Thai Baht",
+          "ru": "таиландский бат",
+          "uz-Latn": "Tailand bati"
+        },
+        "symbol": {
+          "en": "฿",
+          "ru": "฿",
+          "uz-Latn": "฿"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "easy",
+      "population": 70250751,
+      "centroidLng": 101.513672,
+      "centroidLat": 15.792254,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/th.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "768",
+      "name": {
+        "en": "Togo",
+        "ru": "Того",
+        "uz-Latn": "Togo"
+      },
+      "capital": {
+        "en": "Lomé",
+        "ru": "Ломе",
+        "uz-Latn": "Lome"
+      },
+      "currency": {
+        "code": "XOF",
+        "name": {
+          "en": "West African CFA Franc",
+          "ru": "франк КФА ВСЕАО",
+          "uz-Latn": "Gʻarbiy Afrika CFA franki"
+        },
+        "symbol": {
+          "en": "F CFA",
+          "ru": "F CFA",
+          "uz-Latn": "F CFA"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 8095498,
+      "centroidLng": 1.142578,
+      "centroidLat": 8.581021,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/tg.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "776",
+      "name": {
+        "en": "Tonga",
+        "ru": "Тонга",
+        "uz-Latn": "Tonga"
+      },
+      "capital": {
+        "en": "Nuku'alofa",
+        "ru": "Нукуалофа",
+        "uz-Latn": "Nukualofa"
+      },
+      "currency": {
+        "code": "TOP",
+        "name": {
+          "en": "Tongan Paʻanga",
+          "ru": "тонганская паанга",
+          "uz-Latn": "Tonga paangasi"
+        },
+        "symbol": {
+          "en": "T$",
+          "ru": "T$",
+          "uz-Latn": "T$"
+        }
+      },
+      "continent": "oceania",
+      "difficulty": "hard",
+      "population": 100179,
+      "centroidLng": -174.814453,
+      "centroidLat": -19.973349,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/to.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "780",
+      "name": {
+        "en": "Trinidad and Tobago",
+        "ru": "Тринидад и Тобаго",
+        "uz-Latn": "Trinidad va Tobago"
+      },
+      "capital": {
+        "en": "Port of Spain",
+        "ru": "Порт-оф-Спейн",
+        "uz-Latn": "Port-of-speyn"
+      },
+      "currency": {
+        "code": "TTD",
+        "name": {
+          "en": "Trinidad & Tobago Dollar",
+          "ru": "доллар Тринидада и Тобаго",
+          "uz-Latn": "Trinidad va Tobago dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "hard",
+      "population": 1512779,
+      "centroidLng": -61.259766,
+      "centroidLat": 10.487812,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/tt.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "784",
+      "name": {
+        "en": "United Arab Emirates",
+        "ru": "Объединённые Арабские Эмираты",
+        "uz-Latn": "Birlashgan Arab Amirliklari"
+      },
+      "capital": {
+        "en": "Abu Dhabi",
+        "ru": "Абу-Даби",
+        "uz-Latn": "Abu Dabi"
+      },
+      "currency": {
+        "code": "AED",
+        "name": {
+          "en": "United Arab Emirates Dirham",
+          "ru": "дирхам ОАЭ",
+          "uz-Latn": "Birlashgan Arab Amirliklari dirhami"
+        },
+        "symbol": {
+          "en": "AED",
+          "ru": "AED",
+          "uz-Latn": "AED"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 11027129,
+      "centroidLng": 54.140625,
+      "centroidLat": 23.644524,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ae.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "788",
+      "name": {
+        "en": "Tunisia",
+        "ru": "Тунис",
+        "uz-Latn": "Tunis"
+      },
+      "capital": {
+        "en": "Tunis",
+        "ru": "Тунис",
+        "uz-Latn": "Tunis"
+      },
+      "currency": {
+        "code": "TND",
+        "name": {
+          "en": "Tunisian Dinar",
+          "ru": "тунисский динар",
+          "uz-Latn": "Tunis dinori"
+        },
+        "symbol": {
+          "en": "TND",
+          "ru": "TND",
+          "uz-Latn": "TND"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "medium",
+      "population": 11992843,
+      "centroidLng": 8.964844,
+      "centroidLat": 33.94336,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/tn.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "792",
+      "name": {
+        "en": "Turkey",
+        "ru": "Турция",
+        "uz-Latn": "Turkiya"
+      },
+      "capital": {
+        "en": "Ankara",
+        "ru": "Анкара",
+        "uz-Latn": "Anqara"
+      },
+      "currency": {
+        "code": "TRY",
+        "name": {
+          "en": "Turkish Lira",
+          "ru": "турецкая лира",
+          "uz-Latn": "Turk lirasi"
+        },
+        "symbol": {
+          "en": "₺",
+          "ru": "₺",
+          "uz-Latn": "₺"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "easy",
+      "population": 86092168,
+      "centroidLng": 35.15625,
+      "centroidLat": 39.027719,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/tr.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "795",
+      "name": {
+        "en": "Turkmenistan",
+        "ru": "Туркменистан",
+        "uz-Latn": "Turkmaniston"
+      },
+      "capital": {
+        "en": "Ashgabat",
+        "ru": "Ашхабад",
+        "uz-Latn": "Ashxobod"
+      },
+      "currency": {
+        "code": "TMT",
+        "name": {
+          "en": "Turkmenistani Manat",
+          "ru": "новый туркменский манат",
+          "uz-Latn": "Turkmaniston manati"
+        },
+        "symbol": {
+          "en": "TMT",
+          "ru": "ТМТ",
+          "uz-Latn": "TMT"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "hard",
+      "population": 7057841,
+      "centroidLng": 58.710938,
+      "centroidLat": 39.436193,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/tm.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "798",
+      "name": {
+        "en": "Tuvalu",
+        "ru": "Тувалу",
+        "uz-Latn": "Tuvalu"
+      },
+      "capital": {
+        "en": "Funafuti",
+        "ru": "Фунафути",
+        "uz-Latn": "Funafuti"
+      },
+      "currency": {
+        "code": "AUD",
+        "name": {
+          "en": "Australian Dollar",
+          "ru": "австралийский доллар",
+          "uz-Latn": "Avstraliya dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "oceania",
+      "difficulty": "hard",
+      "population": 10643,
+      "centroidLng": 178.505859,
+      "centroidLat": -7.798079,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/tv.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "800",
+      "name": {
+        "en": "Uganda",
+        "ru": "Уганда",
+        "uz-Latn": "Uganda"
+      },
+      "capital": {
+        "en": "Kampala",
+        "ru": "Кампала",
+        "uz-Latn": "Kampala"
+      },
+      "currency": {
+        "code": "UGX",
+        "name": {
+          "en": "Ugandan Shilling",
+          "ru": "угандийский шиллинг",
+          "uz-Latn": "Uganda shillingi"
+        },
+        "symbol": {
+          "en": "UGX",
+          "ru": "UGX",
+          "uz-Latn": "UGX"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "medium",
+      "population": 45905417,
+      "centroidLng": 32.34375,
+      "centroidLat": 1.318243,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ug.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "804",
+      "name": {
+        "en": "Ukraine",
+        "ru": "Украина",
+        "uz-Latn": "Ukraina"
+      },
+      "capital": {
+        "en": "Kyiv",
+        "ru": "Киев",
+        "uz-Latn": "Kiyev"
+      },
+      "currency": {
+        "code": "UAH",
+        "name": {
+          "en": "Ukrainian Hryvnia",
+          "ru": "украинская гривна",
+          "uz-Latn": "Ukraina grivnasi"
+        },
+        "symbol": {
+          "en": "₴",
+          "ru": "₴",
+          "uz-Latn": "₴"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "easy",
+      "population": 28700000,
+      "centroidLng": 31.289062,
+      "centroidLat": 49.267805,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ua.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "807",
+      "name": {
+        "en": "North Macedonia",
+        "ru": "Северная Македония",
+        "uz-Latn": "Shimoliy Makedoniya"
+      },
+      "capital": {
+        "en": "Skopje",
+        "ru": "Скопье",
+        "uz-Latn": "Skopye"
+      },
+      "currency": {
+        "code": "MKD",
+        "name": {
+          "en": "Macedonian Denar",
+          "ru": "македонский денар",
+          "uz-Latn": "Makedoniya dinori"
+        },
+        "symbol": {
+          "en": "MKD",
+          "ru": "MKD",
+          "uz-Latn": "MKD"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "medium",
+      "population": 1836713,
+      "centroidLng": 21.708984,
+      "centroidLat": 41.574361,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/mk.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "818",
+      "name": {
+        "en": "Egypt",
+        "ru": "Египет",
+        "uz-Latn": "Misr"
+      },
+      "capital": {
+        "en": "Cairo",
+        "ru": "Каир",
+        "uz-Latn": "Qohira"
+      },
+      "currency": {
+        "code": "EGP",
+        "name": {
+          "en": "Egyptian Pound",
+          "ru": "египетский фунт",
+          "uz-Latn": "Misr funti"
+        },
+        "symbol": {
+          "en": "E£",
+          "ru": "E£",
+          "uz-Latn": "E£"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "easy",
+      "population": 108613296,
+      "centroidLng": 29.882812,
+      "centroidLat": 26.509905,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/eg.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "826",
+      "name": {
+        "en": "United Kingdom",
+        "ru": "Великобритания",
+        "uz-Latn": "Birlashgan Qirollik"
+      },
+      "capital": {
+        "en": "London",
+        "ru": "Лондон",
+        "uz-Latn": "London"
+      },
+      "currency": {
+        "code": "GBP",
+        "name": {
+          "en": "British Pound",
+          "ru": "британский фунт стерлингов",
+          "uz-Latn": "Angliya funt sterlingi"
+        },
+        "symbol": {
+          "en": "£",
+          "ru": "£",
+          "uz-Latn": "£"
+        }
+      },
+      "continent": "europe",
+      "difficulty": "easy",
+      "population": 66912637,
+      "centroidLng": -1.757812,
+      "centroidLat": 52.696361,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/gb.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "834",
+      "name": {
+        "en": "Tanzania",
+        "ru": "Танзания",
+        "uz-Latn": "Tanzaniya"
+      },
+      "capital": {
+        "en": "Dodoma",
+        "ru": "Додома",
+        "uz-Latn": "Dodoma"
+      },
+      "currency": {
+        "code": "TZS",
+        "name": {
+          "en": "Tanzanian Shilling",
+          "ru": "танзанийский шиллинг",
+          "uz-Latn": "Tanzaniya shillingi"
+        },
+        "symbol": {
+          "en": "TZS",
+          "ru": "TZS",
+          "uz-Latn": "TZS"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "medium",
+      "population": 70038850,
+      "centroidLng": 34.804688,
+      "centroidLat": -6.315299,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/tz.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "840",
+      "name": {
+        "en": "United States",
+        "ru": "США",
+        "uz-Latn": "Amerika Qoʻshma Shtatlari"
+      },
+      "capital": {
+        "en": "Washington, D.C.",
+        "ru": "Вашингтон",
+        "uz-Latn": "Vashington"
+      },
+      "currency": {
+        "code": "USD",
+        "name": {
+          "en": "US Dollar",
+          "ru": "доллар США",
+          "uz-Latn": "AQSH dollari"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "north-america",
+      "difficulty": "easy",
+      "population": 341784857,
+      "centroidLng": -101.162109,
+      "centroidLat": 39.639538,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/us.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "854",
+      "name": {
+        "en": "Burkina Faso",
+        "ru": "Буркина-Фасо",
+        "uz-Latn": "Burkina Faso"
+      },
+      "capital": {
+        "en": "Ouagadougou",
+        "ru": "Уагадугу",
+        "uz-Latn": "Uagadugu"
+      },
+      "currency": {
+        "code": "XOF",
+        "name": {
+          "en": "West African CFA Franc",
+          "ru": "франк КФА ВСЕАО",
+          "uz-Latn": "Gʻarbiy Afrika CFA franki"
+        },
+        "symbol": {
+          "en": "F CFA",
+          "ru": "F CFA",
+          "uz-Latn": "F CFA"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 22489126,
+      "centroidLng": -1.757812,
+      "centroidLat": 12.297068,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/bf.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "858",
+      "name": {
+        "en": "Uruguay",
+        "ru": "Уругвай",
+        "uz-Latn": "Urugvay"
+      },
+      "capital": {
+        "en": "Montevideo",
+        "ru": "Монтевидео",
+        "uz-Latn": "Montevideo"
+      },
+      "currency": {
+        "code": "UYU",
+        "name": {
+          "en": "Uruguayan Peso",
+          "ru": "уругвайский песо",
+          "uz-Latn": "Urugvay pesosi"
+        },
+        "symbol": {
+          "en": "$",
+          "ru": "$",
+          "uz-Latn": "$"
+        }
+      },
+      "continent": "south-america",
+      "difficulty": "medium",
+      "population": 3480601,
+      "centroidLng": -55.986328,
+      "centroidLat": -32.7688,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/uy.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "860",
+      "name": {
+        "en": "Uzbekistan",
+        "ru": "Узбекистан",
+        "uz-Latn": "Oʻzbekiston"
+      },
+      "capital": {
+        "en": "Tashkent",
+        "ru": "Ташкент",
+        "uz-Latn": "Toshkent"
+      },
+      "currency": {
+        "code": "UZS",
+        "name": {
+          "en": "Uzbekistani Som",
+          "ru": "узбекский сум",
+          "uz-Latn": "Oʻzbekiston soʻmi"
+        },
+        "symbol": {
+          "en": "UZS",
+          "ru": "UZS",
+          "uz-Latn": "soʻm"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 39047321,
+      "centroidLng": 62.666016,
+      "centroidLat": 42.293564,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/uz.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "862",
+      "name": {
+        "en": "Venezuela",
+        "ru": "Венесуэла",
+        "uz-Latn": "Venesuela"
+      },
+      "capital": {
+        "en": "Caracas",
+        "ru": "Каракас",
+        "uz-Latn": "Karakas"
+      },
+      "currency": {
+        "code": "VES",
+        "name": {
+          "en": "Venezuelan Bolívar",
+          "ru": "венесуэльский боливар",
+          "uz-Latn": "Venesuela bolivari"
+        },
+        "symbol": {
+          "en": "VES",
+          "ru": "VES",
+          "uz-Latn": "VES"
+        }
+      },
+      "continent": "south-america",
+      "difficulty": "medium",
+      "population": 28633711,
+      "centroidLng": -66.181641,
+      "centroidLat": 7.798079,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ve.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "882",
+      "name": {
+        "en": "Samoa",
+        "ru": "Самоа",
+        "uz-Latn": "Samoa"
+      },
+      "capital": {
+        "en": "Apia",
+        "ru": "Апиа",
+        "uz-Latn": "Apia"
+      },
+      "currency": {
+        "code": "WST",
+        "name": {
+          "en": "Samoan Tala",
+          "ru": "самоанская тала",
+          "uz-Latn": "Samoa talasi"
+        },
+        "symbol": {
+          "en": "WST",
+          "ru": "WST",
+          "uz-Latn": "WST"
+        }
+      },
+      "continent": "oceania",
+      "difficulty": "hard",
+      "population": 205557,
+      "centroidLng": -172.177734,
+      "centroidLat": -13.752725,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ws.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "887",
+      "name": {
+        "en": "Yemen",
+        "ru": "Йемен",
+        "uz-Latn": "Yaman"
+      },
+      "capital": {
+        "en": "Sana'a",
+        "ru": "Сана",
+        "uz-Latn": "Sanʼo"
+      },
+      "currency": {
+        "code": "YER",
+        "name": {
+          "en": "Yemeni Rial",
+          "ru": "йеменский риал",
+          "uz-Latn": "Yaman riyoli"
+        },
+        "symbol": {
+          "en": "YER",
+          "ru": "YER",
+          "uz-Latn": "YER"
+        }
+      },
+      "continent": "asia",
+      "difficulty": "medium",
+      "population": 32684503,
+      "centroidLng": 47.548828,
+      "centroidLat": 15.876809,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/ye.svg",
+      "independent": true,
+      "unMember": true
+    },
+    {
+      "id": "894",
+      "name": {
+        "en": "Zambia",
+        "ru": "Замбия",
+        "uz-Latn": "Zambiya"
+      },
+      "capital": {
+        "en": "Lusaka",
+        "ru": "Лусака",
+        "uz-Latn": "Lusaka"
+      },
+      "currency": {
+        "code": "ZMW",
+        "name": {
+          "en": "Zambian Kwacha",
+          "ru": "замбийская квача",
+          "uz-Latn": "Zambiya kvachasi"
+        },
+        "symbol": {
+          "en": "ZK",
+          "ru": "ZK",
+          "uz-Latn": "ZK"
+        }
+      },
+      "continent": "africa",
+      "difficulty": "hard",
+      "population": 23003214,
+      "centroidLng": 27.421875,
+      "centroidLat": -14.179186,
+      "flagUrl": "https://flags.restcountries.com/v5/svg/zm.svg",
+      "independent": true,
+      "unMember": true
+    }
+  ]
+}

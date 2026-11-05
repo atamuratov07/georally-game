@@ -50,7 +50,7 @@
 			"paint": {
 				"fill-color": [
 					"match",
-					["get", "ADM0_A3"],
+					["get", "adm0_a3"],
 					[
 						"ARM",
 						"ATG",
@@ -334,7 +334,6 @@
 				"line-opacity": 1,
 				"line-dasharray": [3, 3]
 			},
-			"filter": ["all", ["!=", "name", "International Date Line"]],
 			"layout": {
 				"visibility": "visible"
 			},
@@ -349,13 +348,13 @@
 			"url": "/map/tiles/tiles.json",
 			"type": "vector",
 			"promoteId": {
-				"countries": "ISO_N3"
+				"countries": "iso_n3"
 			}
 		},
 		"archipelagos": {
 			"type": "geojson",
 			"data": "/map/archipelagos.geojson",
-			"promoteId": "ISO_N3"
+			"promoteId": "iso_n3"
 		},
 		"crimea": {
 			"type": "geojson",

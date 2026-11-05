@@ -18,6 +18,12 @@
 			"import": "./dist/index.js",
 			"default": "./dist/index.js"
 		},
+		"./answers": {
+			"types": "./src/answers/index.ts",
+			"development": "./src/answers/index.ts",
+			"import": "./dist/answers/index.js",
+			"default": "./dist/answers/index.js"
+		},
 		"./singleplayer/locate": {
 			"types": "./src/singleplayer/locate/index.ts",
 			"development": "./src/singleplayer/locate/index.ts",

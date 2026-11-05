@@ -158,6 +158,7 @@ georally-game/
 |   |       |-- index.ts
 |   |       |-- shared/                  # base types, result, errors, random, time
 |   |       |-- catalog/                 # country eligibility selectors, question set selection
+|   |       |-- answers/                 # typed and spoken answer matcher (Name It)
 |   |       |-- singleplayer/
 |   |       |   `-- locate/              # local state machine of the find-on-the-map mode
 |   |       `-- multiplayer/

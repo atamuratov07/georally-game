@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-05T07:29:30.363Z",
+  "generated_at": "2026-11-07T18:48:25.854Z",
   "country_count": 195,
   "countries": [
     {
@@ -33,6 +33,12 @@
       "population": 43844000,
       "centroidLng": 66.005859,
       "centroidLat": 33.870416,
+      "bounds": [
+        60.4866,
+        29.3869,
+        74.8925,
+        38.4741
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/af.svg",
       "independent": true,
       "unMember": true
@@ -67,6 +73,12 @@
       "population": 2335930,
       "centroidLng": 20.039062,
       "centroidLat": 40.913513,
+      "bounds": [
+        19.2713,
+        39.6374,
+        21.0361,
+        42.6552
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/al.svg",
       "independent": true,
       "unMember": true
@@ -101,6 +113,12 @@
       "population": 47400000,
       "centroidLng": 2.636719,
       "centroidLat": 28.149503,
+      "bounds": [
+        -8.682,
+        18.9751,
+        11.9683,
+        37.0936
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/dz.svg",
       "independent": true,
       "unMember": true
@@ -135,6 +153,12 @@
       "population": 90105,
       "centroidLng": 1.582031,
       "centroidLat": 42.55308,
+      "bounds": [
+        1.4062,
+        42.4285,
+        1.7647,
+        42.6492
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ad.svg",
       "independent": true,
       "unMember": true
@@ -169,6 +193,12 @@
       "population": 38778554,
       "centroidLng": 17.578125,
       "centroidLat": -12.297068,
+      "bounds": [
+        11.6688,
+        -18.031,
+        24.0615,
+        -4.3915
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ao.svg",
       "independent": true,
       "unMember": true
@@ -203,6 +233,12 @@
       "population": 106365,
       "centroidLng": -61.787109,
       "centroidLat": 17.308688,
+      "bounds": [
+        -61.8943,
+        16.9898,
+        -61.6676,
+        17.7278
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ag.svg",
       "independent": true,
       "unMember": true
@@ -237,6 +273,12 @@
       "population": 10273450,
       "centroidLng": 47.548828,
       "centroidLat": 40.313043,
+      "bounds": [
+        44.7747,
+        38.3922,
+        50.6264,
+        41.8901
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/az.svg",
       "independent": true,
       "unMember": true
@@ -271,6 +313,12 @@
       "population": 46466688,
       "centroidLng": -63.984375,
       "centroidLat": -36.244273,
+      "bounds": [
+        -73.5878,
+        -55.0517,
+        -53.6613,
+        -21.7875
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ar.svg",
       "independent": true,
       "unMember": true
@@ -305,6 +353,12 @@
       "population": 27921150,
       "centroidLng": 134.472656,
       "centroidLat": -25.720735,
+      "bounds": [
+        112.9188,
+        -43.6411,
+        153.6301,
+        -9.2403
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/au.svg",
       "independent": true,
       "unMember": true
@@ -339,6 +393,12 @@
       "population": 9217573,
       "centroidLng": 14.589844,
       "centroidLat": 47.635784,
+      "bounds": [
+        9.521,
+        46.3782,
+        17.1483,
+        49.01
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/at.svg",
       "independent": true,
       "unMember": true
@@ -373,6 +433,12 @@
       "population": 398165,
       "centroidLng": -76.552734,
       "centroidLat": 24.20689,
+      "bounds": [
+        -79.5946,
+        20.9127,
+        -72.7459,
+        26.9282
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/bs.svg",
       "independent": true,
       "unMember": true
@@ -407,6 +473,12 @@
       "population": 1603260,
       "centroidLng": 50.537109,
       "centroidLat": 26.037042,
+      "bounds": [
+        50.4492,
+        25.79,
+        50.6456,
+        26.243
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/bh.svg",
       "independent": true,
       "unMember": true
@@ -441,6 +513,12 @@
       "population": 169828911,
       "centroidLng": 90,
       "centroidLat": 24.126702,
+      "bounds": [
+        88.0224,
+        20.7381,
+        92.6423,
+        26.6242
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/bd.svg",
       "independent": true,
       "unMember": true
@@ -475,6 +553,12 @@
       "population": 3103900,
       "centroidLng": 44.912109,
       "centroidLat": 40.313043,
+      "bounds": [
+        43.4358,
+        38.8632,
+        46.6027,
+        41.2902
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/am.svg",
       "independent": true,
       "unMember": true
@@ -509,6 +593,12 @@
       "population": 261692,
       "centroidLng": -59.589844,
       "centroidLat": 13.154376,
+      "bounds": [
+        -59.6544,
+        13.0513,
+        -59.4264,
+        13.3442
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/bb.svg",
       "independent": true,
       "unMember": true
@@ -543,6 +633,12 @@
       "population": 11942772,
       "centroidLng": 4.482422,
       "centroidLat": 50.736455,
+      "bounds": [
+        2.5213,
+        49.4948,
+        6.3749,
+        51.496
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/be.svg",
       "independent": true,
       "unMember": true
@@ -577,6 +673,12 @@
       "population": 790718,
       "centroidLng": 90.439453,
       "centroidLat": 27.371767,
+      "bounds": [
+        88.7297,
+        26.6965,
+        92.0888,
+        28.3588
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/bt.svg",
       "independent": true,
       "unMember": true
@@ -611,6 +713,12 @@
       "population": 11365333,
       "centroidLng": -64.6875,
       "centroidLat": -16.720385,
+      "bounds": [
+        -69.6671,
+        -22.8977,
+        -57.4653,
+        -9.6792
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/bo.svg",
       "independent": true,
       "unMember": true
@@ -645,6 +753,12 @@
       "population": 3412000,
       "centroidLng": 17.753906,
       "centroidLat": 44.150681,
+      "bounds": [
+        15.7159,
+        42.5591,
+        19.6189,
+        45.2846
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ba.svg",
       "independent": true,
       "unMember": true
@@ -679,6 +793,12 @@
       "population": 2515633,
       "centroidLng": 24.257812,
       "centroidLat": -22.512557,
+      "bounds": [
+        19.9786,
+        -26.8915,
+        29.35,
+        -17.7813
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/bw.svg",
       "independent": true,
       "unMember": true
@@ -713,6 +833,12 @@
       "population": 214211951,
       "centroidLng": -53.085938,
       "centroidLat": -10.746969,
+      "bounds": [
+        -74.0191,
+        -33.7427,
+        -34.7937,
+        5.2674
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/br.svg",
       "independent": true,
       "unMember": true
@@ -747,6 +873,12 @@
       "population": 418982,
       "centroidLng": -88.681641,
       "centroidLat": 17.056785,
+      "bounds": [
+        -89.2365,
+        15.8794,
+        -87.7835,
+        18.4914
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/bz.svg",
       "independent": true,
       "unMember": true
@@ -781,6 +913,12 @@
       "population": 828857,
       "centroidLng": 159.609375,
       "centroidLat": -8.928487,
+      "bounds": [
+        155.5073,
+        -11.8459,
+        162.757,
+        -6.6004
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/sb.svg",
       "independent": true,
       "unMember": true
@@ -815,6 +953,12 @@
       "population": 458600,
       "centroidLng": 114.697266,
       "centroidLat": 4.477856,
+      "bounds": [
+        113.9982,
+        4.0163,
+        115.3606,
+        5.0568
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/bn.svg",
       "independent": true,
       "unMember": true
@@ -849,6 +993,12 @@
       "population": 6423207,
       "centroidLng": 25.224609,
       "centroidLat": 42.747012,
+      "bounds": [
+        22.3448,
+        41.2385,
+        28.603,
+        44.2285
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/bg.svg",
       "independent": true,
       "unMember": true
@@ -883,6 +1033,12 @@
       "population": 51375327,
       "centroidLng": 96.503906,
       "centroidLat": 21.207459,
+      "bounds": [
+        92.1752,
+        9.7902,
+        101.1745,
+        28.5387
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/mm.svg",
       "independent": true,
       "unMember": true
@@ -917,6 +1073,12 @@
       "population": 12332788,
       "centroidLng": 29.882812,
       "centroidLat": -3.425692,
+      "bounds": [
+        28.9874,
+        -4.4628,
+        30.8346,
+        -2.3023
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/bi.svg",
       "independent": true,
       "unMember": true
@@ -951,6 +1113,12 @@
       "population": 9056080,
       "centroidLng": 28.037109,
       "centroidLat": 53.540307,
+      "bounds": [
+        23.166,
+        51.2352,
+        32.7201,
+        56.1571
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/by.svg",
       "independent": true,
       "unMember": true
@@ -985,6 +1153,12 @@
       "population": 17816143,
       "centroidLng": 104.941406,
       "centroidLat": 12.811801,
+      "bounds": [
+        102.3129,
+        10.4162,
+        107.6111,
+        14.7045
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/kh.svg",
       "independent": true,
       "unMember": true
@@ -1019,6 +1193,12 @@
       "population": 29442327,
       "centroidLng": 12.041016,
       "centroidLat": 5.353521,
+      "bounds": [
+        8.5047,
+        1.6545,
+        16.2076,
+        13.0809
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/cm.svg",
       "independent": true,
       "unMember": true
@@ -1053,6 +1233,12 @@
       "population": 41798407,
       "centroidLng": -97.558594,
       "centroidLat": 53.956086,
+      "bounds": [
+        -141.0055,
+        41.7293,
+        -52.6162,
+        83.1166
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ca.svg",
       "independent": true,
       "unMember": true
@@ -1087,6 +1273,12 @@
       "population": 491233,
       "centroidLng": -23.994141,
       "centroidLat": 15.961329,
+      "bounds": [
+        -25.3606,
+        14.804,
+        -22.6661,
+        17.1973
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/cv.svg",
       "independent": true,
       "unMember": true
@@ -1121,6 +1313,12 @@
       "population": 5513282,
       "centroidLng": 20.478516,
       "centroidLat": 6.577303,
+      "bounds": [
+        14.3865,
+        2.2365,
+        27.4412,
+        11.0006
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/cf.svg",
       "independent": true,
       "unMember": true
@@ -1155,6 +1353,12 @@
       "population": 21756000,
       "centroidLng": 80.683594,
       "centroidLat": 7.623887,
+      "bounds": [
+        79.6563,
+        5.9234,
+        81.8908,
+        9.8296
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/lk.svg",
       "independent": true,
       "unMember": true
@@ -1189,6 +1393,12 @@
       "population": 20031602,
       "centroidLng": 18.632812,
       "centroidLat": 15.36895,
+      "bounds": [
+        13.4486,
+        7.455,
+        23.9846,
+        23.4444
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/td.svg",
       "independent": true,
       "unMember": true
@@ -1223,6 +1433,12 @@
       "population": 20150948,
       "centroidLng": -70.576172,
       "centroidLat": -29.22889,
+      "bounds": [
+        -75.711,
+        -55.9185,
+        -66.4205,
+        -17.5065
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/cl.svg",
       "independent": true,
       "unMember": true
@@ -1257,6 +1473,12 @@
       "population": 1404890000,
       "centroidLng": 102.392578,
       "centroidLat": 35.88905,
+      "bounds": [
+        73.6029,
+        15.775,
+        134.7721,
+        53.5697
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/cn.svg",
       "independent": true,
       "unMember": true
@@ -1291,6 +1513,12 @@
       "population": 53399171,
       "centroidLng": -73.037109,
       "centroidLat": 3.951941,
+      "bounds": [
+        -81.7232,
+        -4.2369,
+        -66.8751,
+        13.578
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/co.svg",
       "independent": true,
       "unMember": true
@@ -1325,6 +1553,12 @@
       "population": 944388,
       "centroidLng": 43.681641,
       "centroidLat": -11.867351,
+      "bounds": [
+        43.2133,
+        -12.3803,
+        44.529,
+        -11.3615
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/km.svg",
       "independent": true,
       "unMember": true
@@ -1359,6 +1593,12 @@
       "population": 6332961,
       "centroidLng": 15.996094,
       "centroidLat": 0,
+      "bounds": [
+        11.114,
+        -5.0199,
+        18.6425,
+        3.7081
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/cg.svg",
       "independent": true,
       "unMember": true
@@ -1393,6 +1633,12 @@
       "population": 116452000,
       "centroidLng": 23.554688,
       "centroidLat": -2.108899,
+      "bounds": [
+        12.2099,
+        -13.4578,
+        31.2699,
+        5.3754
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/cd.svg",
       "independent": true,
       "unMember": true
@@ -1427,6 +1673,12 @@
       "population": 5160700,
       "centroidLng": -84.199219,
       "centroidLat": 10.055403,
+      "bounds": [
+        -85.9461,
+        8.0347,
+        -82.5622,
+        11.2094
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/cr.svg",
       "independent": true,
       "unMember": true
@@ -1461,6 +1713,12 @@
       "population": 3874993,
       "centroidLng": 16.611328,
       "centroidLat": 45.644768,
+      "bounds": [
+        13.5008,
+        42.4163,
+        19.4074,
+        46.5466
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/hr.svg",
       "independent": true,
       "unMember": true
@@ -1495,6 +1753,12 @@
       "population": 9434593,
       "centroidLng": -79.013672,
       "centroidLat": 22.024546,
+      "bounds": [
+        -84.9491,
+        19.8274,
+        -74.1329,
+        23.2654
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/cu.svg",
       "independent": true,
       "unMember": true
@@ -1529,6 +1793,12 @@
       "population": 983000,
       "centroidLng": 32.958984,
       "centroidLat": 34.885931,
+      "bounds": [
+        32.2723,
+        34.6252,
+        34.0989,
+        35.1873
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/cy.svg",
       "independent": true,
       "unMember": true
@@ -1561,8 +1831,14 @@
       "continent": "europe",
       "difficulty": "medium",
       "population": 10903655,
-      "centroidLng": 14.530792,
-      "centroidLat": 49.9449625,
+      "centroidLng": 15.457077,
+      "centroidLat": 49.798595000000006,
+      "bounds": [
+        12.0767,
+        48.5575,
+        18.8375,
+        51.0397
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/cz.svg",
       "independent": true,
       "unMember": true
@@ -1597,6 +1873,12 @@
       "population": 13551992,
       "centroidLng": 2.285156,
       "centroidLat": 9.882275,
+      "bounds": [
+        0.7594,
+        6.2142,
+        3.837,
+        12.3991
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/bj.svg",
       "independent": true,
       "unMember": true
@@ -1631,6 +1913,12 @@
       "population": 6038638,
       "centroidLng": 10.019531,
       "centroidLat": 55.973798,
+      "bounds": [
+        8.0941,
+        54.5688,
+        12.6742,
+        57.7511
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/dk.svg",
       "independent": true,
       "unMember": true
@@ -1665,6 +1953,12 @@
       "population": 65431,
       "centroidLng": -61.347656,
       "centroidLat": 15.45368,
+      "bounds": [
+        -61.4892,
+        15.202,
+        -61.2487,
+        15.6337
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/dm.svg",
       "independent": true,
       "unMember": true
@@ -1699,6 +1993,12 @@
       "population": 11532151,
       "centroidLng": -70.136719,
       "centroidLat": 18.895893,
+      "bounds": [
+        -72.0099,
+        17.5458,
+        -68.328,
+        19.9373
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/do.svg",
       "independent": true,
       "unMember": true
@@ -1733,6 +2033,12 @@
       "population": 18135478,
       "centroidLng": -78.310547,
       "centroidLat": -1.406109,
+      "bounds": [
+        -81.0132,
+        -5.0117,
+        -75.2275,
+        1.435
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ec.svg",
       "independent": true,
       "unMember": true
@@ -1767,6 +2073,12 @@
       "population": 6029976,
       "centroidLng": -88.857422,
       "centroidLat": 13.752725,
+      "bounds": [
+        -90.1154,
+        13.1583,
+        -87.6928,
+        14.4454
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/sv.svg",
       "independent": true,
       "unMember": true
@@ -1801,6 +2113,12 @@
       "population": 1795834,
       "centroidLng": 10.371094,
       "centroidLat": 1.669686,
+      "bounds": [
+        8.4223,
+        0.9241,
+        11.3366,
+        3.7725
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/gq.svg",
       "independent": true,
       "unMember": true
@@ -1835,6 +2153,12 @@
       "population": 111652998,
       "centroidLng": 39.638672,
       "centroidLat": 8.581021,
+      "bounds": [
+        32.9891,
+        3.4037,
+        47.9787,
+        14.8798
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/et.svg",
       "independent": true,
       "unMember": true
@@ -1869,6 +2193,12 @@
       "population": 3682669,
       "centroidLng": 38.847656,
       "centroidLat": 15.36895,
+      "bounds": [
+        36.4237,
+        12.3601,
+        43.1241,
+        18.0049
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/er.svg",
       "independent": true,
       "unMember": true
@@ -1903,6 +2233,12 @@
       "population": 1360745,
       "centroidLng": 25.576172,
       "centroidLat": 58.676938,
+      "bounds": [
+        21.8325,
+        57.5158,
+        28.1868,
+        59.6713
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ee.svg",
       "independent": true,
       "unMember": true
@@ -1937,6 +2273,12 @@
       "population": 902623,
       "centroidLng": 177.978516,
       "centroidLat": -17.895114,
+      "bounds": [
+        177.0941,
+        -20.6714,
+        181.784,
+        -16.121
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/fj.svg",
       "independent": true,
       "unMember": true
@@ -1971,6 +2313,12 @@
       "population": 5659324,
       "centroidLng": 26.191406,
       "centroidLat": 62.512318,
+      "bounds": [
+        20.6227,
+        59.8109,
+        31.5693,
+        70.0755
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/fi.svg",
       "independent": true,
       "unMember": true
@@ -2005,6 +2353,12 @@
       "population": 69081996,
       "centroidLng": 2.197266,
       "centroidLat": 47.040182,
+      "bounds": [
+        -5.1334,
+        41.3654,
+        9.5595,
+        51.0872
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/fr.svg",
       "independent": true,
       "unMember": true
@@ -2039,6 +2393,12 @@
       "population": 1066809,
       "centroidLng": 42.539062,
       "centroidLat": 11.781325,
+      "bounds": [
+        41.7494,
+        10.9304,
+        43.4194,
+        12.7074
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/dj.svg",
       "independent": true,
       "unMember": true
@@ -2073,6 +2433,12 @@
       "population": 2469296,
       "centroidLng": 11.601562,
       "centroidLat": -0.615223,
+      "bounds": [
+        8.6956,
+        -3.9369,
+        14.4993,
+        2.323
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ga.svg",
       "independent": true,
       "unMember": true
@@ -2107,6 +2473,12 @@
       "population": 3657000,
       "centroidLng": 43.505859,
       "centroidLat": 42.163403,
+      "bounds": [
+        39.9861,
+        41.0441,
+        46.6947,
+        43.5755
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ge.svg",
       "independent": true,
       "unMember": true
@@ -2141,6 +2513,12 @@
       "population": 2422712,
       "centroidLng": -15.380859,
       "centroidLat": 13.410994,
+      "bounds": [
+        -16.8297,
+        13.0647,
+        -13.818,
+        13.8195
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/gm.svg",
       "independent": true,
       "unMember": true
@@ -2173,8 +2551,14 @@
       "continent": "asia",
       "difficulty": "hard",
       "population": 5557096,
-      "centroidLng": 35.2592465,
-      "centroidLat": 32.200540000000004,
+      "centroidLng": 34.953003,
+      "centroidLat": 31.854231,
+      "bounds": [
+        34.2004,
+        31.2116,
+        35.5724,
+        32.5422
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ps.svg",
       "independent": true,
       "unMember": false
@@ -2209,6 +2593,12 @@
       "population": 83298787,
       "centroidLng": 10.371094,
       "centroidLat": 51.124213,
+      "bounds": [
+        5.8529,
+        47.2708,
+        15.0225,
+        55.065
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/de.svg",
       "independent": true,
       "unMember": true
@@ -2243,6 +2633,12 @@
       "population": 34378768,
       "centroidLng": -1.142578,
       "centroidLat": 7.710992,
+      "bounds": [
+        -3.263,
+        4.7365,
+        1.1879,
+        11.1636
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/gh.svg",
       "independent": true,
       "unMember": true
@@ -2277,6 +2673,12 @@
       "population": 120740,
       "centroidLng": -164.707031,
       "centroidLat": -0.878872,
+      "bounds": [
+        172.7503,
+        -5.6352,
+        205.0599,
+        4.7229
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ki.svg",
       "independent": true,
       "unMember": true
@@ -2311,6 +2713,12 @@
       "population": 10372335,
       "centroidLng": 22.939453,
       "centroidLat": 39.027719,
+      "bounds": [
+        19.627,
+        34.8149,
+        28.2404,
+        41.7509
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/gr.svg",
       "independent": true,
       "unMember": true
@@ -2345,6 +2753,12 @@
       "population": 109021,
       "centroidLng": -61.699219,
       "centroidLat": 12.125264,
+      "bounds": [
+        -61.7899,
+        12.003,
+        -61.4218,
+        12.5291
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/gd.svg",
       "independent": true,
       "unMember": true
@@ -2379,6 +2793,12 @@
       "population": 18406359,
       "centroidLng": -90.263672,
       "centroidLat": 15.538376,
+      "bounds": [
+        -92.2468,
+        13.7313,
+        -88.2215,
+        17.8154
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/gt.svg",
       "independent": true,
       "unMember": true
@@ -2413,6 +2833,12 @@
       "population": 17521167,
       "centroidLng": -10.986328,
       "centroidLat": 10.833306,
+      "bounds": [
+        -15.0815,
+        7.1908,
+        -7.6629,
+        12.6739
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/gn.svg",
       "independent": true,
       "unMember": true
@@ -2447,6 +2873,12 @@
       "population": 956044,
       "centroidLng": -58.886719,
       "centroidLat": 5.090944,
+      "bounds": [
+        -61.3971,
+        1.1864,
+        -56.482,
+        8.558
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/gy.svg",
       "independent": true,
       "unMember": true
@@ -2481,6 +2913,12 @@
       "population": 11867032,
       "centroidLng": -73.037109,
       "centroidLat": 18.812718,
+      "bounds": [
+        -74.4887,
+        18.0257,
+        -71.639,
+        20.0895
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ht.svg",
       "independent": true,
       "unMember": true
@@ -2515,6 +2953,12 @@
       "population": 882,
       "centroidLng": 12.480469,
       "centroidLat": 41.902277,
+      "bounds": [
+        12.45,
+        41.9,
+        12.4805,
+        41.9044
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/va.svg",
       "independent": true,
       "unMember": false
@@ -2549,6 +2993,12 @@
       "population": 10186738,
       "centroidLng": -86.660156,
       "centroidLat": 14.85985,
+      "bounds": [
+        -89.3642,
+        12.9791,
+        -83.1307,
+        17.4188
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/hn.svg",
       "independent": true,
       "unMember": true
@@ -2583,6 +3033,12 @@
       "population": 9488428,
       "centroidLng": 19.423828,
       "centroidLat": 47.15984,
+      "bounds": [
+        16.0935,
+        45.7416,
+        22.8777,
+        48.5694
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/hu.svg",
       "independent": true,
       "unMember": true
@@ -2617,6 +3073,12 @@
       "population": 396500,
       "centroidLng": -18.632812,
       "centroidLat": 64.997939,
+      "bounds": [
+        -24.5394,
+        63.3964,
+        -13.5035,
+        66.5642
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/is.svg",
       "independent": true,
       "unMember": true
@@ -2651,6 +3113,12 @@
       "population": 1429404000,
       "centroidLng": 79.628906,
       "centroidLat": 22.917923,
+      "bounds": [
+        68.144,
+        6.745,
+        97.3623,
+        35.4954
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/in.svg",
       "independent": true,
       "unMember": true
@@ -2685,6 +3153,12 @@
       "population": 288315089,
       "centroidLng": 119.970703,
       "centroidLat": -4.214943,
+      "bounds": [
+        95.0125,
+        -10.9224,
+        140.978,
+        5.9098
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/id.svg",
       "independent": true,
       "unMember": true
@@ -2719,6 +3193,12 @@
       "population": 87134000,
       "centroidLng": 54.316406,
       "centroidLat": 32.546813,
+      "bounds": [
+        44.0153,
+        25.0594,
+        63.3198,
+        39.7717
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ir.svg",
       "independent": true,
       "unMember": true
@@ -2753,6 +3233,12 @@
       "population": 46118793,
       "centroidLng": 42.978516,
       "centroidLat": 32.990236,
+      "bounds": [
+        38.7748,
+        29.0633,
+        48.5596,
+        37.3757
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/iq.svg",
       "independent": true,
       "unMember": true
@@ -2787,6 +3273,12 @@
       "population": 5525600,
       "centroidLng": -7.646484,
       "centroidLat": 53.173119,
+      "bounds": [
+        -10.4783,
+        51.4454,
+        -5.993,
+        55.3862
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ie.svg",
       "independent": true,
       "unMember": true
@@ -2821,6 +3313,12 @@
       "population": 10305000,
       "centroidLng": 34.892578,
       "centroidLat": 30.977609,
+      "bounds": [
+        34.2485,
+        29.4898,
+        35.8883,
+        33.4063
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/il.svg",
       "independent": true,
       "unMember": true
@@ -2855,6 +3353,12 @@
       "population": 58943673,
       "centroidLng": 12.65625,
       "centroidLat": 42.875964,
+      "bounds": [
+        6.6027,
+        35.4897,
+        18.5175,
+        47.0851
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/it.svg",
       "independent": true,
       "unMember": true
@@ -2889,6 +3393,12 @@
       "population": 33293101,
       "centroidLng": -5.537109,
       "centroidLat": 7.623887,
+      "bounds": [
+        -8.6188,
+        4.3436,
+        -2.5062,
+        10.7268
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ci.svg",
       "independent": true,
       "unMember": true
@@ -2923,6 +3433,12 @@
       "population": 2774538,
       "centroidLng": -77.34375,
       "centroidLat": 18.145852,
+      "bounds": [
+        -78.3751,
+        17.7029,
+        -76.1874,
+        18.5252
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/jm.svg",
       "independent": true,
       "unMember": true
@@ -2957,6 +3473,12 @@
       "population": 122650000,
       "centroidLng": 139.394531,
       "centroidLat": 36.879621,
+      "bounds": [
+        122.9383,
+        24.2119,
+        145.8243,
+        45.5208
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/jp.svg",
       "independent": true,
       "unMember": true
@@ -2991,6 +3513,12 @@
       "population": 20618796,
       "centroidLng": 67.324219,
       "centroidLat": 48.166085,
+      "bounds": [
+        46.4776,
+        40.5847,
+        87.3235,
+        55.4345
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/kz.svg",
       "independent": true,
       "unMember": true
@@ -3025,6 +3553,12 @@
       "population": 11937000,
       "centroidLng": 36.386719,
       "centroidLat": 31.278551,
+      "bounds": [
+        34.9488,
+        29.1905,
+        39.2927,
+        33.3719
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/jo.svg",
       "independent": true,
       "unMember": true
@@ -3059,6 +3593,12 @@
       "population": 54227015,
       "centroidLng": 37.792969,
       "centroidLat": 0.615223,
+      "bounds": [
+        33.945,
+        -4.6778,
+        41.8854,
+        5.0308
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ke.svg",
       "independent": true,
       "unMember": true
@@ -3091,8 +3631,14 @@
       "continent": "asia",
       "difficulty": "hard",
       "population": 25950000,
-      "centroidLng": 127.54303,
-      "centroidLat": 41.491092,
+      "centroidLng": 127.455826,
+      "centroidLat": 40.342899,
+      "bounds": [
+        124.2114,
+        37.6751,
+        130.7003,
+        43.0107
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/kp.svg",
       "independent": true,
       "unMember": true
@@ -3125,8 +3671,14 @@
       "continent": "asia",
       "difficulty": "easy",
       "population": 51106229,
-      "centroidLng": 127.04383849999999,
-      "centroidLat": 37.5670085,
+      "centroidLng": 128.237915,
+      "centroidLat": 35.9108545,
+      "bounds": [
+        124.6138,
+        33.1973,
+        131.8621,
+        38.6244
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/kr.svg",
       "independent": true,
       "unMember": true
@@ -3161,6 +3713,12 @@
       "population": 4881254,
       "centroidLng": 47.285156,
       "centroidLat": 29.305561,
+      "bounds": [
+        46.5325,
+        28.5338,
+        48.4333,
+        30.0989
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/kw.svg",
       "independent": true,
       "unMember": true
@@ -3195,6 +3753,12 @@
       "population": 7404300,
       "centroidLng": 74.882812,
       "centroidLat": 41.836828,
+      "bounds": [
+        69.2262,
+        39.1896,
+        80.2579,
+        43.2613
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/kg.svg",
       "independent": true,
       "unMember": true
@@ -3229,6 +3793,12 @@
       "population": 7745000,
       "centroidLng": 102.65625,
       "centroidLat": 19.394068,
+      "bounds": [
+        100.0964,
+        13.9154,
+        107.6647,
+        22.4961
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/la.svg",
       "independent": true,
       "unMember": true
@@ -3263,6 +3833,12 @@
       "population": 5895466,
       "centroidLng": 35.859375,
       "centroidLat": 33.94336,
+      "bounds": [
+        35.0999,
+        33.0558,
+        36.6037,
+        34.6875
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/lb.svg",
       "independent": true,
       "unMember": true
@@ -3297,6 +3873,12 @@
       "population": 2116427,
       "centroidLng": 28.212891,
       "centroidLat": -29.61167,
+      "bounds": [
+        27.0016,
+        -30.6592,
+        29.4365,
+        -28.5712
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ls.svg",
       "independent": true,
       "unMember": true
@@ -3331,6 +3913,12 @@
       "population": 1832100,
       "centroidLng": 24.873047,
       "centroidLat": 56.848972,
+      "bounds": [
+        20.9687,
+        55.6667,
+        28.2171,
+        58.075
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/lv.svg",
       "independent": true,
       "unMember": true
@@ -3365,6 +3953,12 @@
       "population": 5248621,
       "centroidLng": -9.404297,
       "centroidLat": 6.227934,
+      "bounds": [
+        -11.4766,
+        4.3477,
+        -7.3841,
+        8.5648
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/lr.svg",
       "independent": true,
       "unMember": true
@@ -3399,6 +3993,12 @@
       "population": 7539852,
       "centroidLng": 18.017578,
       "centroidLat": 27.059126,
+      "bounds": [
+        9.2861,
+        19.4963,
+        25.156,
+        33.1813
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ly.svg",
       "independent": true,
       "unMember": true
@@ -3433,6 +4033,12 @@
       "population": 41228,
       "centroidLng": 9.580078,
       "centroidLat": 47.15984,
+      "bounds": [
+        9.4757,
+        47.0523,
+        9.6158,
+        47.2625
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/li.svg",
       "independent": true,
       "unMember": true
@@ -3467,6 +4073,12 @@
       "population": 2887761,
       "centroidLng": 23.730469,
       "centroidLat": 55.429013,
+      "bounds": [
+        20.9248,
+        53.8865,
+        26.8012,
+        56.4428
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/lt.svg",
       "independent": true,
       "unMember": true
@@ -3501,6 +4113,12 @@
       "population": 690959,
       "centroidLng": 6.064453,
       "centroidLat": 49.781264,
+      "bounds": [
+        5.7142,
+        49.4413,
+        6.5026,
+        50.1752
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/lu.svg",
       "independent": true,
       "unMember": true
@@ -3535,6 +4153,12 @@
       "population": 32658977,
       "centroidLng": 46.669922,
       "centroidLat": -19.394068,
+      "bounds": [
+        43.2229,
+        -25.5982,
+        50.5042,
+        -11.9439
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/mg.svg",
       "independent": true,
       "unMember": true
@@ -3569,6 +4193,12 @@
       "population": 21201635,
       "centroidLng": 33.925781,
       "centroidLat": -13.325485,
+      "bounds": [
+        32.6637,
+        -17.1356,
+        35.9047,
+        -9.3813
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/mw.svg",
       "independent": true,
       "unMember": true
@@ -3603,6 +4233,12 @@
       "population": 34389400,
       "centroidLng": 108.193359,
       "centroidLat": 4.039618,
+      "bounds": [
+        99.6446,
+        0.8514,
+        119.2786,
+        7.3557
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/my.svg",
       "independent": true,
       "unMember": true
@@ -3637,6 +4273,12 @@
       "population": 515132,
       "centroidLng": 73.300781,
       "centroidLat": 3.688855,
+      "bounds": [
+        72.6841,
+        -0.6881,
+        73.7526,
+        7.1078
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/mv.svg",
       "independent": true,
       "unMember": true
@@ -3671,6 +4313,12 @@
       "population": 23929000,
       "centroidLng": -1.845703,
       "centroidLat": 17.14079,
+      "bounds": [
+        -12.2635,
+        10.1405,
+        4.2353,
+        24.9948
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ml.svg",
       "independent": true,
       "unMember": true
@@ -3705,6 +4353,12 @@
       "population": 588254,
       "centroidLng": 14.414062,
       "centroidLat": 35.88905,
+      "bounds": [
+        14.1833,
+        35.8011,
+        14.5665,
+        36.0758
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/mt.svg",
       "independent": true,
       "unMember": true
@@ -3739,6 +4393,12 @@
       "population": 4927532,
       "centroidLng": -11.074219,
       "centroidLat": 19.55979,
+      "bounds": [
+        -17.081,
+        14.735,
+        -4.8216,
+        27.2852
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/mr.svg",
       "independent": true,
       "unMember": true
@@ -3773,6 +4433,12 @@
       "population": 1240316,
       "centroidLng": 57.832031,
       "centroidLat": -20.220966,
+      "bounds": [
+        57.3033,
+        -20.5171,
+        57.8321,
+        -19.9798
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/mu.svg",
       "independent": true,
       "unMember": true
@@ -3807,6 +4473,12 @@
       "population": 131231919,
       "centroidLng": -102.568359,
       "centroidLat": 23.966176,
+      "bounds": [
+        -118.3695,
+        14.5463,
+        -86.6999,
+        32.7134
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/mx.svg",
       "independent": true,
       "unMember": true
@@ -3841,6 +4513,12 @@
       "population": 38857,
       "centroidLng": 7.382812,
       "centroidLat": 43.771094,
+      "bounds": [
+        7.3663,
+        43.7175,
+        7.4378,
+        43.7711
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/mc.svg",
       "independent": true,
       "unMember": true
@@ -3875,6 +4553,12 @@
       "population": 3591120,
       "centroidLng": 103.095703,
       "centroidLat": 46.800059,
+      "bounds": [
+        87.7354,
+        41.5856,
+        119.9076,
+        52.1293
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/mn.svg",
       "independent": true,
       "unMember": true
@@ -3909,6 +4593,12 @@
       "population": 2365600,
       "centroidLng": 28.476562,
       "centroidLat": 47.219568,
+      "bounds": [
+        26.6185,
+        45.462,
+        30.1314,
+        48.4857
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/md.svg",
       "independent": true,
       "unMember": true
@@ -3943,6 +4633,12 @@
       "population": 622902,
       "centroidLng": 19.248047,
       "centroidLat": 42.811522,
+      "bounds": [
+        18.4336,
+        41.8521,
+        20.355,
+        43.5476
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/me.svg",
       "independent": true,
       "unMember": true
@@ -3977,6 +4673,12 @@
       "population": 37254695,
       "centroidLng": -7.382812,
       "centroidLat": 30.751278,
+      "bounds": [
+        -17.0138,
+        21.4198,
+        -1.0313,
+        35.9269
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ma.svg",
       "independent": true,
       "unMember": true
@@ -4011,6 +4713,12 @@
       "population": 34958973,
       "centroidLng": 34.892578,
       "centroidLat": -17.811456,
+      "bounds": [
+        30.2137,
+        -26.8609,
+        40.8486,
+        -10.4689
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/mz.svg",
       "independent": true,
       "unMember": true
@@ -4045,6 +4753,12 @@
       "population": 5398645,
       "centroidLng": 56.865234,
       "centroidLat": 20.96144,
+      "bounds": [
+        51.979,
+        16.6427,
+        59.844,
+        26.3858
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/om.svg",
       "independent": true,
       "unMember": true
@@ -4079,6 +4793,12 @@
       "population": 3022401,
       "centroidLng": 17.050781,
       "centroidLat": -20.715015,
+      "bounds": [
+        11.7182,
+        -28.9589,
+        25.2604,
+        -16.9504
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/na.svg",
       "independent": true,
       "unMember": true
@@ -4113,6 +4833,12 @@
       "population": 11680,
       "centroidLng": 166.904297,
       "centroidLat": -0.527336,
+      "bounds": [
+        166.9042,
+        -0.5521,
+        166.9579,
+        -0.4902
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/nr.svg",
       "independent": true,
       "unMember": true
@@ -4147,6 +4873,12 @@
       "population": 30034040,
       "centroidLng": 83.935547,
       "centroidLat": 28.22697,
+      "bounds": [
+        80.0299,
+        26.3438,
+        88.1695,
+        30.4168
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/np.svg",
       "independent": true,
       "unMember": true
@@ -4181,6 +4913,12 @@
       "population": 18171612,
       "centroidLng": 5.712891,
       "centroidLat": 52.321911,
+      "bounds": [
+        3.3494,
+        50.7477,
+        7.1988,
+        53.5583
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/nl.svg",
       "independent": true,
       "unMember": true
@@ -4215,6 +4953,12 @@
       "population": 321409,
       "centroidLng": 167.695312,
       "centroidLat": -16.214675,
+      "bounds": [
+        166.5211,
+        -20.2532,
+        169.8995,
+        -13.0647
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/vu.svg",
       "independent": true,
       "unMember": true
@@ -4249,6 +4993,12 @@
       "population": 4993923,
       "centroidLng": 173.056641,
       "centroidLat": -41.967659,
+      "bounds": [
+        165.8866,
+        -52.6006,
+        178.8437,
+        -34.3978
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/nz.svg",
       "independent": true,
       "unMember": true
@@ -4283,6 +5033,12 @@
       "population": 6874748,
       "centroidLng": -85.253906,
       "centroidLat": 12.811801,
+      "bounds": [
+        -87.6861,
+        10.7132,
+        -82.7256,
+        15.0311
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ni.svg",
       "independent": true,
       "unMember": true
@@ -4317,6 +5073,12 @@
       "population": 27522750,
       "centroidLng": 9.404297,
       "centroidLat": 17.392579,
+      "bounds": [
+        0.1524,
+        11.6952,
+        15.9701,
+        23.5175
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ne.svg",
       "independent": true,
       "unMember": true
@@ -4351,6 +5113,12 @@
       "population": 223800000,
       "centroidLng": 8.085938,
       "centroidLat": 9.622414,
+      "bounds": [
+        2.671,
+        4.2724,
+        14.6695,
+        13.8808
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ng.svg",
       "independent": true,
       "unMember": true
@@ -4385,6 +5153,12 @@
       "population": 5636904,
       "centroidLng": 9.052734,
       "centroidLat": 61.270233,
+      "bounds": [
+        4.6444,
+        57.9928,
+        31.0776,
+        71.1652
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/no.svg",
       "independent": true,
       "unMember": true
@@ -4419,6 +5193,12 @@
       "population": 75817,
       "centroidLng": 155.214844,
       "centroidLat": 7.100893,
+      "bounds": [
+        149.1806,
+        3.7518,
+        158.3391,
+        8.9869
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/fm.svg",
       "independent": true,
       "unMember": true
@@ -4453,6 +5233,12 @@
       "population": 37548,
       "centroidLng": 170.068359,
       "centroidLat": 7.100893,
+      "bounds": [
+        165.2824,
+        4.5736,
+        172.0295,
+        11.7115
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/mh.svg",
       "independent": true,
       "unMember": true
@@ -4487,6 +5273,12 @@
       "population": 16733,
       "centroidLng": 134.296875,
       "centroidLat": 7.188101,
+      "bounds": [
+        132.2135,
+        5.2919,
+        134.7268,
+        8.096
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/pw.svg",
       "independent": true,
       "unMember": true
@@ -4521,6 +5313,12 @@
       "population": 241499431,
       "centroidLng": 69.345703,
       "centroidLat": 29.916852,
+      "bounds": [
+        60.845,
+        23.6948,
+        77.0485,
+        37.0541
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/pk.svg",
       "independent": true,
       "unMember": true
@@ -4555,6 +5353,12 @@
       "population": 4064780,
       "centroidLng": -80.244141,
       "centroidLat": 8.581021,
+      "bounds": [
+        -83.0539,
+        7.2058,
+        -77.1638,
+        9.6292
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/pa.svg",
       "independent": true,
       "unMember": true
@@ -4589,6 +5393,12 @@
       "population": 11781559,
       "centroidLng": 144.84375,
       "centroidLat": -6.053161,
+      "bounds": [
+        140.8488,
+        -11.6361,
+        155.9675,
+        -1.3457
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/pg.svg",
       "independent": true,
       "unMember": true
@@ -4623,6 +5433,12 @@
       "population": 6109644,
       "centroidLng": -58.359375,
       "centroidLat": -23.241346,
+      "bounds": [
+        -62.651,
+        -27.5875,
+        -54.2449,
+        -19.2865
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/py.svg",
       "independent": true,
       "unMember": true
@@ -4657,6 +5473,12 @@
       "population": 34157732,
       "centroidLng": -75.498047,
       "centroidLat": -9.882275,
+      "bounds": [
+        -81.3373,
+        -18.3376,
+        -68.6837,
+        -0.0288
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/pe.svg",
       "independent": true,
       "unMember": true
@@ -4691,6 +5513,12 @@
       "population": 114849400,
       "centroidLng": 122.871094,
       "centroidLat": 11.781325,
+      "bounds": [
+        116.9549,
+        4.6558,
+        126.6175,
+        21.123
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ph.svg",
       "independent": true,
       "unMember": true
@@ -4725,6 +5553,12 @@
       "population": 37232000,
       "centroidLng": 19.423828,
       "centroidLat": 52.106505,
+      "bounds": [
+        14.1242,
+        48.9937,
+        24.1439,
+        54.8387
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/pl.svg",
       "independent": true,
       "unMember": true
@@ -4759,6 +5593,12 @@
       "population": 11424031,
       "centroidLng": -8.261719,
       "centroidLat": 39.571822,
+      "bounds": [
+        -9.4977,
+        36.9663,
+        -6.2059,
+        42.1533
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/pt.svg",
       "independent": true,
       "unMember": true
@@ -4793,6 +5633,12 @@
       "population": 1890252,
       "centroidLng": -14.941406,
       "centroidLat": 12.039321,
+      "bounds": [
+        -16.7281,
+        10.9277,
+        -13.6601,
+        12.6792
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/gw.svg",
       "independent": true,
       "unMember": true
@@ -4827,6 +5673,12 @@
       "population": 1409452,
       "centroidLng": 125.6719205,
       "centroidLat": -8.818628,
+      "bounds": [
+        124.0301,
+        -9.5019,
+        127.3137,
+        -8.1353
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/tl.svg",
       "independent": true,
       "unMember": true
@@ -4861,6 +5713,12 @@
       "population": 3370611,
       "centroidLng": 51.152344,
       "centroidLat": 25.324167,
+      "bounds": [
+        50.7513,
+        24.5596,
+        51.6166,
+        26.1604
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/qa.svg",
       "independent": true,
       "unMember": true
@@ -4895,6 +5753,12 @@
       "population": 19041322,
       "centroidLng": 24.960938,
       "centroidLat": 45.828799,
+      "bounds": [
+        20.2423,
+        43.6499,
+        29.7002,
+        48.275
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ro.svg",
       "independent": true,
       "unMember": true
@@ -4929,6 +5793,12 @@
       "population": 146028325,
       "centroidLng": 96.679688,
       "centroidLat": 61.980267,
+      "bounds": [
+        26.9439,
+        41.1931,
+        191.0056,
+        81.8587
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ru.svg",
       "independent": true,
       "unMember": true
@@ -4963,6 +5833,12 @@
       "population": 14418145,
       "centroidLng": 29.882812,
       "centroidLat": -1.933227,
+      "bounds": [
+        28.8569,
+        -2.8265,
+        30.8881,
+        -1.0587
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/rw.svg",
       "independent": true,
       "unMember": true
@@ -4997,6 +5873,12 @@
       "population": 54338,
       "centroidLng": -62.666016,
       "centroidLat": 17.308688,
+      "bounds": [
+        -62.8611,
+        17.1001,
+        -62.5369,
+        17.4162
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/kn.svg",
       "independent": true,
       "unMember": true
@@ -5031,6 +5913,12 @@
       "population": 184100,
       "centroidLng": -60.996094,
       "centroidLat": 13.923404,
+      "bounds": [
+        -61.0785,
+        13.714,
+        -60.8834,
+        14.1113
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/lc.svg",
       "independent": true,
       "unMember": true
@@ -5065,6 +5953,12 @@
       "population": 109296,
       "centroidLng": -61.171875,
       "centroidLat": 13.239945,
+      "bounds": [
+        -61.4603,
+        12.5853,
+        -61.1238,
+        13.3803
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/vc.svg",
       "independent": true,
       "unMember": true
@@ -5099,6 +5993,12 @@
       "population": 34172,
       "centroidLng": 12.480469,
       "centroidLat": 43.961191,
+      "bounds": [
+        12.3857,
+        43.8919,
+        12.4929,
+        43.983
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/sm.svg",
       "independent": true,
       "unMember": true
@@ -5133,6 +6033,12 @@
       "population": 220372,
       "centroidLng": 6.767578,
       "centroidLat": 0.439449,
+      "bounds": [
+        6.4613,
+        0.0247,
+        7.4625,
+        1.6999
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/st.svg",
       "independent": true,
       "unMember": true
@@ -5167,6 +6073,12 @@
       "population": 35325004,
       "centroidLng": 44.560547,
       "centroidLat": 24.126702,
+      "bounds": [
+        34.5726,
+        16.3715,
+        55.6376,
+        32.121
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/sa.svg",
       "independent": true,
       "unMember": true
@@ -5201,6 +6113,12 @@
       "population": 19575061,
       "centroidLng": -14.677734,
       "centroidLat": 14.774883,
+      "bounds": [
+        -17.63,
+        12.3051,
+        -11.3777,
+        16.6915
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/sn.svg",
       "independent": true,
       "unMember": true
@@ -5235,6 +6153,12 @@
       "population": 6532019,
       "centroidLng": 20.830078,
       "centroidLat": 44.21371,
+      "bounds": [
+        18.8442,
+        42.2346,
+        22.9848,
+        46.1742
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/rs.svg",
       "independent": true,
       "unMember": true
@@ -5269,6 +6193,12 @@
       "population": 123565,
       "centroidLng": 51.855469,
       "centroidLat": -6.577303,
+      "bounds": [
+        51.8554,
+        -7.1922,
+        56.2871,
+        -3.7916
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/sc.svg",
       "independent": true,
       "unMember": true
@@ -5303,6 +6233,12 @@
       "population": 8460512,
       "centroidLng": -11.777344,
       "centroidLat": 8.581021,
+      "bounds": [
+        -13.3017,
+        6.9196,
+        -10.2818,
+        9.996
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/sl.svg",
       "independent": true,
       "unMember": true
@@ -5337,6 +6273,12 @@
       "population": 6208500,
       "centroidLng": 103.798828,
       "centroidLat": 1.318243,
+      "bounds": [
+        103.6409,
+        1.2646,
+        104.0035,
+        1.4487
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/sg.svg",
       "independent": true,
       "unMember": true
@@ -5371,6 +6313,12 @@
       "population": 5403009,
       "centroidLng": 19.511719,
       "centroidLat": 48.69096,
+      "bounds": [
+        16.8447,
+        47.7504,
+        22.5399,
+        49.6019
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/sk.svg",
       "independent": true,
       "unMember": true
@@ -5405,6 +6353,12 @@
       "population": 102300000,
       "centroidLng": 108.28125,
       "centroidLat": 14.349548,
+      "bounds": [
+        102.1192,
+        8.566,
+        109.4719,
+        23.3663
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/vn.svg",
       "independent": true,
       "unMember": true
@@ -5439,6 +6393,12 @@
       "population": 2136385,
       "centroidLng": 14.765625,
       "centroidLat": 46.13417,
+      "bounds": [
+        13.3648,
+        45.4235,
+        16.5152,
+        46.864
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/si.svg",
       "independent": true,
       "unMember": true
@@ -5473,6 +6433,12 @@
       "population": 20305907,
       "centroidLng": 45.175781,
       "centroidLat": 3.951941,
+      "bounds": [
+        40.9652,
+        -1.6958,
+        51.4174,
+        11.9897
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/so.svg",
       "independent": true,
       "unMember": true
@@ -5507,6 +6473,12 @@
       "population": 63015904,
       "centroidLng": 23.027344,
       "centroidLat": -30.524413,
+      "bounds": [
+        16.4698,
+        -34.8217,
+        32.8931,
+        -22.1263
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/za.svg",
       "independent": true,
       "unMember": true
@@ -5541,6 +6513,12 @@
       "population": 16175966,
       "centroidLng": 29.882812,
       "centroidLat": -18.979026,
+      "bounds": [
+        25.2191,
+        -22.3971,
+        33.0428,
+        -15.6151
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/zw.svg",
       "independent": true,
       "unMember": true
@@ -5575,6 +6553,12 @@
       "population": 49801559,
       "centroidLng": -3.251953,
       "centroidLat": 40.780541,
+      "bounds": [
+        -9.2917,
+        35.1715,
+        4.3369,
+        43.7939
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/es.svg",
       "independent": true,
       "unMember": true
@@ -5607,8 +6591,14 @@
       "continent": "africa",
       "difficulty": "hard",
       "population": 12703714,
-      "centroidLng": 26.178359999999998,
-      "centroidLat": 7.9634635,
+      "centroidLng": 30.021515,
+      "centroidLat": 7.853334,
+      "bounds": [
+        24.1218,
+        3.4901,
+        35.9212,
+        12.2166
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ss.svg",
       "independent": true,
       "unMember": true
@@ -5643,6 +6633,12 @@
       "population": 53282719,
       "centroidLng": 30.058594,
       "centroidLat": 13.83808,
+      "bounds": [
+        21.8092,
+        8.6814,
+        38.6033,
+        22.2269
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/sd.svg",
       "independent": true,
       "unMember": true
@@ -5677,6 +6673,12 @@
       "population": 616500,
       "centroidLng": -55.898438,
       "centroidLat": 3.951941,
+      "bounds": [
+        -58.0683,
+        1.833,
+        -53.9868,
+        6.0122
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/sr.svg",
       "independent": true,
       "unMember": true
@@ -5710,7 +6712,13 @@
       "difficulty": "hard",
       "population": 1235549,
       "centroidLng": 31.449737499999998,
-      "centroidLat": -26.446250499999998,
+      "centroidLat": -26.526227499999997,
+      "bounds": [
+        30.7823,
+        -27.3169,
+        32.1172,
+        -25.7355
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/sz.svg",
       "independent": true,
       "unMember": true
@@ -5745,6 +6753,12 @@
       "population": 10621103,
       "centroidLng": 17.929688,
       "centroidLat": 65.109148,
+      "bounds": [
+        11.1085,
+        55.3424,
+        24.1631,
+        69.0362
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/se.svg",
       "independent": true,
       "unMember": true
@@ -5779,6 +6793,12 @@
       "population": 9154896,
       "centroidLng": 8.173828,
       "centroidLat": 46.800059,
+      "bounds": [
+        5.9545,
+        45.8211,
+        10.4673,
+        47.8012
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ch.svg",
       "independent": true,
       "unMember": true
@@ -5813,6 +6833,12 @@
       "population": 26472497,
       "centroidLng": 38.671875,
       "centroidLat": 35.317366,
+      "bounds": [
+        35.7234,
+        32.3126,
+        42.3771,
+        37.3254
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/sy.svg",
       "independent": true,
       "unMember": true
@@ -5847,6 +6873,12 @@
       "population": 10721000,
       "centroidLng": 71.103516,
       "centroidLat": 38.891033,
+      "bounds": [
+        67.342,
+        36.6783,
+        75.1644,
+        41.0401
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/tj.svg",
       "independent": true,
       "unMember": true
@@ -5881,6 +6913,12 @@
       "population": 70250751,
       "centroidLng": 101.513672,
       "centroidLat": 15.792254,
+      "bounds": [
+        97.3512,
+        5.6296,
+        105.6514,
+        20.4451
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/th.svg",
       "independent": true,
       "unMember": true
@@ -5915,6 +6953,12 @@
       "population": 8095498,
       "centroidLng": 1.142578,
       "centroidLat": 8.581021,
+      "bounds": [
+        -0.1662,
+        6.1009,
+        1.7826,
+        11.1353
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/tg.svg",
       "independent": true,
       "unMember": true
@@ -5949,6 +6993,12 @@
       "population": 100179,
       "centroidLng": -174.814453,
       "centroidLat": -19.973349,
+      "bounds": [
+        -176.2194,
+        -22.3387,
+        -173.9135,
+        -18.5655
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/to.svg",
       "independent": true,
       "unMember": true
@@ -5983,6 +7033,12 @@
       "population": 1512779,
       "centroidLng": -61.259766,
       "centroidLat": 10.487812,
+      "bounds": [
+        -61.9286,
+        10.0418,
+        -60.5223,
+        11.3508
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/tt.svg",
       "independent": true,
       "unMember": true
@@ -6017,6 +7073,12 @@
       "population": 11027129,
       "centroidLng": 54.140625,
       "centroidLat": 23.644524,
+      "bounds": [
+        51.5698,
+        22.6203,
+        56.3833,
+        26.0753
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ae.svg",
       "independent": true,
       "unMember": true
@@ -6051,6 +7113,12 @@
       "population": 11992843,
       "centroidLng": 8.964844,
       "centroidLat": 33.94336,
+      "bounds": [
+        7.4803,
+        30.2294,
+        11.5645,
+        37.3451
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/tn.svg",
       "independent": true,
       "unMember": true
@@ -6085,6 +7153,12 @@
       "population": 86092168,
       "centroidLng": 35.15625,
       "centroidLat": 39.027719,
+      "bounds": [
+        25.6626,
+        35.82,
+        44.8064,
+        42.0993
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/tr.svg",
       "independent": true,
       "unMember": true
@@ -6119,6 +7193,12 @@
       "population": 7057841,
       "centroidLng": 58.710938,
       "centroidLat": 39.436193,
+      "bounds": [
+        52.4377,
+        35.1401,
+        66.6459,
+        42.7914
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/tm.svg",
       "independent": true,
       "unMember": true
@@ -6153,6 +7233,12 @@
       "population": 10643,
       "centroidLng": 178.505859,
       "centroidLat": -7.798079,
+      "bounds": [
+        176.1245,
+        -9.4207,
+        179.9067,
+        -5.6774
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/tv.svg",
       "independent": true,
       "unMember": true
@@ -6187,6 +7273,12 @@
       "population": 45905417,
       "centroidLng": 32.34375,
       "centroidLat": 1.318243,
+      "bounds": [
+        29.5491,
+        -1.4748,
+        35.0066,
+        4.2191
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ug.svg",
       "independent": true,
       "unMember": true
@@ -6221,6 +7313,12 @@
       "population": 28700000,
       "centroidLng": 31.289062,
       "centroidLat": 49.267805,
+      "bounds": [
+        22.1333,
+        45.2139,
+        40.1592,
+        52.3689
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ua.svg",
       "independent": true,
       "unMember": true
@@ -6255,6 +7353,12 @@
       "population": 1836713,
       "centroidLng": 21.708984,
       "centroidLat": 41.574361,
+      "bounds": [
+        20.4441,
+        40.8491,
+        23.0095,
+        42.3708
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/mk.svg",
       "independent": true,
       "unMember": true
@@ -6289,6 +7393,12 @@
       "population": 108613296,
       "centroidLng": 29.882812,
       "centroidLat": 26.509905,
+      "bounds": [
+        24.689,
+        21.9939,
+        36.899,
+        31.6569
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/eg.svg",
       "independent": true,
       "unMember": true
@@ -6323,6 +7433,12 @@
       "population": 66912637,
       "centroidLng": -1.757812,
       "centroidLat": 52.696361,
+      "bounds": [
+        -8.6216,
+        49.9096,
+        1.7716,
+        60.8476
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/gb.svg",
       "independent": true,
       "unMember": true
@@ -6357,6 +7473,12 @@
       "population": 70038850,
       "centroidLng": 34.804688,
       "centroidLat": -6.315299,
+      "bounds": [
+        29.593,
+        -11.7316,
+        40.449,
+        -0.9859
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/tz.svg",
       "independent": true,
       "unMember": true
@@ -6391,6 +7513,12 @@
       "population": 341784857,
       "centroidLng": -101.162109,
       "centroidLat": 39.639538,
+      "bounds": [
+        -124.7347,
+        24.5421,
+        -66.8916,
+        49.3699
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/us.svg",
       "independent": true,
       "unMember": true
@@ -6425,6 +7553,12 @@
       "population": 22489126,
       "centroidLng": -1.757812,
       "centroidLat": 12.297068,
+      "bounds": [
+        -5.5221,
+        9.3921,
+        2.3896,
+        15.0801
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/bf.svg",
       "independent": true,
       "unMember": true
@@ -6459,6 +7593,12 @@
       "population": 3480601,
       "centroidLng": -55.986328,
       "centroidLat": -32.7688,
+      "bounds": [
+        -58.4391,
+        -34.9738,
+        -53.1106,
+        -30.0964
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/uy.svg",
       "independent": true,
       "unMember": true
@@ -6493,6 +7633,12 @@
       "population": 39047321,
       "centroidLng": 62.666016,
       "centroidLat": 42.293564,
+      "bounds": [
+        55.9753,
+        37.1854,
+        73.1484,
+        45.5583
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/uz.svg",
       "independent": true,
       "unMember": true
@@ -6527,6 +7673,12 @@
       "population": 28633711,
       "centroidLng": -66.181641,
       "centroidLat": 7.798079,
+      "bounds": [
+        -73.3915,
+        0.6495,
+        -59.815,
+        12.1991
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ve.svg",
       "independent": true,
       "unMember": true
@@ -6561,6 +7713,12 @@
       "population": 205557,
       "centroidLng": -172.177734,
       "centroidLat": -13.752725,
+      "bounds": [
+        -172.782,
+        -14.0527,
+        -171.4375,
+        -13.463
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ws.svg",
       "independent": true,
       "unMember": true
@@ -6595,6 +7753,12 @@
       "population": 32684503,
       "centroidLng": 47.548828,
       "centroidLat": 15.876809,
+      "bounds": [
+        42.5459,
+        12.1118,
+        54.5403,
+        18.996
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/ye.svg",
       "independent": true,
       "unMember": true
@@ -6629,6 +7793,12 @@
       "population": 23003214,
       "centroidLng": 27.421875,
       "centroidLat": -14.179186,
+      "bounds": [
+        21.9795,
+        -18.0689,
+        33.6745,
+        -8.2223
+      ],
       "flagUrl": "https://flags.restcountries.com/v5/svg/zm.svg",
       "independent": true,
       "unMember": true

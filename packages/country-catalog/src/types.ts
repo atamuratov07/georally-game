@@ -25,6 +25,7 @@ export interface CountryInfo {
 	population: number
 	centroidLng: number
 	centroidLat: number
+	bounds: [west: number, south: number, east: number, north: number]
 	flagUrl: string
 	independent: boolean
 	unMember: boolean

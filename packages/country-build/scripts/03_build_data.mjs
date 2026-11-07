@@ -1,6 +1,7 @@
 import pointOnFeature from '@turf/point-on-feature'
 import fs from 'node:fs'
 import shp from 'shpjs'
+import { boundsProblem, mainBounds } from './lib/bounds.mjs'
 import { canonicalizeContinent, isGameContinent } from './lib/continent.mjs'
 import {
 	extractCapitalCoords,
@@ -599,13 +600,22 @@ for (const a3 of playable.all) {
 	}
 
 	const country = buildCountry(a3, baseFeat, neFeat)
-	if (!country) continue
+	if (!country?.capital.coordinates) continue
 
 	country.centroid = buildCentroidGeometry(
 		a3,
 		{ ADM0_A3: a3 },
 		geometry,
 	).coordinates
+	country.bounds = mainBounds(geometry, [
+		country.centroid,
+		country.capital.coordinates,
+	])
+	const problem = boundsProblem(country.bounds)
+	if (problem) {
+		errors.push(`${a3}: ${problem}`)
+		continue
+	}
 	countries.push(country)
 
 	if (!baseFeat) {

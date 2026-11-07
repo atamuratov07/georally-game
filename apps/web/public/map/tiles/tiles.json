@@ -15,7 +15,7 @@
   ],
   "attribution": "MapLibre demotiles base geometry; Natural Earth fallback; REST Countries; Wikidata",
   "tiles": [
-    "/map/tiles/{z}/{x}/{y}.pbf?v=fcbfba81a7b1"
+    "/map/tiles/{z}/{x}/{y}.pbf?v=1740d13ef690"
   ],
   "center": [
     0,

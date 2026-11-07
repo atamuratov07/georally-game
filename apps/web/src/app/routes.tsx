@@ -1,9 +1,6 @@
 import type { RouteObject } from 'react-router-dom'
 import HomePage from './HomePage'
-import {
-	SingleplayerGamePage,
-	SingleplayerSetupPage,
-} from '../singleplayer-game'
+import { singleplayerRoutes } from '../singleplayer-game'
 import {
 	MultiplayerHomePage,
 	MultiplayerRoomHostPage,
@@ -12,8 +9,7 @@ import {
 
 export const appRoutes: RouteObject[] = [
 	{ index: true, element: <HomePage /> },
-	{ path: 'singleplayer', element: <SingleplayerSetupPage /> },
-	{ path: 'singleplayer/play', element: <SingleplayerGamePage /> },
+	...singleplayerRoutes,
 	{ path: 'multiplayer', element: <MultiplayerHomePage /> },
 	{
 		path: 'multiplayer/room/:roomCode',

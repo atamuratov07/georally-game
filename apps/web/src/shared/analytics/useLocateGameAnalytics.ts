@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import type {
-	GameConfig,
 	GameState,
+	RoundOutcome,
 } from '@georally/game-domain/singleplayer/locate'
 import {
 	trackSingleplayerGameEnd,
@@ -9,23 +9,38 @@ import {
 	trackSingleplayerQuestionAnswered,
 } from './track'
 
-export function useSingleplayerGameAnalytics(
-	state: GameState,
-	config: GameConfig,
+const TRACKED_OUTCOME = {
+	correct: 'correct',
+	outOfAttempts: 'exhausted_attempts',
+	giveUp: 'gave_up',
+} as const satisfies Record<RoundOutcome, string>
+
+export function useLocateGameAnalytics(
+	state: GameState | null,
+	restored: boolean,
 ): void {
-	const previousPhaseRef = useRef<GameState['phase'] | null>(null)
-	const hasStartedOnceRef = useRef(false)
+	const restoredState = restored ? state : null
+	const previousPhaseRef = useRef<GameState['phase'] | null>(
+		restoredState?.phase ?? null,
+	)
+	const hasStartedOnceRef = useRef(restored)
 	const gameStartedAtRef = useRef<number | null>(null)
-	const lastQuestionTrackedRef = useRef<number | null>(null)
-	const finishedTrackedRef = useRef(false)
+	const lastQuestionTrackedRef = useRef<number | null>(
+		restoredState?.phase === 'revealed' ? restoredState.index : null,
+	)
+	const finishedTrackedRef = useRef(restoredState?.phase === 'finished')
 
 	useEffect(() => {
+		if (!state) {
+			return
+		}
+
 		const previousPhase = previousPhaseRef.current
 		previousPhaseRef.current = state.phase
 
 		if (
-			state.phase === 'playing' &&
-			previousPhase !== 'playing' &&
+			state.phase === 'answering' &&
+			previousPhase !== 'answering' &&
 			previousPhase !== 'revealed'
 		) {
 			const isRetry = hasStartedOnceRef.current
@@ -35,10 +50,10 @@ export function useSingleplayerGameAnalytics(
 			finishedTrackedRef.current = false
 
 			trackSingleplayerGameStart({
-				difficulty: config.difficulty,
-				scope: config.scope,
-				questionCount: config.questionCount,
-				attemptsPerQuestion: config.attemptsPerQuestion,
+				difficulty: state.config.difficulty,
+				scope: state.config.scope,
+				questionCount: state.config.questionCount,
+				attemptsPerQuestion: state.config.attemptsPerQuestion,
 				isRetry,
 			})
 		}
@@ -48,19 +63,12 @@ export function useSingleplayerGameAnalytics(
 			lastQuestionTrackedRef.current !== state.index
 		) {
 			lastQuestionTrackedRef.current = state.index
-			const attemptsUsed = state.wrongPicks.length
-			const outcome = state.isCorrect
-				? 'correct'
-				: attemptsUsed >= state.config.attemptsPerQuestion
-					? 'exhausted_attempts'
-					: 'gave_up'
-
 			trackSingleplayerQuestionAnswered({
 				questionNumber: state.index + 1,
-				isCorrect: state.isCorrect,
-				outcome,
-				attemptsUsed,
-				responseTimeMs: state.questionResolvedAt - state.questionStartedAt,
+				isCorrect: state.outcome === 'correct',
+				outcome: TRACKED_OUTCOME[state.outcome],
+				attemptsUsed: state.wrongPicks.length,
+				responseTimeMs: state.resolvedAt - state.startedAt,
 			})
 		}
 
@@ -79,5 +87,5 @@ export function useSingleplayerGameAnalytics(
 				durationMs,
 			})
 		}
-	}, [state, config])
+	}, [state])
 }

@@ -16,7 +16,7 @@ const translations = {
 		previewCountry: 'Yaponiya',
 		modesTitle: "O'ynashning ikki usuli",
 		solo: {
-			title: 'Yakka mashq',
+			title: "Yakka o'yin",
 			text: "O'z sur'atingizda, davlatma-davlat mashq qiling.",
 			point1: 'Hudud va qiyinlikni tanlang',
 			point2: 'Yuraklar xatolar sonini cheklaydi',
@@ -78,7 +78,7 @@ const translations = {
 		seconds: '{{count}} s',
 	},
 	singleplayer: {
-		title: 'Yakka mashq',
+		title: "Yakka o'yin",
 		start: "O'yinni boshlash",
 		exit: 'Chiqish',
 		giveUp: "Taslim bo'lish",
@@ -87,16 +87,20 @@ const translations = {
 		attemptsLeft_other: '{{count}} ta urinish qoldi',
 		resultTitle: "O'yin yakunlandi",
 		playAgain: "Yana o'ynash",
-		invalidTitle: "O'yinni ochib bo'lmadi",
-		invalidDescription: "Sozlamalarni tekshiring va qayta urinib ko'ring.",
-		openSettings: 'Sozlamalarni ochish',
-		changeSettings: "Sozlamalarni o'zgartirish",
-		loadErrors: {
-			noPlayableCountries: "Katalogda o'ynaladigan mamlakatlar topilmadi.",
-			noEligibleCountries:
-				"Tanlangan hudud va qiyinlikka mos mamlakatlar yo'q.",
-			insufficientEligibleCountries: "Juda ko'p savol tanlangan.",
-			default: "O'yinni boshlash imkoni bo'lmadi.",
+		copySetup: 'Sozlamalarni nusxalash',
+		copySetupLabel: 'Ushbu sozlamalarga havolani nusxalash',
+		resume: {
+			title: "Tugallanmagan o'yin",
+			resume: 'Davom ettirish',
+			discard: 'Bekor qilish',
+		},
+		notEnoughCountries_one:
+			"Bu hudud va qiyinlikka faqat {{count}} ta mamlakat mos keladi. O'yin uchun bu yetarli emas.",
+		notEnoughCountries_other:
+			"Bu hudud va qiyinlikka faqat {{count}} ta mamlakat mos keladi. O'yin uchun bu yetarli emas.",
+		gameError: {
+			title: "O'yinni ochib bo'lmadi",
+			action: 'Sozlamalarni ochish',
 		},
 	},
 	multiplayer: {

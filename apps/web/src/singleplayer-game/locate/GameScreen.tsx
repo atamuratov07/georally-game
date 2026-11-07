@@ -1,26 +1,27 @@
 import type { CountryInfo } from '@georally/country-catalog'
 import {
 	getAttemptsLeft,
-	getIsCorrect,
+	getOutcome,
 	getQuestionCount,
 	getQuestionIndex,
-	getQuestionResolvedAt,
-	getQuestionStartedAt,
+	getResolvedAt,
 	getRevealedId,
+	getRoundPoints,
 	getScore,
+	getStartedAt,
 	getTargetId,
 	getWrongPicks,
-	isPickAllowed,
+	isAnswering,
 	type GameState,
 } from '@georally/game-domain/singleplayer/locate'
-import { useEffect, useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import { MapRenderer } from '../../shared/map/MapRenderer'
 import type { MapHighlightTone, MapRendererProps } from '../../shared/map/types'
 import { ScoreBanner } from '../../shared/widgets/ScoreBanner'
 import { CountryInfoCard } from '../../shared/widgets/CountryInfoCard'
 import { Button } from '@/shared/ui'
-import { GameHeader } from '../components/GameHeader'
-import { Hearts } from '../components/Hearts'
+import { GameHeader } from './components/GameHeader'
+import { Hearts } from './components/Hearts'
 import { useTranslation } from 'react-i18next'
 import { getCountryName } from '../../shared/i18n'
 import { useCurrentLocale } from '../../app/LocaleContext'
@@ -50,12 +51,12 @@ export function GameScreen({
 	const wrongPicks = getWrongPicks(state)
 	const questionCount = getQuestionCount(state)
 	const questionIndex = getQuestionIndex(state)
-	const questionStartedAt = getQuestionStartedAt(state)
-	const questionResolvedAt = getQuestionResolvedAt(state)
+	const startedAt = getStartedAt(state)
+	const resolvedAt = getResolvedAt(state)
 	const attemptsLeft = getAttemptsLeft(state)
 	const totalScore = getScore(state)
-	const isCorrect = getIsCorrect(state)
-	const previousScoreRef = useRef(totalScore)
+	const outcome = getOutcome(state)
+	const answering = isAnswering(state)
 
 	const revealedInfo = revealedId ? countriesInfo.get(revealedId) : undefined
 
@@ -92,11 +93,8 @@ export function GameScreen({
 		return nextHighlights
 	}, [revealedId, wrongPicks])
 
-	const canPick = isPickAllowed(state)
-	const scoreAwarded = totalScore - previousScoreRef.current
-
 	const mapProps: MapRendererProps = {
-		onPick: canPick ? onPick : () => undefined,
+		onPick: answering ? onPick : () => undefined,
 		interactiveIds,
 		scope: state.config.scope,
 		highlights: highlights,
@@ -104,21 +102,11 @@ export function GameScreen({
 		popupElement: revealedInfo ? (
 			<CountryInfoCard info={revealedInfo} />
 		) : null,
-		disabled: !canPick,
-		resetViewKey:
-			state.phase === 'playing'
-				? `${questionIndex}:${questionStartedAt}`
-				: null,
+		disabled: !answering,
+		resetViewKey: answering ? `${questionIndex}:${startedAt}` : null,
 	}
 
-	const showHearts = state.phase === 'playing' || state.phase === 'revealed'
-
-	useEffect(() => {
-		if (state.phase === 'revealed') {
-			return
-		}
-		previousScoreRef.current = totalScore
-	}, [state.phase, totalScore])
+	const showHearts = state.phase === 'answering' || state.phase === 'revealed'
 
 	return (
 		<section className='flex h-full flex-col overflow-hidden bg-paper'>
@@ -127,19 +115,19 @@ export function GameScreen({
 				questionCount={questionCount}
 				targetName={targetInfo ? getCountryName(targetInfo, language) : ''}
 				targetFlagUrl={targetInfo?.flagUrl}
-				isPlaying={state.phase === 'playing'}
-				questionStartedAt={questionStartedAt}
-				questionResolvedAt={questionResolvedAt}
+				isAnswering={answering}
+				startedAt={startedAt}
+				resolvedAt={resolvedAt}
 			/>
 
 			<main className='relative min-h-0 flex-1'>
 				<MapRenderer {...mapProps} />
 
 				<ScoreBanner
-					triggerKey={questionResolvedAt}
-					isCorrect={isCorrect}
+					triggerKey={resolvedAt}
+					isCorrect={outcome === null ? null : outcome === 'correct'}
 					totalScore={totalScore}
-					awardedScore={scoreAwarded}
+					awardedScore={getRoundPoints(state) ?? 0}
 				/>
 
 				{showHearts ? (
@@ -163,7 +151,7 @@ export function GameScreen({
 						>
 							{t('singleplayer.next')}
 						</Button>
-					) : state.phase === 'playing' ? (
+					) : answering ? (
 						<Button
 							type='button'
 							variant='neutral'

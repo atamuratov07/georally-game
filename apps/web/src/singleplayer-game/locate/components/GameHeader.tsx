@@ -4,32 +4,33 @@ import { useTranslation } from 'react-i18next'
 import { LocalizedLink } from '@/app/LocalizedLink'
 import { Button } from '@/shared/ui'
 import { GameHud, TimerChip } from '@/shared/widgets/GameHud'
+import { singleplayerPaths } from '../../paths'
 
 interface GameHeaderProps {
 	questionIndex: number
 	questionCount: number
 	targetName: string
 	targetFlagUrl?: string
-	isPlaying: boolean
-	questionStartedAt: number
-	questionResolvedAt: number | null
+	isAnswering: boolean
+	startedAt: number | null
+	resolvedAt: number | null
 }
 
 function useElapsedSeconds(
-	isPlaying: boolean,
-	startedAt: number,
+	isAnswering: boolean,
+	startedAt: number | null,
 	resolvedAt: number | null,
 ): number {
 	const [now, setNow] = useState(() => Date.now())
 
 	useEffect(() => {
-		if (!isPlaying) return
+		if (!isAnswering) return
 		const intervalId = setInterval(() => setNow(Date.now()), 1000)
 		return () => clearInterval(intervalId)
-	}, [isPlaying, startedAt])
+	}, [isAnswering, startedAt])
 
-	if (startedAt <= 0) return 0
-	const endTime = isPlaying ? now : (resolvedAt ?? now)
+	if (startedAt === null) return 0
+	const endTime = isAnswering ? now : (resolvedAt ?? now)
 	return Math.max(0, Math.floor((endTime - startedAt) / 1000))
 }
 
@@ -38,23 +39,19 @@ export function GameHeader({
 	questionCount,
 	targetName,
 	targetFlagUrl,
-	isPlaying,
-	questionStartedAt,
-	questionResolvedAt,
+	isAnswering,
+	startedAt,
+	resolvedAt,
 }: GameHeaderProps) {
 	const { t } = useTranslation()
-	const elapsed = useElapsedSeconds(
-		isPlaying,
-		questionStartedAt,
-		questionResolvedAt,
-	)
+	const elapsed = useElapsedSeconds(isAnswering, startedAt, resolvedAt)
 
 	return (
 		<GameHud
 			current={Math.min(questionIndex + 1, questionCount)}
 			total={questionCount}
 			completed={Math.min(
-				questionIndex + (isPlaying ? 0 : 1),
+				questionIndex + (isAnswering ? 0 : 1),
 				questionCount,
 			)}
 			targetName={targetName}
@@ -68,7 +65,7 @@ export function GameHeader({
 					aria-label={t('singleplayer.exit')}
 					title={t('singleplayer.exit')}
 				>
-					<LocalizedLink to='/singleplayer'>
+					<LocalizedLink to={singleplayerPaths('locate').setup}>
 						<LogOut aria-hidden='true' className='rotate-180' />
 					</LocalizedLink>
 				</Button>

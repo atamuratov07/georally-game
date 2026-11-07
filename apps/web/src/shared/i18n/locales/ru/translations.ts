@@ -16,7 +16,7 @@ const translations = {
 		previewCountry: 'Япония',
 		modesTitle: 'Два способа играть',
 		solo: {
-			title: 'Одиночная тренировка',
+			title: 'Одиночная игра',
 			text: 'Тренируйся в своём темпе, страна за страной.',
 			point1: 'Выбирай регион и сложность',
 			point2: 'Сердечки ограничивают число ошибок',
@@ -79,7 +79,7 @@ const translations = {
 		seconds: '{{count}} с',
 	},
 	singleplayer: {
-		title: 'Одиночная тренировка',
+		title: 'Одиночная игра',
 		start: 'Начать игру',
 		exit: 'Выйти',
 		giveUp: 'Сдаться',
@@ -90,16 +90,24 @@ const translations = {
 		attemptsLeft_other: 'Осталось {{count}} попытки',
 		resultTitle: 'Игра окончена',
 		playAgain: 'Сыграть ещё',
-		invalidTitle: 'Не удалось открыть игру',
-		invalidDescription: 'Проверьте настройки и попробуйте снова.',
-		openSettings: 'Открыть настройки',
-		changeSettings: 'Изменить настройки',
-		loadErrors: {
-			noPlayableCountries: 'В каталоге не найдено игровых стран.',
-			noEligibleCountries:
-				'Нет стран, подходящих под выбранные область и сложность.',
-			insufficientEligibleCountries: 'Выбрано слишком много вопросов.',
-			default: 'Не удалось начать игру.',
+		copySetup: 'Копировать настройки',
+		copySetupLabel: 'Скопировать ссылку на эти настройки',
+		resume: {
+			title: 'Незавершённая игра',
+			resume: 'Продолжить',
+			discard: 'Сбросить',
+		},
+		notEnoughCountries_one:
+			'Под эту область и сложность подходит только {{count}} страна. Для игры этого мало.',
+		notEnoughCountries_few:
+			'Под эту область и сложность подходят только {{count}} страны. Для игры этого мало.',
+		notEnoughCountries_many:
+			'Под эту область и сложность подходят только {{count}} стран. Для игры этого мало.',
+		notEnoughCountries_other:
+			'Под эту область и сложность подходят только {{count}} страны. Для игры этого мало.',
+		gameError: {
+			title: 'Не удалось открыть игру',
+			action: 'Открыть настройки',
 		},
 	},
 	multiplayer: {

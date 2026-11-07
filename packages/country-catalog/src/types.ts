@@ -46,5 +46,5 @@ export type AliasNames = Partial<Record<AnswerLanguage, string[]>>
 
 export type AliasesPayload = Record<
 	CountryId,
-	AliasNames & { voice?: AliasNames }
+	AliasNames & { typing?: AliasNames; voice?: AliasNames }
 >

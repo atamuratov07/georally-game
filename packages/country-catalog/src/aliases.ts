@@ -1,5 +1,9 @@
 import type { CountryId } from '@georally/game-domain'
-import type { AliasEntry, AnswerLanguage } from '@georally/game-domain/answers'
+import type {
+	AliasEntry,
+	AnswerLanguage,
+	InputMethod,
+} from '@georally/game-domain/answers'
 import aliasesJson from '../data/aliases.json'
 import { countryCatalog } from './catalog'
 import type {
@@ -21,13 +25,13 @@ const LANGUAGES = Object.keys(CATALOG_LANGUAGE) as AnswerLanguage[]
 function pushEntries(
 	entries: AliasEntry[],
 	countryId: CountryId,
-	voiceOnly: boolean,
+	only: InputMethod | undefined,
 	texts: readonly string[] | undefined,
 ): void {
 	for (const raw of texts ?? []) {
 		const text = raw.trim()
 		if (text) {
-			entries.push({ countryId, text, voiceOnly })
+			entries.push(only ? { countryId, text, only } : { countryId, text })
 		}
 	}
 }
@@ -40,7 +44,7 @@ export function buildAliasEntries(
 
 	for (const country of catalog.countriesById.values()) {
 		for (const language of LANGUAGES) {
-			pushEntries(entries, country.id, false, [
+			pushEntries(entries, country.id, undefined, [
 				country.name[CATALOG_LANGUAGE[language]],
 			])
 		}
@@ -52,8 +56,9 @@ export function buildAliasEntries(
 		}
 
 		for (const language of LANGUAGES) {
-			pushEntries(entries, countryId, false, names[language])
-			pushEntries(entries, countryId, true, names.voice?.[language])
+			pushEntries(entries, countryId, undefined, names[language])
+			pushEntries(entries, countryId, 'typing', names.typing?.[language])
+			pushEntries(entries, countryId, 'voice', names.voice?.[language])
 		}
 	}
 

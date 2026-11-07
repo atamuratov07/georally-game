@@ -1,3 +1,5 @@
+import union from '@turf/union'
+import { featureCollection } from '@turf/helpers'
 import fs from 'node:fs'
 import path from 'node:path'
 
@@ -61,14 +63,21 @@ for (const file of files) {
 
 	for (const feat of features) {
 		const a3 = feat?.properties?.ADM0_A3 ?? feat?.properties?.adm0_a3
-		if (!a3) continue
-		if (!byA3.has(a3)) byA3.set(a3, feat)
+		if (!a3 || !/Polygon$/.test(feat?.geometry?.type ?? '')) continue
+		if (!byA3.has(a3)) byA3.set(a3, [])
+		byA3.get(a3).push(feat)
 	}
+}
+
+function mergeFragments(fragments) {
+	if (fragments.length === 1) return fragments[0]
+	const merged = union(featureCollection(fragments))
+	return { ...merged, properties: fragments[0].properties }
 }
 
 const out = {
 	type: 'FeatureCollection',
-	features: [...byA3.values()],
+	features: [...byA3.values()].map(mergeFragments),
 }
 
 fs.writeFileSync(OUT, JSON.stringify(out, null, 2), 'utf8')

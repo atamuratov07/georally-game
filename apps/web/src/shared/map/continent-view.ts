@@ -6,6 +6,11 @@ export interface ContinentViewPreset {
 	padding: { top: number; right: number; bottom: number; left: number }
 }
 
+export const WORLD_VIEW = {
+	center: [8, 18] as [number, number],
+	zoom: 2,
+}
+
 const DEFAULT_PADDING = { top: 96, right: 40, bottom: 40, left: 40 }
 
 export const CONTINENT_VIEW_PRESETS: Record<

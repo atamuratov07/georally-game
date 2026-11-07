@@ -30,6 +30,12 @@
 			"import": "./dist/singleplayer/locate/index.js",
 			"default": "./dist/singleplayer/locate/index.js"
 		},
+		"./singleplayer/name-it": {
+			"types": "./src/singleplayer/name-it/index.ts",
+			"development": "./src/singleplayer/name-it/index.ts",
+			"import": "./dist/singleplayer/name-it/index.js",
+			"default": "./dist/singleplayer/name-it/index.js"
+		},
 		"./multiplayer": {
 			"types": "./src/multiplayer/index.ts",
 			"development": "./src/multiplayer/index.ts",

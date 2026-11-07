@@ -235,6 +235,7 @@ graph LR
 | [`docs/architecture/singleplayer.md`](docs/architecture/singleplayer.md)                 | Local game flow and state machine                                                |
 | [`docs/architecture/multiplayer.md`](docs/architecture/multiplayer.md)                   | Client/server realtime flow, room + game state model, protocol, view projection  |
 | [`docs/architecture/data-pipeline.md`](docs/architecture/data-pipeline.md)               | Offline build pipeline for the country catalog and map tiles                     |
+| [`docs/architecture/answers.md`](docs/architecture/answers.md)                           | Matching typed and spoken country answers, and the decisions behind it           |
 | [`docs/architecture/persistence.md`](docs/architecture/persistence.md)                   | What's persisted, where, and what that implies for scaling                       |
 | [`docs/architecture/connection-lifecycle.md`](docs/architecture/connection-lifecycle.md) | Connection, reconnection, and tab takeover across Socket.IO and the game session |
 | [`docs/architecture/logging.md`](docs/architecture/logging.md)                           | Server log events, the stats line and `/health`, and how to query the logs       |

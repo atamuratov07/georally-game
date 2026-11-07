@@ -1,24 +1,21 @@
-export { createIdleGameState, reduceGameState } from './engine'
-export { calculateQuestionScore } from './score'
+export { createIdleState, reduceGameState } from './engine'
 export {
-	getAnsweredQuestionCount,
-	getAttemptsLeft,
 	getCorrectCount,
-	getFinishedAt,
 	getQuestionCount,
 	getQuestionIndex,
-	getQuestionResolvedAt,
-	getQuestionStartedAt,
+	getResolvedAt,
 	getRevealedId,
-	getIsCorrect,
+	getRoundPoints,
 	getScore,
+	getStartedAt,
 	getTargetId,
-	getWrongPicks,
-	isPickAllowed,
-} from './selectors'
+	isAnswering,
+} from '../rounds'
+export { getAttemptsLeft, getOutcome, getWrongPicks } from './selectors'
 export { prepareGameSession } from './session'
 export {
 	DEFAULT_GAME_CONFIG,
+	type AnsweringGameState,
 	type FinishedGameState,
 	type GameAction,
 	type GameConfig,
@@ -26,7 +23,7 @@ export {
 	type GameSession,
 	type GameState,
 	type IdleGameState,
-	type PlayingGameState,
 	type RevealedGameState,
+	type RoundOutcome,
 	type StartedGameState,
 } from './types'

@@ -1,6 +1,7 @@
 import type { CountryId, GameQuestionSetConfig } from '../../shared/types'
+import type { FinishedState, IdleState, Progress } from '../rounds'
 
-export type GamePhase = 'idle' | 'playing' | 'revealed' | 'finished'
+export type { GamePhase } from '../rounds'
 
 export interface GameConfig extends GameQuestionSetConfig {
 	attemptsPerQuestion: number
@@ -15,68 +16,38 @@ export const DEFAULT_GAME_CONFIG: GameConfig = {
 
 export interface GameSession {
 	config: GameConfig
-	eligibleIds: CountryId[]
 	questionIds: CountryId[]
 }
 
-interface ProgressGameStateBase {
-	config: GameConfig
-	questionIds: CountryId[]
-	index: number
-	score: number
-	correctCount: number
-}
+export type RoundOutcome = 'correct' | 'outOfAttempts' | 'giveUp'
 
-interface ActiveQuestionGameStateBase extends ProgressGameStateBase {
-	questionStartedAt: number
-}
-
-export interface IdleGameState {
-	phase: 'idle'
-	config: GameConfig
-}
-
-export interface PlayingGameState extends ActiveQuestionGameStateBase {
-	phase: 'playing'
+interface Round extends Progress<GameConfig> {
+	startedAt: number
 	wrongPicks: CountryId[]
 }
 
-export interface RevealedGameState extends ActiveQuestionGameStateBase {
+export type IdleGameState = IdleState<GameConfig>
+
+export interface AnsweringGameState extends Round {
+	phase: 'answering'
+}
+
+export interface RevealedGameState extends Round {
 	phase: 'revealed'
-	wrongPicks: CountryId[]
-	isCorrect: boolean
-	questionResolvedAt: number
+	outcome: RoundOutcome
+	points: number
+	resolvedAt: number
 }
 
-export interface FinishedGameState extends ProgressGameStateBase {
-	phase: 'finished'
-	questionResolvedAt: number
-	finishedAt: number
-}
+export type FinishedGameState = FinishedState<GameConfig>
 
 export type StartedGameState =
-	| PlayingGameState
-	| RevealedGameState
-	| FinishedGameState
+	AnsweringGameState | RevealedGameState | FinishedGameState
 
 export type GameState = IdleGameState | StartedGameState
 
 export type GameAction =
-	| {
-			type: 'START'
-			session: GameSession
-			now: number
-	  }
-	| {
-			type: 'PICK'
-			countryId: CountryId
-			now: number
-	  }
-	| {
-			type: 'GIVE_UP'
-			now: number
-	  }
-	| {
-			type: 'NEXT'
-			now: number
-	  }
+	| { type: 'START'; session: GameSession; now: number }
+	| { type: 'PICK'; countryId: CountryId; now: number }
+	| { type: 'GIVE_UP'; now: number }
+	| { type: 'NEXT'; now: number }

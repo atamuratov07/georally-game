@@ -1,71 +1,56 @@
 import { assertNever } from '../../shared/errors'
-import { calculateQuestionScore } from './score'
-import { getAttemptsLeft, getTargetId } from './selectors'
-import type {
-	GameAction,
-	GameConfig,
-	GameSession,
-	GameState,
-	PlayingGameState,
-	RevealedGameState,
+import { scoreAnswer } from './score'
+import {
+	DEFAULT_GAME_CONFIG,
+	type AnsweringGameState,
+	type GameAction,
+	type GameConfig,
+	type GameState,
+	type RevealedGameState,
+	type RoundOutcome,
 } from './types'
-import { DEFAULT_GAME_CONFIG } from './types'
 
-function createPlayingGameState(
-	session: GameSession,
+type RoundStart = Pick<
+	AnsweringGameState,
+	'config' | 'questionIds' | 'score' | 'correctCount'
+>
+
+function startRound(
+	game: RoundStart,
+	index: number,
 	now: number,
-): PlayingGameState {
+): AnsweringGameState {
 	return {
-		phase: 'playing',
-		config: session.config,
-		questionIds: session.questionIds,
-		index: 0,
+		phase: 'answering',
+		config: game.config,
+		questionIds: game.questionIds,
+		index,
+		score: game.score,
+		correctCount: game.correctCount,
+		startedAt: now,
 		wrongPicks: [],
-		score: 0,
-		correctCount: 0,
-		questionStartedAt: now,
 	}
 }
 
-function revealCurrentQuestion(
-	state: PlayingGameState,
-	now: number,
+function revealRound(
+	state: AnsweringGameState,
+	outcome: RoundOutcome,
+	points: number,
+	resolvedAt: number,
 ): RevealedGameState {
-	const targetId = getTargetId(state)
-	if (!targetId) {
-		throw new Error('Cannot reveal a question without a valid target.')
-	}
-
 	return {
+		...state,
 		phase: 'revealed',
-		config: state.config,
-		questionIds: state.questionIds,
-		index: state.index,
-		wrongPicks: state.wrongPicks,
-		isCorrect: false,
-		score: state.score,
-		correctCount: state.correctCount,
-		questionStartedAt: state.questionStartedAt,
-		questionResolvedAt: now,
+		outcome,
+		points,
+		score: state.score + points,
+		correctCount: state.correctCount + (outcome === 'correct' ? 1 : 0),
+		resolvedAt,
 	}
 }
 
-export function createIdleGameState(
-	configOverride: Partial<GameConfig> = {},
-): GameState {
-	return {
-		phase: 'idle',
-		config: {
-			...DEFAULT_GAME_CONFIG,
-			...configOverride,
-			questionCount:
-				configOverride.questionCount ?? DEFAULT_GAME_CONFIG.questionCount,
-
-			attemptsPerQuestion:
-				configOverride.attemptsPerQuestion ??
-				DEFAULT_GAME_CONFIG.attemptsPerQuestion,
-		},
-	}
+export function createIdleState(config: Partial<GameConfig> = {}): GameState {
+	return { phase: 'idle', config: { ...DEFAULT_GAME_CONFIG, ...config } }
 }
 
 export function reduceGameState(
@@ -74,66 +59,56 @@ export function reduceGameState(
 ): GameState {
 	switch (action.type) {
 		case 'START': {
-			if (action.session.questionIds.length === 0) {
+			const { session, now } = action
+			if (session.questionIds.length === 0) {
 				throw new Error('START action requires at least one question.')
 			}
 
-			return createPlayingGameState(action.session, action.now)
+			return startRound(
+				{
+					config: session.config,
+					questionIds: session.questionIds,
+					score: 0,
+					correctCount: 0,
+				},
+				0,
+				now,
+			)
 		}
 
 		case 'PICK': {
-			if (state.phase !== 'playing') {
+			if (state.phase !== 'answering') {
 				return state
 			}
 
-			const targetId = getTargetId(state)
-			if (!targetId) {
-				throw new Error('Playing state requires a valid target question.')
-			}
-
-			if (action.countryId === targetId) {
-				const questionScore = calculateQuestionScore(
-					state.questionStartedAt,
-					action.now,
+			const { countryId, now } = action
+			if (countryId === state.questionIds[state.index]) {
+				const points = scoreAnswer(
+					state.startedAt,
+					now,
 					state.wrongPicks.length,
 				)
-
-				return {
-					phase: 'revealed',
-					config: state.config,
-					questionIds: state.questionIds,
-					index: state.index,
-					wrongPicks: state.wrongPicks,
-					isCorrect: true,
-					score: state.score + questionScore,
-					correctCount: state.correctCount + 1,
-					questionStartedAt: state.questionStartedAt,
-					questionResolvedAt: action.now,
-				}
+				return revealRound(state, 'correct', points, now)
 			}
-
-			if (state.wrongPicks.includes(action.countryId)) {
+			if (state.wrongPicks.includes(countryId)) {
 				return state
 			}
 
-			const nextPlayingState: PlayingGameState = {
+			const answering = {
 				...state,
-				wrongPicks: [...state.wrongPicks, action.countryId],
+				wrongPicks: [...state.wrongPicks, countryId],
 			}
-
-			if (getAttemptsLeft(nextPlayingState) === 0) {
-				return revealCurrentQuestion(nextPlayingState, action.now)
-			}
-
-			return nextPlayingState
+			return answering.wrongPicks.length >= state.config.attemptsPerQuestion
+				? revealRound(answering, 'outOfAttempts', 0, now)
+				: answering
 		}
 
 		case 'GIVE_UP': {
-			if (state.phase !== 'playing') {
+			if (state.phase !== 'answering') {
 				return state
 			}
 
-			return revealCurrentQuestion(state, action.now)
+			return revealRound(state, 'giveUp', 0, action.now)
 		}
 
 		case 'NEXT': {
@@ -141,30 +116,20 @@ export function reduceGameState(
 				return state
 			}
 
-			const nextIndex = state.index + 1
-			if (nextIndex >= state.questionIds.length) {
+			const index = state.index + 1
+			if (index >= state.questionIds.length) {
 				return {
 					phase: 'finished',
 					config: state.config,
 					questionIds: state.questionIds,
-					index: nextIndex,
+					index,
 					score: state.score,
 					correctCount: state.correctCount,
-					questionResolvedAt: state.questionResolvedAt,
 					finishedAt: action.now,
 				}
 			}
 
-			return {
-				phase: 'playing',
-				config: state.config,
-				questionIds: state.questionIds,
-				index: nextIndex,
-				wrongPicks: [],
-				score: state.score,
-				correctCount: state.correctCount,
-				questionStartedAt: action.now,
-			}
+			return startRound(state, index, action.now)
 		}
 
 		default:

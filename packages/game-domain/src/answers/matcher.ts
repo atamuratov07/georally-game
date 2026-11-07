@@ -1,7 +1,13 @@
 import type { CountryId } from '../shared/types'
-import { buildAliases, lookupKey, type AliasTable } from './aliasTable'
-import { keyOf, prepare, tokenRuns } from './candidates'
+import {
+	buildAliasTable,
+	lookupCountries,
+	searchableKeys,
+	type AliasTable,
+} from './aliasTable'
+import { prepareCandidate, wordRuns } from './candidates'
 import { findClosest } from './fuzzy'
+import { keyOf } from './normalize'
 import type {
 	AliasEntry,
 	AnswerMatcher,
@@ -9,52 +15,52 @@ import type {
 	MatchResult,
 } from './types'
 
-interface ExactFind {
+interface WordScan {
 	countryIds: CountryId[]
-	coveredTokens: number
+	coveredWords: number
 }
 
-function scanTokenRuns(
-	aliases: AliasTable,
-	tokens: readonly string[],
+function scanWordRuns(
+	table: AliasTable,
+	words: readonly string[],
 	method: InputMethod,
-): ExactFind {
-	const covered = new Array<boolean>(tokens.length).fill(false)
+): WordScan {
+	const covered = new Array<boolean>(words.length).fill(false)
 	const countryIds: CountryId[] = []
 
-	for (const run of tokenRuns(tokens, aliases.maxTokens)) {
+	for (const run of wordRuns(words, table.maxWords)) {
 		if (covered.slice(run.start, run.end).some(Boolean)) {
 			continue
 		}
 
-		const runCountryIds = lookupKey(aliases, run.key, method)
+		const runCountryIds = lookupCountries(table, run.key, method)
 		if (runCountryIds.length > 0) {
 			countryIds.push(...runCountryIds)
 			covered.fill(true, run.start, run.end)
 		}
 	}
 
-	return { countryIds, coveredTokens: covered.filter(Boolean).length }
+	return { countryIds, coveredWords: covered.filter(Boolean).length }
 }
 
 function findExact(
-	aliases: AliasTable,
-	tokensBySpelling: string[][],
+	table: AliasTable,
+	wordsBySpelling: string[][],
 	method: InputMethod,
 ): CountryId[] {
 	let mostCovered = 0
 	let countryIds: CountryId[] = []
-	for (const tokens of tokensBySpelling) {
-		let find = scanTokenRuns(aliases, tokens, method)
-		if (method === 'typing' && find.coveredTokens < tokens.length) {
-			find = { countryIds: [], coveredTokens: 0 }
+	for (const words of wordsBySpelling) {
+		let scan = scanWordRuns(table, words, method)
+		if (method === 'typing' && scan.coveredWords < words.length) {
+			scan = { countryIds: [], coveredWords: 0 }
 		}
 
-		if (find.coveredTokens === mostCovered) {
-			countryIds.push(...find.countryIds)
-		} else if (find.coveredTokens > mostCovered) {
-			mostCovered = find.coveredTokens
-			countryIds = [...find.countryIds]
+		if (scan.coveredWords === mostCovered) {
+			countryIds.push(...scan.countryIds)
+		} else if (scan.coveredWords > mostCovered) {
+			mostCovered = scan.coveredWords
+			countryIds = [...scan.countryIds]
 		}
 	}
 
@@ -62,13 +68,18 @@ function findExact(
 }
 
 function findFuzzy(
-	aliases: AliasTable,
-	tokensBySpelling: string[][],
+	table: AliasTable,
+	wordsBySpelling: string[][],
 	method: InputMethod,
 ): CountryId[] {
-	const countryIds = tokensBySpelling.flatMap(tokens => {
-		const key = keyOf(tokens)
-		const outcome = findClosest(aliases, key, method)
+	const keys = wordsBySpelling.flatMap(words =>
+		method === 'voice'
+			? wordRuns(words, table.maxWords).map(run => run.key)
+			: [keyOf(words)],
+	)
+
+	const countryIds = keys.flatMap(key => {
+		const outcome = findClosest(table, key, method)
 		if (!outcome) {
 			return []
 		}
@@ -89,32 +100,61 @@ function toResult(
 		: { kind: 'ambiguous', countryIds, heard }
 }
 
+function isPrefixOfOtherName(
+	table: AliasTable,
+	key: string,
+	countryId: CountryId,
+): boolean {
+	for (const [other, countryIds] of searchableKeys(table, 'typing')) {
+		if (
+			other !== key &&
+			other.startsWith(key) &&
+			[...countryIds].some(id => id !== countryId)
+		) {
+			return true
+		}
+	}
+	return false
+}
+
 export function createAnswerMatcher(
 	entries: readonly AliasEntry[],
 ): AnswerMatcher {
-	const aliases = buildAliases(entries)
+	const table = buildAliasTable(entries)
 
 	return {
-		match(candidates, method) {
-			const inputs = candidates
-				.map(candidate => prepare(candidate, method))
-				.filter(input => input.heard !== '')
+		match(inputs, method) {
+			const candidates = inputs
+				.map(input => prepareCandidate(input))
+				.filter(candidate => candidate.heard !== '')
 
-			for (const { heard, spellings } of inputs) {
-				const countryIds = findExact(aliases, spellings, method)
+			for (const { heard, wordsBySpelling } of candidates) {
+				const countryIds = findExact(table, wordsBySpelling, method)
 				if (countryIds.length > 0) {
 					return toResult(countryIds, 'exact', heard)
 				}
 			}
 
-			for (const { heard, spellings } of inputs) {
-				const countryIds = findFuzzy(aliases, spellings, method)
+			for (const { heard, wordsBySpelling } of candidates) {
+				const countryIds = findFuzzy(table, wordsBySpelling, method)
 				if (countryIds.length > 0) {
 					return toResult(countryIds, 'fuzzy', heard)
 				}
 			}
 
-			return { kind: 'none', heard: inputs[0]?.heard ?? '' }
+			return { kind: 'none', heard: candidates[0]?.heard ?? '' }
+		},
+
+		matchAsTyped(text) {
+			const { wordsBySpelling } = prepareCandidate(text)
+			const countryIds = findExact(table, wordsBySpelling, 'typing')
+			if (countryIds.length !== 1) return null
+
+			const [countryId] = countryIds
+			const isPrefix = wordsBySpelling.some(words =>
+				isPrefixOfOtherName(table, keyOf(words), countryId),
+			)
+			return { countryId, isPrefix }
 		},
 	}
 }

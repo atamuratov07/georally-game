@@ -19,7 +19,7 @@ export function typoTolerance(key: string, method: InputMethod): number {
 }
 
 export function findClosest(
-	aliases: AliasTable,
+	table: AliasTable,
 	key: string,
 	method: InputMethod,
 ): FuzzyOutcome | null {
@@ -31,7 +31,7 @@ export function findClosest(
 	let bestDistance = tolerance + 1
 	let bestKeys = new Map<string, ReadonlySet<CountryId>>()
 
-	for (const [aliasKey, countryIds] of searchableKeys(aliases, method)) {
+	for (const [aliasKey, countryIds] of searchableKeys(table, method)) {
 		const steps = distance(key, aliasKey, Math.min(tolerance, bestDistance))
 		if (steps < bestDistance) {
 			bestDistance = steps

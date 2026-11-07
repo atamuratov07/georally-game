@@ -5,4 +5,5 @@ export type {
 	AnswerMatcher,
 	InputMethod,
 	MatchResult,
+	TypedMatch,
 } from './types'

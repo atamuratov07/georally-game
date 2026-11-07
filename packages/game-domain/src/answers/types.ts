@@ -6,7 +6,7 @@ export type InputMethod = 'typing' | 'voice'
 export interface AliasEntry {
 	countryId: CountryId
 	text: string
-	voiceOnly: boolean
+	only?: InputMethod
 }
 
 export type MatchResult =
@@ -19,6 +19,12 @@ export type MatchResult =
 	| { kind: 'ambiguous'; countryIds: CountryId[]; heard: string }
 	| { kind: 'none'; heard: string }
 
+export interface TypedMatch {
+	countryId: CountryId
+	isPrefix: boolean
+}
+
 export interface AnswerMatcher {
-	match(candidates: readonly string[], method: InputMethod): MatchResult
+	match(inputs: readonly string[], method: InputMethod): MatchResult
+	matchAsTyped(text: string): TypedMatch | null
 }

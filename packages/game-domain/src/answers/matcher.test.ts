@@ -20,9 +20,10 @@ const names: Record<string, readonly string[]> = {
 
 const entries: AliasEntry[] = [
 	...Object.entries(names).flatMap(([countryId, texts]) =>
-		texts.map(text => ({ countryId, text, voiceOnly: false })),
+		texts.map(text => ({ countryId, text })),
 	),
-	{ countryId: '152', text: 'chilly', voiceOnly: true },
+	{ countryId: '152', text: 'chilly', only: 'voice' },
+	{ countryId: '840', text: 'US', only: 'typing' },
 ]
 
 const matcher = createAnswerMatcher(entries)
@@ -54,11 +55,15 @@ describe('createAnswerMatcher, typing', () => {
 		}
 	})
 
-	it('uses voice-only names for voice only', () => {
+	it('keeps names limited to one input method to that method', () => {
 		expect(matcher.match(['chilly'], 'typing').kind).toBe('none')
 		expect(matcher.match(['chilly'], 'voice')).toMatchObject({
 			countryId: '152',
 		})
+		expect(matcher.match(['US'], 'typing')).toMatchObject({
+			countryId: '840',
+		})
+		expect(matcher.match(['tell us'], 'voice').kind).toBe('none')
 	})
 
 	it('tries Uzbek Cyrillic as Latin', () => {
@@ -95,8 +100,12 @@ describe('createAnswerMatcher, voice', () => {
 		})
 	})
 
-	it('allows one fewer typo than typing', () => {
+	it('allows one fewer typo than typing, in any run of words', () => {
 		expect(matcher.match(['Austrai'], 'voice').kind).toBe('none')
+		expect(matcher.match(['umm Austrailia maybe'], 'voice')).toMatchObject({
+			countryId: '036',
+			via: 'fuzzy',
+		})
 	})
 
 	it('keeps the spelling that matches more words', () => {
@@ -104,5 +113,20 @@ describe('createAnswerMatcher, voice', () => {
 			kind: 'match',
 			countryId: '178',
 		})
+	})
+})
+
+describe('createAnswerMatcher, while typing', () => {
+	it('matches one country exactly and flags the start of another name', () => {
+		expect(matcher.matchAsTyped('Niger')).toEqual({
+			countryId: '562',
+			isPrefix: true,
+		})
+		expect(matcher.matchAsTyped('Bosnia')).toEqual({
+			countryId: '070',
+			isPrefix: false,
+		})
+		expect(matcher.matchAsTyped('Congo')).toBeNull()
+		expect(matcher.matchAsTyped('Austrai')).toBeNull()
 	})
 })

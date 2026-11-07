@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
-import { normalize } from './normalize'
+import { keyOf, toWords } from './normalize'
 
-describe('normalize', () => {
+describe('keyOf(toWords(…))', () => {
 	it.each([
 		['  South   KOREA ', 'south korea'],
 		['Oʻzbekiston', 'ozbekiston'],
@@ -15,6 +15,6 @@ describe('normalize', () => {
 		['The Gambia', 'gambia'],
 		['St. Lucia', 'saint lucia'],
 	])('%s → %s', (raw, expected) => {
-		expect(normalize(raw)).toBe(expected)
+		expect(keyOf(toWords(raw))).toBe(expected)
 	})
 })

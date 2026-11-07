@@ -1,25 +1,18 @@
-import { INPUT_FOLDS, VOICE_FILLERS } from './languages'
-import { applyLangRules, tokenize } from './normalize'
-import type { InputMethod } from './types'
+import { INPUT_FOLDS } from './languages'
+import { keyOf, toWords } from './normalize'
 
-const FILLER_PHRASES: readonly string[][] = VOICE_FILLERS.map(filler =>
-	tokenize(filler),
-)
-	.filter(words => words.length > 0)
-	.sort((a, b) => b.length - a.length)
-
-export interface PreparedInput {
+export interface Candidate {
 	heard: string
-	spellings: string[][]
+	wordsBySpelling: string[][]
 }
 
-export interface TokenRun {
+export interface WordRun {
 	start: number
 	end: number
 	key: string
 }
 
-export function spellingsOf(raw: string): string[] {
+function spellingsOf(raw: string): string[] {
 	const spellings = [raw]
 
 	for (const fold of INPUT_FOLDS) {
@@ -32,54 +25,23 @@ export function spellingsOf(raw: string): string[] {
 	return spellings
 }
 
-function removeFillers(tokens: readonly string[]): string[] {
-	const kept: string[] = []
-
-	for (let i = 0; i < tokens.length;) {
-		let isFiller = false
-		for (const phrase of FILLER_PHRASES) {
-			if (phrase.every((word, offset) => tokens[i + offset] === word)) {
-				i += phrase.length
-				isFiller = true
-				break
-			}
-		}
-
-		if (!isFiller) {
-			kept.push(tokens[i])
-			i += 1
-		}
-	}
-
-	return kept
-}
-
-export function tokensOf(spelling: string, method: InputMethod): string[] {
-	const tokens = tokenize(spelling)
-	return method === 'voice' ? removeFillers(tokens) : tokens
-}
-
-export function prepare(raw: string, method: InputMethod): PreparedInput {
+export function prepareCandidate(raw: string): Candidate {
 	const heard = raw.trim()
 	return {
 		heard,
-		spellings: spellingsOf(heard).map(spelling => tokensOf(spelling, method)),
+		wordsBySpelling: spellingsOf(heard).map(spelling => toWords(spelling)),
 	}
 }
 
-export function keyOf(tokens: readonly string[]): string {
-	return applyLangRules(tokens).join(' ')
-}
+export function wordRuns(
+	words: readonly string[],
+	maxWords: number,
+): WordRun[] {
+	const runs: WordRun[] = []
 
-export function tokenRuns(
-	tokens: readonly string[],
-	maxTokens: number,
-): TokenRun[] {
-	const runs: TokenRun[] = []
-
-	for (let length = Math.min(tokens.length, maxTokens); length > 0; length--) {
-		for (let start = 0; start + length <= tokens.length; start++) {
-			const key = keyOf(tokens.slice(start, start + length))
+	for (let length = Math.min(words.length, maxWords); length > 0; length--) {
+		for (let start = 0; start + length <= words.length; start++) {
+			const key = keyOf(words.slice(start, start + length))
 			if (key) {
 				runs.push({ start, end: start + length, key })
 			}

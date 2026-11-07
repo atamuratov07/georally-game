@@ -65,7 +65,7 @@ georally-game/
 |           |   |-- analytics/
 |           |   |   |-- track.ts        # GA4 event helpers
 |           |   |   |-- useMultiplayerGameAnalytics.ts
-|           |   |   `-- useSingleplayerGameAnalytics.ts
+|           |   |   `-- useLocateGameAnalytics.ts
 |           |   |-- i18n/
 |           |   |   |-- setup.ts        # i18next init
 |           |   |   |-- locales/        # en, ru, uz-Latn translations
@@ -77,7 +77,13 @@ georally-game/
 |           |   |   |-- LanguageSwitcher.tsx
 |           |   |   `-- index.ts
 |           |   |-- map/
-|           |   |   |-- MapRenderer.tsx # MapLibre wrapper used by game UIs
+|           |   |   |-- MapRenderer.tsx # the pick-a-country map (locate, multiplayer), composed from the parts below
+|           |   |   |-- BaseMap.tsx     # MapLibre map, style, load and error, projection and its toggle
+|           |   |   |-- camera/         # useScopeCamera (region presets, reset), useRevealCamera
+|           |   |   |-- interaction/    # useCountryPicking (hover and click)
+|           |   |   |-- layers/         # CountryLayers (highlights, dimming, hover), LabelLayers
+|           |   |   |-- CardToggle.tsx, MapMarkers.tsx, ProjectionToggle.tsx, RevealPopup.tsx
+|           |   |   |-- map-controls.ts # shared style of the round map buttons
 |           |   |   |-- continent-view.ts
 |           |   |   |-- map-styles.tsx
 |           |   |   `-- types.ts
@@ -91,20 +97,24 @@ georally-game/
 |           |       `-- region-map/
 |           |           `-- RegionPicker.tsx  # continent picker drawn from virtual:region-map
 |           |-- singleplayer-game/
-|           |   |-- index.ts
-|           |   |-- core/
-|           |   |   |-- config.ts         # URL <-> singleplayer config conversion
-|           |   |   `-- useGameSession.ts # local game orchestration hook
-|           |   |-- screens/
+|           |   |-- index.ts              # exports singleplayerRoutes
+|           |   |-- modes.ts              # mode registry: id and lazy pages
+|           |   |-- paths.ts              # /singleplayer/<mode> and /singleplayer/<mode>/play
+|           |   |-- routes.tsx            # routes from the registry, redirects from the old paths
+|           |   |-- RedirectWithSearch.tsx
+|           |   |-- locate/
 |           |   |   |-- SetupPage.tsx
 |           |   |   |-- GamePage.tsx
 |           |   |   |-- GameScreen.tsx
-|           |   |   `-- InvalidConfigScreen.tsx
-|           |   `-- components/
-|           |       |-- GameHeader.tsx
-|           |       |-- GameResultModal.tsx
-|           |       |-- Hearts.tsx
-|           |       `-- QuestionTimer.tsx
+|           |   |   |-- config.ts         # setting options and the setup URL's query string
+|           |   |   |-- store.ts          # the saved locate game and its checks
+|           |   |   |-- useLocateGame.ts  # restores, runs and saves the locate game
+|           |   |   `-- components/       # GameHeader, Hearts
+|           |   `-- shared/
+|           |       |-- gameStore.ts      # createGameStore, hasValidQuestionProgress
+|           |       |-- useStoredGame.ts
+|           |       |-- questionCountFit.ts
+|           |       `-- components/       # GameErrorBoundary, GameErrorScreen, GameResultModal, ResumeGameCard
 |           `-- multiplayer-game/
 |               |-- index.ts
 |               |-- api/
@@ -164,7 +174,9 @@ georally-game/
 |   |       |-- catalog/                 # country eligibility selectors, question set selection
 |   |       |-- answers/                 # typed and spoken answer matcher (Name It)
 |   |       |-- singleplayer/
-|   |       |   `-- locate/              # local state machine of the find-on-the-map mode
+|   |       |   |-- rounds.ts            # phases, state shape and selectors shared by the modes
+|   |       |   |-- locate/              # find-on-the-map mode
+|   |       |   `-- name-it/             # name-the-country mode
 |   |       `-- multiplayer/
 |   |           |-- orchestration.ts     # room + game commands combined (start, submit, reveal, advance)
 |   |           |-- errors.ts

@@ -30,18 +30,24 @@ export function trackRoomJoined(roomMode: RoomModeParam): void {
 	gtagEvent('room_joined', { room_mode: roomMode })
 }
 
+export type SingleplayerModeParam = 'locate' | 'name_it'
+
 export function trackSingleplayerGameStart(params: {
+	mode: SingleplayerModeParam
 	difficulty: string
 	scope: string
 	questionCount: number
-	attemptsPerQuestion: number
+	attemptsPerQuestion?: number
+	timeLimitSeconds?: number
 	isRetry: boolean
 }): void {
 	gtagEvent('sp_game_start', {
+		mode: params.mode,
 		difficulty: params.difficulty,
 		scope: params.scope,
 		question_count: params.questionCount,
 		attempts_per_question: params.attemptsPerQuestion,
+		time_limit_s: params.timeLimitSeconds,
 		is_retry: params.isRetry ? 1 : 0,
 	})
 }
@@ -81,13 +87,15 @@ export function trackGameEntered(params: {
 }
 
 export function trackSingleplayerQuestionAnswered(params: {
+	mode: SingleplayerModeParam
 	questionNumber: number
 	isCorrect: boolean
-	outcome: 'correct' | 'gave_up' | 'exhausted_attempts'
+	outcome: 'correct' | 'gave_up' | 'exhausted_attempts' | 'time_up'
 	attemptsUsed: number
 	responseTimeMs: number
 }): void {
 	gtagEvent('sp_question_answered', {
+		mode: params.mode,
 		question_number: params.questionNumber,
 		is_correct: params.isCorrect ? 1 : 0,
 		outcome: params.outcome,
@@ -113,6 +121,7 @@ export function trackMultiplayerQuestionAnswered(params: {
 }
 
 export function trackSingleplayerGameEnd(params: {
+	mode: SingleplayerModeParam
 	difficulty: string
 	scope: string
 	questionCount: number
@@ -121,6 +130,7 @@ export function trackSingleplayerGameEnd(params: {
 	durationMs: number | undefined
 }): void {
 	gtagEvent('sp_game_end', {
+		mode: params.mode,
 		difficulty: params.difficulty,
 		scope: params.scope,
 		question_count: params.questionCount,

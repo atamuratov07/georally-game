@@ -6,8 +6,8 @@ import {
 	type GameState,
 } from '@georally/game-domain/singleplayer/locate'
 import { useCallback, useMemo } from 'react'
-import { useLocateGameAnalytics } from '@/shared/analytics/useLocateGameAnalytics'
 import { useStoredGame } from '../shared/useStoredGame'
+import { useLocateGameAnalytics } from './analytics'
 import { locateGameStore } from './store'
 
 interface UseLocateGameResult {

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/utils'
 
-const SCORE_VISIBLE_DURATION_MS = 3000
+const SCORE_VISIBLE_DURATION_MS = 2400
 const ENTER_DURATION_S = 0.4
 const ENTER_DURATION_MS = ENTER_DURATION_S * 1000
 const SCORE_EASE = [0.22, 1, 0.36, 1] as const

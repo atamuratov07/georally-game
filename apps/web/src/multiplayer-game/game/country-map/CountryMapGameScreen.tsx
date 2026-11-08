@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useCurrentLocale } from '@/app/LocaleContext'
 import { getCountryName } from '@/shared/i18n'
-import { MapRenderer } from '@/shared/map/MapRenderer'
+import { PickCountryMap } from '@/shared/map/PickCountryMap'
 import { GameHud } from '@/shared/widgets/GameHud'
 import { ScoreBanner } from '@/shared/widgets/ScoreBanner'
 import {
@@ -83,7 +83,7 @@ export function CountryMapGameScreen({
 			/>
 
 			<main className='relative min-h-0 flex-1'>
-				<MapRenderer {...mapProps} />
+				<PickCountryMap {...mapProps} />
 
 				<ScoreBanner
 					triggerKey={scoreBannerTriggerKey}

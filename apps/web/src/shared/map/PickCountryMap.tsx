@@ -12,14 +12,14 @@ import { RevealPopup } from './RevealPopup'
 import type {
 	MapHighlight,
 	MapMarker,
-	MapRendererProps,
+	PickCountryMapProps,
 	MapRevealTarget,
 } from './types'
 
 const NO_HIGHLIGHTS: readonly MapHighlight[] = []
 const NO_MARKERS: readonly MapMarker[] = []
 
-function MapRendererInner({
+function PickCountryMapInner({
 	onPick,
 	interactiveIds,
 	scope,
@@ -30,7 +30,7 @@ function MapRendererInner({
 	disabled = false,
 	className,
 	resetViewKey = null,
-}: MapRendererProps) {
+}: PickCountryMapProps) {
 	const mapRef = useRef<MapRef | null>(null)
 	const [isLoaded, setIsLoaded] = useState(false)
 	const [hiddenCardTarget, setHiddenCardTarget] =
@@ -114,5 +114,5 @@ function MapRendererInner({
 	)
 }
 
-export const MapRenderer = memo(MapRendererInner)
-MapRenderer.displayName = 'MapRenderer'
+export const PickCountryMap = memo(PickCountryMapInner)
+PickCountryMap.displayName = 'PickCountryMap'

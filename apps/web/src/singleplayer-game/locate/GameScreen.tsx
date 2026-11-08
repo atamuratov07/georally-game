@@ -15,8 +15,11 @@ import {
 	type GameState,
 } from '@georally/game-domain/singleplayer/locate'
 import { useMemo } from 'react'
-import { MapRenderer } from '../../shared/map/MapRenderer'
-import type { MapHighlightTone, MapRendererProps } from '../../shared/map/types'
+import { PickCountryMap } from '../../shared/map/PickCountryMap'
+import type {
+	MapHighlightTone,
+	PickCountryMapProps,
+} from '../../shared/map/types'
 import { ScoreBanner } from '../../shared/widgets/ScoreBanner'
 import { CountryInfoCard } from '../../shared/widgets/CountryInfoCard'
 import { Button } from '@/shared/ui'
@@ -60,7 +63,7 @@ export function GameScreen({
 
 	const revealedInfo = revealedId ? countriesInfo.get(revealedId) : undefined
 
-	const revealTarget = useMemo<MapRendererProps['revealTarget']>(() => {
+	const revealTarget = useMemo<PickCountryMapProps['revealTarget']>(() => {
 		if (!revealedId || !revealedInfo) {
 			return null
 		}
@@ -77,7 +80,7 @@ export function GameScreen({
 		[eligibleIds],
 	)
 
-	const highlights = useMemo<MapRendererProps['highlights']>(() => {
+	const highlights = useMemo<PickCountryMapProps['highlights']>(() => {
 		const nextHighlights = wrongPicks.map(countryId => ({
 			countryId,
 			tone: 'wrong' as MapHighlightTone,
@@ -93,7 +96,7 @@ export function GameScreen({
 		return nextHighlights
 	}, [revealedId, wrongPicks])
 
-	const mapProps: MapRendererProps = {
+	const mapProps: PickCountryMapProps = {
 		onPick: answering ? onPick : () => undefined,
 		interactiveIds,
 		scope: state.config.scope,
@@ -121,7 +124,7 @@ export function GameScreen({
 			/>
 
 			<main className='relative min-h-0 flex-1'>
-				<MapRenderer {...mapProps} />
+				<PickCountryMap {...mapProps} />
 
 				<ScoreBanner
 					triggerKey={resolvedAt}

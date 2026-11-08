@@ -22,7 +22,7 @@ export interface MapRevealTarget {
 	latitude: number
 }
 
-export interface MapRendererProps {
+export interface PickCountryMapProps {
 	onPick: (countryId: string) => void
 	interactiveIds: ReadonlySet<string>
 	scope: GameScope

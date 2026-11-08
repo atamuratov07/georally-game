@@ -77,9 +77,21 @@ const translations = {
 		timer: 'Таймер',
 		timerOff: 'Нет',
 		seconds: '{{count}} с',
+		timePerCountry: 'Время на страну',
 	},
 	singleplayer: {
 		title: 'Одиночная игра',
+		modes: {
+			label: 'Режим игры',
+			locate: {
+				title: 'Найди',
+				description: 'Найдите названную страну на карте.',
+			},
+			nameIt: {
+				title: 'Назови',
+				description: 'Назовите выделенную страну, пока не вышло время.',
+			},
+		},
 		start: 'Начать игру',
 		exit: 'Выйти',
 		giveUp: 'Сдаться',
@@ -108,6 +120,27 @@ const translations = {
 		gameError: {
 			title: 'Не удалось открыть игру',
 			action: 'Открыть настройки',
+		},
+	},
+	nameIt: {
+		inputLabel: 'Название страны',
+		placeholder: 'Введите название страны',
+		mic: {
+			start: 'Ответить голосом',
+			stop: 'Остановить запись',
+			listening: 'Слушаю…',
+			denied: 'Доступ к микрофону запрещён. Можно отвечать текстом.',
+			noSpeech: 'Не расслышал',
+			unavailable: 'Голосовые ответы не работают в этом браузере',
+			network: 'Для голосовых ответов нужен интернет',
+			language: 'Язык распознавания: {{language}}',
+		},
+		feedback: {
+			wrong: '{{name}} — не то',
+			typo: '{{text}} → {{name}}',
+			ambiguous: 'Какая именно: «{{text}}»?',
+			unknown: 'Не знаю «{{text}}»',
+			heard: 'Услышано: {{text}}',
 		},
 	},
 	multiplayer: {

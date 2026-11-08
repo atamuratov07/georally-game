@@ -62,10 +62,10 @@ georally-game/
 |           |   |-- useLocalizedNavigate.tsx
 |           |   `-- globals.css
 |           |-- shared/
+|           |   |-- answers/            # the app's answer matcher, typed answers, speech recognition
 |           |   |-- analytics/
 |           |   |   |-- track.ts        # GA4 event helpers
-|           |   |   |-- useMultiplayerGameAnalytics.ts
-|           |   |   `-- useLocateGameAnalytics.ts
+|           |   |   `-- useMultiplayerGameAnalytics.ts
 |           |   |-- i18n/
 |           |   |   |-- setup.ts        # i18next init
 |           |   |   |-- locales/        # en, ru, uz-Latn translations
@@ -77,9 +77,9 @@ georally-game/
 |           |   |   |-- LanguageSwitcher.tsx
 |           |   |   `-- index.ts
 |           |   |-- map/
-|           |   |   |-- MapRenderer.tsx # the pick-a-country map (locate, multiplayer), composed from the parts below
+|           |   |   |-- PickCountryMap.tsx # the pick-a-country map (locate, multiplayer), composed from the parts below
 |           |   |   |-- BaseMap.tsx     # MapLibre map, style, load and error, projection and its toggle
-|           |   |   |-- camera/         # useScopeCamera (region presets, reset), useRevealCamera
+|           |   |   |-- camera/         # useScopeCamera (region presets, reset), useRevealCamera, useFitCamera
 |           |   |   |-- interaction/    # useCountryPicking (hover and click)
 |           |   |   |-- layers/         # CountryLayers (highlights, dimming, hover), LabelLayers
 |           |   |   |-- CardToggle.tsx, MapMarkers.tsx, ProjectionToggle.tsx, RevealPopup.tsx
@@ -87,6 +87,7 @@ georally-game/
 |           |   |   |-- continent-view.ts
 |           |   |   |-- map-styles.tsx
 |           |   |   `-- types.ts
+|           |   |-- time/               # useDeadline, useNow
 |           |   |-- ui/                 # AlertMessage, Button, CopyButton, FloatingNotice, FormControls,
 |           |   |                       # IconButton, ScreenShell, SurfacePanel, buttonStyles
 |           |   |-- utils/
@@ -109,12 +110,26 @@ georally-game/
 |           |   |   |-- config.ts         # setting options and the setup URL's query string
 |           |   |   |-- store.ts          # the saved locate game and its checks
 |           |   |   |-- useLocateGame.ts  # restores, runs and saves the locate game
+|           |   |   |-- analytics.ts
 |           |   |   `-- components/       # GameHeader, Hearts
+|           |   |-- name-it/
+|           |   |   |-- SetupPage.tsx
+|           |   |   |-- GamePage.tsx
+|           |   |   |-- RoundScreen.tsx
+|           |   |   |-- NameItMap.tsx     # the map: fit camera, target highlight, labels only on reveal
+|           |   |   |-- config.ts
+|           |   |   |-- store.ts
+|           |   |   |-- useNameItGame.ts  # begins and advances when the camera settles
+|           |   |   |-- analytics.ts
+|           |   |   `-- components/       # AnswerBar, AttemptFeedback, Countdown, MicButton
 |           |   `-- shared/
 |           |       |-- gameStore.ts      # createGameStore, hasValidQuestionProgress
 |           |       |-- useStoredGame.ts
 |           |       |-- questionCountFit.ts
-|           |       `-- components/       # GameErrorBoundary, GameErrorScreen, GameResultModal, ResumeGameCard
+|           |       |-- setupParams.ts    # shared URL parameter readers and the difficulty options
+|           |       |-- useRoundEvents.ts
+|           |       `-- components/       # SetupShell, SetupCard, ModeTabs, GameErrorBoundary,
+|           |                             # GameErrorScreen, GameResultModal, ResumeGameCard
 |           `-- multiplayer-game/
 |               |-- index.ts
 |               |-- api/

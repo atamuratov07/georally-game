@@ -75,9 +75,22 @@ const translations = {
 		timer: 'Timer',
 		timerOff: 'Off',
 		seconds: '{{count}}s',
+		timePerCountry: 'Time per country',
 	},
 	singleplayer: {
 		title: 'Solo game',
+		modes: {
+			label: 'Game mode',
+			locate: {
+				title: 'Find it',
+				description: 'Find the named country on the map.',
+			},
+			nameIt: {
+				title: 'Name it',
+				description:
+					'Name the highlighted country before the time runs out.',
+			},
+		},
 		start: 'Start game',
 		exit: 'Exit',
 		giveUp: 'Give up',
@@ -100,6 +113,27 @@ const translations = {
 		gameError: {
 			title: 'Could not open game',
 			action: 'Open settings',
+		},
+	},
+	nameIt: {
+		inputLabel: 'Country name',
+		placeholder: 'Type the country name',
+		mic: {
+			start: 'Answer by voice',
+			stop: 'Stop listening',
+			listening: 'Listening…',
+			denied: 'Microphone access is blocked. You can still type.',
+			noSpeech: 'Didn’t catch that',
+			unavailable: 'Voice answers don’t work in this browser',
+			network: 'Voice answers need an internet connection',
+			language: 'Speech language: {{language}}',
+		},
+		feedback: {
+			wrong: '{{name}} isn’t it',
+			typo: '{{text}} → {{name}}',
+			ambiguous: 'Which {{text}}?',
+			unknown: 'Don’t know “{{text}}”',
+			heard: 'Heard: {{text}}',
 		},
 	},
 	multiplayer: {

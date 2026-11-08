@@ -76,9 +76,22 @@ const translations = {
 		timer: 'Taymer',
 		timerOff: "Yo'q",
 		seconds: '{{count}} s',
+		timePerCountry: 'Har bir mamlakatga vaqt',
 	},
 	singleplayer: {
 		title: "Yakka o'yin",
+		modes: {
+			label: 'Oʻyin rejimi',
+			locate: {
+				title: 'Top',
+				description: 'Nomi aytilgan mamlakatni xaritadan toping.',
+			},
+			nameIt: {
+				title: 'Nomini ayt',
+				description:
+					'Ajratilgan mamlakat nomini vaqt tugashidan oldin ayting.',
+			},
+		},
 		start: "O'yinni boshlash",
 		exit: 'Chiqish',
 		giveUp: "Taslim bo'lish",
@@ -101,6 +114,28 @@ const translations = {
 		gameError: {
 			title: "O'yinni ochib bo'lmadi",
 			action: 'Sozlamalarni ochish',
+		},
+	},
+	nameIt: {
+		inputLabel: 'Mamlakat nomi',
+		placeholder: 'Mamlakat nomini yozing',
+		mic: {
+			start: 'Ovoz bilan javob berish',
+			stop: 'Tinglashni toʻxtatish',
+			listening: 'Tinglayapman…',
+			denied:
+				'Mikrofonga ruxsat berilmagan. Yozib javob berishingiz mumkin.',
+			noSpeech: 'Eshitilmadi',
+			unavailable: 'Bu brauzerda ovozli javob ishlamaydi',
+			network: 'Ovozli javob uchun internet kerak',
+			language: 'Nutq tili: {{language}}',
+		},
+		feedback: {
+			wrong: '{{name}} emas',
+			typo: '{{text}} → {{name}}',
+			ambiguous: 'Qaysi {{text}}?',
+			unknown: '«{{text}}» nomaʼlum',
+			heard: 'Eshitildi: {{text}}',
 		},
 	},
 	multiplayer: {

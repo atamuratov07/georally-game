@@ -69,7 +69,7 @@ interface AnswerMatcher {
 | Display and answers   | The reveal shows the registry name, which is always an accepted answer, so the two can't drift apart. Short map labels ("Eq. Guinea") are not answers.                                    |
 | Uzbek Cyrillic        | Accepted, through a forgiving fold to Latin applied to input only.                                                                                                                        |
 | The target            | The matcher never sees it, so it can't favour the target when choosing between speech alternatives.                                                                                       |
-| Typing                | Enter submits. An exact match of the target is accepted without Enter, unless it is the start of another country's name (planned, see [Accepting while typing](#accepting-while-typing)). |
+| Typing                | Enter submits. An exact match of the target is accepted without Enter, unless it is the start of another country's name (see [Accepting while typing](#accepting-while-typing)).          |
 | Voice                 | Push-to-talk, one utterance per press. No continuous recording, and no automatic start on each question.                                                                                  |
 | Abbreviations         | Those that are also ordinary words (US, CAR, JAR, BAA) count for typing only.                                                                                                             |
 | Classroom             | Typing only by default.                                                                                                                                                                   |
@@ -197,18 +197,11 @@ Voice shows "Heard: …" with the text the browser returned.
 
 ### Accepting while typing
 
-Status: planned; it needs two additions to the matcher.
-
 Because the score depends on time, an exact match of the target is accepted the moment it is typed, without Enter. Everything else still needs Enter: wrong countries, ambiguous names, nothing found, and every typo match. Typing gives no feedback until Enter, so the rule reveals nothing that Enter wouldn't.
 
 One guard is needed. Some names are the start of another country's name: "niger" while typing "nigeria", "dominica" while typing "dominican republic", "guinea" while typing "guinea-bissau". Accepting immediately would credit a player who meant the longer, wrong name. So when the typed key is the start of another country's key, the answer is accepted only on Enter or after a short pause (600 ms). A longer name of the same country ("bosnia" in "bosnia and herzegovina") doesn't block.
 
-The matcher needs:
-
-- a way to match exactly only (no typo pass), for keystrokes;
-- a flag on a match saying that its key is the start of another country's key.
-
-Recall Sprint needs both for its own instant acceptance, so they serve both modes.
+The matcher provides both pieces: `matchAsTyped(text)` matches exactly (no typo pass) and returns `isPrefix` when the key is the start of another country's key. The web hook `useTypedAnswer` runs it on every keystroke and takes the mode's rule for what may be accepted early (`acceptsEarly`): Name It accepts only the target; Recall Sprint will accept any country it hasn't named yet.
 
 ## Input in the game
 
@@ -225,12 +218,13 @@ One answer bar at the bottom of the map, with the microphone built in.
 
 - Started with the microphone button, or Enter in an empty input. Ctrl/⌘+Space and Alt+Shift switch keyboard layouts for Russian and Uzbek users, and the backtick key is ё on the Russian layout, so none of those are used.
 - States: idle → listening (the interim transcript appears faintly in the bar) → final (submitted as a voice attempt) → feedback. Recognition stops after one final result; the next attempt needs another press. It is aborted when the round ends.
-- The recognizer's language follows the UI language (`en` → `en-US`, `ru` → `ru-RU`, `uz-Latn` → `uz-UZ`). A toggle on the microphone lets players speak another language, since every language is accepted.
+- An interim transcript that is exactly the target, and not the start of another country's name, is accepted at once, by the same rule as typing. Safari's final result can lag by seconds, and the interim one usually has the name long before.
+- The recognizer's language follows the UI language (`en` → `en-US`, `ru` → `ru-RU`, `uz-Latn` → `uz-UZ`, which stays off until it is verified, so the microphone is hidden in the Uzbek UI for now). A toggle on the microphone lets players speak another supported language, since every language is accepted; the choice lasts for the game.
 - Errors: a blocked microphone keeps typing available; silence shows "Didn't catch that"; a network error shows that voice needs internet; an unsupported language hides the microphone for it.
 
 ## Browser speech recognition
 
-- The API is `SpeechRecognition`, prefixed `webkitSpeechRecognition` in Chrome and Safari. It needs HTTPS and must be started from a click or key press. Firefox doesn't support it, so the microphone is hidden there.
+- The API is `SpeechRecognition`, prefixed `webkitSpeechRecognition` in Chrome and Safari. It needs HTTPS and must be started from a click or key press. Firefox doesn't support it, so the microphone is hidden there. Other iOS browsers (Chrome, Firefox, Edge, Opera) run on WebKit and expose the API without it working, so the microphone is hidden there too, detected by their user-agent tokens. `service-not-allowed` and `language-not-supported` mean voice doesn't work in that browser or language: the microphone is hidden with a note saying so, rather than blaming the microphone permission.
 - Chrome and Edge send the audio to their cloud services, so voice needs internet. Safari uses Apple's dictation service.
 - Settings used: `lang` (one language per session), `continuous = false`, `interimResults = true`, `maxAlternatives = 3` (browsers may return fewer).
 - A result event exposes `results[i].isFinal`, `results[i][k].transcript` and `confidence`. Confidence differs between browsers and can be 0, so it is never used to accept or reject.

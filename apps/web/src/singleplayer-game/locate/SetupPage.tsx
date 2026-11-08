@@ -2,13 +2,10 @@ import {
 	createIdleState,
 	type GameConfig,
 } from '@georally/game-domain/singleplayer/locate'
-import { Play } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
 import { useLocalizedSearchParams } from '@/app/useLocalizedSearchParams'
-import { BackLink, PageShell } from '@/shared/layout'
-import { Button, Card, CardHeader, CardTitle, CopyButton } from '@/shared/ui'
 import { RegionPicker } from '@/shared/widgets/region-map/RegionPicker'
 import {
 	difficultyOptions,
@@ -17,10 +14,12 @@ import {
 import { SettingToggleGroup } from '@/shared/widgets/SettingToggleGroup'
 import { singleplayerPaths } from '../paths'
 import { ResumeGameCard } from '../shared/components/ResumeGameCard'
+import { SetupCard } from '../shared/components/SetupCard'
+import { SetupShell } from '../shared/components/SetupShell'
 import { fitQuestionCount } from '../shared/questionCountFit'
+import { DIFFICULTY_OPTIONS } from '../shared/setupParams'
 import {
 	ATTEMPTS_PER_QUESTION_OPTIONS,
-	DIFFICULTY_OPTIONS,
 	QUESTION_COUNT_OPTIONS,
 	readSetupConfig,
 	toSearchParams,
@@ -87,8 +86,7 @@ export default function SetupPage() {
 
 	if (saved) {
 		return (
-			<PageShell width='lg'>
-				<BackLink to='/'>{t('common.home')}</BackLink>
+			<SetupShell mode='locate'>
 				<ResumeGameCard
 					current={saved.index + 1}
 					answered={
@@ -100,89 +98,54 @@ export default function SetupPage() {
 					onResume={() => navigate(paths.play)}
 					onDiscard={handleDiscard}
 				/>
-			</PageShell>
+			</SetupShell>
 		)
 	}
 
 	return (
-		<PageShell width='lg'>
-			<BackLink to='/'>{t('common.home')}</BackLink>
-			<Card>
-				<CardHeader className='flex-row items-center justify-between gap-3'>
-					<CardTitle asChild>
-						<h1>{t('singleplayer.title')}</h1>
-					</CardTitle>
-					<CopyButton
-						size='sm'
-						className='shrink-0'
-						textToCopy={setupLink()}
-						aria-label={t('singleplayer.copySetupLabel')}
-					>
-						<span className='hidden sm:inline'>
-							{t('singleplayer.copySetup')}
-						</span>
-					</CopyButton>
-				</CardHeader>
-
-				<div className='flex flex-col gap-6'>
-					<RegionPicker
-						label={t('settings.region')}
-						value={config.scope}
-						onChange={scope => update({ scope })}
+		<SetupShell mode='locate'>
+			<SetupCard
+				mode='locate'
+				copyLink={setupLink()}
+				canStart={playableConfig !== null}
+				eligibleCount={eligibleCount}
+				onStart={handleStart}
+				onPrefetch={prefetchGame}
+			>
+				<RegionPicker
+					label={t('settings.region')}
+					value={config.scope}
+					onChange={scope => update({ scope })}
+				/>
+				<SettingToggleGroup
+					label={t('settings.difficulty')}
+					value={config.difficulty}
+					options={difficultyOptions(t, DIFFICULTY_OPTIONS)}
+					onChange={difficulty => update({ difficulty })}
+				/>
+				<div className='grid gap-6 sm:grid-cols-2'>
+					<SettingToggleGroup
+						label={t('settings.questions')}
+						value={questionCount ?? config.questionCount}
+						options={numberOptions(QUESTION_COUNT_OPTIONS).map(
+							option => ({
+								...option,
+								disabled: option.value > eligibleCount,
+							}),
+						)}
+						onChange={value => update({ questionCount: value })}
 					/>
 					<SettingToggleGroup
-						label={t('settings.difficulty')}
-						value={config.difficulty}
-						options={difficultyOptions(t, DIFFICULTY_OPTIONS)}
-						onChange={difficulty => update({ difficulty })}
+						label={t('settings.attempts')}
+						tone='coral'
+						value={config.attemptsPerQuestion}
+						options={numberOptions(ATTEMPTS_PER_QUESTION_OPTIONS)}
+						onChange={attemptsPerQuestion =>
+							update({ attemptsPerQuestion })
+						}
 					/>
-					<div className='grid gap-6 sm:grid-cols-2'>
-						<SettingToggleGroup
-							label={t('settings.questions')}
-							value={questionCount ?? config.questionCount}
-							options={numberOptions(QUESTION_COUNT_OPTIONS).map(
-								option => ({
-									...option,
-									disabled: option.value > eligibleCount,
-								}),
-							)}
-							onChange={questionCount => update({ questionCount })}
-						/>
-						<SettingToggleGroup
-							label={t('settings.attempts')}
-							tone='coral'
-							value={config.attemptsPerQuestion}
-							options={numberOptions(ATTEMPTS_PER_QUESTION_OPTIONS)}
-							onChange={attemptsPerQuestion =>
-								update({ attemptsPerQuestion })
-							}
-						/>
-					</div>
 				</div>
-
-				<Button
-					type='button'
-					size='lg'
-					className='mt-8 w-full'
-					disabled={!playableConfig}
-					onMouseEnter={prefetchGame}
-					onFocus={prefetchGame}
-					onClick={handleStart}
-				>
-					<Play aria-hidden='true' fill='currentColor' />
-					{t('singleplayer.start')}
-				</Button>
-				{playableConfig ? null : (
-					<p
-						role='status'
-						className='mt-3 text-center text-sm font-bold text-coral-600'
-					>
-						{t('singleplayer.notEnoughCountries', {
-							count: eligibleCount,
-						})}
-					</p>
-				)}
-			</Card>
-		</PageShell>
+			</SetupCard>
+		</SetupShell>
 	)
 }

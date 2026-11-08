@@ -8,6 +8,7 @@ import {
 	buildSelectionFillLayer,
 	buildSelectionLineLayer,
 	hoverLayer,
+	isSelectionTone,
 	LABELS_BOTTOM_LAYER_ID,
 } from '../map-styles'
 import type { MapHighlight } from '../types'
@@ -15,15 +16,17 @@ import type { MapHighlight } from '../types'
 interface CountryLayersProps {
 	interactiveIds: ReadonlySet<string>
 	highlights: readonly MapHighlight[]
+	dimOpacity?: number
 }
 
 export function CountryLayers({
 	interactiveIds,
 	highlights,
+	dimOpacity,
 }: CountryLayersProps) {
 	const selectedId =
-		highlights.find(highlight => highlight.tone === 'selected')?.countryId ??
-		null
+		highlights.find(highlight => isSelectionTone(highlight.tone))
+			?.countryId ?? null
 
 	const highlightLayer = useMemo(
 		() => buildHighlightLayer(highlights, selectedId),
@@ -42,8 +45,8 @@ export function CountryLayers({
 		[interactiveIds, highlights, selectedId],
 	)
 	const dimLayer = useMemo(
-		() => buildDimLayer(interactiveIds, true),
-		[interactiveIds],
+		() => buildDimLayer(interactiveIds, true, dimOpacity),
+		[dimOpacity, interactiveIds],
 	)
 
 	return (

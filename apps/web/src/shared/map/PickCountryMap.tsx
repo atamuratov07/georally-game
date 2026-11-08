@@ -9,12 +9,7 @@ import { CountryLayers } from './layers/CountryLayers'
 import { LabelLayers } from './layers/LabelLayers'
 import { MapMarkers } from './MapMarkers'
 import { RevealPopup } from './RevealPopup'
-import type {
-	MapHighlight,
-	MapMarker,
-	PickCountryMapProps,
-	MapRevealTarget,
-} from './types'
+import type { MapHighlight, MapMarker, PickCountryMapProps } from './types'
 
 const NO_HIGHLIGHTS: readonly MapHighlight[] = []
 const NO_MARKERS: readonly MapMarker[] = []
@@ -33,8 +28,7 @@ function PickCountryMapInner({
 }: PickCountryMapProps) {
 	const mapRef = useRef<MapRef | null>(null)
 	const [isLoaded, setIsLoaded] = useState(false)
-	const [hiddenCardTarget, setHiddenCardTarget] =
-		useState<MapRevealTarget | null>(null)
+	const [isCardHidden, setIsCardHidden] = useState(false)
 
 	const { pointerProps, clearHover } = useCountryPicking({
 		mapRef,
@@ -76,8 +70,6 @@ function PickCountryMapInner({
 
 	const handleLoad = useCallback(() => setIsLoaded(true), [])
 	const showCard = Boolean(popupElement) && revealTarget !== null && isSettled
-	const isCardHidden =
-		revealTarget !== null && hiddenCardTarget === revealTarget
 
 	return (
 		<BaseMap
@@ -91,9 +83,7 @@ function PickCountryMapInner({
 				showCard ? (
 					<CardToggle
 						hidden={isCardHidden}
-						onHiddenChange={hidden =>
-							setHiddenCardTarget(hidden ? revealTarget : null)
-						}
+						onHiddenChange={setIsCardHidden}
 					/>
 				) : null
 			}

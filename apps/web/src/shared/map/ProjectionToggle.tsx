@@ -22,7 +22,7 @@ export function ProjectionToggle({
 		<ToggleGroupPrimitive.Root
 			type='single'
 			orientation='vertical'
-			className='absolute top-3 left-3 z-10 flex flex-col gap-2'
+			className='absolute top-[var(--map-controls-top,0.75rem)] left-3 z-10 flex flex-col gap-2'
 			value={value}
 			onValueChange={next => {
 				if ((next === 'flat' || next === 'globe') && next !== value) {

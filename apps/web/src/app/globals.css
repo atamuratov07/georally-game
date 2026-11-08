@@ -239,7 +239,7 @@
 }
 
 .maplibregl-map .maplibregl-ctrl-top-left {
-	top: 7.5rem;
+	top: calc(var(--map-controls-top, 0.75rem) + 6.75rem);
 	left: 0.75rem;
 }
 

@@ -1,7 +1,7 @@
 import type { GameScope } from '@georally/game-domain'
 import type { ReactNode } from 'react'
 
-export type MapHighlightTone = 'correct' | 'wrong' | 'selected'
+export type MapHighlightTone = 'correct' | 'wrong' | 'selected' | 'target'
 
 export interface MapHighlight {
 	countryId: string

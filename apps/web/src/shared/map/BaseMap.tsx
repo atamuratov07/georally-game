@@ -1,7 +1,15 @@
 import { setWorkerUrl } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
-import { useCallback, useState, type ReactNode, type RefObject } from 'react'
+import {
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+	type CSSProperties,
+	type ReactNode,
+	type RefObject,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import Map, {
 	NavigationControl,
@@ -19,6 +27,7 @@ setWorkerUrl(workerUrl)
 
 const MAP_STYLE_URL = '/map/style.json'
 const MAP_STYLE = { width: '100%', height: '100%' }
+const FAILURE_NOTICE_MS = 4000
 
 const INITIAL_VIEW_STATE = {
 	longitude: WORLD_VIEW.center[0],
@@ -43,12 +52,26 @@ export type MapPointerProps = Pick<
 	'interactiveLayerIds' | 'onClick' | 'onMouseMove' | 'onMouseLeave'
 >
 
-interface BaseMapProps extends MapPointerProps {
+export type MapInteractionProps = Pick<
+	MapProps,
+	| 'minZoom'
+	| 'maxZoom'
+	| 'dragPan'
+	| 'dragRotate'
+	| 'touchPitch'
+	| 'touchZoomRotate'
+	| 'scrollZoom'
+	| 'doubleClickZoom'
+	| 'keyboard'
+>
+
+interface BaseMapProps extends MapPointerProps, MapInteractionProps {
 	mapRef: RefObject<MapRef | null>
 	allowGlobe: boolean
 	maxBounds?: [number, number, number, number]
 	onLoad: () => void
 	onProjectionChange?: () => void
+	controlsTop?: string
 	overlays?: ReactNode
 	className?: string
 	children?: ReactNode
@@ -60,10 +83,11 @@ export function BaseMap({
 	maxBounds,
 	onLoad,
 	onProjectionChange,
+	controlsTop,
 	overlays,
 	className,
 	children,
-	...pointerProps
+	...mapProps
 }: BaseMapProps) {
 	const { t } = useTranslation()
 	const [hasFailure, setHasFailure] = useState(false)
@@ -84,9 +108,27 @@ export function BaseMap({
 		[onLoad],
 	)
 
+	const failureTimerRef = useRef<number | null>(null)
+
+	useEffect(
+		() => () => {
+			if (failureTimerRef.current !== null) {
+				clearTimeout(failureTimerRef.current)
+			}
+		},
+		[],
+	)
+
 	const handleError = useCallback((event: ErrorEvent) => {
 		console.error('Maplibre error:', event.error)
+		if (failureTimerRef.current !== null) {
+			clearTimeout(failureTimerRef.current)
+		}
 		setTimeout(() => setHasFailure(true), 0)
+		failureTimerRef.current = window.setTimeout(() => {
+			setHasFailure(false)
+			failureTimerRef.current = null
+		}, FAILURE_NOTICE_MS)
 	}, [])
 
 	return (
@@ -96,6 +138,11 @@ export function BaseMap({
 				projection === 'globe' && 'bg-ocean-900',
 				className,
 			)}
+			style={
+				controlsTop
+					? ({ '--map-controls-top': controlsTop } as CSSProperties)
+					: undefined
+			}
 		>
 			<Map
 				ref={mapRef}
@@ -108,7 +155,7 @@ export function BaseMap({
 				onLoad={handleLoad}
 				transformRequest={transformRequest}
 				onError={handleError}
-				{...pointerProps}
+				{...mapProps}
 			>
 				<NavigationControl showCompass={false} position='top-left' />
 				{children}

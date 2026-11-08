@@ -10,7 +10,7 @@ import type {
 	SymbolLayerSpecification,
 } from 'react-map-gl/maplibre'
 import type { AppLanguage } from '../i18n'
-import type { MapHighlight } from './types'
+import type { MapHighlight, MapHighlightTone } from './types'
 
 export const SOURCE_ID = 'world'
 export const SOURCE_LAYER_ID = 'countries'
@@ -33,6 +33,7 @@ export const ARCHIPELAGO_SOURCE_ID = 'archipelagos'
 export const ARCHIPELAGO_FILL_LAYER_ID = 'archipelagos-fill'
 export const ARCHIPELAGO_OUTLINE_LAYER_ID = 'archipelagos-outline'
 export const LABELS_BOTTOM_LAYER_ID = 'geolines'
+export const TARGET_OUTLINE_LAYER_ID = 'countries-target-outline'
 
 export const WRONG_FILL = '#fb5f4c'
 export const REVEALED_FILL = '#3fa625'
@@ -40,6 +41,17 @@ export const SELECTION_FILL = '#ffc01a'
 export const SELECTION_EDGE = '#a86200'
 const SELECTION_FADE_MS = 350
 export const SELECTED_FILL = '#8148f0'
+
+const TONE_FILL: Record<MapHighlightTone, string> = {
+	correct: REVEALED_FILL,
+	wrong: WRONG_FILL,
+	selected: SELECTED_FILL,
+	target: SELECTION_FILL,
+}
+
+export function isSelectionTone(tone: MapHighlightTone): boolean {
+	return tone === 'selected' || tone === 'target'
+}
 
 export type FillColorExpression = NonNullable<
 	FillLayerSpecification['paint']
@@ -67,14 +79,9 @@ export function buildHighlightLayer(
 ): FillLayerSpecification {
 	const cases: string[] = []
 	for (const marker of markers) {
-		if (marker.tone === 'selected' && marker.countryId === selectedId)
+		if (isSelectionTone(marker.tone) && marker.countryId === selectedId)
 			continue
-		cases.push(
-			marker.countryId,
-			{ correct: REVEALED_FILL, wrong: WRONG_FILL, selected: SELECTED_FILL }[
-				marker.tone
-			],
-		)
+		cases.push(marker.countryId, TONE_FILL[marker.tone])
 	}
 
 	return {
@@ -101,17 +108,18 @@ export function buildHighlightLayer(
 export function buildDimLayer(
 	interactiveIds: ReadonlySet<string>,
 	enabled: boolean,
+	opacity = 0.75,
 ): FillLayerSpecification {
 	const fillOpacity: FillOpacityExpression = !enabled
 		? 0
 		: interactiveIds.size === 0
-			? 0.75
+			? opacity
 			: ([
 					'match',
 					['get', 'iso_n3'],
 					[...interactiveIds],
 					0,
-					0.75,
+					opacity,
 				] as FillOpacityExpression)
 
 	return {
@@ -280,13 +288,9 @@ export function buildArchipelagoLayers(
 	for (const highlight of highlights) {
 		toneById.set(
 			highlight.countryId,
-			highlight.tone === 'selected' && highlight.countryId === selectedId
+			isSelectionTone(highlight.tone) && highlight.countryId === selectedId
 				? SELECTION_FILL
-				: {
-						correct: REVEALED_FILL,
-						wrong: WRONG_FILL,
-						selected: SELECTED_FILL,
-					}[highlight.tone],
+				: TONE_FILL[highlight.tone],
 		)
 	}
 	const visibleIds = new Set([...interactiveIds, ...toneById.keys()])
@@ -388,6 +392,23 @@ export function buildSelectionLineLayer(
 			],
 			'line-opacity': visible ? 1 : 0,
 			'line-opacity-transition': { duration: SELECTION_FADE_MS, delay: 0 },
+		},
+	}
+}
+
+export function buildTargetOutlineLayer(
+	countryId: string | null,
+): LineLayerSpecification {
+	return {
+		id: TARGET_OUTLINE_LAYER_ID,
+		type: 'line',
+		source: SOURCE_ID,
+		'source-layer': COUNTRY_LAYER,
+		filter: countryFilter(countryId),
+		layout: { 'line-join': 'round' },
+		paint: {
+			'line-color': SELECTION_EDGE,
+			'line-width': 3,
 		},
 	}
 }

@@ -3,6 +3,8 @@ import { Trans, useTranslation } from 'react-i18next'
 import { AppHeader, SkyBackground } from '@/shared/layout'
 import { Button } from '@/shared/ui'
 import { cn } from '@/shared/utils'
+import { DISPLAY_TITLE_CLASS, HIGHLIGHT_CLASS } from './landing/styles'
+import { NameItShowcase } from './landing/NameItShowcase'
 import { LocalizedLink } from './LocalizedLink'
 
 const HeroGlobe = lazy(() => import('./landing/HeroGlobe'))
@@ -55,13 +57,11 @@ export default function HomePage() {
 					<main className='mx-auto flex w-full max-w-6xl flex-col gap-20 px-4 pt-4 pb-24 sm:gap-28 sm:px-6 sm:pt-8'>
 						<section className='grid items-center gap-10 lg:grid-cols-[1.1fr_1fr]'>
 							<div className='flex flex-col items-start gap-6'>
-								<h1 className='text-5xl leading-[1.02] font-black tracking-tight text-balance sm:text-6xl lg:text-7xl'>
+								<h1 className={DISPLAY_TITLE_CLASS}>
 									<Trans
 										i18nKey='landing.heroTitle'
 										components={{
-											hl: (
-												<span className='bg-[linear-gradient(transparent_60%,var(--color-sunflower-300)_60%,var(--color-sunflower-300)_92%,transparent_92%)] text-ocean-600' />
-											),
+											hl: <span className={HIGHLIGHT_CLASS} />,
 										}}
 									/>
 								</h1>
@@ -85,6 +85,8 @@ export default function HomePage() {
 								<HeroGlobe />
 							</Suspense>
 						</section>
+
+						<NameItShowcase />
 
 						<section
 							aria-labelledby='modes-title'

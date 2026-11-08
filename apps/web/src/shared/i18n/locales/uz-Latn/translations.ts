@@ -15,11 +15,17 @@ const translations = {
 		playTogether: "Birga o'ynash",
 		previewCountry: 'Yaponiya',
 		modesTitle: "O'ynashning ikki usuli",
+		nameIt: {
+			eyebrow: 'Yangi rejim',
+			title: 'Har bir davlatni <hl>shaklidan</hl> nomlang',
+			text: 'Xaritada davlat yonadi va vaqt boshlanadi. Vaqt tugashidan oldin uning nomini yozing.',
+			cta: "Sinab ko'ring",
+		},
 		solo: {
 			title: "Yakka o'yin",
-			text: "O'z sur'atingizda, davlatma-davlat mashq qiling.",
-			point1: 'Hudud va qiyinlikni tanlang',
-			point2: 'Yuraklar xatolar sonini cheklaydi',
+			text: "O'z sur'atingizda, ikki rejimda mashq qiling.",
+			point1: '«Top»: nomi aytilgan davlatni xaritada toping',
+			point2: '«Nomini ayt»: ajratilgan davlat nomini yozing',
 			point3: 'Har javobdan keyin bayroq, poytaxt va aholi soni',
 		},
 		multiplayer: {

@@ -15,11 +15,17 @@ const translations = {
 		playTogether: 'Play together',
 		previewCountry: 'Japan',
 		modesTitle: 'Two ways to play',
+		nameIt: {
+			eyebrow: 'New mode',
+			title: 'Name every country <hl>by its shape</hl>',
+			text: 'A country lights up on the map and the clock starts. Name it before time runs out: type it, or just say it out loud.',
+			cta: 'Try it',
+		},
 		solo: {
 			title: 'Solo game',
-			text: 'Train at your own pace, one country at a time.',
-			point1: 'Choose the region and difficulty',
-			point2: 'Hearts limit wrong guesses',
+			text: 'Train at your own pace, in two modes.',
+			point1: 'Find it: spot the named country on the map',
+			point2: 'Name it: say or type the highlighted country',
 			point3: 'See the flag, capital and population after each answer',
 		},
 		multiplayer: {

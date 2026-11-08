@@ -57,12 +57,14 @@
 		]
 	},
 	"140": {
-		"en": [
-			"CAR"
-		],
 		"ru": [
 			"ЦАР"
-		]
+		],
+		"typing": {
+			"en": [
+				"CAR"
+			]
+		}
 	},
 	"152": {
 		"voice": {
@@ -414,9 +416,13 @@
 			"Южно-Африканская Республика"
 		],
 		"uz": [
-			"Janubiy Afrika",
-			"JAR"
-		]
+			"Janubiy Afrika"
+		],
+		"typing": {
+			"uz": [
+				"JAR"
+			]
+		}
 	},
 	"748": {
 		"en": [
@@ -461,9 +467,13 @@
 			"Эмираты"
 		],
 		"uz": [
-			"BAA",
 			"Arab Amirliklari"
-		]
+		],
+		"typing": {
+			"uz": [
+				"BAA"
+			]
+		}
 	},
 	"792": {
 		"en": [
@@ -505,7 +515,6 @@
 		"en": [
 			"United States of America",
 			"USA",
-			"US",
 			"America"
 		],
 		"ru": [
@@ -518,6 +527,11 @@
 			"AQSh",
 			"Amerika",
 			"Qo'shma Shtatlar"
-		]
+		],
+		"typing": {
+			"en": [
+				"US"
+			]
+		}
 	}
 }

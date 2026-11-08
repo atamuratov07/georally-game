@@ -15,11 +15,17 @@ const translations = {
 		playTogether: "Birga o'ynash",
 		previewCountry: 'Yaponiya',
 		modesTitle: "O'ynashning ikki usuli",
+		nameIt: {
+			eyebrow: 'Yangi rejim',
+			title: 'Har bir davlatni <hl>shaklidan</hl> nomlang',
+			text: 'Xaritada davlat yonadi va vaqt boshlanadi. Vaqt tugashidan oldin uning nomini yozing.',
+			cta: "Sinab ko'ring",
+		},
 		solo: {
-			title: 'Yakka mashq',
-			text: "O'z sur'atingizda, davlatma-davlat mashq qiling.",
-			point1: 'Hudud va qiyinlikni tanlang',
-			point2: 'Yuraklar xatolar sonini cheklaydi',
+			title: "Yakka o'yin",
+			text: "O'z sur'atingizda, ikki rejimda mashq qiling.",
+			point1: '«Top»: nomi aytilgan davlatni xaritada toping',
+			point2: '«Nomini ayt»: ajratilgan davlat nomini yozing',
 			point3: 'Har javobdan keyin bayroq, poytaxt va aholi soni',
 		},
 		multiplayer: {
@@ -76,9 +82,22 @@ const translations = {
 		timer: 'Taymer',
 		timerOff: "Yo'q",
 		seconds: '{{count}} s',
+		timePerCountry: 'Har bir mamlakatga vaqt',
 	},
 	singleplayer: {
-		title: 'Yakka mashq',
+		title: "Yakka o'yin",
+		modes: {
+			label: 'Oʻyin rejimi',
+			locate: {
+				title: 'Top',
+				description: 'Nomi aytilgan mamlakatni xaritadan toping.',
+			},
+			nameIt: {
+				title: 'Nomini ayt',
+				description:
+					'Ajratilgan mamlakat nomini vaqt tugashidan oldin ayting.',
+			},
+		},
 		start: "O'yinni boshlash",
 		exit: 'Chiqish',
 		giveUp: "Taslim bo'lish",
@@ -87,16 +106,42 @@ const translations = {
 		attemptsLeft_other: '{{count}} ta urinish qoldi',
 		resultTitle: "O'yin yakunlandi",
 		playAgain: "Yana o'ynash",
-		invalidTitle: "O'yinni ochib bo'lmadi",
-		invalidDescription: "Sozlamalarni tekshiring va qayta urinib ko'ring.",
-		openSettings: 'Sozlamalarni ochish',
-		changeSettings: "Sozlamalarni o'zgartirish",
-		loadErrors: {
-			noPlayableCountries: "Katalogda o'ynaladigan mamlakatlar topilmadi.",
-			noEligibleCountries:
-				"Tanlangan hudud va qiyinlikka mos mamlakatlar yo'q.",
-			insufficientEligibleCountries: "Juda ko'p savol tanlangan.",
-			default: "O'yinni boshlash imkoni bo'lmadi.",
+		copySetup: 'Sozlamalarni nusxalash',
+		copySetupLabel: 'Ushbu sozlamalarga havolani nusxalash',
+		resume: {
+			title: "Tugallanmagan o'yin",
+			resume: 'Davom ettirish',
+			discard: 'Bekor qilish',
+		},
+		notEnoughCountries_one:
+			"Bu hudud va qiyinlikka faqat {{count}} ta mamlakat mos keladi. O'yin uchun bu yetarli emas.",
+		notEnoughCountries_other:
+			"Bu hudud va qiyinlikka faqat {{count}} ta mamlakat mos keladi. O'yin uchun bu yetarli emas.",
+		gameError: {
+			title: "O'yinni ochib bo'lmadi",
+			action: 'Sozlamalarni ochish',
+		},
+	},
+	nameIt: {
+		inputLabel: 'Mamlakat nomi',
+		placeholder: 'Mamlakat nomini yozing',
+		mic: {
+			start: 'Ovoz bilan javob berish',
+			stop: 'Tinglashni toʻxtatish',
+			listening: 'Tinglayapman…',
+			denied:
+				'Mikrofonga ruxsat berilmagan. Yozib javob berishingiz mumkin.',
+			noSpeech: 'Eshitilmadi',
+			unavailable: 'Bu brauzerda ovozli javob ishlamaydi',
+			network: 'Ovozli javob uchun internet kerak',
+			language: 'Nutq tili: {{language}}',
+		},
+		feedback: {
+			wrong: '{{name}} emas',
+			typo: '{{text}} → {{name}}',
+			ambiguous: 'Qaysi {{text}}?',
+			unknown: '«{{text}}» nomaʼlum',
+			heard: 'Eshitildi: {{text}}',
 		},
 	},
 	multiplayer: {

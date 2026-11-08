@@ -30,15 +30,15 @@ function outcome(result: MatchResult): string | readonly string[] {
 }
 
 describe('aliasEntries', () => {
-	// Also catches names that clean up to nothing, filler words inside names,
-	// and Uzbek folding that lands a Russian name on another country.
+	// Also catches names that clean up to nothing and Uzbek folding that lands
+	// a Russian name on another country.
 	it('resolves every name to its own country, typed and spoken', () => {
 		const mismatches: string[] = []
 
 		for (const entry of aliasEntries) {
 			const expected = SHARED_NAMES[entry.text] ?? entry.countryId
-			const methods: InputMethod[] = entry.voiceOnly
-				? ['voice']
+			const methods: InputMethod[] = entry.only
+				? [entry.only]
 				: ['typing', 'voice']
 
 			for (const method of methods) {

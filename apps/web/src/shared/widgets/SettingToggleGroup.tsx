@@ -9,6 +9,7 @@ export interface SettingOption<TValue extends string | number> {
 	value: TValue
 	label: ReactNode
 	tone?: SettingTone
+	disabled?: boolean
 }
 
 const THUMB_TONES: Record<SettingTone, string> = {
@@ -62,8 +63,9 @@ export function SettingToggleGroup<TValue extends string | number>({
 						<ToggleGroupPrimitive.Item
 							key={String(option.value)}
 							value={String(option.value)}
+							disabled={option.disabled}
 							className={cn(
-								'relative h-10 min-w-0 flex-1 rounded-[10px] px-2 text-sm font-extrabold whitespace-nowrap text-muted transition-colors duration-150 hover:text-ink sm:text-base',
+								'relative h-10 min-w-0 flex-1 rounded-[10px] px-2 text-sm font-extrabold whitespace-nowrap text-muted transition-colors duration-150 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-muted sm:text-base',
 								selected && 'text-white hover:text-white',
 								selected &&
 									optionTone === 'sunflower' &&

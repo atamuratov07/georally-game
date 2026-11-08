@@ -1,18 +1,15 @@
-import { elapsedSeconds } from '../../shared/time'
+import { speedScore } from '../../shared/score'
 
-const BASE_QUESTION_SCORE = 100
-const TIME_PENALTY_PER_SECOND = 5
-const WRONG_PICK_PENALTY = 20
+const SPEED_WINDOW_MS = 30_000
+const WRONG_PICK_PENALTY = 10
 
-export function calculateQuestionScore(
+export function scoreAnswer(
 	startedAt: number,
-	resolvedAt: number,
+	answeredAt: number,
 	wrongPickCount: number,
 ): number {
-	const secondsElapsed = elapsedSeconds(startedAt, resolvedAt)
-	const totalPenalty =
-		secondsElapsed * TIME_PENALTY_PER_SECOND +
-		wrongPickCount * WRONG_PICK_PENALTY
-
-	return Math.max(0, BASE_QUESTION_SCORE - totalPenalty)
+	const points =
+		speedScore(answeredAt - startedAt, SPEED_WINDOW_MS) -
+		WRONG_PICK_PENALTY * wrongPickCount
+	return Math.max(0, Math.round(points))
 }

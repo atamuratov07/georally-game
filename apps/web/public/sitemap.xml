@@ -11,7 +11,12 @@
 		<priority>0.8</priority>
 	</url>
 	<url>
-        <loc>https://georally.world/en/singleplayer/</loc>
+        <loc>https://georally.world/en/singleplayer/locate</loc>
+		<changefreq>monthly</changefreq>
+		<priority>0.6</priority>
+	</url>
+	<url>
+        <loc>https://georally.world/en/singleplayer/name-it</loc>
 		<changefreq>monthly</changefreq>
 		<priority>0.6</priority>
 	</url>
@@ -26,7 +31,12 @@
 		<priority>0.8</priority>
 	</url>
 	<url>
-        <loc>https://georally.world/ru/singleplayer</loc>
+        <loc>https://georally.world/ru/singleplayer/locate</loc>
+		<changefreq>monthly</changefreq>
+		<priority>0.6</priority>
+	</url>
+	<url>
+        <loc>https://georally.world/ru/singleplayer/name-it</loc>
 		<changefreq>monthly</changefreq>
 		<priority>0.6</priority>
 	</url>
@@ -41,7 +51,12 @@
 		<priority>0.8</priority>
 	</url>
 	<url>
-        <loc>https://georally.world/uz/singleplayer</loc>
+        <loc>https://georally.world/uz/singleplayer/locate</loc>
+		<changefreq>monthly</changefreq>
+		<priority>0.6</priority>
+	</url>
+	<url>
+        <loc>https://georally.world/uz/singleplayer/name-it</loc>
 		<changefreq>monthly</changefreq>
 		<priority>0.6</priority>
 	</url>

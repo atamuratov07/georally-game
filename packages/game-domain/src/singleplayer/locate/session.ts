@@ -15,8 +15,6 @@ export function prepareGameSession(
 		return questionSet
 	}
 
-	const { eligibleIds, questionIds } = questionSet.value
-
 	return ok({
 		config: {
 			questionCount: config.questionCount,
@@ -24,7 +22,6 @@ export function prepareGameSession(
 			difficulty: config.difficulty,
 			scope: config.scope,
 		},
-		eligibleIds,
-		questionIds,
+		questionIds: questionSet.value.questionIds,
 	})
 }

@@ -2,8 +2,8 @@ import type { CreateRoomRequest } from '@georally/game-protocol'
 import { Crown, LogIn } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSearchParams } from 'react-router-dom'
 import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
+import { useLocalizedSearchParams } from '@/app/useLocalizedSearchParams'
 import { trackRoomCreated } from '@/shared/analytics/track'
 import { BackLink, PageShell } from '@/shared/layout'
 import { Card, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui'
@@ -18,7 +18,7 @@ type MultiplayerTab = 'join' | 'host'
 export default function HomePage() {
 	const { t } = useTranslation()
 	const navigate = useLocalizedNavigate()
-	const [searchParams, setSearchParams] = useSearchParams()
+	const [searchParams, setSearchParams] = useLocalizedSearchParams()
 	const [createError, setCreateError] = useState<string | null>(null)
 	const [isCreating, setIsCreating] = useState(false)
 	const tab: MultiplayerTab =

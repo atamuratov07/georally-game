@@ -1,6 +1,9 @@
 import type { GameParticipantView } from '@georally/game-domain/multiplayer/game'
 import { useCallback, useMemo } from 'react'
-import type { MapHighlight, MapRendererProps } from '../../../shared/map/types'
+import type {
+	MapHighlight,
+	PickCountryMapProps,
+} from '../../../shared/map/types'
 import { CountryInfoCard } from '../../../shared/widgets/CountryInfoCard'
 import {
 	getCorrectCountryInfo,
@@ -9,7 +12,7 @@ import {
 import { SelectedAnswerMarker } from './SelectedAnswerMarker'
 
 const EMPTY_HIGHLIGHTS: readonly MapHighlight[] = []
-const EMPTY_MARKERS: NonNullable<MapRendererProps['markers']> = []
+const EMPTY_MARKERS: NonNullable<PickCountryMapProps['markers']> = []
 const noopPick = () => undefined
 
 interface UseRoomGameMapArgs {
@@ -20,7 +23,7 @@ interface UseRoomGameMapArgs {
 }
 
 interface UseRoomGameMapResult {
-	mapProps: MapRendererProps
+	mapProps: PickCountryMapProps
 }
 
 export function useGameMap({
@@ -61,7 +64,7 @@ export function useGameMap({
 			? `${game.currentQuestionNumber}:${game.startedAt}`
 			: null
 
-	const mapProps = useMemo<MapRendererProps>(() => {
+	const mapProps = useMemo<PickCountryMapProps>(() => {
 		if (isCompleted) {
 			return {
 				onPick: noopPick,

@@ -1,13 +1,10 @@
-import {
-	DROP_LEADING_WORDS as DROP_LEADING_WORDS,
-	REWRITE_WORDS,
-} from './languages'
+import { DROP_LEADING_WORDS, REWRITE_WORDS } from './languages'
 
 const COMBINING_MARKS = /\p{M}/gu
 const DELETED_CHARACTERS = /['ʻʼ‘’`.]/g
 const SEPARATORS = /[^\p{L}\p{N}]+/gu
 
-export function tokenize(raw: string): string[] {
+export function toWords(raw: string): string[] {
 	const cleaned = raw
 		.normalize('NFKC')
 		.toLowerCase()
@@ -20,15 +17,15 @@ export function tokenize(raw: string): string[] {
 	return cleaned === '' ? [] : cleaned.split(' ')
 }
 
-export function applyLangRules(tokens: readonly string[]): string[] {
+export function applyWordRules(words: readonly string[]): string[] {
 	const kept =
-		tokens.length > 0 && DROP_LEADING_WORDS.has(tokens[0])
-			? tokens.slice(1)
-			: tokens
+		words.length > 0 && DROP_LEADING_WORDS.has(words[0])
+			? words.slice(1)
+			: words
 
 	return kept.map(word => REWRITE_WORDS.get(word) ?? word)
 }
 
-export function normalize(raw: string): string {
-	return applyLangRules(tokenize(raw)).join(' ')
+export function keyOf(words: readonly string[]): string {
+	return applyWordRules(words).join(' ')
 }

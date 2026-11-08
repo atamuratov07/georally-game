@@ -1,7 +1,7 @@
 import type { GameScope } from '@georally/game-domain'
 import type { ReactNode } from 'react'
 
-export type MapHighlightTone = 'correct' | 'wrong' | 'selected'
+export type MapHighlightTone = 'correct' | 'wrong' | 'selected' | 'target'
 
 export interface MapHighlight {
 	countryId: string
@@ -16,18 +16,20 @@ export interface MapMarker {
 	anchor?: 'bottom' | 'center' | 'top'
 }
 
-export interface MapRendererProps {
+export interface MapRevealTarget {
+	countryId: string
+	longitude: number
+	latitude: number
+}
+
+export interface PickCountryMapProps {
 	onPick: (countryId: string) => void
 	interactiveIds: ReadonlySet<string>
 	scope: GameScope
 	resetViewKey?: string | number | null
 	highlights?: readonly MapHighlight[]
 	markers?: readonly MapMarker[]
-	revealTarget?: null | {
-		countryId: string
-		longitude: number
-		latitude: number
-	}
+	revealTarget?: MapRevealTarget | null
 	popupElement?: ReactNode | null
 	disabled?: boolean
 	className?: string

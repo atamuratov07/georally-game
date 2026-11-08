@@ -34,6 +34,7 @@ fs.writeFileSync(
 				population: country.population,
 				centroidLng: country.centroid[0],
 				centroidLat: country.centroid[1],
+				bounds: country.bounds,
 				flagUrl: country.flagUrl,
 				independent: country.independent,
 				unMember: country.unMember,

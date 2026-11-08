@@ -20,10 +20,6 @@ export const REWRITE_WORDS: ReadonlyMap<string, string> = new Map(
 	ALL_RULES.flatMap(rules => Object.entries(rules.rewriteWords)),
 )
 
-export const VOICE_FILLERS: readonly string[] = ALL_RULES.flatMap(
-	rules => rules.voiceFillers,
-)
-
 export const INPUT_FOLDS: readonly ((raw: string) => string)[] =
 	ALL_RULES.flatMap(rules => (rules.foldInput ? [rules.foldInput] : []))
 

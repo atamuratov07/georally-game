@@ -65,11 +65,13 @@ Stage 03 builds a record for each of the 195 countries in `data/playable_states_
 - **Labels** (drawn on the map): an override, then for English the base tiles' own cartographic label ("Eq. Guinea", "Antigua and Barb."), then the name.
 - **Capitals.** The capital is REST Countries' primary capital (its English name and coordinates). Its Russian and Uzbek names come from the Wikidata capital whose English label matches, compared without case, accents or punctuation. A country with several capitals on Wikidata (South Africa, Yemen, Eswatini) therefore gets the same city in every language. Without a match, the name counts as missing.
 - **Currencies.** REST Countries gives the currency code: the first code alphabetically when a country has several, unless the `currencyCode` override picks one. Names and symbols come from `Intl` (`Intl.DisplayNames` with `fallback: 'none'`, and `Intl.NumberFormat` with `currencyDisplay: 'narrowSymbol'`) in each language, at build time, so the output doesn't depend on the browser. A currency without a symbol shows its code ("TJS"). The build fails if Node's ICU has no names for a language.
+- **Geometry** is the base map's own: `02c_merge_base_countries.mjs` unions every zoom-6 tile fragment of a country (`@turf/union`) into one feature, so it matches what the map draws and includes microstates that Natural Earth's 1:110m file drops. Natural Earth's geometry is used only for a country the base map lacks.
+- **Bounds** frame a country's main body for the camera, not every territory it owns: France without its overseas departments, the United States without Alaska and Hawaii, Norway without Svalbard. The box starts from the parts containing the label point and the capital (or the parts nearest to them, when an offshore label point or capital lies in the sea) and the points themselves, then repeatedly takes in any part within 2° of it, which keeps archipelagos such as the Maldives or Micronesia whole. Longitudes are taken relative to the label point, so a country crossing the antimeridian stays contiguous: `west` is in [-180, 180) and `east` exceeds 180 when the box crosses it (Russia ends at 191, Fiji at 181.8), which MapLibre's `fitBounds` accepts as is. Values are rounded outward to 4 decimals.
 - **Uzbek apostrophes** are normalized to the proper characters: `ʻ` after o and g (Oʻzbekiston), `ʼ` everywhere else.
 
 ## Validation
 
-Every playable country must have, in all three languages, a name, a label, a capital and a currency name. It must also have a three-digit unique id, capital coordinates, a game continent, a population, a flag URL, and sovereignty and UN membership flags. Stage 03 collects every problem, prints them all, and exits with code 1 before writing any file. Nothing falls back to another language or a placeholder: a gap is fixed with an override in `data/manual_overrides.json`.
+Every playable country must have, in all three languages, a name, a label, a capital and a currency name. It must also have a three-digit unique id, capital coordinates, ordered and finite bounds, a game continent, a population, a flag URL, and sovereignty and UN membership flags. Stage 03 collects every problem, prints them all, and exits with code 1 before writing any file. Nothing falls back to another language or a placeholder: a gap is fixed with an override in `data/manual_overrides.json`.
 
 ## Overrides
 
@@ -133,6 +135,7 @@ Every playable country must have, in all three languages, a name, a label, a cap
 	"population": 39047321,
 	"centroidLng": 62.666016,
 	"centroidLat": 42.293564,
+	"bounds": [55.9753, 37.1854, 73.1484, 45.5583],
 	"flagUrl": "https://flags.restcountries.com/v5/svg/uz.svg",
 	"independent": true,
 	"unMember": true

@@ -53,14 +53,5 @@ export function foldUzbekCyrillic(raw: string): string {
 export const uzbekRules: LanguageRules = {
 	dropLeadingWords: [],
 	rewriteWords: {},
-	voiceFillers: [
-		'bu',
-		'mana',
-		'menimcha',
-		"o'ylaymanki",
-		'balki',
-		'ehtimol',
-		'javob',
-	],
 	foldInput: foldUzbekCyrillic,
 }

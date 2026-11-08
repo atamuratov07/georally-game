@@ -15,11 +15,17 @@ const translations = {
 		playTogether: 'Play together',
 		previewCountry: 'Japan',
 		modesTitle: 'Two ways to play',
+		nameIt: {
+			eyebrow: 'New mode',
+			title: 'Name every country <hl>by its shape</hl>',
+			text: 'A country lights up on the map and the clock starts. Name it before time runs out: type it, or just say it out loud.',
+			cta: 'Try it',
+		},
 		solo: {
-			title: 'Solo practice',
-			text: 'Train at your own pace, one country at a time.',
-			point1: 'Choose the region and difficulty',
-			point2: 'Hearts limit wrong guesses',
+			title: 'Solo game',
+			text: 'Train at your own pace, in two modes.',
+			point1: 'Find it: spot the named country on the map',
+			point2: 'Name it: say or type the highlighted country',
 			point3: 'See the flag, capital and population after each answer',
 		},
 		multiplayer: {
@@ -75,9 +81,22 @@ const translations = {
 		timer: 'Timer',
 		timerOff: 'Off',
 		seconds: '{{count}}s',
+		timePerCountry: 'Time per country',
 	},
 	singleplayer: {
-		title: 'Solo practice',
+		title: 'Solo game',
+		modes: {
+			label: 'Game mode',
+			locate: {
+				title: 'Find it',
+				description: 'Find the named country on the map.',
+			},
+			nameIt: {
+				title: 'Name it',
+				description:
+					'Name the highlighted country before the time runs out.',
+			},
+		},
 		start: 'Start game',
 		exit: 'Exit',
 		giveUp: 'Give up',
@@ -86,17 +105,41 @@ const translations = {
 		attemptsLeft_other: '{{count}} attempts left',
 		resultTitle: 'Game complete',
 		playAgain: 'Play again',
-		invalidTitle: 'Could not open game',
-		invalidDescription: 'Check the settings and try again.',
-		openSettings: 'Open settings',
-		changeSettings: 'Change settings',
-		loadErrors: {
-			noPlayableCountries:
-				'No playable countries were found in the catalog.',
-			noEligibleCountries:
-				'No countries match the selected area and difficulty.',
-			insufficientEligibleCountries: 'Too many questions selected.',
-			default: 'Could not start the game.',
+		copySetup: 'Copy setup',
+		copySetupLabel: 'Copy a link to these settings',
+		resume: {
+			title: 'Game in progress',
+			resume: 'Resume',
+			discard: 'Discard',
+		},
+		notEnoughCountries_one:
+			'Only {{count}} country matches this area and difficulty. That is not enough for a game.',
+		notEnoughCountries_other:
+			'Only {{count}} countries match this area and difficulty. That is not enough for a game.',
+		gameError: {
+			title: 'Could not open game',
+			action: 'Open settings',
+		},
+	},
+	nameIt: {
+		inputLabel: 'Country name',
+		placeholder: 'Type the country name',
+		mic: {
+			start: 'Answer by voice',
+			stop: 'Stop listening',
+			listening: 'Listening…',
+			denied: 'Microphone access is blocked. You can still type.',
+			noSpeech: 'Didn’t catch that',
+			unavailable: 'Voice answers don’t work in this browser',
+			network: 'Voice answers need an internet connection',
+			language: 'Speech language: {{language}}',
+		},
+		feedback: {
+			wrong: '{{name}} isn’t it',
+			typo: '{{text}} → {{name}}',
+			ambiguous: 'Which {{text}}?',
+			unknown: 'Don’t know “{{text}}”',
+			heard: 'Heard: {{text}}',
 		},
 	},
 	multiplayer: {

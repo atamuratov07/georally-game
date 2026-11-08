@@ -1,51 +1,53 @@
 import type { CountryId } from '../shared/types'
-import { normalize } from './normalize'
+import { keyOf, toWords } from './normalize'
 import type { AliasEntry, InputMethod } from './types'
 
 type KeyTable = ReadonlyMap<string, ReadonlySet<CountryId>>
 
 export interface AliasTable {
-	typed: KeyTable
-	voiceOnly: KeyTable
-	maxTokens: number
+	common: KeyTable
+	only: Record<InputMethod, KeyTable>
+	maxWords: number
 }
 
-export function buildAliases(entries: readonly AliasEntry[]): AliasTable {
-	const typed = new Map<string, Set<CountryId>>()
-	const voiceOnly = new Map<string, Set<CountryId>>()
-	let maxTokens = 0
+export function buildAliasTable(entries: readonly AliasEntry[]): AliasTable {
+	const common = new Map<string, Set<CountryId>>()
+	const only: Record<InputMethod, Map<string, Set<CountryId>>> = {
+		voice: new Map(),
+		typing: new Map(),
+	}
+	let maxWords = 0
 
 	for (const entry of entries) {
-		const key = normalize(entry.text)
+		const words = toWords(entry.text)
+		const key = keyOf(words)
 		if (!key) {
 			continue
 		}
 
-		const table = entry.voiceOnly ? voiceOnly : typed
-		const countryIds = table.get(key) ?? new Set<CountryId>()
+		const keys = entry.only ? only[entry.only] : common
+		const countryIds = keys.get(key) ?? new Set<CountryId>()
 		countryIds.add(entry.countryId)
-		table.set(key, countryIds)
-		maxTokens = Math.max(maxTokens, key.split(' ').length)
+		keys.set(key, countryIds)
+		maxWords = Math.max(maxWords, key.split(' ').length)
 	}
 
-	return { typed, voiceOnly: voiceOnly, maxTokens }
+	return { common, only, maxWords }
 }
 
-function tablesFor(aliases: AliasTable, method: InputMethod): KeyTable[] {
-	return method === 'voice'
-		? [aliases.typed, aliases.voiceOnly]
-		: [aliases.typed]
+function keyTablesFor(table: AliasTable, method: InputMethod): KeyTable[] {
+	return [table.common, table.only[method]]
 }
 
-export function lookupKey(
-	aliases: AliasTable,
+export function lookupCountries(
+	table: AliasTable,
 	key: string,
 	method: InputMethod,
 ): CountryId[] {
 	const countryIds = new Set<CountryId>()
 
-	for (const table of tablesFor(aliases, method)) {
-		for (const countryId of table.get(key) ?? []) {
+	for (const keys of keyTablesFor(table, method)) {
+		for (const countryId of keys.get(key) ?? []) {
 			countryIds.add(countryId)
 		}
 	}
@@ -54,10 +56,10 @@ export function lookupKey(
 }
 
 export function* searchableKeys(
-	aliases: AliasTable,
+	table: AliasTable,
 	method: InputMethod,
 ): Generator<[string, ReadonlySet<CountryId>]> {
-	for (const table of tablesFor(aliases, method)) {
-		yield* table
+	for (const keys of keyTablesFor(table, method)) {
+		yield* keys
 	}
 }

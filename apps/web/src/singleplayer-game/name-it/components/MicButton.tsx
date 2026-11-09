@@ -12,7 +12,7 @@ export function MicButton({ listening, onPress }: MicButtonProps) {
 	const label = listening ? t('nameIt.mic.stop') : t('nameIt.mic.start')
 
 	return (
-		<span className='relative shrink-0'>
+		<span className='relative animate-pop-in'>
 			{listening ? (
 				<span
 					aria-hidden='true'
@@ -23,10 +23,10 @@ export function MicButton({ listening, onPress }: MicButtonProps) {
 				type='button'
 				size='icon'
 				variant={listening ? 'coral' : 'ocean'}
+				className='relative size-12'
 				aria-label={label}
 				aria-pressed={listening}
 				title={label}
-				className='relative size-12'
 				onClick={onPress}
 			>
 				{listening ? (

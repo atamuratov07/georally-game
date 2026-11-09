@@ -1,6 +1,7 @@
 import { Globe, Map as MapIcon } from 'lucide-react'
 import { ToggleGroup as ToggleGroupPrimitive } from 'radix-ui'
 import { useTranslation } from 'react-i18next'
+import { cn } from '../utils'
 import { mapControlClass } from './map-controls'
 
 export type ProjectionKind = 'flat' | 'globe'
@@ -9,12 +10,14 @@ interface ProjectionToggleProps {
 	value: ProjectionKind
 	globeDisabled: boolean
 	onChange: (value: ProjectionKind) => void
+	className?: string
 }
 
 export function ProjectionToggle({
 	value,
 	globeDisabled,
 	onChange,
+	className,
 }: ProjectionToggleProps) {
 	const { t } = useTranslation()
 
@@ -22,7 +25,7 @@ export function ProjectionToggle({
 		<ToggleGroupPrimitive.Root
 			type='single'
 			orientation='vertical'
-			className='absolute top-[var(--map-controls-top,0.75rem)] left-3 z-10 flex flex-col gap-2'
+			className={cn('flex flex-col gap-2', className)}
 			value={value}
 			onValueChange={next => {
 				if ((next === 'flat' || next === 'globe') && next !== value) {

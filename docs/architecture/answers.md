@@ -205,21 +205,21 @@ The matcher provides both pieces: `matchAsTyped(text)` matches exactly (no typo 
 
 ## Input in the game
 
-One answer bar at the bottom of the map, with the microphone built in.
+One answer bar for the whole game, at the bottom of the map on desktop and at the top on touch screens (`(pointer: coarse)`); the input itself is the floating bar, with the microphone inside its right edge on desktop. On touch screens the input sits at the top so iOS never scrolls the page to keep it above the keyboard (it scrolls only when a focused field would be covered), and the microphone is a separate button at the bottom centre, above the keyboard, where a thumb reaches it. It is never removed between rounds, because removing a focused input closes the phone keyboard, and closing and reopening it every round made iOS scroll the page, the screen snap back and the camera re-frame each time. Between rounds it stays focused but takes no input: during a flight it says "Get ready…"; on the reveal the input shows the country's name in heavier type, the bar's border, edge and outline turn green or coral, and a Next button replaces the microphone, and Enter (the keyboard's Go key) means Next. Its focus ring is a box shadow, not an outline: Safari draws outlines as rectangles, so their corners stuck out of the rounded bar. Nothing on the screen takes focus from it: the game screen cancels the pointer-down of every button inside it with one capture listener, so the map's own zoom, projection and info buttons keep the keyboard open as well as the game's, and the map's canvas loses the `tabindex` MapLibre gives it. Between rounds the input is `aria-readonly` for screen readers; it is never made truly read-only, because iOS hides the keyboard for a read-only field.
 
 **Typing**
 
-- The input is focused when a round starts on desktop, but not on mobile: the keyboard would cover the highlighted country.
+- The input is focused once, when the game screen opens (without scrolling, so the map doesn't move). Android usually opens the keyboard for it; iOS opens the keyboard only for a focus that follows a tap, so there it opens on the player's first tap and then stays open for the game. A player who closes the keyboard is left alone: nothing focuses the input again. The open keyboard counts as covered space, so the camera keeps the target above it.
 - `autocomplete`, `autocorrect` and `autocapitalize` are off and `spellcheck` is false, so the phone doesn't "correct" Chad.
-- On a wrong answer the bar shakes, the text stays selected so the next keystroke replaces it, and the feedback above appears.
+- On a wrong answer the bar shakes, the text stays selected so the next keystroke replaces it, and the feedback chip pops up above the bar. It stays until the player starts the next attempt (a keystroke or starting voice), then leaves with the same animation reversed: on a timer it would be missed by a player looking at the map or speaking, and kept longer it describes an answer the player has moved past.
 - No autocomplete suggestions: they would turn recall into multiple choice.
 
 **Voice**
 
 - Started with the microphone button, or Enter in an empty input. Ctrl/⌘+Space and Alt+Shift switch keyboard layouts for Russian and Uzbek users, and the backtick key is ё on the Russian layout, so none of those are used.
-- States: idle → listening (the interim transcript appears faintly in the bar) → final (submitted as a voice attempt) → feedback. Recognition stops after one final result; the next attempt needs another press. It is aborted when the round ends.
+- States: idle → listening (the interim transcript appears faintly in the bar) → final (submitted as a voice attempt) → feedback. Recognition stops after one final result; the next attempt needs another press. It is aborted when the round ends. Every way a session can end (its end event, an error, or `start()` throwing) resets the listening state, so the bar never stays on "Listening…".
 - An interim transcript that is exactly the target, and not the start of another country's name, is accepted at once, by the same rule as typing. Safari's final result can lag by seconds, and the interim one usually has the name long before.
-- The recognizer's language follows the UI language (`en` → `en-US`, `ru` → `ru-RU`, `uz-Latn` → `uz-UZ`, which stays off until it is verified, so the microphone is hidden in the Uzbek UI for now). A toggle on the microphone lets players speak another supported language, since every language is accepted; the choice lasts for the game.
+- The recognizer's language follows the UI language (`en` → `en-US`, `ru` → `ru-RU`, `uz-Latn` → `uz-UZ`). Uzbek is offered without checking support first: a browser that can't do it reports `language-not-supported` or `service-not-allowed`, which hides the microphone with a note, and the matcher accepts Uzbek in either script. There is no in-game language switch: it served few players, took the most valuable space above the keyboard, and its "EN" label read like a keyboard layout; a player who wants to speak another language switches the site's language, and the saved game carries over.
 - Errors: a blocked microphone keeps typing available; silence shows "Didn't catch that"; a network error shows that voice needs internet; an unsupported language hides the microphone for it.
 
 ## Browser speech recognition
@@ -230,7 +230,7 @@ One answer bar at the bottom of the map, with the microphone built in.
 - A result event exposes `results[i].isFinal`, `results[i][k].transcript` and `confidence`. Confidence differs between browsers and can be 0, so it is never used to accept or reject.
 - Transcripts may start with a capital letter, end with a period (Safari) or start with a space. The cleanup handles all three.
 - Errors: `not-allowed`, `service-not-allowed`, `no-speech`, `audio-capture`, `network`, `aborted`, `language-not-supported`.
-- **Unverified:** whether `uz-UZ` is supported in Chrome and Safari, and which script it returns. It must be tested on real devices before Uzbek voice is offered.
+- **Unverified:** how well `uz-UZ` is recognized in Chrome and Safari, and which script each returns.
 
 ## Deferred and not supported
 

@@ -11,6 +11,6 @@ export type {
 	CountryCurrency,
 	CountryInfo,
 	CountryRegistryPayload,
-	CountryCatalogPayload as GameData,
+	CountryCatalogPayload,
 	LocalizedText,
 } from './types'

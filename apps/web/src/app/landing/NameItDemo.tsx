@@ -13,6 +13,7 @@ import {
 	REVEALED_FILL,
 	SELECTION_EDGE,
 	SELECTION_FILL,
+	WATER_FILL,
 } from '@/shared/map/map-styles'
 import { cn } from '@/shared/utils'
 
@@ -111,7 +112,10 @@ export default function NameItDemo() {
 			aria-hidden='true'
 			className='relative mx-auto w-full max-w-md select-none'
 		>
-			<div className='raised overflow-hidden rounded-[28px] border-2 border-ocean-200 bg-[#D8F2FF] [--edge:var(--color-ocean-300)]'>
+			<div
+				className='raised overflow-hidden rounded-[28px] border-2 border-ocean-200 [--edge:var(--color-ocean-300)]'
+				style={{ backgroundColor: WATER_FILL }}
+			>
 				<div className='h-2 bg-ink/10'>
 					<div
 						className={cn(

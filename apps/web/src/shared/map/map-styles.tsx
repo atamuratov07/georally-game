@@ -35,6 +35,7 @@ export const ARCHIPELAGO_OUTLINE_LAYER_ID = 'archipelagos-outline'
 export const LABELS_BOTTOM_LAYER_ID = 'geolines'
 export const TARGET_OUTLINE_LAYER_ID = 'countries-target-outline'
 
+export const WATER_FILL = '#D8F2FF'
 export const WRONG_FILL = '#fb5f4c'
 export const REVEALED_FILL = '#3fa625'
 export const SELECTION_FILL = '#ffc01a'

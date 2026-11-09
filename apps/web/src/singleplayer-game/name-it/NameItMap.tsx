@@ -1,4 +1,3 @@
-import type { GameScope } from '@georally/game-domain'
 import {
 	memo,
 	useCallback,
@@ -10,7 +9,6 @@ import {
 import { Layer, type MapRef } from 'react-map-gl/maplibre'
 import { BaseMap } from '@/shared/map/BaseMap'
 import { useFitCamera, type FitTarget } from '@/shared/map/camera/useFitCamera'
-import { CardToggle } from '@/shared/map/CardToggle'
 import { CountryLayers } from '@/shared/map/layers/CountryLayers'
 import { LabelLayers } from '@/shared/map/layers/LabelLayers'
 import { MapMarkers } from '@/shared/map/MapMarkers'
@@ -18,6 +16,7 @@ import {
 	buildTargetOutlineLayer,
 	LABELS_BOTTOM_LAYER_ID,
 } from '@/shared/map/map-styles'
+import type { ProjectionKind } from '@/shared/map/ProjectionToggle'
 import { RevealPopup } from '@/shared/map/RevealPopup'
 import type {
 	MapHighlight,
@@ -25,14 +24,14 @@ import type {
 	MapRevealTarget,
 } from '@/shared/map/types'
 
-const MIN_ZOOM = 1
-const MAX_ZOOM = 6
+const MIN_ZOOM = 0
+const MAX_ZOOM = 7
 const DIM_OPACITY = 0.55
 const NO_COUNTRIES: ReadonlySet<string> = new Set()
 const ZOOM_AROUND_CENTER = { around: 'center' } as const
 
 interface NameItMapProps {
-	scope: GameScope
+	projection: ProjectionKind
 	focus: FitTarget | null
 	targetId: string | null
 	outlined: boolean
@@ -42,12 +41,13 @@ interface NameItMapProps {
 	reveal: MapRevealTarget | null
 	popup: ReactNode
 	insets: { top: number; bottom: number }
-	controlsTop: string
+	cardHidden: boolean
+	navigationTop: string | null
 	onFocusSettled: (key: string, isTiny: boolean) => void
 }
 
 function NameItMapInner({
-	scope,
+	projection,
 	focus,
 	targetId,
 	outlined,
@@ -57,12 +57,12 @@ function NameItMapInner({
 	reveal,
 	popup,
 	insets,
-	controlsTop,
+	cardHidden,
+	navigationTop,
 	onFocusSettled,
 }: NameItMapProps) {
 	const mapRef = useRef<MapRef | null>(null)
 	const [isLoaded, setIsLoaded] = useState(false)
-	const [isCardHidden, setIsCardHidden] = useState(false)
 
 	const outlineLayer = useMemo(
 		() => buildTargetOutlineLayer(outlined ? targetId : null),
@@ -78,16 +78,22 @@ function NameItMapInner({
 	})
 
 	const handleLoad = useCallback(() => {
-		mapRef.current?.getMap().touchZoomRotate.disableRotation()
+		const map = mapRef.current?.getMap()
+		map?.touchZoomRotate.disableRotation()
+		map?.setTransformConstrain((center, zoom) => ({
+			center,
+			zoom: Math.min(Math.max(zoom, map.getMinZoom()), map.getMaxZoom()),
+		}))
+		map?.getCanvas().removeAttribute('tabindex')
 		setIsLoaded(true)
 	}, [])
 
 	return (
 		<BaseMap
 			mapRef={mapRef}
-			allowGlobe={scope === 'all'}
+			projection={projection}
 			onLoad={handleLoad}
-			controlsTop={controlsTop}
+			navigationTop={navigationTop}
 			minZoom={MIN_ZOOM}
 			maxZoom={MAX_ZOOM}
 			dragPan={false}
@@ -97,15 +103,6 @@ function NameItMapInner({
 			keyboard={false}
 			scrollZoom={ZOOM_AROUND_CENTER}
 			touchZoomRotate={ZOOM_AROUND_CENTER}
-			overlays={
-				reveal && popup ? (
-					<CardToggle
-						className='top-18'
-						hidden={isCardHidden}
-						onHiddenChange={setIsCardHidden}
-					/>
-				) : null
-			}
 		>
 			<CountryLayers
 				interactiveIds={NO_COUNTRIES}
@@ -116,7 +113,7 @@ function NameItMapInner({
 			<LabelLayers countryIds={labelIds} />
 			<MapMarkers markers={markers} />
 			{reveal && popup ? (
-				<RevealPopup target={reveal} hidden={isCardHidden}>
+				<RevealPopup target={reveal} hidden={cardHidden}>
 					{popup}
 				</RevealPopup>
 			) : null}

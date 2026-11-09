@@ -96,12 +96,24 @@ export function useSpeechRecognition({
 		recognitionRef.current?.stop()
 	}, [])
 
+	const abort = useCallback(() => {
+		recognitionRef.current?.abort()
+	}, [])
+
 	const start = useCallback(() => {
 		if (!RecognitionClass || !lang || recognitionRef.current) {
 			return
 		}
 
 		const recognition = new RecognitionClass()
+		const end = () => {
+			if (recognitionRef.current !== recognition) {
+				return
+			}
+			recognitionRef.current = null
+			setInterim('')
+			setListening(false)
+		}
 		recognition.lang = lang
 		recognition.continuous = false
 		recognition.interimResults = true
@@ -141,17 +153,17 @@ export function useSpeechRecognition({
 				setUnsupported(previous => new Set(previous).add(lang))
 				setNotice('unavailable')
 			}
+			end()
 		}
-		recognition.onend = () => {
-			recognitionRef.current = null
-			setInterim('')
-			setListening(false)
-		}
-
+		recognition.onend = end
 		recognitionRef.current = recognition
-		setNotice(null)
 		setListening(true)
-		recognition.start()
+		setNotice(null)
+		try {
+			recognition.start()
+		} catch {
+			end()
+		}
 	}, [lang])
 
 	return {
@@ -160,12 +172,12 @@ export function useSpeechRecognition({
 			lang !== null &&
 			!denied &&
 			!unsupported.has(lang),
-		supportsLanguage: (code: string) => !unsupported.has(code),
 		denied,
 		notice,
 		listening,
 		interim,
 		start,
 		stop,
+		abort,
 	}
 }

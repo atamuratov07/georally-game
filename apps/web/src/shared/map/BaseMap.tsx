@@ -21,13 +21,14 @@ import Map, {
 } from 'react-map-gl/maplibre'
 import { cn } from '../utils'
 import { WORLD_VIEW } from './continent-view'
-import { ProjectionToggle, type ProjectionKind } from './ProjectionToggle'
+import type { ProjectionKind } from './ProjectionToggle'
 
 setWorkerUrl(workerUrl)
 
 const MAP_STYLE_URL = '/map/style.json'
 const MAP_STYLE = { width: '100%', height: '100%' }
 const FAILURE_NOTICE_MS = 4000
+const DEFAULT_NAVIGATION_TOP = '7.5rem'
 
 const INITIAL_VIEW_STATE = {
 	longitude: WORLD_VIEW.center[0],
@@ -67,11 +68,10 @@ export type MapInteractionProps = Pick<
 
 interface BaseMapProps extends MapPointerProps, MapInteractionProps {
 	mapRef: RefObject<MapRef | null>
-	allowGlobe: boolean
+	projection: ProjectionKind
 	maxBounds?: [number, number, number, number]
 	onLoad: () => void
-	onProjectionChange?: () => void
-	controlsTop?: string
+	navigationTop?: string | null
 	overlays?: ReactNode
 	className?: string
 	children?: ReactNode
@@ -79,11 +79,10 @@ interface BaseMapProps extends MapPointerProps, MapInteractionProps {
 
 export function BaseMap({
 	mapRef,
-	allowGlobe,
+	projection,
 	maxBounds,
 	onLoad,
-	onProjectionChange,
-	controlsTop,
+	navigationTop = DEFAULT_NAVIGATION_TOP,
 	overlays,
 	className,
 	children,
@@ -91,9 +90,6 @@ export function BaseMap({
 }: BaseMapProps) {
 	const { t } = useTranslation()
 	const [hasFailure, setHasFailure] = useState(false)
-	const [chosenProjection, setChosenProjection] =
-		useState<ProjectionKind>('flat')
-	const projection = allowGlobe ? chosenProjection : 'flat'
 
 	const handleLoad = useCallback(
 		(event: MapEvent) => {
@@ -139,8 +135,8 @@ export function BaseMap({
 				className,
 			)}
 			style={
-				controlsTop
-					? ({ '--map-controls-top': controlsTop } as CSSProperties)
+				navigationTop
+					? ({ '--map-navigation-top': navigationTop } as CSSProperties)
 					: undefined
 			}
 		>
@@ -157,20 +153,13 @@ export function BaseMap({
 				onError={handleError}
 				{...mapProps}
 			>
-				<NavigationControl showCompass={false} position='top-left' />
+				{navigationTop ? (
+					<NavigationControl showCompass={false} position='top-left' />
+				) : null}
 				{children}
 			</Map>
 
 			{overlays}
-
-			<ProjectionToggle
-				value={projection}
-				globeDisabled={!allowGlobe}
-				onChange={next => {
-					onProjectionChange?.()
-					setChosenProjection(next)
-				}}
-			/>
 
 			{hasFailure ? (
 				<div

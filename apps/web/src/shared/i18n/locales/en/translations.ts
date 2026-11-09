@@ -122,6 +122,7 @@ const translations = {
 		},
 	},
 	nameIt: {
+		waiting: 'Get ready…',
 		inputLabel: 'Country name',
 		placeholder: 'Type the country name',
 		mic: {
@@ -132,7 +133,6 @@ const translations = {
 			noSpeech: 'Didn’t catch that',
 			unavailable: 'Voice answers don’t work in this browser',
 			network: 'Voice answers need an internet connection',
-			language: 'Speech language: {{language}}',
 		},
 		feedback: {
 			wrong: '{{name}} isn’t it',

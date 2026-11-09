@@ -129,6 +129,7 @@ const translations = {
 		},
 	},
 	nameIt: {
+		waiting: 'Приготовьтесь…',
 		inputLabel: 'Название страны',
 		placeholder: 'Введите название страны',
 		mic: {
@@ -139,7 +140,6 @@ const translations = {
 			noSpeech: 'Не расслышал',
 			unavailable: 'Голосовые ответы не работают в этом браузере',
 			network: 'Для голосовых ответов нужен интернет',
-			language: 'Язык распознавания: {{language}}',
 		},
 		feedback: {
 			wrong: '{{name}} — не то',

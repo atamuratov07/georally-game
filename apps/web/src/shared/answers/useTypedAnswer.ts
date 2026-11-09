@@ -5,16 +5,21 @@ const PREFIX_PAUSE_MS = 600
 
 interface TypedAnswerOptions {
 	matcher: AnswerMatcher
+	roundKey: string
+	enabled: boolean
 	acceptsEarly: (countryId: string) => boolean
 	onAnswer: (result: MatchResult) => void
 }
 
 export function useTypedAnswer({
 	matcher,
+	roundKey,
+	enabled,
 	acceptsEarly,
 	onAnswer,
 }: TypedAnswerOptions) {
-	const [text, setText] = useState('')
+	const [entry, setEntry] = useState({ roundKey, text: '' })
+	const text = entry.roundKey === roundKey ? entry.text : ''
 	const pauseTimerRef = useRef<number | null>(null)
 
 	const cancelPause = useCallback(() => {
@@ -24,21 +29,24 @@ export function useTypedAnswer({
 		}
 	}, [])
 
-	useEffect(() => cancelPause, [cancelPause])
+	useEffect(() => cancelPause, [cancelPause, roundKey])
 
 	const submitText = useCallback(
 		(value: string) => {
 			cancelPause()
-			if (value.trim()) {
+			if (enabled && value.trim()) {
 				onAnswer(matcher.match([value], 'typing'))
 			}
 		},
-		[cancelPause, matcher, onAnswer],
+		[cancelPause, enabled, matcher, onAnswer],
 	)
 
 	const change = useCallback(
 		(value: string) => {
-			setText(value)
+			if (!enabled) {
+				return
+			}
+			setEntry({ roundKey, text: value })
 			cancelPause()
 
 			const typed = matcher.matchAsTyped(value)
@@ -55,8 +63,13 @@ export function useTypedAnswer({
 				PREFIX_PAUSE_MS,
 			)
 		},
-		[acceptsEarly, cancelPause, matcher, submitText],
+		[acceptsEarly, cancelPause, enabled, matcher, roundKey, submitText],
 	)
 
-	return { text, change, submit: () => submitText(text) }
+	const clear = useCallback(() => {
+		cancelPause()
+		setEntry({ roundKey, text: '' })
+	}, [cancelPause, roundKey])
+
+	return { text, change, clear, submit: () => submitText(text) }
 }

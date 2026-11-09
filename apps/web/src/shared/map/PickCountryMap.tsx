@@ -4,6 +4,7 @@ import { BaseMap } from './BaseMap'
 import { useRevealCamera } from './camera/useRevealCamera'
 import { useScopeCamera } from './camera/useScopeCamera'
 import { CardToggle } from './CardToggle'
+import { ProjectionToggle, type ProjectionKind } from './ProjectionToggle'
 import { useCountryPicking } from './interaction/useCountryPicking'
 import { CountryLayers } from './layers/CountryLayers'
 import { LabelLayers } from './layers/LabelLayers'
@@ -68,24 +69,38 @@ function PickCountryMapInner({
 		return [...ids]
 	}, [highlights, revealCountryId])
 
+	const [chosenProjection, setChosenProjection] =
+		useState<ProjectionKind>('flat')
+	const projection = allowGlobe ? chosenProjection : 'flat'
 	const handleLoad = useCallback(() => setIsLoaded(true), [])
 	const showCard = Boolean(popupElement) && revealTarget !== null && isSettled
 
 	return (
 		<BaseMap
 			mapRef={mapRef}
-			allowGlobe={allowGlobe}
+			projection={projection}
 			maxBounds={maxBounds}
 			onLoad={handleLoad}
-			onProjectionChange={clearHover}
 			className={className}
 			overlays={
-				showCard ? (
-					<CardToggle
-						hidden={isCardHidden}
-						onHiddenChange={setIsCardHidden}
+				<>
+					<ProjectionToggle
+						className='absolute top-3 left-3 z-10'
+						value={projection}
+						globeDisabled={!allowGlobe}
+						onChange={next => {
+							clearHover()
+							setChosenProjection(next)
+						}}
 					/>
-				) : null
+					{showCard ? (
+						<CardToggle
+							className='absolute top-15 right-3 z-10'
+							hidden={isCardHidden}
+							onHiddenChange={setIsCardHidden}
+						/>
+					) : null}
+				</>
 			}
 			{...pointerProps}
 		>

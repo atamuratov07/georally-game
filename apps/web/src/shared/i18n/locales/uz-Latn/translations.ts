@@ -18,14 +18,15 @@ const translations = {
 		nameIt: {
 			eyebrow: 'Yangi rejim',
 			title: 'Har bir davlatni <hl>shaklidan</hl> nomlang',
-			text: 'Xaritada davlat yonadi va vaqt boshlanadi. Vaqt tugashidan oldin uning nomini yozing.',
+			text: 'Xaritada davlat yonadi va vaqt boshlanadi. Vaqt tugashidan oldin uning nomini ayting: yozing yoki shunchaki ovoz chiqarib ayting.',
 			cta: "Sinab ko'ring",
 		},
 		solo: {
 			title: "Yakka o'yin",
 			text: "O'z sur'atingizda, ikki rejimda mashq qiling.",
 			point1: '«Top»: nomi aytilgan davlatni xaritada toping',
-			point2: '«Nomini ayt»: ajratilgan davlat nomini yozing',
+			point2:
+				'«Nomini ayt»: ajratilgan davlat nomini ovoz yoki matn bilan ayting',
 			point3: 'Har javobdan keyin bayroq, poytaxt va aholi soni',
 		},
 		multiplayer: {
@@ -123,6 +124,7 @@ const translations = {
 		},
 	},
 	nameIt: {
+		waiting: 'Tayyorlaning…',
 		inputLabel: 'Mamlakat nomi',
 		placeholder: 'Mamlakat nomini yozing',
 		mic: {
@@ -134,7 +136,6 @@ const translations = {
 			noSpeech: 'Eshitilmadi',
 			unavailable: 'Bu brauzerda ovozli javob ishlamaydi',
 			network: 'Ovozli javob uchun internet kerak',
-			language: 'Nutq tili: {{language}}',
 		},
 		feedback: {
 			wrong: '{{name}} emas',

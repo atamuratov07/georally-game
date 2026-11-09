@@ -115,13 +115,19 @@ georally-game/
 |           |   |-- name-it/
 |           |   |   |-- SetupPage.tsx
 |           |   |   |-- GamePage.tsx
-|           |   |   |-- RoundScreen.tsx
+|           |   |   |-- RoundScreen.tsx   # joins the map, the round state and a layout
+|           |   |   |-- useRoundView.tsx  # the round's camera focus, highlights and reveal
+|           |   |   |-- useAnswerInput.ts # typing and voice state shared by the parts
+|           |   |   |-- roundControls.ts  # what a layout receives
+|           |   |   |-- layouts/          # DesktopRoundLayout, TouchRoundLayout, their insets
 |           |   |   |-- NameItMap.tsx     # the map: fit camera, target highlight, labels only on reveal
 |           |   |   |-- config.ts
 |           |   |   |-- store.ts
 |           |   |   |-- useNameItGame.ts  # begins and advances when the camera settles
 |           |   |   |-- analytics.ts
-|           |   |   `-- components/       # AnswerBar, AttemptFeedback, Countdown, MicButton
+|           |   |   `-- components/       # DesktopAnswerBar, TouchAnswerBar, useAnswerField, AnswerNotice, AttemptFeedback,
+|           |   |                         # Countdown, MicButton, VoiceButton,
+|           |   |                         # RoundButtons, TinyCountryRing
 |           |   `-- shared/
 |           |       |-- gameStore.ts      # createGameStore, hasValidQuestionProgress
 |           |       |-- useStoredGame.ts

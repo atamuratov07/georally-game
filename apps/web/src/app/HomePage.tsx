@@ -1,13 +1,17 @@
+import { Speech } from 'lucide-react'
 import { lazy, Suspense } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { AppHeader, SkyBackground } from '@/shared/layout'
 import { Button } from '@/shared/ui'
 import { cn } from '@/shared/utils'
-import { DISPLAY_TITLE_CLASS, HIGHLIGHT_CLASS } from './landing/styles'
-import { NameItShowcase } from './landing/NameItShowcase'
+import { singleplayerPaths } from '@/singleplayer-game/paths'
+import { ModeShowcase } from './landing/ModeShowcase'
+import { HERO_TITLE_CLASS, HIGHLIGHT_CLASS } from './landing/styles'
 import { LocalizedLink } from './LocalizedLink'
 
 const HeroGlobe = lazy(() => import('./landing/HeroGlobe'))
+const NameItDemo = lazy(() => import('./landing/NameItDemo'))
+const SprintDemo = lazy(() => import('./landing/SprintDemo'))
 
 const MODE_POINTS = ['point1', 'point2', 'point3'] as const
 
@@ -56,8 +60,8 @@ export default function HomePage() {
 
 					<main className='mx-auto flex w-full max-w-6xl flex-col gap-20 px-4 pt-4 pb-24 sm:gap-28 sm:px-6 sm:pt-8'>
 						<section className='grid items-center gap-10 lg:grid-cols-[1.1fr_1fr]'>
-							<div className='flex flex-col items-start gap-6'>
-								<h1 className={DISPLAY_TITLE_CLASS}>
+							<div className='flex flex-col items-center gap-6 text-center lg:items-start lg:text-left'>
+								<h1 className={HERO_TITLE_CLASS}>
 									<Trans
 										i18nKey='landing.heroTitle'
 										components={{
@@ -86,7 +90,30 @@ export default function HomePage() {
 							</Suspense>
 						</section>
 
-						<NameItShowcase />
+						<ModeShowcase
+							id='name-it'
+							copyKey='nameIt'
+							to={singleplayerPaths('name-it').setup}
+							Demo={NameItDemo}
+							demoSide='left'
+							accent='ocean'
+							badgeIcon={
+								<Speech
+									aria-hidden='true'
+									className='size-4'
+									strokeWidth={2.75}
+								/>
+							}
+						/>
+						<ModeShowcase
+							id='recall-sprint'
+							copyKey='recallSprint'
+							to={singleplayerPaths('recall-sprint').setup}
+							Demo={SprintDemo}
+							demoSide='right'
+							accent='coral'
+							text={t('landing.recallSprint.text')}
+						/>
 
 						<section
 							aria-labelledby='modes-title'

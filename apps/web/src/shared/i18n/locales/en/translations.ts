@@ -16,17 +16,22 @@ const translations = {
 		previewCountry: 'Japan',
 		modesTitle: 'Two ways to play',
 		nameIt: {
-			eyebrow: 'New mode',
+			eyebrow: 'Just say it',
 			title: 'Name every country <hl>by its shape</hl>',
-			text: 'A country lights up on the map and the clock starts. Name it before time runs out: type it, or just say it out loud.',
 			cta: 'Try it',
+		},
+		recallSprint: {
+			eyebrow: 'New mode',
+			title: 'Fill the map <hl>from memory</hl>',
+			text: 'Name countries several in one breath. Whatever you forget waits on the map when time is up.',
+			cta: 'Start a sprint',
 		},
 		solo: {
 			title: 'Solo game',
-			text: 'Train at your own pace, in two modes.',
+			text: 'Train at your own pace, in three modes.',
 			point1: 'Find it: spot the named country on the map',
 			point2: 'Name it: say or type the highlighted country',
-			point3: 'See the flag, capital and population after each answer',
+			point3: 'Recall sprint: name a whole region from memory',
 		},
 		multiplayer: {
 			title: 'Live multiplayer',

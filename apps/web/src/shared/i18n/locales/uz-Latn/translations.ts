@@ -16,18 +16,23 @@ const translations = {
 		previewCountry: 'Yaponiya',
 		modesTitle: "O'ynashning ikki usuli",
 		nameIt: {
-			eyebrow: 'Yangi rejim',
+			eyebrow: 'Shunchaki ayting',
 			title: 'Har bir davlatni <hl>shaklidan</hl> nomlang',
-			text: 'Xaritada davlat yonadi va vaqt boshlanadi. Vaqt tugashidan oldin uning nomini ayting: yozing yoki shunchaki ovoz chiqarib ayting.',
 			cta: "Sinab ko'ring",
+		},
+		recallSprint: {
+			eyebrow: 'Yangi rejim',
+			title: "Xaritani <hl>xotiradan</hl> to'ldiring",
+			text: 'Davlatlarni bir nafasda bir nechtadan ayting. Vaqt tugagach, unutganlaringiz xaritada kutib turadi.',
+			cta: 'Sprintni boshlash',
 		},
 		solo: {
 			title: "Yakka o'yin",
-			text: "O'z sur'atingizda, ikki rejimda mashq qiling.",
+			text: "O'z sur'atingizda, uch rejimda mashq qiling.",
 			point1: '«Top»: nomi aytilgan davlatni xaritada toping',
 			point2:
 				'«Nomini ayt»: ajratilgan davlat nomini ovoz yoki matn bilan ayting',
-			point3: 'Har javobdan keyin bayroq, poytaxt va aholi soni',
+			point3: '«Sprint»: hududning barcha davlatlarini xotiradan nomlang',
 		},
 		multiplayer: {
 			title: "Jonli ko'p o'yinchi",

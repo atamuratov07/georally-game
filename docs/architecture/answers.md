@@ -50,29 +50,32 @@ type MatchResult =
 
 interface AnswerMatcher {
 	match(inputs: readonly string[], method: InputMethod): MatchResult
+	matchAsTyped(text: string): TypedMatch | null
+	matchAll(inputs: readonly string[], method: InputMethod): MatchResult[]
 }
 ```
 
 - `inputs` is the typed text, or the browser's speech alternatives in order of confidence.
 - `heard` is the input that produced the result, trimmed, for the "Heard: …" feedback.
 - `ambiguous` means the input names several countries: a shared name ("Congo"), or several countries in one utterance.
+- `matchAsTyped` is the early acceptance while typing (see [Accepting while typing](#accepting-while-typing)); `matchAll` splits a phrase into the countries it names (see [Phrases](#phrases)).
 - `AliasEntry` has no `language` field. The matcher treats every language the same way (see [Languages](#languages)), so nothing would read it. If language-specific tables are ever needed, it comes back.
 
 ## Decisions
 
-| Topic                 | Decision                                                                                                                                                                                  |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Answer languages      | Every language is always accepted: English, Russian and Uzbek. There is no setting to restrict it, and the matcher takes no language input.                                               |
-| Wrong keyboard layout | Not supported ("Hjccbz" typed for "Россия").                                                                                                                                              |
-| Lookup table          | One combined table for every language. Each language's rules have their own file, but every rule applies to all text.                                                                     |
-| Answer data           | Registry names, which are always accepted, plus hand-curated extra names in `aliases.json`. Nothing is generated.                                                                         |
-| Display and answers   | The reveal shows the registry name, which is always an accepted answer, so the two can't drift apart. Short map labels ("Eq. Guinea") are not answers.                                    |
-| Uzbek Cyrillic        | Accepted, through a forgiving fold to Latin applied to input only.                                                                                                                        |
-| The target            | The matcher never sees it, so it can't favour the target when choosing between speech alternatives.                                                                                       |
-| Typing                | Enter submits. An exact match of the target is accepted without Enter, unless it is the start of another country's name (see [Accepting while typing](#accepting-while-typing)).          |
-| Voice                 | Push-to-talk, one utterance per press. No continuous recording, and no automatic start on each question.                                                                                  |
-| Abbreviations         | Those that are also ordinary words (US, CAR, JAR, BAA) count for typing only.                                                                                                             |
-| Classroom             | Typing only by default.                                                                                                                                                                   |
+| Topic                 | Decision                                                                                                                                                                         |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Answer languages      | Every language is always accepted: English, Russian and Uzbek. There is no setting to restrict it, and the matcher takes no language input.                                      |
+| Wrong keyboard layout | Not supported ("Hjccbz" typed for "Россия").                                                                                                                                     |
+| Lookup table          | One combined table for every language. Each language's rules have their own file, but every rule applies to all text.                                                            |
+| Answer data           | Registry names, which are always accepted, plus hand-curated extra names in `aliases.json`. Nothing is generated.                                                                |
+| Display and answers   | The reveal shows the registry name, which is always an accepted answer, so the two can't drift apart. Short map labels ("Eq. Guinea") are not answers.                           |
+| Uzbek Cyrillic        | Accepted, through a forgiving fold to Latin applied to input only.                                                                                                               |
+| The target            | The matcher never sees it, so it can't favour the target when choosing between speech alternatives.                                                                              |
+| Typing                | Enter submits. An exact match of the target is accepted without Enter, unless it is the start of another country's name (see [Accepting while typing](#accepting-while-typing)). |
+| Voice                 | Push-to-talk, one utterance per press. No continuous recording, and no automatic start on each question.                                                                         |
+| Abbreviations         | Those that are also ordinary words (US, CAR, JAR, BAA) count for typing only.                                                                                                    |
+| Classroom             | Typing only by default.                                                                                                                                                          |
 
 ## Answer data
 
@@ -180,6 +183,16 @@ When no input matches exactly, a typed input's whole cleaned key, and every run 
 
 Browsers return up to a few alternatives per utterance. They are tried in order, and the first one that produces `match` or `ambiguous` wins. The target is never favoured: if the browser's first guess is "Austria" and its second "Australia", the answer is Austria, whatever the target is.
 
+### Phrases
+
+Recall Sprint's continuous voice names several countries in one breath, so `matchAll` returns one result per name instead of one for the whole input: `match`, or `ambiguous` for a shared name, in spoken order, and an empty list when nothing matched. It never returns `none`: in continuous speech unmatched words are filler, and the game ignores them.
+
+- **Longest name first:** the same scan as exact matching, so "bosnia and herzegovina" is one country and "niger nigeria" two. Each name keeps its own ids, so "congo and chile" is an ambiguous Congo and a Chile, not one ambiguous answer of three countries; the game then narrows the Congo to its region.
+- **Exact matches only.** In continuous speech every run of filler words would be a typo candidate, and a false match hands the player a country they never named, which is worse than making them say it again. Recognizers output dictionary words rather than misspellings, and the known mishearings are voice-only aliases ("chilly"), so the typo pass would add little. Typed answers in the sprint still go through `match`, typo pass included.
+- **Spellings and alternatives:** the spelling, and then the browser alternative, covering the most words wins; on a tie the first, since alternatives come in order of confidence. Segments can't be mixed across alternatives, because their word positions differ.
+- **Repeats are reported as said:** "france … france" is two results; the game counts the second as already named.
+- `heard` is the segment's normalized words, since nothing shows it for voice.
+
 ## Using the result
 
 The game decides: `isCorrect = result.kind === 'match' && result.countryId === targetId`. Wrong attempts cost only time.
@@ -205,7 +218,7 @@ The matcher provides both pieces: `matchAsTyped(text)` matches exactly (no typo 
 
 ## Input in the game
 
-One answer bar for the whole game, at the bottom of the map on desktop and at the top on touch screens (`(pointer: coarse)`); the input itself is the floating bar, with the microphone inside its right edge on desktop. On touch screens the input sits at the top so iOS never scrolls the page to keep it above the keyboard (it scrolls only when a focused field would be covered), and the microphone is a separate button at the bottom centre, above the keyboard, where a thumb reaches it. It is never removed between rounds, because removing a focused input closes the phone keyboard, and closing and reopening it every round made iOS scroll the page, the screen snap back and the camera re-frame each time. Between rounds it stays focused but takes no input: during a flight it says "Get ready…"; on the reveal the input shows the country's name in heavier type, the bar's border, edge and outline turn green or coral, and a Next button replaces the microphone, and Enter (the keyboard's Go key) means Next. Its focus ring is a box shadow, not an outline: Safari draws outlines as rectangles, so their corners stuck out of the rounded bar. Nothing on the screen takes focus from it: the game screen cancels the pointer-down of every button inside it with one capture listener, so the map's own zoom, projection and info buttons keep the keyboard open as well as the game's, and the map's canvas loses the `tabindex` MapLibre gives it. Between rounds the input is `aria-readonly` for screen readers; it is never made truly read-only, because iOS hides the keyboard for a read-only field.
+One answer bar for the whole game, at the bottom of the map on desktop and at the top on touch screens (`(pointer: coarse)`); the input itself is the floating bar, with the microphone inside its right edge on desktop. On touch screens the input sits at the top so iOS never scrolls the page to keep it above the keyboard (it scrolls only when a focused field would be covered), and the microphone is a separate button at the bottom centre, above the keyboard, where a thumb reaches it. It is never removed between rounds, because removing a focused input closes the phone keyboard, and closing and reopening it every round made iOS scroll the page, the screen snap back and the camera re-frame each time. Between rounds it stays focused but takes no input: during a flight it says "Get ready…"; on the reveal the input shows the country's name in heavier type, the bar's border, edge and outline turn green or coral, and a Next button replaces the microphone, and Enter (the keyboard's Go key) means Next. Its focus ring is a box shadow, not an outline: Safari draws outlines as rectangles, so their corners stuck out of the rounded bar. Nothing on the screen takes focus from it: the game screen's frame (`KeyboardGameFrame`) cancels the pointer-down of every button inside it with one capture listener, so the map's own zoom, projection and info buttons keep the keyboard open as well as the game's, and the map's canvas loses the `tabindex` MapLibre gives it. Between rounds the input is `aria-readonly` for screen readers; it is never made truly read-only, because iOS hides the keyboard for a read-only field.
 
 **Typing**
 
@@ -230,7 +243,21 @@ One answer bar for the whole game, at the bottom of the map on desktop and at th
 - A result event exposes `results[i].isFinal`, `results[i][k].transcript` and `confidence`. Confidence differs between browsers and can be 0, so it is never used to accept or reject.
 - Transcripts may start with a capital letter, end with a period (Safari) or start with a space. The cleanup handles all three.
 - Errors: `not-allowed`, `service-not-allowed`, `no-speech`, `audio-capture`, `network`, `aborted`, `language-not-supported`.
+- In the code, `speechRecognition.ts` holds what every recognition hook shares: finding the API, creating a session with the settings above, reading a result's alternatives and sorting errors into problems. `useSpeechStatus` keeps the resulting state (permission denied, languages that don't work, the current notice). Each hook owns only its session's lifecycle: `useSpeechRecognition` stops after the first final result, `useContinuousSpeech` keeps restarting (below).
 - **Unverified:** how well `uz-UZ` is recognized in Chrome and Safari, and which script each returns.
+
+### Continuous recognition
+
+Recall Sprint keeps the microphone on for the whole sprint (`useContinuousSpeech`, with `continuous = true`). Browsers end sessions on their own, after a pause, after about a minute in Chrome or on a network glitch, so the hook restarts them without a tap.
+
+- `listening` is the player's intent, not whether a session is open at that instant, so the button doesn't flicker in the gaps between sessions.
+- Each final result is passed on once: a session's results list grows and its events start at `resultIndex`, so the hook remembers the indexes it has already emitted.
+- **Restarts:** a healthy session restarts at once. A session that heard nothing and lasted under a second is a quick failure; those retry after 250 ms, 1 s and 2 s, and the next one turns the microphone off with a notice: "network" if the last error was a network error, otherwise "paused" (tap the microphone to continue). This keeps a session that dies on start from looping.
+- **`not-allowed` on a restart means paused, not denied:** permission was already granted on the tap, so the likely cause is a browser (iOS) refusing to start recognition without a tap. Treating it as denied would hide the microphone for good.
+- `no-speech` and `aborted` are ignored; the restart handles them.
+- **A hidden page** aborts the session but keeps the intent, and that end neither restarts nor counts as a failure; the page becoming visible again restarts it. On iOS that restart may end in "paused".
+- `stop` (the player's tap) lets the last utterance arrive; `abort` (the sprint ending, leaving) drops it.
+- **Unverified on devices:** how long sessions last per browser, whether iOS restarts without a tap, and whether Android Chrome repeats earlier text in later final results. Repeats would only cause "already named" flashes, since the sprint counts a country once; if they appear, the fix is stripping the previous final result from the start of the next.
 
 ## Deferred and not supported
 
@@ -274,6 +301,6 @@ One answer bar for the whole game, at the bottom of the map on desktop and at th
 | `answers/aliasTable.ts`             | The lookup table built from entries                            |
 | `answers/distance.ts`               | Optimal string alignment distance with a cutoff                |
 | `answers/fuzzy.ts`                  | Typo tolerances and the closest-match rules                    |
-| `answers/matcher.ts`                | The exact pass, the typo pass and the result                   |
+| `answers/matcher.ts`                | The exact pass, the typo pass, phrases and the result          |
 | `country-catalog/data/aliases.json` | Extra names                                                    |
 | `country-catalog/src/aliases.ts`    | Registry names and aliases as entries                          |

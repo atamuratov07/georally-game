@@ -136,6 +136,46 @@ export function buildDimLayer(
 	}
 }
 
+export const REVEALED_STATE = 'revealed'
+
+interface DimTone {
+	color: string
+	opacity: number
+}
+
+export function buildRevealDimLayer(
+	regionIds: ReadonlySet<string>,
+	{ region, outside }: { region: DimTone; outside: DimTone },
+): FillLayerSpecification {
+	const byRegion = <T,>(pick: (tone: DimTone) => T) =>
+		regionIds.size > 0
+			? [
+					'match',
+					['get', 'iso_n3'],
+					[...regionIds],
+					pick(region),
+					pick(outside),
+				]
+			: pick(outside)
+
+	return {
+		id: DIM_LAYER_ID,
+		type: 'fill',
+		source: SOURCE_ID,
+		'source-layer': COUNTRY_LAYER,
+		paint: {
+			'fill-color': byRegion(tone => tone.color) as FillColorExpression,
+			'fill-outline-color': '#ffffff',
+			'fill-opacity': [
+				'case',
+				['boolean', ['feature-state', REVEALED_STATE], false],
+				0,
+				byRegion(tone => tone.opacity),
+			] as FillOpacityExpression,
+		},
+	}
+}
+
 export const hoverLayer: FillLayerSpecification = {
 	id: HOVER_LAYER_ID,
 	type: 'fill',

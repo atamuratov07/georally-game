@@ -1,0 +1,34 @@
+import { ProjectionToggle } from '@/shared/map/ProjectionToggle'
+import { ReviewArrow } from '../components/ReviewArrow'
+import { ReviewBar } from '../components/ReviewBar'
+import type { ReviewControls } from '../reviewControls'
+
+export function DesktopReviewLayout({
+	controls,
+}: {
+	controls: ReviewControls
+}) {
+	const { map } = controls
+
+	return (
+		<>
+			<ReviewBar
+				found={controls.found}
+				total={controls.total}
+				onLeave={controls.onLeave}
+			/>
+			<ProjectionToggle
+				className='absolute top-20 left-3 z-30'
+				value={map.projection}
+				globeDisabled={!map.globeAllowed}
+				onChange={map.onProjectionChange}
+			/>
+			{controls.hasMissed ? (
+				<div className='absolute inset-x-0 bottom-6 z-30 flex justify-center gap-4'>
+					<ReviewArrow direction={-1} onStep={controls.onStep} />
+					<ReviewArrow direction={1} onStep={controls.onStep} />
+				</div>
+			) : null}
+		</>
+	)
+}

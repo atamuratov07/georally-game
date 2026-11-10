@@ -56,13 +56,18 @@ georally-game/
 |           |   |-- App.tsx
 |           |   |-- routes.tsx          # route table
 |           |   |-- HomePage.tsx        # mode chooser
+|           |   |-- landing/            # home page pieces: hero globe, mode showcases and their demos
+|           |   |                       # (a fixed 720x540 replica of the desktop game built from the
+|           |   |                       # real widgets and scaled to fit; country names copied from the
+|           |   |                       # catalog in demoNames.ts so the home page doesn't load it)
 |           |   |-- LocaleGate.tsx      # detects language, redirects unprefixed URLs
 |           |   |-- LocaleContext.tsx
 |           |   |-- LocalizedLink.tsx
 |           |   |-- useLocalizedNavigate.tsx
 |           |   `-- globals.css
 |           |-- shared/
-|           |   |-- answers/            # the app's answer matcher, typed answers, speech recognition
+|           |   |-- answers/            # the app's answer matcher, typed answers, answer field basics,
+|           |   |                       # speech recognition (helpers, status, push-to-talk and continuous hooks)
 |           |   |-- analytics/
 |           |   |   |-- track.ts        # GA4 event helpers
 |           |   |   `-- useMultiplayerGameAnalytics.ts
@@ -79,10 +84,13 @@ georally-game/
 |           |   |-- map/
 |           |   |   |-- PickCountryMap.tsx # the pick-a-country map (locate, multiplayer), composed from the parts below
 |           |   |   |-- BaseMap.tsx     # MapLibre map, style, load and error, projection and its toggle
-|           |   |   |-- camera/         # useScopeCamera (region presets, reset), useRevealCamera, useFitCamera
+|           |   |   |-- camera/         # useScopeCamera (region presets, reset), useRevealCamera, useFitCamera,
+|           |   |   |                   # framing (fitCamera, flight settings, isTinyAt,
+|           |   |   |                   # loosenCameraConstraint, keepVisibleAreaOnMap)
 |           |   |   |-- interaction/    # useCountryPicking (hover and click)
 |           |   |   |-- layers/         # CountryLayers (highlights, dimming, hover), LabelLayers
-|           |   |   |-- CardToggle.tsx, MapMarkers.tsx, ProjectionToggle.tsx, RevealPopup.tsx
+|           |   |   |-- CardToggle.tsx, MapMarkers.tsx, ProjectionToggle.tsx, RevealPopup.tsx,
+|           |   |   |   TinyCountryRing.tsx, HitRing.tsx
 |           |   |   |-- map-controls.ts # shared style of the round map buttons
 |           |   |   |-- continent-view.ts
 |           |   |   |-- map-styles.tsx
@@ -125,17 +133,35 @@ georally-game/
 |           |   |   |-- store.ts
 |           |   |   |-- useNameItGame.ts  # begins and advances when the camera settles
 |           |   |   |-- analytics.ts
-|           |   |   `-- components/       # DesktopAnswerBar, TouchAnswerBar, useAnswerField, AnswerNotice, AttemptFeedback,
-|           |   |                         # Countdown, MicButton, VoiceButton,
-|           |   |                         # RoundButtons, TinyCountryRing
+|           |   |   `-- components/       # DesktopAnswerBar, TouchAnswerBar, useAnswerField, AttemptFeedback,
+|           |   |                         # RoundButtons
+|           |   |-- recall-sprint/
+|           |   |   |-- SetupPage.tsx, GamePage.tsx
+|           |   |   |-- SprintScreen.tsx  # joins the map, the controls and a layout per phase
+|           |   |   |-- SprintMap.tsx     # map shell: region view, what is revealed, the phase's child
+|           |   |   |-- useOverlayCamera.ts # pole rule, follows the overlays (both phases)
+|           |   |   |-- PlayCamera.tsx    # flights and stays on finds (while running)
+|           |   |   |-- ReviewLayers.tsx  # active country, lifted look, card, taps (review)
+|           |   |   |-- RevealLayers.tsx  # reveal dim, labels, hit rings, tiny-country rings
+|           |   |   |-- useReview.ts, reviewOrder.ts, liftedLayers.ts
+|           |   |   |-- sprintRegion.ts   # region countries and bounds, opening view, bounds of finds
+|           |   |   |-- useSprintGame.ts, useSprintInput.ts
+|           |   |   |-- sprintControls.ts, reviewControls.ts # what a layout receives
+|           |   |   |-- layouts/          # Desktop/Touch SprintLayout and ReviewLayout, their overlays
+|           |   |   |-- config.ts, store.ts, analytics.ts
+|           |   |   `-- components/       # DesktopSprintBar, TouchSprintBar, useSprintField, FoundCounter,
+|           |   |                         # SprintNote, FinishButton, ReviewBar, ReviewArrow
 |           |   `-- shared/
+|           |       |-- touch.ts          # the touch-screen media query
 |           |       |-- gameStore.ts      # createGameStore, hasValidQuestionProgress
 |           |       |-- useStoredGame.ts
 |           |       |-- questionCountFit.ts
 |           |       |-- setupParams.ts    # shared URL parameter readers and the difficulty options
 |           |       |-- useRoundEvents.ts
 |           |       `-- components/       # SetupShell, SetupCard, ModeTabs, GameErrorBoundary,
-|           |                             # GameErrorScreen, GameResultModal, ResumeGameCard
+|           |                             # GameErrorScreen, GameResultModal, ResumeGameCard,
+|           |                             # KeyboardGameFrame, LeaveButton, CountdownBar,
+|           |                             # MicButton, VoiceButton, AnswerNotice
 |           `-- multiplayer-game/
 |               |-- index.ts
 |               |-- api/
@@ -197,7 +223,8 @@ georally-game/
 |   |       |-- singleplayer/
 |   |       |   |-- rounds.ts            # phases, state shape and selectors shared by the modes
 |   |       |   |-- locate/              # find-on-the-map mode
-|   |       |   `-- name-it/             # name-the-country mode
+|   |       |   |-- name-it/             # name-the-country mode
+|   |       |   `-- recall-sprint/       # name-as-many-as-you-can mode
 |   |       `-- multiplayer/
 |   |           |-- orchestration.ts     # room + game commands combined (start, submit, reveal, advance)
 |   |           |-- errors.ts

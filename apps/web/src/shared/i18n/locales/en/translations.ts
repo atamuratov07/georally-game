@@ -16,17 +16,22 @@ const translations = {
 		previewCountry: 'Japan',
 		modesTitle: 'Two ways to play',
 		nameIt: {
-			eyebrow: 'New mode',
+			eyebrow: 'Just say it',
 			title: 'Name every country <hl>by its shape</hl>',
-			text: 'A country lights up on the map and the clock starts. Name it before time runs out: type it, or just say it out loud.',
 			cta: 'Try it',
+		},
+		recallSprint: {
+			eyebrow: 'New mode',
+			title: 'Fill the map <hl>from memory</hl>',
+			text: 'Name countries several in one breath. Whatever you forget waits on the map when time is up.',
+			cta: 'Start a sprint',
 		},
 		solo: {
 			title: 'Solo game',
-			text: 'Train at your own pace, in two modes.',
+			text: 'Train at your own pace, in three modes.',
 			point1: 'Find it: spot the named country on the map',
 			point2: 'Name it: say or type the highlighted country',
-			point3: 'See the flag, capital and population after each answer',
+			point3: 'Recall sprint: name a whole region from memory',
 		},
 		multiplayer: {
 			title: 'Live multiplayer',
@@ -82,6 +87,7 @@ const translations = {
 		timerOff: 'Off',
 		seconds: '{{count}}s',
 		timePerCountry: 'Time per country',
+		sprintLength: 'Sprint length',
 	},
 	singleplayer: {
 		title: 'Solo game',
@@ -95,6 +101,11 @@ const translations = {
 				title: 'Name it',
 				description:
 					'Name the highlighted country before the time runs out.',
+			},
+			recallSprint: {
+				title: 'Recall sprint',
+				description:
+					'Name as many countries of the region as you can before time runs out.',
 			},
 		},
 		start: 'Start game',
@@ -121,19 +132,39 @@ const translations = {
 			action: 'Open settings',
 		},
 	},
+	voice: {
+		start: 'Answer by voice',
+		stop: 'Stop listening',
+		listening: 'Listening…',
+		denied: 'Microphone access is blocked. You can still type.',
+		noSpeech: 'Didn’t catch that',
+		unavailable: 'Voice answers don’t work in this browser',
+		network: 'Voice answers need an internet connection',
+		paused: 'Voice paused. Tap the mic to continue.',
+	},
+	recallSprint: {
+		placeholder: 'Name a country',
+		inputLabel: 'Country name',
+		counter: '{{found}} of {{total}} found',
+		found: '{{found}} / {{total}} found',
+		announce: '{{names}}. {{found}} of {{total}}',
+		finish: 'Finish',
+		finishConfirm: 'Finish now?',
+		review: {
+			previous: 'Previous missed country',
+			next: 'Next missed country',
+		},
+		note: {
+			repeated: '{{name}}: already named',
+			outside: '{{name}} isn’t in {{region}}',
+			ambiguous: 'Which {{text}}?',
+			unknown: 'Don’t know “{{text}}”',
+		},
+	},
 	nameIt: {
 		waiting: 'Get ready…',
 		inputLabel: 'Country name',
 		placeholder: 'Type the country name',
-		mic: {
-			start: 'Answer by voice',
-			stop: 'Stop listening',
-			listening: 'Listening…',
-			denied: 'Microphone access is blocked. You can still type.',
-			noSpeech: 'Didn’t catch that',
-			unavailable: 'Voice answers don’t work in this browser',
-			network: 'Voice answers need an internet connection',
-		},
 		feedback: {
 			wrong: '{{name}} isn’t it',
 			typo: '{{text}} → {{name}}',

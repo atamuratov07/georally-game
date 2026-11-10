@@ -27,4 +27,5 @@ export interface TypedMatch {
 export interface AnswerMatcher {
 	match(inputs: readonly string[], method: InputMethod): MatchResult
 	matchAsTyped(text: string): TypedMatch | null
+	matchAll(inputs: readonly string[], method: InputMethod): MatchResult[]
 }

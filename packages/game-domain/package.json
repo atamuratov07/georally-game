@@ -36,6 +36,12 @@
 			"import": "./dist/singleplayer/name-it/index.js",
 			"default": "./dist/singleplayer/name-it/index.js"
 		},
+		"./singleplayer/recall-sprint": {
+			"types": "./src/singleplayer/recall-sprint/index.ts",
+			"development": "./src/singleplayer/recall-sprint/index.ts",
+			"import": "./dist/singleplayer/recall-sprint/index.js",
+			"default": "./dist/singleplayer/recall-sprint/index.js"
+		},
 		"./multiplayer": {
 			"types": "./src/multiplayer/index.ts",
 			"development": "./src/multiplayer/index.ts",

@@ -16,18 +16,23 @@ const translations = {
 		previewCountry: 'Yaponiya',
 		modesTitle: "O'ynashning ikki usuli",
 		nameIt: {
-			eyebrow: 'Yangi rejim',
+			eyebrow: 'Shunchaki ayting',
 			title: 'Har bir davlatni <hl>shaklidan</hl> nomlang',
-			text: 'Xaritada davlat yonadi va vaqt boshlanadi. Vaqt tugashidan oldin uning nomini ayting: yozing yoki shunchaki ovoz chiqarib ayting.',
 			cta: "Sinab ko'ring",
+		},
+		recallSprint: {
+			eyebrow: 'Yangi rejim',
+			title: "Xaritani <hl>xotiradan</hl> to'ldiring",
+			text: 'Davlatlarni bir nafasda bir nechtadan ayting. Vaqt tugagach, unutganlaringiz xaritada kutib turadi.',
+			cta: 'Sprintni boshlash',
 		},
 		solo: {
 			title: "Yakka o'yin",
-			text: "O'z sur'atingizda, ikki rejimda mashq qiling.",
+			text: "O'z sur'atingizda, uch rejimda mashq qiling.",
 			point1: '«Top»: nomi aytilgan davlatni xaritada toping',
 			point2:
 				'«Nomini ayt»: ajratilgan davlat nomini ovoz yoki matn bilan ayting',
-			point3: 'Har javobdan keyin bayroq, poytaxt va aholi soni',
+			point3: '«Sprint»: hududning barcha davlatlarini xotiradan nomlang',
 		},
 		multiplayer: {
 			title: "Jonli ko'p o'yinchi",
@@ -84,6 +89,7 @@ const translations = {
 		timerOff: "Yo'q",
 		seconds: '{{count}} s',
 		timePerCountry: 'Har bir mamlakatga vaqt',
+		sprintLength: 'Davomiyligi',
 	},
 	singleplayer: {
 		title: "Yakka o'yin",
@@ -97,6 +103,11 @@ const translations = {
 				title: 'Nomini ayt',
 				description:
 					'Ajratilgan mamlakat nomini vaqt tugashidan oldin ayting.',
+			},
+			recallSprint: {
+				title: 'Sprint',
+				description:
+					'Vaqt tugaguncha mintaqadagi imkon qadar koʻp davlatni nomlang.',
 			},
 		},
 		start: "O'yinni boshlash",
@@ -123,20 +134,39 @@ const translations = {
 			action: 'Sozlamalarni ochish',
 		},
 	},
+	voice: {
+		start: 'Ovoz bilan javob berish',
+		stop: 'Tinglashni toʻxtatish',
+		listening: 'Tinglayapman…',
+		denied: 'Mikrofonga ruxsat berilmagan. Yozib javob berishingiz mumkin.',
+		noSpeech: 'Eshitilmadi',
+		unavailable: 'Bu brauzerda ovozli javob ishlamaydi',
+		network: 'Ovozli javob uchun internet kerak',
+		paused: 'Ovoz toʻxtatildi. Davom etish uchun mikrofonni bosing.',
+	},
+	recallSprint: {
+		placeholder: 'Davlat nomini yozing',
+		inputLabel: 'Mamlakat nomi',
+		counter: '{{total}} tadan {{found}} tasi topildi',
+		found: 'Topildi: {{found}} / {{total}}',
+		announce: '{{names}}. {{total}} tadan {{found}}',
+		finish: 'Yakunlash',
+		finishConfirm: 'Hozir yakunlaysizmi?',
+		review: {
+			previous: 'Oldingi topilmagan davlat',
+			next: 'Keyingi topilmagan davlat',
+		},
+		note: {
+			repeated: '{{name}} allaqachon aytilgan',
+			outside: '{{name}} «{{region}}» hududiga kirmaydi',
+			ambiguous: 'Qaysi {{text}}?',
+			unknown: '«{{text}}» nomaʼlum',
+		},
+	},
 	nameIt: {
 		waiting: 'Tayyorlaning…',
 		inputLabel: 'Mamlakat nomi',
 		placeholder: 'Mamlakat nomini yozing',
-		mic: {
-			start: 'Ovoz bilan javob berish',
-			stop: 'Tinglashni toʻxtatish',
-			listening: 'Tinglayapman…',
-			denied:
-				'Mikrofonga ruxsat berilmagan. Yozib javob berishingiz mumkin.',
-			noSpeech: 'Eshitilmadi',
-			unavailable: 'Bu brauzerda ovozli javob ishlamaydi',
-			network: 'Ovozli javob uchun internet kerak',
-		},
 		feedback: {
 			wrong: '{{name}} emas',
 			typo: '{{text}} → {{name}}',

@@ -130,3 +130,36 @@ describe('createAnswerMatcher, while typing', () => {
 		expect(matcher.matchAsTyped('Austrai')).toBeNull()
 	})
 })
+
+describe('createAnswerMatcher, phrases', () => {
+	it('splits a phrase into countries in spoken order, longest name first', () => {
+		expect(
+			matcher.matchAll(['niger nigeria bosnia and herzegovina'], 'voice'),
+		).toMatchObject([
+			{ kind: 'match', countryId: '562' },
+			{ kind: 'match', countryId: '566' },
+			{ kind: 'match', countryId: '070', heard: 'bosnia and herzegovina' },
+		])
+	})
+
+	it('keeps a shared name as its own ambiguous segment', () => {
+		expect(matcher.matchAll(['congo and chile'], 'voice')).toMatchObject([
+			{ kind: 'ambiguous', countryIds: ['178', '180'] },
+			{ kind: 'match', countryId: '152' },
+		])
+	})
+
+	it('ignores filler and never accepts typos', () => {
+		expect(matcher.matchAll(['umm let me think'], 'voice')).toEqual([])
+		expect(matcher.matchAll(['umm Austrailia maybe'], 'voice')).toEqual([])
+	})
+
+	it('takes the alternative that names the most', () => {
+		expect(
+			matcher.matchAll(
+				['austria and so on', 'austria and australia'],
+				'voice',
+			),
+		).toMatchObject([{ countryId: '040' }, { countryId: '036' }])
+	})
+})

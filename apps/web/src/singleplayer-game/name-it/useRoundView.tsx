@@ -7,13 +7,14 @@ import {
 	type GameState,
 } from '@georally/game-domain/singleplayer/name-it'
 import { useCallback, useMemo, useState } from 'react'
+import { isTinyAt, MAX_FIT_ZOOM } from '@/shared/map/camera/framing'
 import type { FitTarget } from '@/shared/map/camera/useFitCamera'
+import { TinyCountryRing } from '@/shared/map/TinyCountryRing'
 import type {
 	MapHighlight,
 	MapMarker,
 	MapRevealTarget,
 } from '@/shared/map/types'
-import { TinyCountryRing } from './components/TinyCountryRing'
 import type { AnswerStage } from './roundControls'
 
 const NO_IDS: readonly string[] = []
@@ -23,7 +24,6 @@ const NO_MARKERS: readonly MapMarker[] = []
 interface SettledRound {
 	roundKey: string
 	key: string
-	isTiny: boolean
 }
 
 interface RoundViewOptions {
@@ -72,8 +72,8 @@ export function useRoundView({
 	const isRoundSettled = !advancing && settled?.roundKey === roundKey
 
 	const handleFocusSettled = useCallback(
-		(key: string, isTiny: boolean) => {
-			setSettled({ roundKey, key, isTiny })
+		(key: string) => {
+			setSettled({ roundKey, key })
 			if (phase === 'idle') {
 				onBegin()
 			} else if (advancing) {
@@ -113,7 +113,12 @@ export function useRoundView({
 	)
 
 	const markers = useMemo<readonly MapMarker[]>(() => {
-		if (!targetInfo || !round || !isRoundSettled || !settled?.isTiny) {
+		if (
+			!targetInfo ||
+			!round ||
+			!isRoundSettled ||
+			!isTinyAt(targetInfo.bounds, MAX_FIT_ZOOM)
+		) {
 			return NO_MARKERS
 		}
 		return [
@@ -125,7 +130,7 @@ export function useRoundView({
 				element: <TinyCountryRing />,
 			},
 		]
-	}, [isRoundSettled, round, settled?.isTiny, targetInfo])
+	}, [isRoundSettled, round, targetInfo])
 
 	const isRevealSettled = revealed && settled?.key === focus?.key
 	const reveal = useMemo<MapRevealTarget | null>(

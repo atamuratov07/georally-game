@@ -1,6 +1,10 @@
 import type { Attempt } from '@georally/game-domain/singleplayer/name-it'
 import { useEffect, useRef, type FormEvent, type RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
+import {
+	ANSWER_FIELD_ATTRIBUTES,
+	useInitialFocus,
+} from '@/shared/answers/answerField'
 import type { AnswerStage, RevealedAnswer } from '../roundControls'
 import type { AnswerInputState } from '../useAnswerInput'
 
@@ -61,9 +65,7 @@ export function useAnswerField({
 			? lastAttempt
 			: null
 
-	useEffect(() => {
-		inputRef.current?.focus({ preventScroll: true })
-	}, [])
+	useInitialFocus(inputRef)
 	useWrongAnswerFeedback(lastAttempt, formRef, inputRef)
 
 	const onSubmit = (event: FormEvent) => {
@@ -84,15 +86,11 @@ export function useAnswerField({
 			stage === 'waiting'
 				? t('nameIt.waiting')
 				: input.listening
-					? input.interim || t('nameIt.mic.listening')
+					? input.interim || t('voice.listening')
 					: t('nameIt.placeholder'),
 		'aria-label': t('nameIt.inputLabel'),
 		'aria-readonly': stage !== 'answering',
-		autoComplete: 'off',
-		autoCorrect: 'off',
-		autoCapitalize: 'off',
-		spellCheck: false,
-		enterKeyHint: 'go' as const,
+		...ANSWER_FIELD_ATTRIBUTES,
 	}
 
 	return { formRef, reveal, feedback, onSubmit, fieldProps }

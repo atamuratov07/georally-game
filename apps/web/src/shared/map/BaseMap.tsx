@@ -68,6 +68,7 @@ export type MapInteractionProps = Pick<
 
 interface BaseMapProps extends MapPointerProps, MapInteractionProps {
 	mapRef: RefObject<MapRef | null>
+	initialViewState?: MapProps['initialViewState']
 	projection: ProjectionKind
 	maxBounds?: [number, number, number, number]
 	onLoad: () => void
@@ -79,6 +80,7 @@ interface BaseMapProps extends MapPointerProps, MapInteractionProps {
 
 export function BaseMap({
 	mapRef,
+	initialViewState = INITIAL_VIEW_STATE,
 	projection,
 	maxBounds,
 	onLoad,
@@ -143,7 +145,7 @@ export function BaseMap({
 			<Map
 				ref={mapRef}
 				attributionControl={{ compact: true }}
-				initialViewState={INITIAL_VIEW_STATE}
+				initialViewState={initialViewState}
 				mapStyle={MAP_STYLE_URL}
 				style={MAP_STYLE}
 				maxBounds={maxBounds}

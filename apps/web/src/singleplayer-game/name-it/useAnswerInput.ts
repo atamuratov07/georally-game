@@ -3,10 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useCurrentLocale } from '@/app/LocaleContext'
 import { answerMatcher } from '@/shared/answers/matcher'
 import { defaultSpeechLanguage } from '@/shared/answers/speechLanguage'
-import {
-	useSpeechRecognition,
-	type SpeechNotice,
-} from '@/shared/answers/useSpeechRecognition'
+import type { SpeechProblem } from '@/shared/answers/speechRecognition'
+import { useSpeechRecognition } from '@/shared/answers/useSpeechRecognition'
 import { useTypedAnswer } from '@/shared/answers/useTypedAnswer'
 
 interface AnswerInputOptions {
@@ -100,9 +98,7 @@ export function useAnswerInput({
 		typed.change(value)
 	}
 
-	const notice: SpeechNotice | 'denied' | null = speech.denied
-		? 'denied'
-		: speech.notice
+	const notice: SpeechProblem | null = speech.denied ? 'denied' : speech.notice
 
 	const submit = () => {
 		if (!typed.text.trim() && speech.available && !speech.listening) {

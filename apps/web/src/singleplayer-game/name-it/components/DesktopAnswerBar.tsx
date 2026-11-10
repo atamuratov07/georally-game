@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/shared/utils'
-import { AnswerNotice } from './AnswerNotice'
+import { AnswerNotice } from '../../shared/components/AnswerNotice'
 import { AttemptFeedback } from './AttemptFeedback'
 import { useAnswerField, type AnswerFieldOptions } from './useAnswerField'
 

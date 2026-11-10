@@ -1,31 +1,14 @@
 import { useCallback, useEffect, useRef, type RefObject } from 'react'
 import type { Map as MapLibreMap } from 'maplibre-gl'
 import type { MapRef } from 'react-map-gl/maplibre'
+import { FLIGHT, fitCamera, type Bounds, type Insets } from './framing'
 
-const FLIGHT_CURVE = 1.42
-const FLIGHT_SPEED = 1.4
 const SETTLE_FALLBACK_MS = 4000
 const REFRAME_EASE_MS = 250
-const MAX_FIT_ZOOM = 5.5
-const TINY_TARGET_PX = 14
-const FREE_SPACE_MARGIN = 0.2
-const MIN_FREE_PX = 40
-
-type Bounds = readonly [
-	west: number,
-	south: number,
-	east: number,
-	north: number,
-]
 
 export interface FitTarget {
 	key: string
 	bounds: Bounds
-}
-
-interface Insets {
-	top: number
-	bottom: number
 }
 
 interface FitCameraOptions {
@@ -33,38 +16,7 @@ interface FitCameraOptions {
 	isLoaded: boolean
 	target: FitTarget | null
 	insets: Insets
-	onSettled: (key: string, isTiny: boolean) => void
-}
-
-function corners(bounds: Bounds): [[number, number], [number, number]] {
-	const [west, south, east, north] = bounds
-	return [
-		[west, south],
-		[east, north],
-	]
-}
-
-function frameTarget(
-	map: MapLibreMap,
-	bounds: Bounds,
-	{ top, bottom }: Insets,
-) {
-	const container = map.getContainer()
-	const width = container.clientWidth
-	const height = container.clientHeight
-	const coveredBottom = Math.min(
-		bottom,
-		Math.max(height - top - MIN_FREE_PX, 0),
-	)
-	const freeHeight = Math.max(height - top - coveredBottom, MIN_FREE_PX)
-	const side = Math.round(width * FREE_SPACE_MARGIN)
-	const vertical = Math.round(freeHeight * FREE_SPACE_MARGIN)
-
-	map.setPadding({ top, bottom: coveredBottom, left: 0, right: 0 })
-	return map.cameraForBounds(corners(bounds), {
-		padding: { left: side, right: side, top: vertical, bottom: vertical },
-		maxZoom: MAX_FIT_ZOOM,
-	})
+	onSettled: (key: string) => void
 }
 
 function prefersReducedMotion(): boolean {
@@ -94,11 +46,10 @@ export function useFitCamera({
 			return
 		}
 
-		const camera = frameTarget(map, current.bounds, currentInsets)
+		const camera = fitCamera(map, current.bounds, currentInsets)
 		if (camera) {
 			map.easeTo({
-				center: camera.center,
-				zoom: camera.zoom,
+				...camera,
 				duration: prefersReducedMotion() ? 0 : REFRAME_EASE_MS,
 			})
 		}
@@ -131,8 +82,7 @@ export function useFitCamera({
 		}
 
 		const flightInsets = latestRef.current.insets
-		const camera = frameTarget(map, target.bounds, flightInsets)
-		const [southWestCorner, northEastCorner] = corners(target.bounds)
+		const camera = fitCamera(map, target.bounds, flightInsets)
 
 		let settled = false
 		const settle = () => {
@@ -142,13 +92,7 @@ export function useFitCamera({
 			settled = true
 			flightInsetsRef.current = null
 			map.off('moveend', settle)
-			const southWest = map.project(southWestCorner)
-			const northEast = map.project(northEastCorner)
-			const size = Math.max(
-				Math.abs(northEast.x - southWest.x),
-				Math.abs(southWest.y - northEast.y),
-			)
-			onSettledRef.current(target.key, size < TINY_TARGET_PX)
+			onSettledRef.current(target.key)
 
 			const { top: nowTop, bottom: nowBottom } = latestRef.current.insets
 			if (nowTop !== flightInsets.top || nowBottom !== flightInsets.bottom) {
@@ -166,15 +110,9 @@ export function useFitCamera({
 		const fallbackTimer = setTimeout(settle, SETTLE_FALLBACK_MS)
 
 		if (prefersReducedMotion()) {
-			map.jumpTo({ center: camera.center, zoom: camera.zoom })
+			map.jumpTo(camera)
 		} else {
-			map.flyTo({
-				center: camera.center,
-				zoom: camera.zoom,
-				curve: FLIGHT_CURVE,
-				speed: FLIGHT_SPEED,
-				essential: true,
-			})
+			map.flyTo({ ...camera, ...FLIGHT, essential: true })
 		}
 
 		return () => {

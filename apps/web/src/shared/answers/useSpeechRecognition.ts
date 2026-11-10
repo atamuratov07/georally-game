@@ -1,67 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-
-interface RecognitionAlternative {
-	transcript: string
-}
-
-interface RecognitionResult {
-	readonly isFinal: boolean
-	readonly length: number
-	[index: number]: RecognitionAlternative
-}
-
-interface RecognitionResultEvent {
-	readonly resultIndex: number
-	readonly results: {
-		readonly length: number
-		[index: number]: RecognitionResult
-	}
-}
-
-interface Recognition {
-	lang: string
-	continuous: boolean
-	interimResults: boolean
-	maxAlternatives: number
-	onresult: ((event: RecognitionResultEvent) => void) | null
-	onerror: ((event: { error: string }) => void) | null
-	onend: (() => void) | null
-	start: () => void
-	stop: () => void
-	abort: () => void
-}
-
-type RecognitionConstructor = new () => Recognition
-
-const DENIED_ERRORS = new Set(['not-allowed', 'audio-capture'])
-const UNAVAILABLE_ERRORS = new Set([
-	'service-not-allowed',
-	'language-not-supported',
-])
-const IOS_NON_SAFARI = /CriOS|FxiOS|EdgiOS|OPiOS/
-
-export type SpeechNotice = 'noSpeech' | 'network' | 'unavailable'
-
-function findRecognition(): RecognitionConstructor | null {
-	if (
-		typeof window === 'undefined' ||
-		IOS_NON_SAFARI.test(window.navigator.userAgent)
-	) {
-		return null
-	}
-
-	const speechWindow = window as unknown as {
-		SpeechRecognition?: RecognitionConstructor
-		webkitSpeechRecognition?: RecognitionConstructor
-	}
-	return (
-		speechWindow.SpeechRecognition ??
-		speechWindow.webkitSpeechRecognition ??
-		null
-	)
-}
-
-const RecognitionClass = findRecognition()
+import {
+	classifySpeechError,
+	createRecognition,
+	readAlternatives,
+	type Recognition,
+} from './speechRecognition'
+import { useSpeechStatus } from './useSpeechStatus'
 
 interface SpeechRecognitionOptions {
 	lang: string | null
@@ -74,12 +18,9 @@ export function useSpeechRecognition({
 	onInterim,
 	onFinal,
 }: SpeechRecognitionOptions) {
+	const { available, denied, notice, report, clearNotice } =
+		useSpeechStatus(lang)
 	const [listening, setListening] = useState(false)
-	const [denied, setDenied] = useState(false)
-	const [unsupported, setUnsupported] = useState<ReadonlySet<string>>(
-		() => new Set(),
-	)
-	const [notice, setNotice] = useState<SpeechNotice | null>(null)
 	const [interim, setInterim] = useState('')
 	const recognitionRef = useRef<Recognition | null>(null)
 	const onFinalRef = useRef(onFinal)
@@ -101,11 +42,14 @@ export function useSpeechRecognition({
 	}, [])
 
 	const start = useCallback(() => {
-		if (!RecognitionClass || !lang || recognitionRef.current) {
+		if (!lang || recognitionRef.current) {
+			return
+		}
+		const recognition = createRecognition(lang, false)
+		if (!recognition) {
 			return
 		}
 
-		const recognition = new RecognitionClass()
 		const end = () => {
 			if (recognitionRef.current !== recognition) {
 				return
@@ -114,10 +58,6 @@ export function useSpeechRecognition({
 			setInterim('')
 			setListening(false)
 		}
-		recognition.lang = lang
-		recognition.continuous = false
-		recognition.interimResults = true
-		recognition.maxAlternatives = 3
 
 		recognition.onresult = event => {
 			for (
@@ -133,45 +73,31 @@ export function useSpeechRecognition({
 					continue
 				}
 
-				const alternatives = Array.from(
-					{ length: result.length },
-					(_, alternative) => result[alternative].transcript,
-				)
 				setInterim('')
-				onFinalRef.current(alternatives)
+				onFinalRef.current(readAlternatives(result))
 				recognition.stop()
 			}
 		}
 		recognition.onerror = event => {
-			if (DENIED_ERRORS.has(event.error)) {
-				setDenied(true)
-			} else if (event.error === 'no-speech') {
-				setNotice('noSpeech')
-			} else if (event.error === 'network') {
-				setNotice('network')
-			} else if (UNAVAILABLE_ERRORS.has(event.error)) {
-				setUnsupported(previous => new Set(previous).add(lang))
-				setNotice('unavailable')
+			const problem = classifySpeechError(event.error)
+			if (problem) {
+				report(problem)
 			}
 			end()
 		}
 		recognition.onend = end
 		recognitionRef.current = recognition
 		setListening(true)
-		setNotice(null)
+		clearNotice()
 		try {
 			recognition.start()
 		} catch {
 			end()
 		}
-	}, [lang])
+	}, [clearNotice, lang, report])
 
 	return {
-		available:
-			RecognitionClass !== null &&
-			lang !== null &&
-			!denied &&
-			!unsupported.has(lang),
+		available,
 		denied,
 		notice,
 		listening,

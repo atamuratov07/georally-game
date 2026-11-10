@@ -2,12 +2,12 @@ import { motion, useReducedMotion } from 'motion/react'
 import { CardToggle } from '@/shared/map/CardToggle'
 import { ProjectionToggle } from '@/shared/map/ProjectionToggle'
 import { ScoreBanner } from '@/shared/widgets/ScoreBanner'
-import { CountdownBar } from '../components/Countdown'
+import { CountdownBar } from '../../shared/components/CountdownBar'
+import { LeaveButton } from '../../shared/components/LeaveButton'
+import { MicButton } from '../../shared/components/MicButton'
 import { DesktopAnswerBar } from '../components/DesktopAnswerBar'
-import { MicButton } from '../components/MicButton'
 import {
 	GiveUpButton,
-	LeaveButton,
 	NextButton,
 	ProgressChip,
 } from '../components/RoundButtons'
@@ -25,7 +25,7 @@ export function DesktopRoundLayout({
 			<div className='pointer-events-none absolute inset-x-0 top-0 z-30'>
 				<CountdownBar variant='edge' {...controls.timer} />
 			</div>
-			<LeaveButton className='absolute top-4 left-3 z-30' />
+			<LeaveButton mode='name-it' className='absolute top-4 left-3 z-30' />
 			<ProjectionToggle
 				className='absolute top-18 left-3 z-30'
 				value={map.projection}

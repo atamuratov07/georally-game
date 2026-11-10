@@ -2,13 +2,10 @@ import { motion, useReducedMotion } from 'motion/react'
 import { CardToggle } from '@/shared/map/CardToggle'
 import { ProjectionToggle } from '@/shared/map/ProjectionToggle'
 import { ScoreBanner } from '@/shared/widgets/ScoreBanner'
+import { LeaveButton } from '../../shared/components/LeaveButton'
+import { VoiceButton } from '../../shared/components/VoiceButton'
 import { TouchAnswerBar } from '../components/TouchAnswerBar'
-import {
-	GiveUpButton,
-	LeaveButton,
-	NextButton,
-} from '../components/RoundButtons'
-import { VoiceButton } from '../components/VoiceButton'
+import { GiveUpButton, NextButton } from '../components/RoundButtons'
 import type { RoundLayoutProps } from '../roundControls'
 
 export const TOUCH_KEYBOARD_GAP_PX = 12
@@ -26,7 +23,7 @@ export function TouchRoundLayout({
 	return (
 		<>
 			<motion.div
-				className='absolute inset-x-3 top-3 z-30'
+				className='pointer-events-none absolute inset-x-3 top-3 z-30'
 				initial={reduceMotion ? false : { y: -56, opacity: 0 }}
 				animate={{ y: 0, opacity: 1 }}
 				transition={SPRING}
@@ -41,7 +38,7 @@ export function TouchRoundLayout({
 					onNext={controls.onNext}
 				/>
 			</motion.div>
-			<LeaveButton className='absolute top-22 left-3 z-30' />
+			<LeaveButton mode='name-it' className='absolute top-22 left-3 z-30' />
 			<div className='absolute top-22 right-3 z-30 flex flex-col gap-2'>
 				<ProjectionToggle
 					value={map.projection}
@@ -61,7 +58,7 @@ export function TouchRoundLayout({
 			/>
 
 			<motion.div
-				className='absolute inset-x-0 z-30 flex justify-center'
+				className='pointer-events-none absolute inset-x-0 z-30 flex justify-center'
 				style={{
 					bottom:
 						keyboardInset > 0
@@ -72,7 +69,7 @@ export function TouchRoundLayout({
 				animate={{ y: 0, opacity: 1 }}
 				transition={SPRING}
 			>
-				<div className='relative grid size-16 place-items-center'>
+				<div className='pointer-events-auto relative grid size-16 place-items-center'>
 					{controls.canGiveUp ? (
 						<GiveUpButton
 							onGiveUp={controls.onGiveUp}

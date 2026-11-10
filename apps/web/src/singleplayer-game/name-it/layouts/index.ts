@@ -9,8 +9,6 @@ import {
 
 const MAIN_BUTTON_PX = 64
 
-export const TOUCH_QUERY = '(pointer: coarse)'
-
 export interface RoundLayout {
 	Component: ComponentType<RoundLayoutProps>
 	navigationTop: string | null

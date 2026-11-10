@@ -5,7 +5,7 @@ import {
 	searchableKeys,
 	type AliasTable,
 } from './aliasTable'
-import { prepareCandidate, wordRuns } from './candidates'
+import { prepareCandidate, wordRuns, type Candidate } from './candidates'
 import { findClosest } from './fuzzy'
 import { keyOf } from './normalize'
 import type {
@@ -15,10 +15,22 @@ import type {
 	MatchResult,
 } from './types'
 
-interface WordScan {
+interface Segment {
+	start: number
+	end: number
 	countryIds: CountryId[]
+}
+
+interface WordScan {
+	segments: Segment[]
 	coveredWords: number
 }
+
+interface PhraseScan extends WordScan {
+	words: string[]
+}
+
+const NO_PHRASE: PhraseScan = { words: [], segments: [], coveredWords: 0 }
 
 function scanWordRuns(
 	table: AliasTable,
@@ -26,7 +38,7 @@ function scanWordRuns(
 	method: InputMethod,
 ): WordScan {
 	const covered = new Array<boolean>(words.length).fill(false)
-	const countryIds: CountryId[] = []
+	const segments: Segment[] = []
 
 	for (const run of wordRuns(words, table.maxWords)) {
 		if (covered.slice(run.start, run.end).some(Boolean)) {
@@ -35,12 +47,35 @@ function scanWordRuns(
 
 		const runCountryIds = lookupCountries(table, run.key, method)
 		if (runCountryIds.length > 0) {
-			countryIds.push(...runCountryIds)
+			segments.push({
+				start: run.start,
+				end: run.end,
+				countryIds: runCountryIds.sort(),
+			})
 			covered.fill(true, run.start, run.end)
 		}
 	}
 
-	return { countryIds, coveredWords: covered.filter(Boolean).length }
+	return { segments, coveredWords: covered.filter(Boolean).length }
+}
+
+function scanPhrase(
+	candidate: Candidate,
+	table: AliasTable,
+	method: InputMethod,
+): PhraseScan {
+	let best = NO_PHRASE
+	for (const words of candidate.wordsBySpelling) {
+		const scan = scanWordRuns(table, words, method)
+		if (scan.coveredWords > best.coveredWords) {
+			best = { words, ...scan }
+		}
+	}
+	return best
+}
+
+function countryIdsOf(scan: WordScan): CountryId[] {
+	return scan.segments.flatMap(segment => segment.countryIds)
 }
 
 function findExact(
@@ -53,14 +88,14 @@ function findExact(
 	for (const words of wordsBySpelling) {
 		let scan = scanWordRuns(table, words, method)
 		if (method === 'typing' && scan.coveredWords < words.length) {
-			scan = { countryIds: [], coveredWords: 0 }
+			scan = { segments: [], coveredWords: 0 }
 		}
 
 		if (scan.coveredWords === mostCovered) {
-			countryIds.push(...scan.countryIds)
+			countryIds.push(...countryIdsOf(scan))
 		} else if (scan.coveredWords > mostCovered) {
 			mostCovered = scan.coveredWords
-			countryIds = [...scan.countryIds]
+			countryIds = countryIdsOf(scan)
 		}
 	}
 
@@ -155,6 +190,33 @@ export function createAnswerMatcher(
 				isPrefixOfOtherName(table, keyOf(words), countryId),
 			)
 			return { countryId, isPrefix }
+		},
+
+		matchAll(inputs, method) {
+			let best = NO_PHRASE
+			for (const input of inputs) {
+				const candidate = prepareCandidate(input)
+				if (candidate.heard === '') {
+					continue
+				}
+				const scan = scanPhrase(candidate, table, method)
+				if (scan.coveredWords > best.coveredWords) {
+					best = scan
+				}
+			}
+			if (best.coveredWords === 0) {
+				return []
+			}
+
+			return [...best.segments]
+				.sort((a, b) => a.start - b.start)
+				.map(({ start, end, countryIds }) =>
+					toResult(
+						countryIds,
+						'exact',
+						best.words.slice(start, end).join(' '),
+					),
+				)
 		},
 	}
 }

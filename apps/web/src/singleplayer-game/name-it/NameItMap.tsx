@@ -8,6 +8,7 @@ import {
 } from 'react'
 import { Layer, type MapRef } from 'react-map-gl/maplibre'
 import { BaseMap } from '@/shared/map/BaseMap'
+import { loosenCameraConstraint } from '@/shared/map/camera/framing'
 import { useFitCamera, type FitTarget } from '@/shared/map/camera/useFitCamera'
 import { CountryLayers } from '@/shared/map/layers/CountryLayers'
 import { LabelLayers } from '@/shared/map/layers/LabelLayers'
@@ -43,7 +44,7 @@ interface NameItMapProps {
 	insets: { top: number; bottom: number }
 	cardHidden: boolean
 	navigationTop: string | null
-	onFocusSettled: (key: string, isTiny: boolean) => void
+	onFocusSettled: (key: string) => void
 }
 
 function NameItMapInner({
@@ -80,10 +81,9 @@ function NameItMapInner({
 	const handleLoad = useCallback(() => {
 		const map = mapRef.current?.getMap()
 		map?.touchZoomRotate.disableRotation()
-		map?.setTransformConstrain((center, zoom) => ({
-			center,
-			zoom: Math.min(Math.max(zoom, map.getMinZoom()), map.getMaxZoom()),
-		}))
+		if (map) {
+			loosenCameraConstraint(map)
+		}
 		map?.getCanvas().removeAttribute('tabindex')
 		setIsLoaded(true)
 	}, [])

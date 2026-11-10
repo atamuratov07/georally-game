@@ -123,20 +123,20 @@ const translations = {
 			action: 'Sozlamalarni ochish',
 		},
 	},
+	voice: {
+		start: 'Ovoz bilan javob berish',
+		stop: 'Tinglashni toʻxtatish',
+		listening: 'Tinglayapman…',
+		denied: 'Mikrofonga ruxsat berilmagan. Yozib javob berishingiz mumkin.',
+		noSpeech: 'Eshitilmadi',
+		unavailable: 'Bu brauzerda ovozli javob ishlamaydi',
+		network: 'Ovozli javob uchun internet kerak',
+		paused: 'Ovoz toʻxtatildi. Davom etish uchun mikrofonni bosing.',
+	},
 	nameIt: {
 		waiting: 'Tayyorlaning…',
 		inputLabel: 'Mamlakat nomi',
 		placeholder: 'Mamlakat nomini yozing',
-		mic: {
-			start: 'Ovoz bilan javob berish',
-			stop: 'Tinglashni toʻxtatish',
-			listening: 'Tinglayapman…',
-			denied:
-				'Mikrofonga ruxsat berilmagan. Yozib javob berishingiz mumkin.',
-			noSpeech: 'Eshitilmadi',
-			unavailable: 'Bu brauzerda ovozli javob ishlamaydi',
-			network: 'Ovozli javob uchun internet kerak',
-		},
 		feedback: {
 			wrong: '{{name}} emas',
 			typo: '{{text}} → {{name}}',

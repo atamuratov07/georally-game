@@ -9,7 +9,7 @@ interface MicButtonProps {
 
 export function MicButton({ listening, onPress }: MicButtonProps) {
 	const { t } = useTranslation()
-	const label = listening ? t('nameIt.mic.stop') : t('nameIt.mic.start')
+	const label = listening ? t('voice.stop') : t('voice.start')
 
 	return (
 		<span className='relative animate-pop-in'>

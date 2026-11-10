@@ -25,7 +25,7 @@ function SoundBars() {
 
 export function VoiceButton({ listening, onPress }: VoiceButtonProps) {
 	const { t } = useTranslation()
-	const label = listening ? t('nameIt.mic.stop') : t('nameIt.mic.start')
+	const label = listening ? t('voice.stop') : t('voice.start')
 
 	return (
 		<span className='relative grid size-16 animate-pop-in place-items-center'>

@@ -1,8 +1,8 @@
 import { cn } from '@/shared/utils'
 import type { RoundControls } from '../roundControls'
-import { AnswerNotice } from './AnswerNotice'
+import { AnswerNotice } from '../../shared/components/AnswerNotice'
+import { CountdownBar } from '../../shared/components/CountdownBar'
 import { AttemptFeedback } from './AttemptFeedback'
-import { CountdownBar } from './Countdown'
 import { ProgressText } from './RoundButtons'
 import { useAnswerField, type AnswerFieldOptions } from './useAnswerField'
 
@@ -24,7 +24,7 @@ export function TouchAnswerBar({
 			<form
 				ref={formRef}
 				className={cn(
-					'relative overflow-hidden rounded-card shadow-[0_10px_30px_-10px_rgb(24_34_61/0.45)] transition-colors duration-200 motion-reduce:transition-none',
+					'pointer-events-auto relative overflow-hidden rounded-card shadow-[0_10px_30px_-10px_rgb(24_34_61/0.45)] transition-colors duration-200 motion-reduce:transition-none',
 					reveal
 						? reveal.correct
 							? 'bg-grass-50'

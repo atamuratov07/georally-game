@@ -1,28 +1,7 @@
-import { ArrowRight, Flag, LogOut } from 'lucide-react'
+import { ArrowRight, Flag } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { LocalizedLink } from '@/app/LocalizedLink'
 import { Button } from '@/shared/ui'
 import { cn } from '@/shared/utils'
-import { singleplayerPaths } from '../../paths'
-
-export function LeaveButton({ className }: { className?: string }) {
-	const { t } = useTranslation()
-
-	return (
-		<Button
-			asChild
-			variant='neutral'
-			size='icon'
-			className={className}
-			aria-label={t('singleplayer.exit')}
-			title={t('singleplayer.exit')}
-		>
-			<LocalizedLink to={singleplayerPaths('name-it').setup}>
-				<LogOut aria-hidden='true' className='rotate-180' />
-			</LocalizedLink>
-		</Button>
-	)
-}
 
 export function GiveUpButton({
 	onGiveUp,

@@ -1,8 +1,9 @@
 import { animate } from 'motion'
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/utils'
+import { outlinedText } from './outlinedText'
 
 const SCORE_VISIBLE_DURATION_MS = 2400
 const ENTER_DURATION_S = 0.4
@@ -20,11 +21,7 @@ const STROKE_DURATION_S = { check: 0.42, cross: 0.2 }
 const STROKE_GAP_S = 0.06
 const DRAW_EASE = [0.65, 0, 0.35, 1] as const
 
-const OUTLINED_TEXT: CSSProperties = {
-	WebkitTextStroke: '8px var(--color-ink)',
-	paintOrder: 'stroke fill',
-	textShadow: '0 6px 0 var(--color-ink)',
-}
+const OUTLINED_TEXT = outlinedText(8, 6)
 
 type ScoreBannerTriggerKey = number | string
 

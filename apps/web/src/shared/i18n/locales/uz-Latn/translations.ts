@@ -84,6 +84,7 @@ const translations = {
 		timerOff: "Yo'q",
 		seconds: '{{count}} s',
 		timePerCountry: 'Har bir mamlakatga vaqt',
+		sprintLength: 'Davomiyligi',
 	},
 	singleplayer: {
 		title: "Yakka o'yin",
@@ -97,6 +98,11 @@ const translations = {
 				title: 'Nomini ayt',
 				description:
 					'Ajratilgan mamlakat nomini vaqt tugashidan oldin ayting.',
+			},
+			recallSprint: {
+				title: 'Sprint',
+				description:
+					'Vaqt tugaguncha mintaqadagi imkon qadar koʻp davlatni nomlang.',
 			},
 		},
 		start: "O'yinni boshlash",
@@ -132,6 +138,25 @@ const translations = {
 		unavailable: 'Bu brauzerda ovozli javob ishlamaydi',
 		network: 'Ovozli javob uchun internet kerak',
 		paused: 'Ovoz toʻxtatildi. Davom etish uchun mikrofonni bosing.',
+	},
+	recallSprint: {
+		placeholder: 'Davlat nomini yozing',
+		inputLabel: 'Mamlakat nomi',
+		counter: '{{total}} tadan {{found}} tasi topildi',
+		found: 'Topildi: {{found}} / {{total}}',
+		announce: '{{names}}. {{total}} tadan {{found}}',
+		finish: 'Yakunlash',
+		finishConfirm: 'Hozir yakunlaysizmi?',
+		review: {
+			previous: 'Oldingi topilmagan davlat',
+			next: 'Keyingi topilmagan davlat',
+		},
+		note: {
+			repeated: '{{name}} allaqachon aytilgan',
+			outside: '{{name}} «{{region}}» hududiga kirmaydi',
+			ambiguous: 'Qaysi {{text}}?',
+			unknown: '«{{text}}» nomaʼlum',
+		},
 	},
 	nameIt: {
 		waiting: 'Tayyorlaning…',

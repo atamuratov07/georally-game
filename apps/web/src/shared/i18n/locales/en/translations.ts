@@ -82,6 +82,7 @@ const translations = {
 		timerOff: 'Off',
 		seconds: '{{count}}s',
 		timePerCountry: 'Time per country',
+		sprintLength: 'Sprint length',
 	},
 	singleplayer: {
 		title: 'Solo game',
@@ -95,6 +96,11 @@ const translations = {
 				title: 'Name it',
 				description:
 					'Name the highlighted country before the time runs out.',
+			},
+			recallSprint: {
+				title: 'Recall sprint',
+				description:
+					'Name as many countries of the region as you can before time runs out.',
 			},
 		},
 		start: 'Start game',
@@ -130,6 +136,25 @@ const translations = {
 		unavailable: 'Voice answers don’t work in this browser',
 		network: 'Voice answers need an internet connection',
 		paused: 'Voice paused. Tap the mic to continue.',
+	},
+	recallSprint: {
+		placeholder: 'Name a country',
+		inputLabel: 'Country name',
+		counter: '{{found}} of {{total}} found',
+		found: '{{found}} / {{total}} found',
+		announce: '{{names}}. {{found}} of {{total}}',
+		finish: 'Finish',
+		finishConfirm: 'Finish now?',
+		review: {
+			previous: 'Previous missed country',
+			next: 'Next missed country',
+		},
+		note: {
+			repeated: '{{name}}: already named',
+			outside: '{{name}} isn’t in {{region}}',
+			ambiguous: 'Which {{text}}?',
+			unknown: 'Don’t know “{{text}}”',
+		},
 	},
 	nameIt: {
 		waiting: 'Get ready…',

@@ -30,7 +30,7 @@ export function trackRoomJoined(roomMode: RoomModeParam): void {
 	gtagEvent('room_joined', { room_mode: roomMode })
 }
 
-export type SingleplayerModeParam = 'locate' | 'name_it'
+export type SingleplayerModeParam = 'locate' | 'name_it' | 'recall_sprint'
 
 export function trackSingleplayerGameStart(params: {
 	mode: SingleplayerModeParam

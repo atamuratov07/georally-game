@@ -84,6 +84,7 @@ const translations = {
 		timerOff: 'Нет',
 		seconds: '{{count}} с',
 		timePerCountry: 'Время на страну',
+		sprintLength: 'Длительность',
 	},
 	singleplayer: {
 		title: 'Одиночная игра',
@@ -96,6 +97,11 @@ const translations = {
 			nameIt: {
 				title: 'Назови',
 				description: 'Назовите выделенную страну, пока не вышло время.',
+			},
+			recallSprint: {
+				title: 'Спринт',
+				description:
+					'Назовите как можно больше стран региона, пока не вышло время.',
 			},
 		},
 		start: 'Начать игру',
@@ -137,6 +143,25 @@ const translations = {
 		unavailable: 'Голосовые ответы не работают в этом браузере',
 		network: 'Для голосовых ответов нужен интернет',
 		paused: 'Голос на паузе. Нажмите на микрофон, чтобы продолжить.',
+	},
+	recallSprint: {
+		placeholder: 'Назовите страну',
+		inputLabel: 'Название страны',
+		counter: 'Найдено {{found}} из {{total}}',
+		found: 'Найдено: {{found}} / {{total}}',
+		announce: '{{names}}. {{found}} из {{total}}',
+		finish: 'Завершить',
+		finishConfirm: 'Завершить сейчас?',
+		review: {
+			previous: 'Предыдущая пропущенная страна',
+			next: 'Следующая пропущенная страна',
+		},
+		note: {
+			repeated: 'Уже было: {{name}}',
+			outside: '{{name}} не входит в регион «{{region}}»',
+			ambiguous: 'Какая именно: «{{text}}»?',
+			unknown: 'Не знаю «{{text}}»',
+		},
 	},
 	nameIt: {
 		waiting: 'Приготовьтесь…',

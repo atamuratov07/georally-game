@@ -1,4 +1,4 @@
-export type SingleplayerModeId = 'locate' | 'name-it'
+export type SingleplayerModeId = 'locate' | 'name-it' | 'recall-sprint'
 
 export function singleplayerPaths(mode: SingleplayerModeId) {
 	const setup = `/singleplayer/${mode}`

@@ -26,7 +26,7 @@ export function ReviewArrow({
 			size='icon'
 			variant='neutral'
 			className={cn(
-				"size-14 animate-pop-in [&_svg:not([class*='size-'])]:size-8",
+				"size-14 animate-[pop-in_320ms_cubic-bezier(0.2,0.9,0.3,1.3)_both,bump_360ms_cubic-bezier(0.2,0.8,0.2,1)_950ms_both] [&_svg:not([class*='size-'])]:size-8",
 				className,
 			)}
 			aria-label={label}

@@ -67,6 +67,10 @@ const translations = {
 			oceania: 'Okeaniya',
 		},
 		find: 'Toping',
+		question: 'Savol',
+		loading: "O'yin yuklanmoqda",
+		loadingMap: 'Xarita yuklanmoqda',
+		go: 'Boshladik!',
 		answer: 'Javob',
 		progress: 'Savol {{current}} / {{total}}',
 		score: 'Hisob',
@@ -155,6 +159,13 @@ const translations = {
 		review: {
 			previous: 'Oldingi topilmagan davlat',
 			next: 'Keyingi topilmagan davlat',
+			missed: 'Topilmagan: {{count}}',
+			position: 'Topilmagan: {{index}} / {{count}}',
+			ended: {
+				timeUp: 'Vaqt tugadi!',
+				finished: 'Sprint tugadi',
+				complete: 'Barcha davlatlar topildi!',
+			},
 		},
 		note: {
 			repeated: '{{name}} allaqachon aytilgan',

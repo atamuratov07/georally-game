@@ -58,5 +58,13 @@ export function useReview(
 		return () => window.removeEventListener('keydown', handleKeyDown)
 	}, [missedIds, select, step])
 
-	return { hasMissed: order.length > 0, activeId, select, step }
+	const index = activeId ? order.indexOf(activeId) : -1
+
+	return {
+		missedCount: order.length,
+		position: index >= 0 ? index : null,
+		activeId,
+		select,
+		step,
+	}
 }

@@ -3,9 +3,11 @@ import { selectEligibleCountryIds } from '@georally/game-domain'
 import {
 	prepareGameSession,
 	reduceGameState,
+	type GameConfig,
+	type GameSession,
 	type GameState,
 } from '@georally/game-domain/singleplayer/locate'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useStoredGame } from '../shared/useStoredGame'
 import { useLocateGameAnalytics } from './analytics'
 import { locateGameStore } from './store'
@@ -13,31 +15,38 @@ import { locateGameStore } from './store'
 interface UseLocateGameResult {
 	engineState: GameState | null
 	eligibleIds: string[]
+	upcomingTargetId: string | null
+	begin: (startsAt: number) => void
 	handlePick: (countryId: string) => void
 	handleGiveUp: () => void
-	handleNext: () => void
+	handleNext: (startsAt: number) => void
 	handlePlayAgain: () => void
 	handleLeave: () => void
 }
 
-function start(idle: GameState): GameState | null {
-	const session = prepareGameSession(playableCountryPool, idle.config)
-	return session.ok
-		? reduceGameState(idle, {
-				type: 'START',
-				session: session.value,
-				now: Date.now(),
-			})
-		: null
+function keepIdle(idle: GameState): GameState {
+	return idle
+}
+
+function prepare(config: GameConfig): GameSession | null {
+	const session = prepareGameSession(playableCountryPool, config)
+	return session.ok ? session.value : null
 }
 
 export function useLocateGame(): UseLocateGameResult {
-	const {
-		state: engineState,
-		dispatch,
-		restored,
-	} = useStoredGame({ store: locateGameStore, reduce: reduceGameState, start })
+	const { state, dispatch, restored } = useStoredGame({
+		store: locateGameStore,
+		reduce: reduceGameState,
+		start: keepIdle,
+	})
+	const [session] = useState(() =>
+		state?.phase === 'idle' ? prepare(state.config) : null,
+	)
+	const engineState = state?.phase === 'idle' && !session ? null : state
+	const phase = engineState?.phase ?? null
 	const config = engineState?.config
+	const upcomingTargetId =
+		phase === 'idle' ? (session?.questionIds[0] ?? null) : null
 
 	const eligibleIds = useMemo(
 		() =>
@@ -46,6 +55,15 @@ export function useLocateGame(): UseLocateGameResult {
 	)
 
 	useLocateGameAnalytics(engineState, restored)
+
+	const begin = useCallback(
+		(startsAt: number) => {
+			if (phase === 'idle' && session) {
+				dispatch({ type: 'START', session, now: startsAt })
+			}
+		},
+		[dispatch, phase, session],
+	)
 
 	const handlePick = useCallback(
 		(countryId: string) => {
@@ -62,9 +80,12 @@ export function useLocateGame(): UseLocateGameResult {
 		dispatch({ type: 'GIVE_UP', now: Date.now() })
 	}, [dispatch])
 
-	const handleNext = useCallback(() => {
-		dispatch({ type: 'NEXT', now: Date.now() })
-	}, [dispatch])
+	const handleNext = useCallback(
+		(startsAt: number) => {
+			dispatch({ type: 'NEXT', now: startsAt })
+		},
+		[dispatch],
+	)
 
 	const handlePlayAgain = useCallback(() => {
 		if (!config) {
@@ -84,6 +105,8 @@ export function useLocateGame(): UseLocateGameResult {
 	return {
 		engineState,
 		eligibleIds,
+		upcomingTargetId,
+		begin,
 		handlePick,
 		handleGiveUp,
 		handleNext,

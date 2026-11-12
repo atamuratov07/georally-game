@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
 import { useLocalizedSearchParams } from '@/app/useLocalizedSearchParams'
+import { prefetchMap } from '@/shared/map/prefetchMap'
 import { RegionPicker } from '@/shared/widgets/region-map/RegionPicker'
 import {
 	difficultyOptions,
@@ -30,6 +31,7 @@ const paths = singleplayerPaths('name-it')
 
 const prefetchGame = () => {
 	void import('./GamePage')
+	prefetchMap()
 }
 
 function loadResumableGame() {

@@ -135,9 +135,25 @@ export function RevealLayers({
 					type='circle'
 					beforeId={LABELS_BOTTOM_LAYER_ID}
 					paint={{
-						'circle-radius': 16,
+						'circle-radius': [
+							'interpolate',
+							['linear'],
+							['zoom'],
+							1,
+							6,
+							4,
+							16,
+						],
 						'circle-color': 'rgba(0, 0, 0, 0)',
-						'circle-stroke-width': 4,
+						'circle-stroke-width': [
+							'interpolate',
+							['linear'],
+							['zoom'],
+							1,
+							2,
+							4,
+							4,
+						],
 						'circle-stroke-color': [
 							'case',
 							['get', 'found'],

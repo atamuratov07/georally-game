@@ -30,3 +30,25 @@ export function celebrate(): void {
 		})
 	}, 250)
 }
+
+export function burst(origin: { x: number; y: number }): void {
+	void confetti({
+		...BASE,
+		origin,
+		particleCount: 140,
+		spread: 360,
+		startVelocity: 38,
+		ticks: 240,
+	})
+	setTimeout(() => {
+		void confetti({
+			...BASE,
+			origin,
+			particleCount: 80,
+			spread: 360,
+			startVelocity: 22,
+			scalar: 1.2,
+			ticks: 220,
+		})
+	}, 180)
+}

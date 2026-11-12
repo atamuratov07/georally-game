@@ -65,6 +65,10 @@ const translations = {
 			oceania: 'Oceania',
 		},
 		find: 'Find',
+		question: 'Question',
+		loading: 'Loading the game',
+		loadingMap: 'Loading the map',
+		go: 'Go!',
 		answer: 'Answer',
 		progress: 'Question {{current}} of {{total}}',
 		score: 'Score',
@@ -153,6 +157,13 @@ const translations = {
 		review: {
 			previous: 'Previous missed country',
 			next: 'Next missed country',
+			missed: 'Missed: {{count}}',
+			position: 'Missed: {{index}} of {{count}}',
+			ended: {
+				timeUp: "Time's up!",
+				finished: 'Sprint over',
+				complete: 'Every country named!',
+			},
 		},
 		note: {
 			repeated: '{{name}}: already named',

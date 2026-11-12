@@ -26,6 +26,7 @@ function PickCountryMapInner({
 	disabled = false,
 	className,
 	resetViewKey = null,
+	onReady,
 }: PickCountryMapProps) {
 	const mapRef = useRef<MapRef | null>(null)
 	const [isLoaded, setIsLoaded] = useState(false)
@@ -72,7 +73,10 @@ function PickCountryMapInner({
 	const [chosenProjection, setChosenProjection] =
 		useState<ProjectionKind>('flat')
 	const projection = allowGlobe ? chosenProjection : 'flat'
-	const handleLoad = useCallback(() => setIsLoaded(true), [])
+	const handleLoad = useCallback(() => {
+		setIsLoaded(true)
+		onReady?.()
+	}, [onReady])
 	const showCard = Boolean(popupElement) && revealTarget !== null && isSettled
 
 	return (

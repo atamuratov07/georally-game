@@ -32,6 +32,8 @@ function GameContent() {
 	const {
 		engineState,
 		eligibleIds,
+		upcomingTargetId,
+		begin,
 		handlePick,
 		handleGiveUp,
 		handleNext,
@@ -49,6 +51,8 @@ function GameContent() {
 				state={engineState}
 				eligibleIds={eligibleIds}
 				countriesInfo={countryCatalog.countriesById}
+				upcomingTargetId={upcomingTargetId}
+				onBegin={begin}
 				onPick={handlePick}
 				onGiveUp={handleGiveUp}
 				onNext={handleNext}

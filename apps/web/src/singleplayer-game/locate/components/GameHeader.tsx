@@ -1,19 +1,22 @@
-import { LogOut } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { LocalizedLink } from '@/app/LocalizedLink'
-import { Button } from '@/shared/ui'
 import { GameHud, TimerChip } from '@/shared/widgets/GameHud'
-import { singleplayerPaths } from '../../paths'
+import { cn } from '@/shared/utils'
+import { LeaveButton } from '../../shared/components/LeaveButton'
+import type { RoundInfo } from './RoundSplash'
+
+const TRANSITION_CLASSES = {
+	frame: 'vt-hud',
+	full: 'vt-hud vt-hud-target',
+} as const
 
 interface GameHeaderProps {
-	questionIndex: number
-	questionCount: number
-	targetName: string
-	targetFlagUrl?: string
+	round: RoundInfo
 	isAnswering: boolean
 	startedAt: number | null
 	resolvedAt: number | null
+	hidden: boolean
+	transitionParts?: keyof typeof TRANSITION_CLASSES
 }
 
 function useElapsedSeconds(
@@ -35,41 +38,28 @@ function useElapsedSeconds(
 }
 
 export function GameHeader({
-	questionIndex,
-	questionCount,
-	targetName,
-	targetFlagUrl,
+	round,
 	isAnswering,
 	startedAt,
 	resolvedAt,
+	hidden,
+	transitionParts,
 }: GameHeaderProps) {
 	const { t } = useTranslation()
 	const elapsed = useElapsedSeconds(isAnswering, startedAt, resolvedAt)
 
 	return (
 		<GameHud
-			current={Math.min(questionIndex + 1, questionCount)}
-			total={questionCount}
-			completed={Math.min(
-				questionIndex + (isAnswering ? 0 : 1),
-				questionCount,
+			className={cn(
+				hidden && 'invisible',
+				transitionParts && TRANSITION_CLASSES[transitionParts],
 			)}
-			targetName={targetName}
-			targetFlagUrl={targetFlagUrl}
-			start={
-				<Button
-					asChild
-					variant='ghost'
-					size='icon'
-					className='text-white/70 hover:bg-white/10 hover:text-white'
-					aria-label={t('singleplayer.exit')}
-					title={t('singleplayer.exit')}
-				>
-					<LocalizedLink to={singleplayerPaths('locate').setup}>
-						<LogOut aria-hidden='true' className='rotate-180' />
-					</LocalizedLink>
-				</Button>
-			}
+			current={round.current}
+			total={round.total}
+			completed={round.completed}
+			targetName={round.name}
+			targetFlagUrl={round.flagUrl}
+			start={<LeaveButton mode='locate' tone='dark' />}
 			end={<TimerChip seconds={elapsed} label={t('game.elapsed')} />}
 		/>
 	)

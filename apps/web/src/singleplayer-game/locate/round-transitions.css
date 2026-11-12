@@ -1,0 +1,139 @@
+.vt-hud,
+.vt-panel {
+	view-transition-name: locate-hud;
+}
+
+:is(.vt-hud, .vt-panel) [data-hud-part='start'] > * {
+	view-transition-name: locate-leave;
+}
+
+:is(.vt-hud, .vt-panel) [data-hud-part='timer'] {
+	view-transition-name: locate-timer;
+}
+
+:is(.vt-hud, .vt-panel) [data-hud-part='count'] {
+	view-transition-name: locate-count;
+}
+
+:is(.vt-hud, .vt-panel) [data-hud-part='strip'] {
+	view-transition-name: locate-strip;
+}
+
+:is(.vt-hud-target, .vt-panel) [data-hud-part='name'] {
+	view-transition-name: locate-target;
+}
+
+:is(.vt-hud-target, .vt-panel) [data-hud-part='flag'] {
+	view-transition-name: locate-flag;
+}
+
+.vt-panel [data-hud-part='label'] {
+	view-transition-name: locate-label;
+}
+
+.vt-panel [data-hud-part='verb'] {
+	view-transition-name: locate-verb;
+}
+
+.vt-panel [data-hud-part='status'] {
+	view-transition-name: locate-status;
+}
+
+::view-transition-group(locate-hud) {
+	overflow: clip;
+}
+
+::view-transition-old(locate-hud),
+::view-transition-new(locate-hud) {
+	mix-blend-mode: normal;
+}
+
+html[data-view-transition='collapse']::view-transition-old(locate-hud),
+html[data-view-transition='contract']::view-transition-old(locate-hud) {
+	animation: none;
+	opacity: 1;
+}
+
+html[data-view-transition='collapse']::view-transition-new(locate-hud) {
+	animation: locate-fade-in calc(var(--view-transition-duration) * 0.35)
+		ease-out calc(var(--view-transition-duration) * 0.65) both;
+}
+
+html[data-view-transition='contract']::view-transition-new(locate-hud) {
+	animation: locate-fade-in calc(var(--view-transition-duration) * 0.42)
+		ease-out calc(var(--view-transition-duration) * 0.58) both;
+}
+
+html[data-view-transition='expand']::view-transition-old(locate-hud) {
+	z-index: 1;
+	animation: locate-fade-out calc(var(--view-transition-duration) * 0.44)
+		ease-in both;
+}
+
+html[data-view-transition='expand']::view-transition-new(locate-hud) {
+	animation: none;
+}
+
+::view-transition-old(locate-count),
+::view-transition-new(locate-count),
+::view-transition-old(locate-target),
+::view-transition-new(locate-target),
+::view-transition-old(locate-flag),
+::view-transition-new(locate-flag) {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+::view-transition-old(locate-leave) {
+	display: none;
+}
+
+::view-transition-new(locate-leave) {
+	animation: none;
+}
+
+::view-transition-old(locate-label),
+::view-transition-old(locate-verb),
+::view-transition-old(locate-status) {
+	animation: locate-fade-out calc(var(--view-transition-duration) * 0.3)
+		ease-in both;
+}
+
+::view-transition-new(locate-label),
+::view-transition-new(locate-verb) {
+	animation: locate-fade-in calc(var(--view-transition-duration) * 0.45)
+		ease-out calc(var(--view-transition-duration) * 0.55) both;
+}
+
+html[data-view-transition='collapse']::view-transition-new(locate-timer) {
+	animation: locate-pop calc(var(--view-transition-duration) * 0.4)
+		cubic-bezier(0.2, 0.9, 0.3, 1.3)
+		calc(var(--view-transition-duration) * 0.6) both;
+}
+
+html[data-view-transition='expand']::view-transition-new(locate-target),
+html[data-view-transition='expand']::view-transition-new(locate-flag) {
+	animation: locate-pop calc(var(--view-transition-duration) * 0.6)
+		cubic-bezier(0.2, 0.9, 0.3, 1.3)
+		calc(var(--view-transition-duration) * 0.4) both;
+}
+
+@keyframes locate-fade-in {
+	from {
+		opacity: 0;
+	}
+}
+
+@keyframes locate-fade-out {
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes locate-pop {
+	from {
+		opacity: 0;
+		transform: scale(0.7);
+	}
+}

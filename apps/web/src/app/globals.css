@@ -205,6 +205,21 @@
 	white-space: nowrap;
 }
 
+html[data-view-transition]::view-transition-group(*) {
+	animation-duration: var(--view-transition-duration);
+	animation-timing-function: cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+/* The map under a transition keeps moving, so the root shows only its live new view. */
+html[data-view-transition]::view-transition-old(root) {
+	animation: none;
+	opacity: 0;
+}
+
+html[data-view-transition]::view-transition-new(root) {
+	animation: none;
+}
+
 @layer base {
 	:root {
 		color-scheme: light;

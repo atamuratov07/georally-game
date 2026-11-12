@@ -33,4 +33,5 @@ export interface PickCountryMapProps {
 	popupElement?: ReactNode | null
 	disabled?: boolean
 	className?: string
+	onReady?: () => void
 }

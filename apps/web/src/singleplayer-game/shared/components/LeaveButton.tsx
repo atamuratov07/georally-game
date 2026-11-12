@@ -2,23 +2,38 @@ import { LogOut } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { LocalizedLink } from '@/app/LocalizedLink'
 import { Button } from '@/shared/ui'
+import { cn } from '@/shared/utils'
 import { singleplayerPaths, type SingleplayerModeId } from '../../paths'
+
+const TONES = {
+	light: { variant: 'neutral', className: undefined },
+	dark: {
+		variant: 'ghost',
+		className: 'text-white/70 hover:bg-white/10 hover:text-white',
+	},
+} as const
 
 interface LeaveButtonProps {
 	mode: SingleplayerModeId
+	tone?: keyof typeof TONES
 	className?: string
 	onLeave?: () => void
 }
 
-export function LeaveButton({ mode, className, onLeave }: LeaveButtonProps) {
+export function LeaveButton({
+	mode,
+	tone = 'light',
+	className,
+	onLeave,
+}: LeaveButtonProps) {
 	const { t } = useTranslation()
 
 	return (
 		<Button
 			asChild
-			variant='neutral'
+			variant={TONES[tone].variant}
 			size='icon'
-			className={className}
+			className={cn(TONES[tone].className, className)}
 			aria-label={t('singleplayer.exit')}
 			title={t('singleplayer.exit')}
 		>

@@ -82,6 +82,17 @@
 	--animate-cloud-drift: cloud-drift 120s linear infinite;
 	--animate-bar-fill: bar-fill 500ms ease-out;
 	--animate-sound-bar: sound-bar 0.9s ease-in-out infinite alternate;
+	--animate-loading-sweep: loading-sweep 1.15s cubic-bezier(0.45, 0, 0.55, 1)
+		infinite;
+
+	@keyframes loading-sweep {
+		from {
+			transform: translateX(-100%);
+		}
+		to {
+			transform: translateX(250%);
+		}
+	}
 
 	@keyframes sound-bar {
 		from {
@@ -186,6 +197,12 @@
 
 @utility floating {
 	--drop: 0 14px 30px -8px rgb(24 34 61 / 0.32);
+}
+
+/* 0.64em is the average character width of Rubik Black. */
+@utility text-fit {
+	font-size: min(1em, calc(var(--fit-width) / (var(--chars) * 0.64)));
+	white-space: nowrap;
 }
 
 @layer base {

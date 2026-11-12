@@ -33,6 +33,14 @@ const translations = {
 			failed: "Xabarni yuborib bo'lmadi. Qayta urinib ko'ring.",
 		},
 	},
+	reaction: {
+		prompt: "O'yin sizga yoqdimi?",
+		negative: 'Yoqmadi',
+		neutral: 'Yomon emas',
+		positive: 'Juda yoqdi',
+		thanks: 'Rahmat!',
+		tellMore: 'Batafsil yozing',
+	},
 	landing: {
 		heroTitle: 'Har bir davlatni <hl>xaritada</hl> toping',
 		heroText:

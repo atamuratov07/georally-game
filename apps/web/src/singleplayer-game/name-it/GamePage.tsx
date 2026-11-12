@@ -57,6 +57,7 @@ function GameContent() {
 
 			<GameResultModal
 				open={engineState.phase === 'finished'}
+				mode='name_it'
 				score={getScore(engineState)}
 				correctCount={getCorrectCount(engineState)}
 				totalCount={getQuestionCount(engineState)}

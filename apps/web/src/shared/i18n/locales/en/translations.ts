@@ -32,6 +32,14 @@ const translations = {
 			failed: 'Could not send your message. Try again.',
 		},
 	},
+	reaction: {
+		prompt: 'How was this game?',
+		negative: 'Not fun',
+		neutral: 'It was okay',
+		positive: 'Loved it',
+		thanks: 'Thanks!',
+		tellMore: 'Tell us more',
+	},
 	landing: {
 		heroTitle: 'Find every country <hl>on the map</hl>',
 		heroText:

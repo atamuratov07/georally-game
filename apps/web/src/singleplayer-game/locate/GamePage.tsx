@@ -60,6 +60,7 @@ function GameContent() {
 
 			<GameResultModal
 				open={engineState.phase === 'finished'}
+				mode='locate'
 				score={getScore(engineState)}
 				correctCount={getCorrectCount(engineState)}
 				totalCount={getQuestionCount(engineState)}

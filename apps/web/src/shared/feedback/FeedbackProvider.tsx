@@ -1,6 +1,13 @@
-import { useCallback, useState, type ReactNode } from 'react'
+import { useCallback, useMemo, useState, type ReactNode } from 'react'
+import type { ReactionModeParam } from '@/shared/analytics/track'
 import { FeedbackDialog, type FeedbackDraft } from './FeedbackDialog'
-import { FeedbackContext, type FeedbackOptions } from './useFeedback'
+import {
+	FeedbackContext,
+	ReactionRequestContext,
+	type FeedbackOptions,
+	type ReactionRequest,
+} from './useFeedback'
+import { claimReactionPrompt } from './useReactionPrompt'
 
 const EMPTY_DRAFT: FeedbackDraft = {
 	category: 'other',
@@ -15,6 +22,20 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
 		Pick<FeedbackOptions, 'reaction' | 'countryId'>
 	>({})
 
+	const [reactionRequest, setReactionRequest] =
+		useState<ReactionRequest | null>(null)
+
+	const requestReaction = useCallback((mode: ReactionModeParam) => {
+		if (claimReactionPrompt(mode)) {
+			setReactionRequest({ mode, key: Date.now() })
+		}
+	}, [])
+	const closeReaction = useCallback(() => setReactionRequest(null), [])
+	const reactionState = useMemo(
+		() => ({ request: reactionRequest, requestReaction, closeReaction }),
+		[reactionRequest, requestReaction, closeReaction],
+	)
+
 	const openFeedback = useCallback(
 		({ category, ...rest }: FeedbackOptions = {}) => {
 			if (category) setDraft(current => ({ ...current, category }))
@@ -26,7 +47,9 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
 
 	return (
 		<FeedbackContext value={openFeedback}>
-			{children}
+			<ReactionRequestContext value={reactionState}>
+				{children}
+			</ReactionRequestContext>
 			<FeedbackDialog
 				open={open}
 				onOpenChange={setOpen}

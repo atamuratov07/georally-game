@@ -32,6 +32,14 @@ const translations = {
 			failed: 'Не получилось отправить сообщение. Попробуй ещё раз.',
 		},
 	},
+	reaction: {
+		prompt: 'Как тебе игра?',
+		negative: 'Не понравилось',
+		neutral: 'Нормально',
+		positive: 'Очень понравилось',
+		thanks: 'Спасибо!',
+		tellMore: 'Расскажи подробнее',
+	},
 	landing: {
 		heroTitle: 'Найди любую страну <hl>на карте</hl>',
 		heroText:

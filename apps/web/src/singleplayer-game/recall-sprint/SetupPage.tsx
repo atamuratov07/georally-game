@@ -8,6 +8,7 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
 import { useLocalizedSearchParams } from '@/app/useLocalizedSearchParams'
+import { prefetchMap } from '@/shared/map/prefetchMap'
 import { RegionPicker } from '@/shared/widgets/region-map/RegionPicker'
 import { SettingToggleGroup } from '@/shared/widgets/SettingToggleGroup'
 import { singleplayerPaths } from '../paths'
@@ -21,6 +22,7 @@ const paths = singleplayerPaths('recall-sprint')
 
 const prefetchGame = () => {
 	void import('./GamePage')
+	prefetchMap()
 }
 
 function formatDuration(ms: number): string {

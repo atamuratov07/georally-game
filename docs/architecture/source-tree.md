@@ -19,6 +19,11 @@ georally-game/
 |   |   |   |-- http/
 |   |   |   |   `-- responses.ts        # Ack<T> HTTP responses + final error handler
 |   |   |   `-- features/
+|   |   |       |-- feedback/
+|   |   |       |   |-- http.ts         # POST /api/feedback: validate, honeypot, forward to Telegram
+|   |   |       |   |-- http.test.ts    # delivery, failure logging, honeypot
+|   |   |       |   |-- message.ts      # formats the Telegram message text
+|   |   |       |   `-- telegram.ts     # Bot API sendMessage call with a 5 s timeout
 |   |   |       `-- rooms/
 |   |   |           |-- http.ts         # POST /api/rooms, GET /api/rooms/:roomCode
 |   |   |           |-- socket.ts       # socket event handlers, payload validation, socket auth

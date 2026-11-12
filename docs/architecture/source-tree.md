@@ -76,6 +76,7 @@ georally-game/
 |           |   |-- analytics/
 |           |   |   |-- track.ts        # GA4 event helpers
 |           |   |   `-- useMultiplayerGameAnalytics.ts
+|           |   |-- feedback/           # the feedback form and the end-of-game reaction, see feedback.md
 |           |   |-- i18n/
 |           |   |   |-- setup.ts        # i18next init
 |           |   |   |-- locales/        # en, ru, uz-Latn translations

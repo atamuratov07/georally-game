@@ -124,6 +124,8 @@ Server configuration (`apps/server/src/config/env.ts`, parsed with `zod`):
 | `ROOM_HOST_DISCONNECTED_IN_GROUP_TTL`     | `300000` (5 min)        | Amnesty window for a disconnected host, group mode                                                       |
 | `ROOM_HOST_DISCONNECTED_IN_CLASSROOM_TTL` | `180000` (3 min)        | Amnesty window for a disconnected host, classroom mode (shorter, since the host is the pacing authority) |
 | `ROOM_FINISHED_TTL`                       | `900000` (15 min)       | How long a finished room's result stays viewable                                                         |
+| `TELEGRAM_BOT_TOKEN`                      | unset                   | Feedback bot, see [`feedback.md`](docs/architecture/feedback.md#bot-setup); unset turns feedback off     |
+| `TELEGRAM_FEEDBACK_CHAT_ID`               | unset                   | The group that receives feedback; set together with the token                                            |
 
 ## Internationalization
 
@@ -239,6 +241,7 @@ graph LR
 | [`docs/architecture/persistence.md`](docs/architecture/persistence.md)                   | What's persisted, where, and what that implies for scaling                       |
 | [`docs/architecture/connection-lifecycle.md`](docs/architecture/connection-lifecycle.md) | Connection, reconnection, and tab takeover across Socket.IO and the game session |
 | [`docs/architecture/logging.md`](docs/architecture/logging.md)                           | Server log events, the stats line and `/health`, and how to query the logs       |
+| [`docs/architecture/feedback.md`](docs/architecture/feedback.md)                         | Player feedback through Telegram, the end-of-game reaction, the bot setup        |
 
 Improvements found in review but not yet implemented are written up in [`docs/proposals/`](docs/proposals/README.md).
 

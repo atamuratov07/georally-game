@@ -110,7 +110,9 @@ export function SprintScreen({
 					controls={{
 						found: finished.found.length,
 						total: finished.countryIds.length,
-						hasMissed: review.hasMissed,
+						endedBy: finished.endedBy,
+						missedCount: review.missedCount,
+						position: review.position,
 						map: mapChoice,
 						onStep: review.step,
 						onLeave,

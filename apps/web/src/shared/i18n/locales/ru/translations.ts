@@ -164,6 +164,13 @@ const translations = {
 		review: {
 			previous: 'Предыдущая пропущенная страна',
 			next: 'Следующая пропущенная страна',
+			missed: 'Пропущено: {{count}}',
+			position: 'Пропущено: {{index}} из {{count}}',
+			ended: {
+				timeUp: 'Время вышло!',
+				finished: 'Спринт окончен',
+				complete: 'Все страны названы!',
+			},
 		},
 		note: {
 			repeated: 'Уже было: {{name}}',

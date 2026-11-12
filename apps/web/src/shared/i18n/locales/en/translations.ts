@@ -157,6 +157,13 @@ const translations = {
 		review: {
 			previous: 'Previous missed country',
 			next: 'Next missed country',
+			missed: 'Missed: {{count}}',
+			position: 'Missed: {{index}} of {{count}}',
+			ended: {
+				timeUp: "Time's up!",
+				finished: 'Sprint over',
+				complete: 'Every country named!',
+			},
 		},
 		note: {
 			repeated: '{{name}}: already named',

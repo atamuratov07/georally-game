@@ -159,6 +159,13 @@ const translations = {
 		review: {
 			previous: 'Oldingi topilmagan davlat',
 			next: 'Keyingi topilmagan davlat',
+			missed: 'Topilmagan: {{count}}',
+			position: 'Topilmagan: {{index}} / {{count}}',
+			ended: {
+				timeUp: 'Vaqt tugadi!',
+				finished: 'Sprint tugadi',
+				complete: 'Barcha davlatlar topildi!',
+			},
 		},
 		note: {
 			repeated: '{{name}} allaqachon aytilgan',

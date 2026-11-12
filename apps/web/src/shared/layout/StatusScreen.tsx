@@ -18,6 +18,7 @@ export interface StatusScreenProps {
 	icon?: ReactNode
 	tone?: keyof typeof TONE_TEXT
 	actions?: ReactNode
+	footer?: ReactNode
 }
 
 /** A trailing period is dropped from the title, so error sentences can be titles. */
@@ -27,6 +28,7 @@ export function StatusScreen({
 	icon,
 	tone = 'ocean',
 	actions,
+	footer,
 }: StatusScreenProps) {
 	return (
 		<PageShell width='sm' center>
@@ -54,6 +56,9 @@ export function StatusScreen({
 					</div>
 				) : null}
 			</Card>
+			{footer ? (
+				<div className='mt-4 flex justify-center'>{footer}</div>
+			) : null}
 		</PageShell>
 	)
 }

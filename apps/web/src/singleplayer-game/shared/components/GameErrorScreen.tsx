@@ -1,11 +1,13 @@
 import { MapPinOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { LocalizedLink } from '@/app/LocalizedLink'
+import { useFeedback } from '@/shared/feedback'
 import { StatusScreen } from '@/shared/layout'
-import { Button } from '@/shared/ui'
+import { Button, TextButton } from '@/shared/ui'
 
 export function GameErrorScreen({ setupPath }: { setupPath: string }) {
 	const { t } = useTranslation()
+	const openFeedback = useFeedback()
 
 	return (
 		<StatusScreen
@@ -18,6 +20,14 @@ export function GameErrorScreen({ setupPath }: { setupPath: string }) {
 						{t('singleplayer.gameError.action')}
 					</LocalizedLink>
 				</Button>
+			}
+			footer={
+				<TextButton
+					type='button'
+					onClick={() => openFeedback({ category: 'bug' })}
+				>
+					{t('feedback.reportProblem')}
+				</TextButton>
 			}
 		/>
 	)

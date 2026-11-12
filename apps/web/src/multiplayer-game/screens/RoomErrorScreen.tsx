@@ -1,6 +1,7 @@
 import { Unplug } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { LocalizedLink } from '@/app/LocalizedLink'
+import { useFeedback } from '@/shared/feedback'
 import { StatusScreen } from '@/shared/layout'
 import { Button, TextButton } from '@/shared/ui'
 
@@ -11,6 +12,7 @@ interface RoomErrorScreenProps {
 
 export function RoomErrorScreen({ message, onRetry }: RoomErrorScreenProps) {
 	const { t } = useTranslation()
+	const openFeedback = useFeedback()
 
 	return (
 		<StatusScreen
@@ -28,6 +30,14 @@ export function RoomErrorScreen({ message, onRetry }: RoomErrorScreenProps) {
 						{t('common.retry')}
 					</Button>
 				</>
+			}
+			footer={
+				<TextButton
+					type='button'
+					onClick={() => openFeedback({ category: 'bug' })}
+				>
+					{t('feedback.reportProblem')}
+				</TextButton>
 			}
 		/>
 	)

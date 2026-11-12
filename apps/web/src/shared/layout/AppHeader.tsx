@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LocalizedLink } from '@/app/LocalizedLink'
 import logo from '@/assets/logo.png'
+import { FeedbackButton } from '@/shared/feedback'
 import { LanguageSwitcher } from '@/shared/i18n'
 import { cn } from '@/shared/utils'
 
@@ -37,8 +38,9 @@ export function AppHeader({
 			)}
 		>
 			<AppLogo />
-			<div className='flex items-center gap-2'>
+			<div className='flex items-center gap-1 sm:gap-2'>
 				{children}
+				<FeedbackButton />
 				<LanguageSwitcher />
 			</div>
 		</header>

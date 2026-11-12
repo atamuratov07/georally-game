@@ -7,14 +7,9 @@ import type {
 } from '@georally/game-protocol'
 import { toGatewayError } from './errors'
 import { i18n } from '../../shared/i18n/setup'
+import { buildApiUrl } from '../../shared/lib/apiUrl'
 
 const REQUEST_TIMEOUT_MS = 5000
-
-function buildApiUrl(path: string): string {
-	const envUrl = import.meta.env.VITE_GAME_SERVER_ORIGIN?.trim()
-	const origin = envUrl ? envUrl.replace(/\/$/, '') : ''
-	return `${origin}/api${path}`
-}
 
 async function requestJson<TResponse>(
 	path: string,

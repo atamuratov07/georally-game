@@ -1,6 +1,8 @@
 import { animate } from 'motion'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { SingleplayerModeParam } from '@/shared/analytics/track'
+import { GameReaction } from '@/shared/feedback'
 import { celebrate } from '@/shared/lib/confetti'
 import {
 	Button,
@@ -13,6 +15,7 @@ import {
 
 interface GameResultModalProps {
 	open: boolean
+	mode: SingleplayerModeParam
 	score: number
 	correctCount: number
 	totalCount: number
@@ -38,6 +41,7 @@ function CountUp({ value }: { value: number }) {
 
 export function GameResultModal({
 	open,
+	mode,
 	score,
 	correctCount,
 	totalCount,
@@ -95,6 +99,8 @@ export function GameResultModal({
 						{t('singleplayer.playAgain')}
 					</Button>
 				</div>
+
+				<GameReaction mode={mode} className='mt-1' />
 			</DialogContent>
 		</Dialog>
 	)

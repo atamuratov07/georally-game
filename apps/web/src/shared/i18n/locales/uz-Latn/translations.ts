@@ -7,6 +7,40 @@ const translations = {
 		home: 'Bosh sahifa',
 		retry: 'Qayta urinish',
 	},
+	feedback: {
+		open: 'Fikr bildirish',
+		title: 'Fikr-mulohaza yuborish',
+		category: 'Nima haqida?',
+		categories: {
+			bug: 'Xato',
+			idea: "G'oya",
+			map_data: 'Xarita',
+			other: 'Boshqa',
+		},
+		message: 'Xabar',
+		messagePlaceholder: "Nima bo'ldi yoki o'yinni nima yaxshiroq qiladi?",
+		contact: 'Email yoki Telegram',
+		optional: 'ixtiyoriy',
+		contactPlaceholder: 'Javob olishni istasangiz',
+		send: 'Yuborish',
+		sentTitle: 'Rahmat!',
+		sentText: 'Xabaringiz bizga yuborildi.',
+		close: 'Yopish',
+		reportProblem: 'Muammo haqida xabar berish',
+		errors: {
+			rateLimited:
+				"Xabarlar juda ko'p. Bir daqiqadan so'ng qayta urinib ko'ring.",
+			failed: "Xabarni yuborib bo'lmadi. Qayta urinib ko'ring.",
+		},
+	},
+	reaction: {
+		prompt: "O'yin sizga yoqdimi?",
+		negative: 'Yoqmadi',
+		neutral: 'Yomon emas',
+		positive: 'Juda yoqdi',
+		thanks: 'Rahmat!',
+		tellMore: 'Batafsil yozing',
+	},
 	landing: {
 		heroTitle: 'Har bir davlatni <hl>xaritada</hl> toping',
 		heroText:

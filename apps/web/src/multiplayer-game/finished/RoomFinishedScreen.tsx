@@ -3,6 +3,7 @@ import { motion } from 'motion/react'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LocalizedLink } from '@/app/LocalizedLink'
+import { GameReaction } from '@/shared/feedback'
 import { PageShell } from '@/shared/layout'
 import { Button, Card, CardHeader, CardTitle, TextButton } from '@/shared/ui'
 import { RankingList } from '@/shared/widgets/RankingList'
@@ -147,6 +148,7 @@ export function RoomFinishedScreen({
 					) : null}
 				</div>
 			</Card>
+			<GameReaction mode='multiplayer' className='mt-6' />
 		</PageShell>
 	)
 }

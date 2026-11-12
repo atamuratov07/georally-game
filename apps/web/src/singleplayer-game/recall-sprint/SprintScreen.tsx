@@ -7,6 +7,7 @@ import type {
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useCurrentLocale } from '@/app/LocaleContext'
+import { useRequestReaction } from '@/shared/feedback'
 import { getCountryName } from '@/shared/i18n'
 import { useKeyboardInset } from '@/shared/lib/useKeyboardInset'
 import { runViewTransition } from '@/shared/lib/viewTransition'
@@ -45,6 +46,11 @@ export function SprintScreen({
 	onLeave,
 }: SprintScreenProps) {
 	const keyboardInset = useKeyboardInset()
+	const requestReaction = useRequestReaction()
+	const leaveReview = useCallback(() => {
+		requestReaction('recall_sprint')
+		onLeave()
+	}, [requestReaction, onLeave])
 	const layout = useMediaQuery(TOUCH_QUERY) ? touchLayout : desktopLayout
 	const [chosenProjection, setChosenProjection] =
 		useState<ProjectionKind>('flat')
@@ -115,7 +121,7 @@ export function SprintScreen({
 						position: review.position,
 						map: mapChoice,
 						onStep: review.step,
-						onLeave,
+						onLeave: leaveReview,
 					}}
 				/>
 			) : null}

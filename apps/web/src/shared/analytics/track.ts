@@ -179,3 +179,15 @@ export function trackRoomClosed(params: {
 		member_count_at_close: params.memberCountAtClose,
 	})
 }
+
+export type ReactionModeParam = SingleplayerModeParam | 'multiplayer'
+
+export function trackGameReaction(params: {
+	mode: ReactionModeParam
+	reaction: 'negative' | 'neutral' | 'positive'
+}): void {
+	gtagEvent('game_reaction', {
+		mode: params.mode,
+		reaction: params.reaction,
+	})
+}

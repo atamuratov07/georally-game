@@ -166,7 +166,10 @@ export function BaseMap({
 			{hasFailure ? (
 				<div
 					role='alert'
-					className='absolute top-3 left-1/2 z-11 -translate-x-1/2 rounded-full border-2 border-coral-600 bg-coral-500 px-4 py-1.5 text-sm font-extrabold text-white'
+					style={{
+						top: `var(--map-navigation-top, ${DEFAULT_NAVIGATION_TOP})`,
+					}}
+					className='absolute left-1/2 z-40 -translate-x-1/2 rounded-full border-2 border-coral-600 bg-coral-500 px-4 py-1.5 text-sm font-extrabold text-white'
 				>
 					{t('map.error')}
 				</div>

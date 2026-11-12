@@ -6,6 +6,7 @@ GeoRally currently has no database. There are two persistence layers, both non-d
 
 - `multiplayer-game/session/sessionStorage.ts` saves host/player room sessions in `localStorage` — room code, member ID, role, and `memberSessionToken`.
 - `multiplayer-game/model/gameConfig.ts` saves the host's last multiplayer game config, keyed by room code.
+- `shared/feedback/useReactionPrompt.ts` saves how many games the player has finished and when the game reaction was last shown in each mode (see [`feedback.md`](feedback.md)).
 - Singleplayer config is represented entirely in the `/singleplayer/play` URL query string (see [`singleplayer.md`](singleplayer.md)) — nothing is written to `localStorage` for singleplayer.
 
 ## Server persistence

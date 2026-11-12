@@ -44,6 +44,26 @@ describe('parseEnv', () => {
 		expect(() => parseEnv({ SOCKET_PER_MESSAGE_DEFLATE: 'maybe' })).toThrow()
 	})
 
+	it('disables feedback when the Telegram variables are empty', () => {
+		expect(
+			parseEnv({ TELEGRAM_BOT_TOKEN: '', TELEGRAM_FEEDBACK_CHAT_ID: '' })
+				.feedbackTelegram,
+		).toBeNull()
+	})
+
+	it('reads the Telegram feedback target', () => {
+		expect(
+			parseEnv({
+				TELEGRAM_BOT_TOKEN: '123:abc',
+				TELEGRAM_FEEDBACK_CHAT_ID: '-1001234567890',
+			}).feedbackTelegram,
+		).toEqual({ botToken: '123:abc', chatId: '-1001234567890' })
+	})
+
+	it('rejects a Telegram token without a chat id', () => {
+		expect(() => parseEnv({ TELEGRAM_BOT_TOKEN: '123:abc' })).toThrow()
+	})
+
 	it('rejects a negative permessage-deflate threshold', () => {
 		expect(() =>
 			parseEnv({ SOCKET_PER_MESSAGE_DEFLATE_THRESHOLD: '-1' }),

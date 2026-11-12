@@ -8,6 +8,7 @@ import { RoomsService } from './features/rooms/service.js'
 import { registerRoomHandlers } from './features/rooms/socket.js'
 import { createRealtimeServer } from './server.js'
 import { registerRoomRoutes } from './features/rooms/http.js'
+import { registerFeedbackRoutes } from './features/feedback/http.js'
 import { createLogger } from './observability/logger.js'
 import { registerFatalHandlers } from './observability/process.js'
 import { createProtocolErrorReporter } from './observability/protocolErrors.js'
@@ -84,6 +85,12 @@ registerRoomHandlers({
 	logger,
 })
 registerRoomRoutes({ router: apiRouter, roomsService, reportProtocolError })
+registerFeedbackRoutes({
+	router: apiRouter,
+	telegram: env.feedbackTelegram,
+	logger,
+	reportProtocolError,
+})
 
 const stopStatsReporter = startStatsReporter({
 	logger,
@@ -105,6 +112,7 @@ httpServer.listen(env.port, env.host, () => {
 			roomCapacityLimit: env.roomCapacityLimit,
 			perMessageDeflate: env.perMessageDeflate,
 			perMessageDeflateThreshold: env.perMessageDeflateThreshold,
+			feedbackEnabled: env.feedbackTelegram !== null,
 		},
 		'server_started',
 	)

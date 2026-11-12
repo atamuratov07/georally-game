@@ -9,6 +9,8 @@ function statusForError(error: RoomProtocolError): number {
 			return 400
 		case 'internal_error':
 			return 500
+		case 'feedback_unavailable':
+			return 503
 		default:
 			return 422
 	}

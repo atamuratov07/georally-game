@@ -1,8 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { outlinedText } from '@/shared/widgets/outlinedText'
 import { LeaveButton } from '../../shared/components/LeaveButton'
-
-const COUNT_TEXT = outlinedText(7, 5)
+import { SCORE_TEXT } from './scoreText'
 
 interface ReviewBarProps {
 	found: number
@@ -22,8 +20,8 @@ export function ReviewBar({ found, total, onLeave }: ReviewBarProps) {
 			/>
 			<p
 				role='status'
-				className='animate-pop-in text-3xl font-black text-sunflower-300 tabular-nums'
-				style={COUNT_TEXT}
+				className='text-3xl font-black text-sunflower-300 tabular-nums [view-transition-name:sprint-score]'
+				style={SCORE_TEXT}
 			>
 				<span aria-hidden='true'>
 					{found} / {total}

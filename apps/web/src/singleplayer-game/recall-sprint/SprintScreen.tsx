@@ -4,15 +4,18 @@ import type {
 	RunningSprintState,
 	SprintState,
 } from '@georally/game-domain/singleplayer/recall-sprint'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useCurrentLocale } from '@/app/LocaleContext'
 import { getCountryName } from '@/shared/i18n'
 import { useKeyboardInset } from '@/shared/lib/useKeyboardInset'
+import { runViewTransition } from '@/shared/lib/viewTransition'
 import { useMediaQuery } from '@/shared/lib/useMediaQuery'
 import type { ProjectionKind } from '@/shared/map/ProjectionToggle'
 import { TOUCH_QUERY } from '../shared/touch'
+import { FinalScore } from './components/FinalScore'
 import { desktopLayout, touchLayout, type SprintLayout } from './layouts'
+import type { ReviewControls } from './reviewControls'
 import type { MapChoice, SprintControls } from './sprintControls'
 import { SprintMap } from './SprintMap'
 import { regionCountryIds } from './sprintRegion'
@@ -20,6 +23,7 @@ import { useReview } from './useReview'
 import { useSprintInput } from './useSprintInput'
 
 const NO_COUNTRIES: readonly string[] = []
+const SCORE_FLIGHT_MS = 650
 
 interface SprintScreenProps {
 	state: SprintState
@@ -101,7 +105,8 @@ export function SprintScreen({
 				/>
 			) : null}
 			{finished ? (
-				<layout.Review
+				<FinishedControls
+					layout={layout}
 					controls={{
 						found: finished.found.length,
 						total: finished.countryIds.length,
@@ -157,6 +162,31 @@ function RunningControls({
 			<FoundAnnouncement state={state} />
 			<Layout controls={controls} keyboardInset={keyboardInset} />
 		</>
+	)
+}
+
+function FinishedControls({
+	layout,
+	controls,
+}: {
+	layout: SprintLayout
+	controls: ReviewControls
+}) {
+	const [scoreShown, setScoreShown] = useState(true)
+	const handleScoreDone = useCallback(() => {
+		void runViewTransition('final-score', SCORE_FLIGHT_MS, () =>
+			setScoreShown(false),
+		)
+	}, [])
+
+	return scoreShown ? (
+		<FinalScore
+			found={controls.found}
+			total={controls.total}
+			onDone={handleScoreDone}
+		/>
+	) : (
+		<layout.Review controls={controls} />
 	)
 }
 

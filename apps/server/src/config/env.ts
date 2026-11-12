@@ -1,43 +1,67 @@
 import { z } from 'zod'
 
+import type { TelegramTarget } from '../features/feedback/telegram.js'
 import { LOG_LEVELS, type LogLevel } from '../observability/logger.js'
 
-const envSchema = z.object({
-	PORT: z.coerce.number().int().positive().default(3001),
-	HOST: z.string().min(1).default('0.0.0.0'),
-	CORS_ORIGIN: z.string().default('http://localhost:5173'),
-	LOG_LEVEL: z.enum(LOG_LEVELS).default('info'),
-	STATS_INTERVAL_MS: z.coerce.number().int().min(1_000).default(60_000),
-	REVEAL_DURATION_MS: z.coerce.number().int().min(1_000).default(3_000),
-	LEADERBOARD_DURATION_MS: z.coerce.number().int().min(1_000).default(3_000),
-	ROOM_CAPACITY_LIMIT: z.coerce.number().int().min(1).default(40),
-	SOCKET_PER_MESSAGE_DEFLATE: z.stringbool().default(false),
-	SOCKET_PER_MESSAGE_DEFLATE_THRESHOLD: z.coerce
-		.number()
-		.int()
-		.min(0)
-		.default(1_024),
-	ROOM_NO_CONNECTED_MEMBERS_TTL: z.coerce
-		.number()
-		.int()
-		.min(1_000 * 60 * 5)
-		.default(1_000 * 60 * 10),
-	ROOM_HOST_DISCONNECTED_IN_GROUP_TTL: z.coerce
-		.number()
-		.int()
-		.min(1_000 * 60 * 3)
-		.default(1_000 * 60 * 5),
-	ROOM_HOST_DISCONNECTED_IN_CLASSROOM_TTL: z.coerce
-		.number()
-		.int()
-		.min(1_000 * 60 * 1)
-		.default(1_000 * 60 * 3),
-	ROOM_FINISHED_TTL: z.coerce
-		.number()
-		.int()
-		.min(1_000 * 60 * 10)
-		.default(1_000 * 60 * 15),
-})
+const optionalString = z
+	.string()
+	.optional()
+	.transform(value => value?.trim() || undefined)
+
+const envSchema = z
+	.object({
+		PORT: z.coerce.number().int().positive().default(3001),
+		HOST: z.string().min(1).default('0.0.0.0'),
+		CORS_ORIGIN: z.string().default('http://localhost:5173'),
+		LOG_LEVEL: z.enum(LOG_LEVELS).default('info'),
+		STATS_INTERVAL_MS: z.coerce.number().int().min(1_000).default(60_000),
+		REVEAL_DURATION_MS: z.coerce.number().int().min(1_000).default(3_000),
+		LEADERBOARD_DURATION_MS: z.coerce
+			.number()
+			.int()
+			.min(1_000)
+			.default(3_000),
+		ROOM_CAPACITY_LIMIT: z.coerce.number().int().min(1).default(40),
+		SOCKET_PER_MESSAGE_DEFLATE: z.stringbool().default(false),
+		SOCKET_PER_MESSAGE_DEFLATE_THRESHOLD: z.coerce
+			.number()
+			.int()
+			.min(0)
+			.default(1_024),
+		ROOM_NO_CONNECTED_MEMBERS_TTL: z.coerce
+			.number()
+			.int()
+			.min(1_000 * 60 * 5)
+			.default(1_000 * 60 * 10),
+		ROOM_HOST_DISCONNECTED_IN_GROUP_TTL: z.coerce
+			.number()
+			.int()
+			.min(1_000 * 60 * 3)
+			.default(1_000 * 60 * 5),
+		ROOM_HOST_DISCONNECTED_IN_CLASSROOM_TTL: z.coerce
+			.number()
+			.int()
+			.min(1_000 * 60 * 1)
+			.default(1_000 * 60 * 3),
+		ROOM_FINISHED_TTL: z.coerce
+			.number()
+			.int()
+			.min(1_000 * 60 * 10)
+			.default(1_000 * 60 * 15),
+		TELEGRAM_BOT_TOKEN: optionalString,
+		TELEGRAM_FEEDBACK_CHAT_ID: optionalString.pipe(
+			z
+				.string()
+				.regex(/^-?\d+$/)
+				.optional(),
+		),
+	})
+	.refine(
+		env =>
+			(env.TELEGRAM_BOT_TOKEN === undefined) ===
+			(env.TELEGRAM_FEEDBACK_CHAT_ID === undefined),
+		'TELEGRAM_BOT_TOKEN and TELEGRAM_FEEDBACK_CHAT_ID must be set together',
+	)
 
 export interface AppEnv {
 	port: number
@@ -54,6 +78,7 @@ export interface AppEnv {
 	roomHostDisconnectedInGroupTTL: number
 	roomHostDisconnectedInClassroomTTL: number
 	roomFinishedTTL: number
+	feedbackTelegram: TelegramTarget | null
 }
 
 function parseCorsOrigins(value: string): string[] {
@@ -82,5 +107,12 @@ export function parseEnv(input: NodeJS.ProcessEnv): AppEnv {
 		roomHostDisconnectedInClassroomTTL:
 			env.ROOM_HOST_DISCONNECTED_IN_CLASSROOM_TTL,
 		roomFinishedTTL: env.ROOM_FINISHED_TTL,
+		feedbackTelegram:
+			env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_FEEDBACK_CHAT_ID
+				? {
+						botToken: env.TELEGRAM_BOT_TOKEN,
+						chatId: env.TELEGRAM_FEEDBACK_CHAT_ID,
+					}
+				: null,
 	}
 }

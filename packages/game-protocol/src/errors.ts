@@ -10,6 +10,7 @@ export type TransportError =
 	| { code: 'unauthorized' }
 	| { code: 'room_closed' }
 	| { code: 'internal_error' }
+	| { code: 'feedback_unavailable' }
 
 export type RoomProtocolError =
 	TransportError | CommandError | SessionPreparationError

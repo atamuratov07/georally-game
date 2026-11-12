@@ -8,6 +8,8 @@ services:
          - NODE_ENV=production
          - PORT=3001
          - CORS_ORIGIN=https://georally.world
+         - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+         - TELEGRAM_FEEDBACK_CHAT_ID=${TELEGRAM_FEEDBACK_CHAT_ID:-}
       expose:
          - '3001'
       logging:

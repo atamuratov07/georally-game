@@ -2,6 +2,7 @@ import { ArrowRight, Flag } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/ui'
 import { cn } from '@/shared/utils'
+import { outlinedText } from '@/shared/widgets/outlinedText'
 
 export function GiveUpButton({
 	onGiveUp,
@@ -57,6 +58,8 @@ export function NextButton({
 	)
 }
 
+const PROGRESS_TEXT = outlinedText(0.23, 0.17, 'em')
+
 interface ProgressProps {
 	current: number
 	total: number
@@ -72,12 +75,13 @@ export function ProgressChip({
 	return (
 		<span
 			className={cn(
-				'raised grid h-11 min-w-11 place-items-center rounded-full border-2 border-line-strong bg-white px-3.5 text-base font-black text-ink tabular-nums [--edge-size:4px] [--edge:var(--color-line-strong)]',
+				'text-3xl font-black whitespace-nowrap text-sunflower-300 tabular-nums',
 				className,
 			)}
+			style={PROGRESS_TEXT}
 			aria-label={t('game.progress', { current, total })}
 		>
-			{current}/{total}
+			{current} / {total}
 		</span>
 	)
 }

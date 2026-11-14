@@ -159,7 +159,7 @@ export function keepVisibleAreaOnMap(
 			Math.max(zoom, map.getMinZoom()),
 			map.getMaxZoom(),
 		)
-		if (map.getProjection()?.type === 'globe') {
+		if (map.getProjection()?.type !== 'mercator') {
 			return { center, zoom: clamped }
 		}
 

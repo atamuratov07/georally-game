@@ -5,6 +5,9 @@ import logo from '@/assets/logo.png'
 import { FeedbackButton } from '@/shared/feedback'
 import { LanguageSwitcher } from '@/shared/i18n'
 import { cn } from '@/shared/utils'
+import { outlinedText } from '@/shared/widgets/outlinedText'
+
+const NAME_TEXT = outlinedText(0.16, 0.12, 'em')
 
 export function AppLogo({ className }: { className?: string }) {
 	const { t } = useTranslation()
@@ -17,8 +20,10 @@ export function AppLogo({ className }: { className?: string }) {
 				className,
 			)}
 		>
-			<img src={logo} alt='' className='size-10' />
-			{t('app.name')}
+			<img src={logo} alt='' width={45} height={41} className='h-[41px] w-[45px]' />
+			<span className='text-white' style={NAME_TEXT}>
+				{t('app.name')}
+			</span>
 		</LocalizedLink>
 	)
 }

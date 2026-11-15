@@ -1,17 +1,14 @@
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
+import archipelagosUrl from './generated/archipelagos.geojson?url'
+import tileJson from './generated/tiles.json'
 
-const MAP_ASSET_URLS = [
-	workerUrl,
-	'/map/style.json',
-	'/map/archipelagos.geojson',
-]
-const TILE_JSON_URL = '/map/tiles/tiles.json'
+const MAP_ASSET_URLS = [workerUrl, archipelagosUrl]
 const PREFETCH_MAX_ZOOM = 2
 
 let started = false
 
-function warm(url: string): Promise<Response | undefined> {
-	return fetch(url, { priority: 'low' }).catch(() => undefined)
+function warm(url: string): void {
+	void fetch(url, { priority: 'low' }).catch(() => undefined)
 }
 
 function tileUrls(template: string): string[] {
@@ -32,27 +29,12 @@ function tileUrls(template: string): string[] {
 	return urls
 }
 
-async function warmTiles(): Promise<void> {
-	const response = await warm(TILE_JSON_URL)
-	if (!response?.ok) {
-		return
-	}
-
-	const tileJson = (await response.json().catch(() => null)) as {
-		tiles?: string[]
-	} | null
-	const template = tileJson?.tiles?.[0]
-	if (template) {
-		tileUrls(template).forEach(url => void warm(url))
-	}
-}
-
 export function prefetchMap(): void {
 	if (started) {
 		return
 	}
 	started = true
 
-	MAP_ASSET_URLS.forEach(url => void warm(url))
-	void warmTiles()
+	MAP_ASSET_URLS.forEach(warm)
+	tileUrls(tileJson.tiles[0]).forEach(warm)
 }

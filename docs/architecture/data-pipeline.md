@@ -15,7 +15,7 @@ graph TD
     BuildRegions["08_build_regions.mjs<br/>(pnpm build:regions)"]
     CatalogRegions["packages/country-catalog/generated/regions.geojson"]
     RegionPlugin["apps/web/vite/regionMap.ts<br/>virtual:region-map, at bundle time"]
-    WebMap["apps/web/public/map/**<br/>checked-in static export"]
+    WebMap["apps/web/public/map/** and apps/web/src/shared/map/generated/**<br/>checked-in static export"]
 
     Upstream --> BuildData
     BuildData --> Countries
@@ -103,9 +103,9 @@ Every playable country must have, in all three languages, a name, a label, a cap
 
 ### Map tiles
 
-`tiles.json` lists the layers and fields of the actual tiles: `05_make_tilesjson.mjs` reads them from the `metadata.json` that `tile-join` writes and removes that file. Every property is a string. Text properties follow `label_<language>`, with the language tag lowercased and `-` turned into `_`.
+`tiles.json` (in `apps/web/src/shared/map/generated/`, written where `--tilejson-out` says; next to the tiles without it) lists the layers and fields of the actual tiles: `05_make_tilesjson.mjs` reads them from the `metadata.json` that `tile-join` writes and removes that file. Every property is a string. Text properties follow `label_<language>`, with the language tag lowercased and `-` turned into `_`.
 
-**Cache busting.** nginx (and `public/_headers`) serves tiles with `Cache-Control: public, max-age=31536000, immutable`, so browsers never ask for a tile URL again once they have it. `05_make_tilesjson.mjs` therefore appends `?v=<hash>` to the tile URL template, where the hash covers every `.pbf` file's path and bytes. `tiles.json` itself is served `no-cache`, so after a rebuild every browser switches to the new URLs at once; an unchanged tile set keeps the same hash. The map fonts are also `immutable` under fixed URLs: if the glyph files ever change, version the `glyphs` URL in `style.json` the same way.
+**Cache busting.** nginx (and `public/_headers`) serves tiles with `Cache-Control: public, max-age=31536000, immutable`, so browsers never ask for a tile URL again once they have it. `05_make_tilesjson.mjs` therefore appends `?v=<hash>` to the tile URL template, where the hash covers every `.pbf` file's path and bytes. `tiles.json` is bundled into the hashed JS (`shared/map/mapStyle.ts` inlines its tile template into the style's `world` source), so after a rebuild the next deploy's JS carries the new URLs; an unchanged tile set keeps the same hash. The map fonts are also `immutable` under fixed URLs: if the glyph files ever change, version the `glyphs` URL in `style.json` the same way.
 
 **Compression.** tippecanoe writes the tiles gzipped, so nginx sends them as they are with `Content-Encoding: gzip` and must never compress them again (`gzip off`, `gzip_static off` on that location). Everything else is compressed once at build time: the `precompress` Vite plugin (`apps/web/vite/precompress.ts`) writes a `.gz` next to every JS, CSS, HTML, JSON, GeoJSON, SVG and glyph PBF over 1 KB that shrinks by at least 10%, and nginx's `gzip_static` sends that file to clients that accept gzip. On-the-fly `gzip` stays on for anything without a `.gz` (API responses); `application/x-protobuf` is left out of its types, so a tile can't get a second layer.
 
@@ -158,9 +158,9 @@ The catalog exports the file as `@georally/country-catalog/regions.geojson`, and
 
 ### Other outputs
 
-- `apps/web/public/map/tiles` — the generated vector tiles and `tiles.json`, written by `pnpm build:map-tiles`, which passes `--out` and `--tiles-url-template /map/tiles/{z}/{x}/{y}.pbf` down to `country-build`.
-- `apps/web/public/map/archipelagos.geojson` — outlines around countries spread over many small islands, one MultiPolygon per country with an `iso_n3` property. `archipelagos` in `data/playable_states_195.json` lists the countries with a buffer in km: islands closer than twice the buffer merge into one shape that follows the island chain, and a part around a lone island is dropped. The map draws them under the country fills, as a pickable area with an outline.
-- `apps/web/public/map/**` — a static export (style.json, vector tiles, glyph PBFs) that _is_ checked into the repo and served directly by the web app.
+- `apps/web/public/map/tiles` — the generated vector tiles, written by `pnpm build:map-tiles`, which passes `--out`, `--tiles-url-template /map/tiles/{z}/{x}/{y}.pbf` and `--tilejson-out` (for `tiles.json`) down to `country-build`.
+- `apps/web/src/shared/map/generated/archipelagos.geojson` — outlines around countries spread over many small islands, one MultiPolygon per country with an `iso_n3` property. `archipelagos` in `data/playable_states_195.json` lists the countries with a buffer in km: islands closer than twice the buffer merge into one shape that follows the island chain, and a part around a lone island is dropped. The map draws them under the country fills, as a pickable area with an outline.
+- `apps/web/public/map/**` — a static export (vector tiles, glyph PBFs) that _is_ checked into the repo and served directly by the web app. The style (`apps/web/src/shared/map/style.json`), `tiles.json` and the archipelago outlines live under `src` instead, so Vite puts them into fingerprinted files that are cached forever, and the map needs no request for its style or tile list.
 
 ## Invocation
 
@@ -169,5 +169,5 @@ The catalog exports the file as `@georally/country-catalog/regions.geojson`, and
 | `pnpm build:data` | `@georally/country-build`'s `build:data` script (`node --env-file=.env scripts/03_build_data.mjs`) | `build/countries.json` and the tile inputs |
 | `pnpm build:country-registry` | `@georally/country-build`'s `build:registry` script (`node scripts/06_build_registry.mjs`) | `packages/country-catalog/generated/countries.json` |
 | `pnpm build:regions` | `@georally/country-build`'s `build:regions` script (`node scripts/08_build_regions.mjs`) | `packages/country-catalog/generated/regions.geojson` |
-| `pnpm build:map-tiles` | `@georally/country-build`'s `build:tiles` script (`bash scripts/04_build_tiles.sh`) | `apps/web/public/map/tiles/**` |
-| `pnpm build:archipelago-outlines` | `@georally/country-build`'s `build:outlines` script (`node scripts/07_build_archipelago_outlines.mjs`) | `apps/web/public/map/archipelagos.geojson` |
+| `pnpm build:map-tiles` | `@georally/country-build`'s `build:tiles` script (`bash scripts/04_build_tiles.sh`) | `apps/web/public/map/tiles/**`, `apps/web/src/shared/map/generated/tiles.json` |
+| `pnpm build:archipelago-outlines` | `@georally/country-build`'s `build:outlines` script (`node scripts/07_build_archipelago_outlines.mjs`) | `apps/web/src/shared/map/generated/archipelagos.geojson` |

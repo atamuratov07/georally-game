@@ -50,6 +50,14 @@ export function parseOutDir(defaultSubdir = '', args = process.argv.slice(2)) {
 	)
 }
 
+export function parsePathOption(
+	optionName,
+	fallbackPath,
+	args = process.argv.slice(2),
+) {
+	return resolveOptionPath(readOption(args, optionName), fallbackPath)
+}
+
 export function readTilesUrlTemplate(args = process.argv.slice(2)) {
 	return readOption(args, '--tiles-url-template') ?? DEFAULT_TILES_URL_TEMPLATE
 }

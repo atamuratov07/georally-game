@@ -35,6 +35,10 @@ export const ARCHIPELAGO_OUTLINE_LAYER_ID = 'archipelagos-outline'
 export const LABELS_BOTTOM_LAYER_ID = 'geolines'
 export const TARGET_OUTLINE_LAYER_ID = 'countries-target-outline'
 
+export const GLYPHS_URL = '/map/fonts/{fontstack}/{range}.pbf'
+export const COUNTRY_LABEL_FONT = 'Noto Sans Bold'
+export const CAPITAL_LABEL_FONT = 'Noto Sans Regular'
+
 export const WATER_FILL = '#D8F2FF'
 export const WRONG_FILL = '#fb5f4c'
 export const REVEALED_FILL = '#3fa625'
@@ -182,7 +186,7 @@ export function buildCountryLabelLayer(
 		maxzoom: 24,
 		layout: {
 			'text-field': labelTextField(language),
-			'text-font': ['Noto Sans Bold'],
+			'text-font': [COUNTRY_LABEL_FONT],
 			'text-size': {
 				type: 'exponential',
 				stops: zoomStops([2, 10], [4, 12], [6, 16]),
@@ -223,7 +227,7 @@ export function buildCapitalLabelLayer(
 		minzoom: 3,
 		layout: {
 			'text-field': labelTextField(language),
-			'text-font': ['Noto Sans Regular'],
+			'text-font': [CAPITAL_LABEL_FONT],
 			'text-size': {
 				type: 'exponential',
 				stops: zoomStops([2, 9], [6, 12]),

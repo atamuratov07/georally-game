@@ -1,5 +1,5 @@
-import { countryCatalog, playableCountryPool } from '@georally/country-catalog'
-import { selectEligibleCountryIds, type GameScope } from '@georally/game-domain'
+import { countryCatalog } from '@georally/country-catalog'
+import type { GameScope } from '@georally/game-domain'
 import type { MapProps } from 'react-map-gl/maplibre'
 import {
 	viewPadding,
@@ -10,13 +10,6 @@ import { CONTINENT_VIEW_PRESETS } from '@/shared/map/continent-view'
 
 export const REGION_MARGIN = 0.06
 const WORLD_BOUNDS: Bounds = [-168, -56, 180, 76]
-
-export function regionCountryIds(scope: GameScope): string[] {
-	return selectEligibleCountryIds(playableCountryPool, {
-		scope,
-		difficulty: 'hard',
-	})
-}
 
 export function regionBounds(scope: GameScope): Bounds {
 	if (scope === 'all') {

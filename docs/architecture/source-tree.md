@@ -103,7 +103,7 @@ georally-game/
 |           |   |   |-- map-styles.tsx  # fixed layer specs driven by feature state
 |           |   |   |-- style.json, mapStyle.ts # base style; inlines the tile list and outlines URL
 |           |   |   |-- generated/      # tiles.json, archipelagos.geojson (country-build output)
-|           |   |   |-- prefetchMap.ts  # warms the worker, outlines and low-zoom tiles
+|           |   |   |-- prefetchMap.ts  # warms the outlines, low-zoom tiles and common glyphs
 |           |   |   |-- useFeatureState.ts # sets per-country states, applying only the changes
 |           |   |   `-- types.ts
 |           |   |-- time/               # useDeadline, useNow
@@ -155,7 +155,8 @@ georally-game/
 |           |   |   |-- ReviewLayers.tsx  # active country, lifted look, card, taps (review)
 |           |   |   |-- RevealLayers.tsx  # reveal dim, labels, hit rings, tiny-country rings
 |           |   |   |-- useReview.ts, reviewOrder.ts, liftedLayers.ts
-|           |   |   |-- sprintRegion.ts   # region countries and bounds, opening view, bounds of finds
+|           |   |   |-- regionCountries.ts # the region's countries, free of map code for the setup page
+|           |   |   |-- sprintRegion.ts   # region bounds, opening view, bounds of finds
 |           |   |   |-- useSprintGame.ts, useSprintInput.ts
 |           |   |   |-- sprintControls.ts, reviewControls.ts # what a layout receives
 |           |   |   |-- layouts/          # Desktop/Touch SprintLayout and ReviewLayout, their overlays

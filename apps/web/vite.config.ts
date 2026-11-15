@@ -70,6 +70,10 @@ export default defineConfig({
 	build: {
 		rollupOptions: {
 			input: getLocaleInputs(),
+			output: {
+				manualChunks: id =>
+					id.includes('/node_modules/maplibre-gl/') ? 'maplibre' : undefined,
+			},
 			treeshake: {
 				// The UI primitives are pure component modules. Without this, the
 				// top-level `cva()` calls keep every primitive re-exported from the

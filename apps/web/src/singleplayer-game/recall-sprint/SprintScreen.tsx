@@ -19,7 +19,7 @@ import { desktopLayout, touchLayout, type SprintLayout } from './layouts'
 import type { ReviewControls } from './reviewControls'
 import type { MapChoice, SprintControls } from './sprintControls'
 import { SprintMap } from './SprintMap'
-import { regionCountryIds } from './sprintRegion'
+import { regionCountryIds } from './regionCountries'
 import { useReview } from './useReview'
 import { useSprintInput } from './useSprintInput'
 

@@ -1,4 +1,4 @@
-import { setWorkerUrl } from 'maplibre-gl'
+import { prewarm, setWorkerUrl } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import {
@@ -25,6 +25,7 @@ import { MAP_STYLE } from './mapStyle'
 import type { ProjectionKind } from './ProjectionToggle'
 
 setWorkerUrl(workerUrl)
+prewarm()
 
 const MAP_SIZE = { width: '100%', height: '100%' }
 const FAILURE_NOTICE_MS = 4000

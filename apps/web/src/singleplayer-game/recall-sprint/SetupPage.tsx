@@ -15,7 +15,7 @@ import { singleplayerPaths } from '../paths'
 import { SetupCard } from '../shared/components/SetupCard'
 import { SetupShell } from '../shared/components/SetupShell'
 import { readSetupConfig, toSearchParams } from './config'
-import { regionCountryIds } from './sprintRegion'
+import { regionCountryIds } from './regionCountries'
 import { sprintGameStore } from './store'
 
 const paths = singleplayerPaths('recall-sprint')

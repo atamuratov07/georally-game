@@ -4,7 +4,6 @@
 	"zoom": 1,
 	"pitch": 0,
 	"center": [17.6543171043124, 32.9541203267468],
-	"glyphs": "/map/fonts/{fontstack}/{range}.pbf",
 	"layers": [
 		{
 			"id": "background",

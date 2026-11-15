@@ -6,6 +6,8 @@ import {
 	ARCHIPELAGO_FILL_LAYER_ID,
 	ARCHIPELAGO_SOURCE_ID,
 	BASE_STYLE_LAYER_ID,
+	HOVER_STATE,
+	isPickableFeature,
 	SOURCE_ID,
 	SOURCE_LAYER_ID,
 } from '../map-styles'
@@ -23,7 +25,7 @@ interface CountryPickingOptions {
 }
 
 function featureCountryId(event: MapLayerMouseEvent): string | null {
-	const rawId = event.features?.[0]?.id
+	const rawId = event.features?.find(isPickableFeature)?.id
 	return rawId === null || rawId === undefined
 		? null
 		: normalizeCountryId(rawId)
@@ -60,11 +62,11 @@ export function useCountryPicking({
 						sourceLayer: SOURCE_LAYER_ID,
 						id: countryId,
 					},
-					{ hover },
+					{ [HOVER_STATE]: hover },
 				)
 				map.setFeatureState(
 					{ source: ARCHIPELAGO_SOURCE_ID, id: countryId },
-					{ hover },
+					{ [HOVER_STATE]: hover },
 				)
 			} catch (error) {
 				console.warn('Failed to update hover state:', error)

@@ -109,6 +109,7 @@ function PickCountryMapInner({
 			{...pointerProps}
 		>
 			<CountryLayers
+				loaded={isLoaded}
 				interactiveIds={interactiveIds}
 				highlights={highlights}
 			/>

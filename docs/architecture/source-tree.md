@@ -46,6 +46,7 @@ georally-game/
 |       |-- package.json
 |       |-- vite.config.ts
 |       |-- vite/
+|       |   |-- precompress.ts          # writes a .gz next to every compressible build output
 |       |   `-- regionMap.ts            # serves virtual:region-map: region outlines projected at bundle time
 |       |-- index.html
 |       |-- locales/                    # one Vite entry per locale: en.html, ru.html, uz.html
@@ -54,7 +55,7 @@ georally-game/
 |       |   |-- _redirects
 |       |   |-- robots.txt
 |       |   |-- sitemap.xml
-|       |   `-- map/                    # checked-in vector tiles, fonts, style.json
+|       |   `-- map/                    # checked-in vector tiles and fonts
 |       `-- src/
 |           |-- app/
 |           |   |-- main.tsx            # React root + router
@@ -99,7 +100,11 @@ georally-game/
 |           |   |   |   TinyCountryRing.tsx, HitRing.tsx
 |           |   |   |-- map-controls.ts # shared style of the round map buttons
 |           |   |   |-- continent-view.ts
-|           |   |   |-- map-styles.tsx
+|           |   |   |-- map-styles.tsx  # fixed layer specs driven by feature state
+|           |   |   |-- style.json, mapStyle.ts # base style; inlines the tile list and outlines URL
+|           |   |   |-- generated/      # tiles.json, archipelagos.geojson (country-build output)
+|           |   |   |-- prefetchMap.ts  # warms the worker, outlines and low-zoom tiles
+|           |   |   |-- useFeatureState.ts # sets per-country states, applying only the changes
 |           |   |   `-- types.ts
 |           |   |-- time/               # useDeadline, useNow
 |           |   |-- ui/                 # AlertMessage, Button, CopyButton, FloatingNotice, FormControls,

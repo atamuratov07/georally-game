@@ -21,12 +21,12 @@ import Map, {
 } from 'react-map-gl/maplibre'
 import { cn } from '../utils'
 import { WORLD_VIEW } from './continent-view'
+import { MAP_STYLE } from './mapStyle'
 import type { ProjectionKind } from './ProjectionToggle'
 
 setWorkerUrl(workerUrl)
 
-const MAP_STYLE_URL = '/map/style.json'
-const MAP_STYLE = { width: '100%', height: '100%' }
+const MAP_SIZE = { width: '100%', height: '100%' }
 const FAILURE_NOTICE_MS = 4000
 const DEFAULT_NAVIGATION_TOP = '7.5rem'
 
@@ -146,8 +146,8 @@ export function BaseMap({
 				ref={mapRef}
 				attributionControl={{ compact: true }}
 				initialViewState={initialViewState}
-				mapStyle={MAP_STYLE_URL}
-				style={MAP_STYLE}
+				mapStyle={MAP_STYLE}
+				style={MAP_SIZE}
 				maxBounds={maxBounds}
 				projection={PROJECTIONS[projection]}
 				onLoad={handleLoad}

@@ -1,7 +1,7 @@
 import type {
 	DataDrivenPropertyValueSpecification,
 	ExpressionSpecification,
-	FilterSpecification,
+	MapGeoJSONFeature,
 } from 'maplibre-gl'
 import type {
 	CircleLayerSpecification,
@@ -10,7 +10,7 @@ import type {
 	SymbolLayerSpecification,
 } from 'react-map-gl/maplibre'
 import type { AppLanguage } from '../i18n'
-import type { MapHighlight, MapHighlightTone } from './types'
+import type { MapHighlightTone } from './types'
 
 export const SOURCE_ID = 'world'
 export const SOURCE_LAYER_ID = 'countries'
@@ -54,14 +54,6 @@ export function isSelectionTone(tone: MapHighlightTone): boolean {
 	return tone === 'selected' || tone === 'target'
 }
 
-export type FillColorExpression = NonNullable<
-	FillLayerSpecification['paint']
->['fill-color']
-
-export type FillOpacityExpression = NonNullable<
-	FillLayerSpecification['paint']
->['fill-opacity']
-
 const zoomStops = <T,>(...stops: Array<[number, T]>): Array<[number, T]> =>
 	stops
 
@@ -73,56 +65,51 @@ function labelTextField(language: AppLanguage): TextFieldLayoutValue {
 	return ['get', `label_${language.toLowerCase().replace('-', '_')}`]
 }
 
-export function buildHighlightLayer(
-	markers: readonly MapHighlight[],
-	/** Drawn by the selection layers instead, so it can fade in. */
-	selectedId?: string | null,
-): FillLayerSpecification {
-	const cases: string[] = []
-	for (const marker of markers) {
-		if (isSelectionTone(marker.tone) && marker.countryId === selectedId)
-			continue
-		cases.push(marker.countryId, TONE_FILL[marker.tone])
-	}
+export const HOVER_STATE = 'hover'
+/** The country can be picked, so it isn't dimmed. */
+export const ACTIVE_STATE = 'active'
+/** A `MapHighlightTone`. */
+export const TONE_STATE = 'tone'
+export const SELECTED_STATE = 'selected'
+export const REGION_STATE = 'region'
+export const REVEALED_STATE = 'revealed'
+export const LIFTED_STATE = 'lifted'
+export const OUTLINED_STATE = 'outlined'
+/** An archipelago outline is drawn and can be picked. */
+export const SHOWN_STATE = 'shown'
 
-	return {
-		id: HIGHLIGHT_LAYER_ID,
-		type: 'fill',
-		source: SOURCE_ID,
-		'source-layer': COUNTRY_LAYER,
-		paint: {
-			'fill-color':
-				cases.length > 0
-					? ([
-							'match',
-							['to-string', ['get', 'iso_n3']],
-							...cases,
-							'transparent',
-						] as FillColorExpression)
-					: 'transparent',
-			'fill-outline-color': '#ffffff',
-			'fill-opacity': 0.85,
-		},
-	}
+export function stateFlag(key: string): ExpressionSpecification {
+	return ['boolean', ['feature-state', key], false]
 }
 
-export function buildDimLayer(
-	interactiveIds: ReadonlySet<string>,
-	enabled: boolean,
-	opacity = 0.75,
-): FillLayerSpecification {
-	const fillOpacity: FillOpacityExpression = !enabled
-		? 0
-		: interactiveIds.size === 0
-			? opacity
-			: ([
-					'match',
-					['get', 'iso_n3'],
-					[...interactiveIds],
-					0,
-					opacity,
-				] as FillOpacityExpression)
+const toneState: ExpressionSpecification = [
+	'to-string',
+	['feature-state', TONE_STATE],
+]
+const hasTone: ExpressionSpecification = ['!=', toneState, '']
 
+function toneColor(fallback: string): ExpressionSpecification {
+	return [
+		'match',
+		toneState,
+		...Object.entries(TONE_FILL).flat(),
+		fallback,
+	] as ExpressionSpecification
+}
+
+export const highlightLayer: FillLayerSpecification = {
+	id: HIGHLIGHT_LAYER_ID,
+	type: 'fill',
+	source: SOURCE_ID,
+	'source-layer': COUNTRY_LAYER,
+	paint: {
+		'fill-color': toneColor('transparent'),
+		'fill-outline-color': '#ffffff',
+		'fill-opacity': 0.85,
+	},
+}
+
+export function buildDimLayer(opacity = 0.75): FillLayerSpecification {
 	return {
 		id: DIM_LAYER_ID,
 		type: 'fill',
@@ -131,32 +118,24 @@ export function buildDimLayer(
 		paint: {
 			'fill-color': '#eeeeee',
 			'fill-outline-color': '#ffffff',
-			'fill-opacity': fillOpacity,
+			'fill-opacity': ['case', stateFlag(ACTIVE_STATE), 0, opacity],
 		},
 	}
 }
-
-export const REVEALED_STATE = 'revealed'
 
 interface DimTone {
 	color: string
 	opacity: number
 }
 
-export function buildRevealDimLayer(
-	regionIds: ReadonlySet<string>,
-	{ region, outside }: { region: DimTone; outside: DimTone },
-): FillLayerSpecification {
-	const byRegion = <T,>(pick: (tone: DimTone) => T) =>
-		regionIds.size > 0
-			? [
-					'match',
-					['get', 'iso_n3'],
-					[...regionIds],
-					pick(region),
-					pick(outside),
-				]
-			: pick(outside)
+export function buildRevealDimLayer({
+	region,
+	outside,
+}: {
+	region: DimTone
+	outside: DimTone
+}): FillLayerSpecification {
+	const inRegion = stateFlag(REGION_STATE)
 
 	return {
 		id: DIM_LAYER_ID,
@@ -164,14 +143,16 @@ export function buildRevealDimLayer(
 		source: SOURCE_ID,
 		'source-layer': COUNTRY_LAYER,
 		paint: {
-			'fill-color': byRegion(tone => tone.color) as FillColorExpression,
+			'fill-color': ['case', inRegion, region.color, outside.color],
 			'fill-outline-color': '#ffffff',
 			'fill-opacity': [
 				'case',
-				['boolean', ['feature-state', REVEALED_STATE], false],
+				stateFlag(REVEALED_STATE),
 				0,
-				byRegion(tone => tone.opacity),
-			] as FillOpacityExpression,
+				inRegion,
+				region.opacity,
+				outside.opacity,
+			],
 		},
 	}
 }
@@ -184,12 +165,7 @@ export const hoverLayer: FillLayerSpecification = {
 	paint: {
 		'fill-outline-color': '#5527aa',
 		'fill-color': '#9b6cfb',
-		'fill-opacity': [
-			'case',
-			['boolean', ['feature-state', 'hover'], false],
-			0.75,
-			0,
-		],
+		'fill-opacity': ['case', stateFlag(HOVER_STATE), 0.75, 0],
 	},
 }
 
@@ -320,77 +296,56 @@ export const capitalDotLayer: CircleLayerSpecification = {
 }
 
 // Drawn under the country fills, so they show over sea only and land keeps priority on click;
-export function buildArchipelagoLayers(
-	interactiveIds: ReadonlySet<string>,
-	highlights: readonly MapHighlight[],
-	selectedId: string | null,
-): { fill: FillLayerSpecification; outline: LineLayerSpecification } {
-	const toneById = new Map<string, string>()
-	for (const highlight of highlights) {
-		toneById.set(
-			highlight.countryId,
-			isSelectionTone(highlight.tone) && highlight.countryId === selectedId
-				? SELECTION_FILL
-				: TONE_FILL[highlight.tone],
-		)
-	}
-	const visibleIds = new Set([...interactiveIds, ...toneById.keys()])
-	const isoN3: ExpressionSpecification = ['get', 'iso_n3']
-	const isHovered: ExpressionSpecification = [
-		'boolean',
-		['feature-state', 'hover'],
-		false,
-	]
-	const hasTone: ExpressionSpecification | boolean =
-		toneById.size > 0
-			? ['in', isoN3, ['literal', [...toneById.keys()]]]
-			: false
-	const toneColor = (fallback: string): ExpressionSpecification | string =>
-		toneById.size > 0
-			? ([
-					'match',
-					isoN3,
-					...[...toneById].flat(),
-					fallback,
-				] as ExpressionSpecification)
-			: fallback
-	const filter: FilterSpecification = [
-		'in',
-		isoN3,
-		['literal', [...visibleIds]],
-	]
-
-	return {
-		fill: {
-			id: ARCHIPELAGO_FILL_LAYER_ID,
-			type: 'fill',
-			source: ARCHIPELAGO_SOURCE_ID,
-			filter,
-			paint: {
-				'fill-color': ['case', isHovered, '#9b6cfb', toneColor('#ffffff')],
-				'fill-opacity': ['case', isHovered, 0.3, hasTone, 0.4, 0],
-			},
-		},
-		outline: {
-			id: ARCHIPELAGO_OUTLINE_LAYER_ID,
-			type: 'line',
-			source: ARCHIPELAGO_SOURCE_ID,
-			filter,
-			layout: { 'line-join': 'round' },
-			paint: {
-				'line-color': ['case', isHovered, '#5527aa', toneColor('#1077B0')],
-				'line-width': ['interpolate', ['linear'], ['zoom'], 1, 1, 6, 2],
-			},
-		},
-	}
+export const archipelagoFillLayer: FillLayerSpecification = {
+	id: ARCHIPELAGO_FILL_LAYER_ID,
+	type: 'fill',
+	source: ARCHIPELAGO_SOURCE_ID,
+	paint: {
+		'fill-color': [
+			'case',
+			stateFlag(HOVER_STATE),
+			'#9b6cfb',
+			toneColor('#ffffff'),
+		],
+		'fill-opacity': [
+			'case',
+			stateFlag(HOVER_STATE),
+			0.3,
+			hasTone,
+			0.4,
+			0,
+		],
+	},
 }
 
-function countryFilter(countryId: string | null): FilterSpecification {
-	return ['==', ['get', 'iso_n3'], countryId ?? '__none__']
+export const archipelagoOutlineLayer: LineLayerSpecification = {
+	id: ARCHIPELAGO_OUTLINE_LAYER_ID,
+	type: 'line',
+	source: ARCHIPELAGO_SOURCE_ID,
+	layout: { 'line-join': 'round' },
+	paint: {
+		'line-color': [
+			'case',
+			stateFlag(HOVER_STATE),
+			'#5527aa',
+			toneColor('#1077B0'),
+		],
+		'line-width': ['interpolate', ['linear'], ['zoom'], 1, 1, 6, 2],
+		'line-opacity': ['case', stateFlag(SHOWN_STATE), 1, 0],
+	},
 }
+
+/** Hidden archipelago outlines still answer queries; this skips them. */
+export function isPickableFeature(feature: MapGeoJSONFeature): boolean {
+	return (
+		feature.layer.id !== ARCHIPELAGO_FILL_LAYER_ID ||
+		feature.state?.[SHOWN_STATE] === true
+	)
+}
+
+const selected = stateFlag(SELECTED_STATE)
 
 export function buildSelectionFillLayer(
-	countryId: string | null,
 	visible: boolean,
 ): FillLayerSpecification {
 	return {
@@ -398,9 +353,8 @@ export function buildSelectionFillLayer(
 		type: 'fill',
 		source: SOURCE_ID,
 		'source-layer': COUNTRY_LAYER,
-		filter: countryFilter(countryId),
 		paint: {
-			'fill-color': SELECTION_FILL,
+			'fill-color': ['case', selected, SELECTION_FILL, 'transparent'],
 			'fill-opacity': visible ? 0.95 : 0,
 			'fill-opacity-transition': { duration: SELECTION_FADE_MS, delay: 0 },
 		},
@@ -408,7 +362,6 @@ export function buildSelectionFillLayer(
 }
 
 export function buildSelectionLineLayer(
-	countryId: string | null,
 	visible: boolean,
 ): LineLayerSpecification {
 	return {
@@ -416,10 +369,9 @@ export function buildSelectionLineLayer(
 		type: 'line',
 		source: SOURCE_ID,
 		'source-layer': COUNTRY_LAYER,
-		filter: countryFilter(countryId),
 		layout: { 'line-join': 'round' },
 		paint: {
-			'line-color': SELECTION_EDGE,
+			'line-color': ['case', selected, SELECTION_EDGE, 'transparent'],
 			'line-width': [
 				'interpolate',
 				['linear'],
@@ -437,19 +389,15 @@ export function buildSelectionLineLayer(
 	}
 }
 
-export function buildTargetOutlineLayer(
-	countryId: string | null,
-): LineLayerSpecification {
-	return {
-		id: TARGET_OUTLINE_LAYER_ID,
-		type: 'line',
-		source: SOURCE_ID,
-		'source-layer': COUNTRY_LAYER,
-		filter: countryFilter(countryId),
-		layout: { 'line-join': 'round' },
-		paint: {
-			'line-color': SELECTION_EDGE,
-			'line-width': 3,
-		},
-	}
+export const targetOutlineLayer: LineLayerSpecification = {
+	id: TARGET_OUTLINE_LAYER_ID,
+	type: 'line',
+	source: SOURCE_ID,
+	'source-layer': COUNTRY_LAYER,
+	layout: { 'line-join': 'round' },
+	paint: {
+		'line-color': SELECTION_EDGE,
+		'line-width': 3,
+		'line-opacity': ['case', stateFlag(OUTLINED_STATE), 1, 0],
+	},
 }

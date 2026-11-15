@@ -6,12 +6,18 @@ import { Layer, useMap } from 'react-map-gl/maplibre'
 import { FLIGHT, fitCamera, type Overlays } from '@/shared/map/camera/framing'
 import {
 	ARCHIPELAGO_FILL_LAYER_ID,
+	ARCHIPELAGO_SOURCE_ID,
 	BASE_STYLE_LAYER_ID,
+	COUNTRY_LAYER,
+	isPickableFeature,
 	LABELS_BOTTOM_LAYER_ID,
+	LIFTED_STATE,
+	SOURCE_ID,
 } from '@/shared/map/map-styles'
 import { RevealPopup } from '@/shared/map/RevealPopup'
+import { flagsFor, useFeatureState } from '@/shared/map/useFeatureState'
 import { CountryInfoCard } from '@/shared/widgets/CountryInfoCard'
-import { buildLiftedLayers } from './liftedLayers'
+import { liftedLayers } from './liftedLayers'
 import { RING_LAYER_ID } from './RevealLayers'
 import { boundsOf, REGION_MARGIN, regionBounds } from './sprintRegion'
 import { prefersReducedMotion } from './useOverlayCamera'
@@ -21,6 +27,8 @@ const PICKABLE_LAYERS = [
 	ARCHIPELAGO_FILL_LAYER_ID,
 	BASE_STYLE_LAYER_ID,
 ]
+const WORLD = { source: SOURCE_ID, sourceLayer: COUNTRY_LAYER }
+const ISLANDS = { source: ARCHIPELAGO_SOURCE_ID }
 
 interface ReviewLayersProps {
 	scope: GameScope
@@ -58,7 +66,9 @@ export function ReviewLayers({
 		}
 		const handleClick = (event: MapMouseEvent) => {
 			const layers = PICKABLE_LAYERS.filter(id => map.getLayer(id))
-			const [feature] = map.queryRenderedFeatures(event.point, { layers })
+			const feature = map
+				.queryRenderedFeatures(event.point, { layers })
+				.find(isPickableFeature)
 			const countryId = feature?.properties?.iso_n3 as string | undefined
 			onSelectRef.current(
 				countryId &&
@@ -102,7 +112,9 @@ export function ReviewLayers({
 		}
 	}, [activeId, holdRef, map, overlaysRef, scope, takenOverRef])
 
-	const lifted = useMemo(() => buildLiftedLayers(activeId), [activeId])
+	const lifted = useMemo(() => flagsFor([activeId]), [activeId])
+	useFeatureState(true, WORLD, LIFTED_STATE, lifted)
+	useFeatureState(true, ISLANDS, LIFTED_STATE, lifted)
 	const info =
 		activeId && landedId === activeId
 			? countryCatalog.countriesById.get(activeId)
@@ -110,11 +122,13 @@ export function ReviewLayers({
 
 	return (
 		<>
-			<Layer {...lifted.islandsTint} beforeId={LABELS_BOTTOM_LAYER_ID} />
-			<Layer {...lifted.shadow} beforeId={LABELS_BOTTOM_LAYER_ID} />
-			<Layer {...lifted.surface} beforeId={LABELS_BOTTOM_LAYER_ID} />
-			<Layer {...lifted.edge} beforeId={LABELS_BOTTOM_LAYER_ID} />
-			<Layer {...lifted.islands} beforeId={LABELS_BOTTOM_LAYER_ID} />
+			{liftedLayers.map(layer => (
+				<Layer
+					key={layer.id}
+					{...layer}
+					beforeId={LABELS_BOTTOM_LAYER_ID}
+				/>
+			))}
 			{info ? (
 				<RevealPopup
 					target={{

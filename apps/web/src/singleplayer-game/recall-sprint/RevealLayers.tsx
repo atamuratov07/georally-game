@@ -7,15 +7,20 @@ import { HitRing } from '@/shared/map/HitRing'
 import { LabelLayers } from '@/shared/map/layers/LabelLayers'
 import { MapMarkers } from '@/shared/map/MapMarkers'
 import {
+	ARCHIPELAGO_SOURCE_ID,
+	archipelagoFillLayer,
+	archipelagoOutlineLayer,
 	BASE_STYLE_LAYER_ID,
-	buildArchipelagoLayers,
 	buildRevealDimLayer,
 	COUNTRY_LAYER,
 	LABELS_BOTTOM_LAYER_ID,
+	REGION_STATE,
 	REVEALED_STATE,
+	SHOWN_STATE,
 	SOURCE_ID,
 } from '@/shared/map/map-styles'
 import type { MapMarker } from '@/shared/map/types'
+import { flagsFor, useFeatureState } from '@/shared/map/useFeatureState'
 
 const DIM = {
 	region: { color: '#d3d8de', opacity: 0.9 },
@@ -24,7 +29,9 @@ const DIM = {
 const TINY_REFERENCE_ZOOM = 3
 const RING_SOURCE_ID = 'sprint-tiny-rings'
 export const RING_LAYER_ID = RING_SOURCE_ID
-const NO_HIGHLIGHTS = [] as const
+const WORLD = { source: SOURCE_ID, sourceLayer: COUNTRY_LAYER }
+const ISLANDS = { source: ARCHIPELAGO_SOURCE_ID }
+const DIM_LAYER = buildRevealDimLayer(DIM)
 
 export interface Hit {
 	key: string
@@ -70,14 +77,9 @@ export function RevealLayers({
 		appliedRef.current = new Set([...appliedRef.current, ...newIds])
 	}, [loaded, map, revealedIds])
 
-	const dimLayer = useMemo(
-		() => buildRevealDimLayer(regionIds, DIM),
-		[regionIds],
-	)
-	const archipelagoLayers = useMemo(
-		() => buildArchipelagoLayers(regionIds, NO_HIGHLIGHTS, null),
-		[regionIds],
-	)
+	const region = useMemo(() => flagsFor(regionIds), [regionIds])
+	useFeatureState(loaded, WORLD, REGION_STATE, region)
+	useFeatureState(loaded, ISLANDS, SHOWN_STATE, region)
 
 	const rings = useMemo<FeatureCollection<Point>>(
 		() => ({
@@ -126,9 +128,9 @@ export function RevealLayers({
 
 	return (
 		<>
-			<Layer {...archipelagoLayers.fill} beforeId={BASE_STYLE_LAYER_ID} />
-			<Layer {...archipelagoLayers.outline} beforeId={BASE_STYLE_LAYER_ID} />
-			<Layer {...dimLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
+			<Layer {...archipelagoFillLayer} beforeId={BASE_STYLE_LAYER_ID} />
+			<Layer {...archipelagoOutlineLayer} beforeId={BASE_STYLE_LAYER_ID} />
+			<Layer {...DIM_LAYER} beforeId={LABELS_BOTTOM_LAYER_ID} />
 			<Source id={RING_SOURCE_ID} type='geojson' data={rings}>
 				<Layer
 					id={RING_LAYER_ID}

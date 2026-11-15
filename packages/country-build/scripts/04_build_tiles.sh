@@ -3,6 +3,7 @@ set -euo pipefail
 
 TILES_DIR="dist/tiles"
 TILES_URL_TEMPLATE="/map/tiles/{z}/{x}/{y}.pbf"
+TILEJSON_OUT=""
 
 while [ "$#" -gt 0 ]; do
     case "$1" in
@@ -20,6 +21,14 @@ while [ "$#" -gt 0 ]; do
         ;;
     --tiles-url-template=*)
         TILES_URL_TEMPLATE="${1#*=}"
+        shift
+        ;;
+    --tilejson-out)
+        TILEJSON_OUT="$2"
+        shift 2
+        ;;
+    --tilejson-out=*)
+        TILEJSON_OUT="${1#*=}"
         shift
         ;;
     *)
@@ -99,4 +108,5 @@ fi
 # 8) Generate tiles.json file
 node scripts/05_make_tilesjson.mjs \
     --out "$TILES_DIR" \
-    --tiles-url-template "$TILES_URL_TEMPLATE"
+    --tiles-url-template "$TILES_URL_TEMPLATE" \
+    ${TILEJSON_OUT:+--tilejson-out "$TILEJSON_OUT"}

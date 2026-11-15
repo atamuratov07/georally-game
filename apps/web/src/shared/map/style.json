@@ -345,7 +345,6 @@
 	"bearing": 0,
 	"sources": {
 		"world": {
-			"url": "/map/tiles/tiles.json",
 			"type": "vector",
 			"promoteId": {
 				"countries": "iso_n3"
@@ -353,7 +352,6 @@
 		},
 		"archipelagos": {
 			"type": "geojson",
-			"data": "/map/archipelagos.geojson",
 			"promoteId": "iso_n3"
 		},
 		"crimea": {

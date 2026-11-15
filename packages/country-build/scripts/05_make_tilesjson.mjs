@@ -4,6 +4,7 @@ import crypto from 'node:crypto'
 import {
 	ensureDir,
 	parseOutDir,
+	parsePathOption,
 	readTilesUrlTemplate,
 } from './lib/output-paths.mjs'
 
@@ -45,8 +46,11 @@ const tilejson = {
 	),
 }
 
-ensureDir(tilesDir)
-const outputPath = path.join(tilesDir, 'tiles.json')
+const outputPath = parsePathOption(
+	'--tilejson-out',
+	path.join(tilesDir, 'tiles.json'),
+)
+ensureDir(path.dirname(outputPath))
 fs.writeFileSync(outputPath, JSON.stringify(tilejson, null, 2), 'utf8')
 fs.rmSync(metadataPath)
 console.log(`Wrote ${outputPath}`)

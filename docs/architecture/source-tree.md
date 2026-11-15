@@ -46,6 +46,7 @@ georally-game/
 |       |-- package.json
 |       |-- vite.config.ts
 |       |-- vite/
+|       |   |-- precompress.ts          # writes a .gz next to every compressible build output
 |       |   `-- regionMap.ts            # serves virtual:region-map: region outlines projected at bundle time
 |       |-- index.html
 |       |-- locales/                    # one Vite entry per locale: en.html, ru.html, uz.html

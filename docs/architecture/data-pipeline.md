@@ -107,6 +107,8 @@ Every playable country must have, in all three languages, a name, a label, a cap
 
 **Cache busting.** nginx (and `public/_headers`) serves tiles with `Cache-Control: public, max-age=31536000, immutable`, so browsers never ask for a tile URL again once they have it. `05_make_tilesjson.mjs` therefore appends `?v=<hash>` to the tile URL template, where the hash covers every `.pbf` file's path and bytes. `tiles.json` itself is served `no-cache`, so after a rebuild every browser switches to the new URLs at once; an unchanged tile set keeps the same hash. The map fonts are also `immutable` under fixed URLs: if the glyph files ever change, version the `glyphs` URL in `style.json` the same way.
 
+**Compression.** tippecanoe writes the tiles gzipped, so nginx sends them as they are with `Content-Encoding: gzip` and must never compress them again (`gzip off`, `gzip_static off` on that location). Everything else is compressed once at build time: the `precompress` Vite plugin (`apps/web/vite/precompress.ts`) writes a `.gz` next to every JS, CSS, HTML, JSON, GeoJSON, SVG and glyph PBF over 1 KB that shrinks by at least 10%, and nginx's `gzip_static` sends that file to clients that accept gzip. On-the-fly `gzip` stays on for anything without a `.gz` (API responses); `application/x-protobuf` is left out of its types, so a tile can't get a second layer.
+
 | Layer | Features | Properties |
 | --- | --- | --- |
 | `countries` | every base country, plus playable countries missing from the base | `adm0_a3` (Natural Earth's code) on every country; `iso_n3` on playable countries, an empty string on the rest |

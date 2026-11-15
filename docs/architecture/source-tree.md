@@ -99,7 +99,8 @@ georally-game/
 |           |   |   |   TinyCountryRing.tsx, HitRing.tsx
 |           |   |   |-- map-controls.ts # shared style of the round map buttons
 |           |   |   |-- continent-view.ts
-|           |   |   |-- map-styles.tsx
+|           |   |   |-- map-styles.tsx  # fixed layer specs driven by feature state
+|           |   |   |-- useFeatureState.ts # sets per-country states, applying only the changes
 |           |   |   `-- types.ts
 |           |   |-- time/               # useDeadline, useNow
 |           |   |-- ui/                 # AlertMessage, Button, CopyButton, FloatingNotice, FormControls,

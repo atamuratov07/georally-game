@@ -14,8 +14,11 @@ import { CountryLayers } from '@/shared/map/layers/CountryLayers'
 import { LabelLayers } from '@/shared/map/layers/LabelLayers'
 import { MapMarkers } from '@/shared/map/MapMarkers'
 import {
-	buildTargetOutlineLayer,
+	COUNTRY_LAYER,
 	LABELS_BOTTOM_LAYER_ID,
+	OUTLINED_STATE,
+	SOURCE_ID,
+	targetOutlineLayer,
 } from '@/shared/map/map-styles'
 import type { ProjectionKind } from '@/shared/map/ProjectionToggle'
 import { RevealPopup } from '@/shared/map/RevealPopup'
@@ -24,12 +27,14 @@ import type {
 	MapMarker,
 	MapRevealTarget,
 } from '@/shared/map/types'
+import { flagsFor, useFeatureState } from '@/shared/map/useFeatureState'
 
 const MIN_ZOOM = 0
 const MAX_ZOOM = 7
 const DIM_OPACITY = 0.55
 const NO_COUNTRIES: ReadonlySet<string> = new Set()
 const ZOOM_AROUND_CENTER = { around: 'center' } as const
+const WORLD = { source: SOURCE_ID, sourceLayer: COUNTRY_LAYER }
 
 interface NameItMapProps {
 	projection: ProjectionKind
@@ -45,6 +50,19 @@ interface NameItMapProps {
 	cardHidden: boolean
 	navigationTop: string | null
 	onFocusSettled: (key: string) => void
+}
+
+function TargetOutline({
+	loaded,
+	countryId,
+}: {
+	loaded: boolean
+	countryId: string | null
+}) {
+	const outlinedIds = useMemo(() => flagsFor([countryId]), [countryId])
+	useFeatureState(loaded, WORLD, OUTLINED_STATE, outlinedIds)
+
+	return <Layer {...targetOutlineLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
 }
 
 function NameItMapInner({
@@ -64,11 +82,6 @@ function NameItMapInner({
 }: NameItMapProps) {
 	const mapRef = useRef<MapRef | null>(null)
 	const [isLoaded, setIsLoaded] = useState(false)
-
-	const outlineLayer = useMemo(
-		() => buildTargetOutlineLayer(outlined ? targetId : null),
-		[outlined, targetId],
-	)
 
 	useFitCamera({
 		mapRef,
@@ -105,11 +118,15 @@ function NameItMapInner({
 			touchZoomRotate={ZOOM_AROUND_CENTER}
 		>
 			<CountryLayers
+				loaded={isLoaded}
 				interactiveIds={NO_COUNTRIES}
 				highlights={highlights}
 				dimOpacity={DIM_OPACITY}
 			/>
-			<Layer {...outlineLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
+			<TargetOutline
+				loaded={isLoaded}
+				countryId={outlined ? targetId : null}
+			/>
 			<LabelLayers countryIds={labelIds} />
 			<MapMarkers markers={markers} />
 			{reveal && popup ? (

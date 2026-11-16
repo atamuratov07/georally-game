@@ -1,7 +1,9 @@
 {
+	"id": "/",
 	"name": "GeoRally",
 	"short_name": "GeoRally",
 	"start_url": "/",
+	"scope": "/",
 	"display": "standalone",
 	"background_color": "#0f3f80",
 	"theme_color": "#0f3f80",

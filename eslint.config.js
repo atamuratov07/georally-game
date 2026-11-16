@@ -26,8 +26,16 @@ export default defineConfig([
 		},
 	},
 	{
+		files: ['apps/web/sw/**/*.ts'],
+		extends: [js.configs.recommended, tseslint.configs.recommended],
+		languageOptions: {
+			ecmaVersion: 2022,
+			globals: globals.serviceworker,
+		},
+	},
+	{
 		files: ['apps/**/*.{ts,tsx}', 'packages/**/*.{ts,tsx}'],
-		ignores: ['apps/web/src/**/*.{ts,tsx}'],
+		ignores: ['apps/web/src/**/*.{ts,tsx}', 'apps/web/sw/**/*.ts'],
 		extends: [js.configs.recommended, tseslint.configs.recommended],
 		languageOptions: {
 			ecmaVersion: 2020,

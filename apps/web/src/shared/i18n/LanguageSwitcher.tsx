@@ -45,7 +45,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
 			>
 				<Languages
 					aria-hidden='true'
-					className='size-5'
+					className='size-5 max-sm:hidden'
 					strokeWidth={2.5}
 				/>
 				{current?.shortLabel}

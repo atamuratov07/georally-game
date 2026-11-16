@@ -191,3 +191,13 @@ export function trackGameReaction(params: {
 		reaction: params.reaction,
 	})
 }
+
+export function trackAppInstalled(): void {
+	gtagEvent('app_installed', {})
+}
+
+export function setDisplayModeProperty(standalone: boolean): void {
+	window.gtag?.('set', 'user_properties', {
+		display_mode: standalone ? 'standalone' : 'browser',
+	})
+}

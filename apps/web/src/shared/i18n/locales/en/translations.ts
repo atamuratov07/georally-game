@@ -7,6 +7,18 @@ const translations = {
 		home: 'Home',
 		retry: 'Try again',
 	},
+	pwa: {
+		updateReady: 'A new version of GeoRally is ready',
+		updateNow: 'Update',
+		install: 'Install',
+		iosTitle: 'Add GeoRally to your Home Screen',
+		iosText: 'It opens full screen, like an app, and single-player works offline.',
+		iosStep1: 'Tap <share></share> <b>Share</b> in the Safari toolbar',
+		iosStep2: 'Choose <b>Add to Home Screen</b>',
+		share: 'Share',
+		gotIt: 'Got it',
+		offline: 'You are offline. Multiplayer needs an internet connection, but single-player still works.',
+	},
 	feedback: {
 		open: 'Feedback',
 		title: 'Send feedback',

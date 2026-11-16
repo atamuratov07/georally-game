@@ -12,6 +12,7 @@ import {
 	RadioCard,
 	RadioGroup,
 } from '@/shared/ui'
+import { useOnline } from '@/shared/pwa'
 import { cn } from '@/shared/utils'
 
 const ROOM_MODES: ReadonlyArray<{
@@ -47,10 +48,11 @@ export function CreateRoomForm({
 	const [hostName, setHostName] = useState('')
 	const [roomMode, setRoomMode] = useState<RoomMode>('group')
 	const trimmedHostName = hostName.trim()
+	const canCreate = useOnline() && trimmedHostName.length > 0
 
 	function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
 		event.preventDefault()
-		if (trimmedHostName) {
+		if (canCreate) {
 			void onSubmit({ hostName: trimmedHostName, roomMode })
 		}
 	}
@@ -121,7 +123,7 @@ export function CreateRoomForm({
 				size='lg'
 				className='w-full'
 				pending={pending}
-				disabled={trimmedHostName.length === 0}
+				disabled={!canCreate}
 			>
 				{t('multiplayer.create.submit')}
 			</Button>

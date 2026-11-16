@@ -7,6 +7,18 @@ const translations = {
 		home: 'Bosh sahifa',
 		retry: 'Qayta urinish',
 	},
+	pwa: {
+		updateReady: "GeoRally'ning yangi versiyasi tayyor",
+		updateNow: 'Yangilash',
+		install: "O'rnatish",
+		iosTitle: "GeoRally'ni bosh ekranga qo'shing",
+		iosText: "O'yin ilova kabi to'liq ekranda ochiladi, yakka o'yin esa internetsiz ham ishlaydi.",
+		iosStep1: 'Safari panelida <share></share> <b>Ulashish</b> tugmasini bosing',
+		iosStep2: '<b>Bosh ekranga</b> bandini tanlang',
+		share: 'Ulashish',
+		gotIt: 'Tushunarli',
+		offline: "Internet yo'q. Ko'p o'yinchili rejim uchun internet kerak, yakka o'yin esa ishlayveradi.",
+	},
 	feedback: {
 		open: 'Fikr bildirish',
 		title: 'Fikr-mulohaza yuborish',

@@ -237,6 +237,18 @@ html[data-view-transition]::view-transition-new(root) {
 		background-color: #fff6df;
 	}
 
+	@media (display-mode: standalone) {
+		html {
+			overscroll-behavior: none;
+		}
+	}
+
+	button,
+	a,
+	[role='button'] {
+		touch-action: manipulation;
+	}
+
 	body {
 		font-family: var(--font-sans);
 		font-weight: 500;

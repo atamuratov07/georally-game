@@ -1,6 +1,7 @@
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
+import { VitePWA } from 'vite-plugin-pwa'
 import fs from 'fs'
 import { resolve } from 'path'
 import { precompress } from './vite/precompress'
@@ -57,7 +58,29 @@ const getLocaleInputs = () => {
 
 // https://vite.dev/config/
 export default defineConfig({
-	plugins: [react(), tailwindcss(), pbfHeaders(), regionMap(), precompress()],
+	plugins: [
+		react(),
+		tailwindcss(),
+		pbfHeaders(),
+		regionMap(),
+		VitePWA({
+			strategies: 'injectManifest',
+			srcDir: 'sw',
+			filename: 'sw.ts',
+			injectRegister: false,
+			manifest: false,
+			injectManifest: {
+				globPatterns: [
+					'**/*.html',
+					'assets/**/*.{js,css,woff2,png,svg,geojson}',
+					'icon-*.png',
+					'map/tiles/{0,1,2,3,4}/**/*.pbf',
+				],
+				globIgnores: ['assets/rubik-{arabic,hebrew}-*'],
+			},
+		}),
+		precompress(),
+	],
 	base: '/',
 	resolve: {
 		alias: {

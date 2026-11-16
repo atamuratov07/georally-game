@@ -6,7 +6,15 @@ import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
 import { useLocalizedSearchParams } from '@/app/useLocalizedSearchParams'
 import { trackRoomCreated } from '@/shared/analytics/track'
 import { BackLink, PageShell } from '@/shared/layout'
-import { Card, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui'
+import { AppUpdateNotice, useOnline } from '@/shared/pwa'
+import {
+	Alert,
+	Card,
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger,
+} from '@/shared/ui'
 import { formatGatewayErrorMessage } from '../api/errors'
 import { createRoom } from '../api/roomsApi'
 import { CreateRoomForm } from '../create/CreateRoomForm'
@@ -21,6 +29,7 @@ export default function HomePage() {
 	const [searchParams, setSearchParams] = useLocalizedSearchParams()
 	const [createError, setCreateError] = useState<string | null>(null)
 	const [isCreating, setIsCreating] = useState(false)
+	const online = useOnline()
 	const tab: MultiplayerTab =
 		searchParams.get('tab') === 'host' ? 'host' : 'join'
 
@@ -50,7 +59,13 @@ export default function HomePage() {
 	return (
 		<PageShell width='lg'>
 			<BackLink to='/'>{t('common.home')}</BackLink>
+			<AppUpdateNotice />
 			<h1 className='sr-only'>{t('multiplayer.title')}</h1>
+			{online ? null : (
+				<Alert tone='warning' className='mx-auto mb-4 max-w-md animate-pop-in'>
+					{t('pwa.offline')}
+				</Alert>
+			)}
 			<Tabs
 				value={tab}
 				onValueChange={value => {

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { ReactionModeParam } from '@/shared/analytics/track'
 import { PendingReaction } from '@/shared/feedback'
 import { BackLink, PageShell } from '@/shared/layout'
+import { AppUpdateNotice } from '@/shared/pwa'
 import type { SingleplayerModeId } from '../../paths'
 import { ModeTabs } from './ModeTabs'
 
@@ -22,6 +23,7 @@ export function SetupShell({ mode, children }: SetupShellProps) {
 
 	return (
 		<PageShell width='lg'>
+			<AppUpdateNotice />
 			<BackLink to='/'>{t('common.home')}</BackLink>
 			<ModeTabs current={mode} />
 			<PendingReaction mode={REACTION_MODES[mode]} />

@@ -44,7 +44,10 @@ georally-game/
 |       |-- Dockerfile
 |       |-- nginx.conf                  # production nginx: static client, proxies /socket.io/, /api/, /health
 |       |-- package.json
-|       |-- vite.config.ts
+|       |-- vite.config.ts              # also builds the service worker (vite-plugin-pwa, injectManifest)
+|       |-- tsconfig.sw.json            # WebWorker-lib type check for sw/
+|       |-- sw/
+|       |   `-- sw.ts                   # service worker: precache, locale shells, tile and glyph caches, see pwa.md
 |       |-- vite/
 |       |   |-- precompress.ts          # writes a .gz next to every compressible build output
 |       |   `-- regionMap.ts            # serves virtual:region-map: region outlines projected at bundle time
@@ -53,6 +56,8 @@ georally-game/
 |       |-- public/
 |       |   |-- _headers
 |       |   |-- _redirects
+|       |   |-- manifest.webmanifest
+|       |   |-- icon-*.png, apple-touch-icon.png, favicon-*.png
 |       |   |-- robots.txt
 |       |   |-- sitemap.xml
 |       |   `-- map/                    # checked-in vector tiles and fonts
@@ -78,6 +83,8 @@ georally-game/
 |           |   |   |-- track.ts        # GA4 event helpers
 |           |   |   `-- useMultiplayerGameAnalytics.ts
 |           |   |-- feedback/           # the feedback form and the end-of-game reaction, see feedback.md
+|           |   |-- pwa/                # service worker registration and update prompt, install button,
+|           |   |                       # useOnline, see pwa.md
 |           |   |-- i18n/
 |           |   |   |-- setup.ts        # i18next init
 |           |   |   |-- locales/        # en, ru, uz-Latn translations

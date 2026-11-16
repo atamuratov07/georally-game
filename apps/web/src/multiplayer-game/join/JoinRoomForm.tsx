@@ -1,6 +1,7 @@
 import { useId, useState, type SubmitEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
+import { useOnline } from '@/shared/pwa'
 import {
 	Button,
 	InputOTP,
@@ -16,11 +17,12 @@ export function JoinRoomForm() {
 	const navigate = useLocalizedNavigate()
 	const inputId = useId()
 	const [roomCode, setRoomCode] = useState('')
-	const isComplete = roomCode.length === ROOM_CODE_LENGTH
+	const online = useOnline()
+	const canJoin = online && roomCode.length === ROOM_CODE_LENGTH
 
 	function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
 		event.preventDefault()
-		if (isComplete) {
+		if (canJoin) {
 			navigate(`/multiplayer/room/${roomCode}`)
 		}
 	}
@@ -60,7 +62,7 @@ export function JoinRoomForm() {
 				variant='grape'
 				size='lg'
 				className='w-full'
-				disabled={!isComplete}
+				disabled={!canJoin}
 			>
 				{t('multiplayer.join.submit')}
 			</Button>

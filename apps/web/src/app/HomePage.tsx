@@ -2,6 +2,7 @@ import { Speech } from 'lucide-react'
 import { lazy, Suspense } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { AppHeader, SkyBackground } from '@/shared/layout'
+import { AppUpdateNotice } from '@/shared/pwa'
 import { Button } from '@/shared/ui'
 import { cn } from '@/shared/utils'
 import { singleplayerPaths } from '@/singleplayer-game/paths'
@@ -54,6 +55,7 @@ export default function HomePage() {
 	return (
 		<div className='relative min-h-dvh'>
 			<div>
+				<AppUpdateNotice />
 				<SkyBackground />
 				<div className='relative'>
 					<AppHeader />

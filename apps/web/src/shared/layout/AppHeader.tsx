@@ -4,6 +4,7 @@ import { LocalizedLink } from '@/app/LocalizedLink'
 import logo from '@/assets/logo.png'
 import { FeedbackButton } from '@/shared/feedback'
 import { LanguageSwitcher } from '@/shared/i18n'
+import { InstallAppButton } from '@/shared/pwa'
 import { cn } from '@/shared/utils'
 import { outlinedText } from '@/shared/widgets/outlinedText'
 
@@ -16,7 +17,7 @@ export function AppLogo({ className }: { className?: string }) {
 		<LocalizedLink
 			to='/'
 			className={cn(
-				'inline-flex items-center gap-2 rounded-control text-2xl font-black tracking-tight',
+				'inline-flex shrink-0 items-center gap-2 rounded-control text-2xl font-black tracking-tight',
 				className,
 			)}
 		>
@@ -45,6 +46,7 @@ export function AppHeader({
 			<AppLogo />
 			<div className='flex items-center gap-1 sm:gap-2'>
 				{children}
+				<InstallAppButton />
 				<FeedbackButton />
 				<LanguageSwitcher />
 			</div>

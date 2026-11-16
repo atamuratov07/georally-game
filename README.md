@@ -242,6 +242,7 @@ graph LR
 | [`docs/architecture/connection-lifecycle.md`](docs/architecture/connection-lifecycle.md) | Connection, reconnection, and tab takeover across Socket.IO and the game session |
 | [`docs/architecture/logging.md`](docs/architecture/logging.md)                           | Server log events, the stats line and `/health`, and how to query the logs       |
 | [`docs/architecture/feedback.md`](docs/architecture/feedback.md)                         | Player feedback through Telegram, the end-of-game reaction, the bot setup        |
+| [`docs/architecture/pwa.md`](docs/architecture/pwa.md)                                   | Installable app: service worker caching, offline play, updates, install prompt   |
 
 Improvements found in review but not yet implemented are written up in [`docs/proposals/`](docs/proposals/README.md).
 

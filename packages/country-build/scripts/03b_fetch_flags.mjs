@@ -4,6 +4,7 @@ import path from 'node:path'
 import { gzipSync } from 'node:zlib'
 import { optimize } from 'svgo'
 import { isRefreshRequested } from './lib/cache.mjs'
+import { readCountries } from './lib/countries.mjs'
 import {
 	ensureDir,
 	parseOutDir,
@@ -13,14 +14,11 @@ import {
 const MAX_FLAG_BYTES = 300 * 1024
 const FORBIDDEN_ELEMENTS = new Set(['script', 'foreignObject'])
 
-const COUNTRIES_JSON = resolvePackagePath('build', 'countries.json')
 const FLAGS_JSON = resolvePackagePath('build', 'flags.json')
 const cacheDir = resolvePackagePath('build', 'cache', 'flags')
 const outDir = parseOutDir('flags')
 
-if (!fs.existsSync(COUNTRIES_JSON)) {
-	throw new Error(`Missing ${COUNTRIES_JSON}. Run build:data first.`)
-}
+const countries = readCountries()
 
 async function readSource(country) {
 	const cachePath = path.join(cacheDir, `${country.id}.svg`)
@@ -87,8 +85,6 @@ function checkFlag(country, source) {
 	}
 	return source
 }
-
-const countries = JSON.parse(fs.readFileSync(COUNTRIES_JSON, 'utf8'))
 
 ensureDir(cacheDir)
 fs.rmSync(outDir, { recursive: true, force: true })

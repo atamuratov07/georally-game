@@ -43,69 +43,47 @@ if [ -z "$TILES_DIR" ] || [ "$TILES_DIR" = "/" ] || [ "$TILES_DIR" = "." ]; then
     exit 1
 fi
 
-rm -f \
-    build/base_geolines_patched.mbtiles \
-    build/base_attrs_patched.mbtiles \
-    build/base_core.mbtiles \
-    build/centroids.mbtiles \
-    build/capitals.mbtiles \
-    build/countries_extra.mbtiles \
-    build/world_complete.mbtiles
+LAYERS=()
+for layer in countries geolines seas centroids capitals; do
+    LAYERS+=("build/layer_$layer.mbtiles")
+done
+rm -f build/countries_raw.mbtiles build/geolines_raw.mbtiles build/world.mbtiles \
+    "${LAYERS[@]}"
 
 rm -rf "$TILES_DIR"
 mkdir -p "$TILES_DIR"
 
-# 1) Patch original geolines with localized labels, dropping the date line
-./tools/tile-join -f -o build/base_geolines_patched.mbtiles \
-    -j '{ "geolines": ["!=", "name", "International Date Line"] }' \
+COMMON=(-f -Z0 -z6 -pk)
+POINTS=(-r1 -pf)
+
+# Countries and geolines carry the Natural Earth keys; the join adds the
+# game's codes and the localized labels.
+./tools/tippecanoe "${COMMON[@]}" -o build/countries_raw.mbtiles \
+    -l countries -y ADM0_A3 \
+    --detect-shared-borders --no-tiny-polygon-reduction \
+    build/base_countries.geojson
+./tools/tile-join -f -o build/layer_countries.mbtiles \
+    -c build/countries_join.csv -x ADM0_A3 \
+    build/countries_raw.mbtiles
+
+./tools/tippecanoe "${COMMON[@]}" -o build/geolines_raw.mbtiles \
+    -l geolines -y name \
+    build/geolines.geojson
+./tools/tile-join -f -o build/layer_geolines.mbtiles \
     -c build/geolines_join.csv -x name \
-    upstream/maplibre.mbtiles
+    build/geolines_raw.mbtiles
 
-# 2) Patch original countries with their codes and ISO numeric ids
-./tools/tile-join -f -o build/base_attrs_patched.mbtiles \
-    -c build/countries_join.csv \
-    -x ADM0_A3 -x ABBREV -x CONTINENT -x NAME -x fid \
-    build/base_geolines_patched.mbtiles
+./tools/tippecanoe "${COMMON[@]}" "${POINTS[@]}" -o build/layer_seas.mbtiles \
+    -l seas build/sea_labels.geojson
+./tools/tippecanoe "${COMMON[@]}" "${POINTS[@]}" -o build/layer_centroids.mbtiles \
+    -l centroids build/centroids.geojson
+./tools/tippecanoe "${COMMON[@]}" "${POINTS[@]}" -o build/layer_capitals.mbtiles \
+    -l capitals build/capitals.geojson
 
-# 3) Keep only countries + geolines from the patched base
-./tools/tile-join -f -o build/base_core.mbtiles \
-    -l countries -l geolines \
-    build/base_attrs_patched.mbtiles
+./tools/tile-join -f -pk -o build/world.mbtiles "${LAYERS[@]}"
 
-# 4) Build rebuilt centroids
-./tools/tippecanoe -f -o build/centroids.mbtiles \
-    -l centroids -Z0 -z6 -r1 -pf -pk \
-    build/centroids.geojson
+./tools/tile-join -f -pk -e "$TILES_DIR" build/world.mbtiles
 
-# 5) Build capitals
-./tools/tippecanoe -f -o build/capitals.mbtiles \
-    -l capitals -Z0 -z6 -r1 -pf -pk \
-    build/capitals.geojson
-
-# 6) Optional: build supplemental countries only if needed
-SUPP_COUNT=$(node -e "const fs=require('fs');const fc=JSON.parse(fs.readFileSync('build/supplemental_countries.geojson','utf8'));process.stdout.write(String((fc.features||[]).length));")
-
-if [ "$SUPP_COUNT" -gt 0 ]; then
-    ./tools/tippecanoe -f -o build/countries_extra.mbtiles \
-        -l countries -Z0 -z6 -pf -pk \
-        build/supplemental_countries.geojson
-
-    ./tools/tile-join -f -o build/world_complete.mbtiles \
-        build/base_core.mbtiles \
-        build/centroids.mbtiles \
-        build/capitals.mbtiles \
-        build/countries_extra.mbtiles
-else
-    ./tools/tile-join -f -o build/world_complete.mbtiles \
-        build/base_core.mbtiles \
-        build/centroids.mbtiles \
-        build/capitals.mbtiles
-fi
-
-# 7) Export static pbf directory
-./tools/tile-join -f -e "$TILES_DIR" build/world_complete.mbtiles
-
-# 8) Generate tiles.json file
 node scripts/05_make_tilesjson.mjs \
     --out "$TILES_DIR" \
     --tiles-url-template "$TILES_URL_TEMPLATE" \

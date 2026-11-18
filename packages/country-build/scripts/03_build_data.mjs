@@ -1,6 +1,5 @@
-import pointOnFeature from '@turf/point-on-feature'
+import crypto from 'node:crypto'
 import fs from 'node:fs'
-import shp from 'shpjs'
 import { boundsProblem, mainBounds } from './lib/bounds.mjs'
 import { canonicalizeContinent, isGameContinent } from './lib/continent.mjs'
 import {
@@ -9,12 +8,12 @@ import {
 	pickPrimaryCapital,
 	pickPrimaryCurrency,
 } from './lib/restcountries.mjs'
+import { exitOnProblems } from './lib/problems.mjs'
 import { normalizeUzLatn } from './lib/uz-latn.mjs'
 import { cleanWdLabel, fetchWdqsJson } from './lib/wdqs.mjs'
 
 const BASE_COUNTRIES = 'build/base_countries.geojson'
-const BASE_CENTROIDS_NDJSON = 'build/base_centroids_z0.geojson'
-const NE_COUNTRIES_ZIP = 'upstream/ne_110m_admin_0_countries.zip'
+const BASE_SEAS = 'build/seas.geojson'
 const PLAYABLE_JSON = 'data/playable_states_195.json'
 const OVERRIDES_JSON = 'data/manual_overrides.json'
 
@@ -62,63 +61,6 @@ function writeCsv(path, header, rows) {
 	fs.writeFileSync(path, out.join('\n'), 'utf8')
 }
 
-function normalizeLabelKey(v) {
-	if (typeof v !== 'string') return ''
-	return v.normalize('NFKC').toLowerCase().replace(/\s+/g, ' ').trim()
-}
-
-function labelPairKey(name, abbrev) {
-	return `${name}|${abbrev}`
-}
-
-function addToIndex(indexMap, key, value) {
-	if (!key) return
-	let set = indexMap.get(key)
-	if (!set) {
-		set = new Set()
-		indexMap.set(key, set)
-	}
-	set.add(value)
-}
-
-function readTippecanoeNdjson(path) {
-	if (!fs.existsSync(path)) return []
-	const text = fs.readFileSync(path, 'utf8').trim()
-	if (!text) return []
-
-	const out = []
-	for (const line of text.split(/\r?\n/)) {
-		const trimmed = line.trim()
-		if (!trimmed) continue
-		try {
-			const feat = JSON.parse(trimmed)
-			const coords = feat?.geometry?.coordinates
-			if (
-				feat?.type === 'Feature' &&
-				feat?.geometry?.type === 'Point' &&
-				Array.isArray(coords) &&
-				coords.length === 2
-			) {
-				out.push(feat)
-			}
-		} catch {
-			// Keep parsing the rest even if one line is malformed.
-		}
-	}
-	return out
-}
-
-async function loadZipAsFeatureCollection(zipPath) {
-	const buf = fs.readFileSync(zipPath)
-	const parsed = await shp(buf)
-	if (parsed?.type === 'FeatureCollection') return parsed
-	if (Array.isArray(parsed)) {
-		const fc = parsed.find(x => x?.type === 'FeatureCollection')
-		if (fc) return fc
-	}
-	throw new Error(`Could not parse ${zipPath}`)
-}
-
 function validatePlayable(playable) {
 	const all = playable.all ?? []
 	const easy = new Set(playable.easy ?? [])
@@ -159,20 +101,6 @@ function validatePlayable(playable) {
 	}
 }
 
-function pickNeA3(p) {
-	return firstNonEmpty(
-		p.ADM0_A3,
-		p.ADM0_A3_US,
-		p.ADM0_A3_UN,
-		p.ISO_A3,
-		p.ISO_A3_EH,
-		p.SOV_A3,
-		p.GU_A3,
-		p.SU_A3,
-		p.BRK_A3,
-	)
-}
-
 function pickNeIsoN3(p) {
 	return firstNonEmpty(
 		normalizeIsoToken(p.ISO_N3),
@@ -206,7 +134,7 @@ function localize(language, text) {
 const playable = validatePlayable(readJson(PLAYABLE_JSON))
 const overrides = readJson(OVERRIDES_JSON)
 const baseCountries = readJson(BASE_COUNTRIES)
-const neCountriesFc = await loadZipAsFeatureCollection(NE_COUNTRIES_ZIP)
+const baseSeas = readJson(BASE_SEAS).features
 
 const restCountries = await fetchRestcountriesJson({
 	cacheKey: 'rc-countries',
@@ -291,6 +219,29 @@ for (const row of wikidata.results.bindings ?? []) {
 	}
 }
 
+const seaIds = [
+	...new Set(baseSeas.map(sea => sea.properties.wikidata).filter(Boolean)),
+].sort()
+const seaWikidata = await fetchWdqsJson({
+	cacheKey: `wdqs-sea-names-${crypto.createHash('sha256').update(seaIds.join()).digest('hex').slice(0, 8)}`,
+	query: `
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?item ?ru ?uz WHERE {
+  VALUES ?item { ${seaIds.map(id => `wd:${id}`).join(' ')} }
+  OPTIONAL { ?item rdfs:label ?ru FILTER(LANG(?ru) = "ru") }
+  OPTIONAL { ?item rdfs:label ?uz FILTER(LANG(?uz) = "uz") }
+}
+`,
+})
+const seaNamesById = new Map(
+	(seaWikidata.results.bindings ?? []).map(row => [
+		row.item.value.split('/').pop(),
+		{ ru: cleanWdLabel(row.ru?.value), uz: cleanWdLabel(row.uz?.value) },
+	]),
+)
+
 const currencyNames = Object.fromEntries(
 	LANGUAGES.map(language => {
 		const displayNames = new Intl.DisplayNames([language], {
@@ -317,104 +268,9 @@ function currencySymbol(code, language) {
 		.find(part => part.type === 'currency').value
 }
 
-const neByA3 = new Map()
-for (const feat of neCountriesFc.features ?? []) {
-	const a3 = pickNeA3(feat.properties ?? {})
-	if (a3 && !neByA3.has(a3)) neByA3.set(a3, feat)
-}
-
-const baseByA3 = new Map()
-for (const feat of baseCountries.features ?? []) {
-	const p = feat.properties ?? {}
-	const a3 = p.ADM0_A3
-	if (a3 && !baseByA3.has(a3)) baseByA3.set(a3, feat)
-}
-
-const baseCentroidFeatures = readTippecanoeNdjson(BASE_CENTROIDS_NDJSON)
-if (baseCentroidFeatures.length === 0) {
-	console.warn(
-		`No original base centroids found at ${BASE_CENTROIDS_NDJSON}; falling back to pointOnFeature.`,
-	)
-}
-
-const baseA3ByName = new Map()
-const baseA3ByAbbrev = new Map()
-const baseA3ByPair = new Map()
-for (const [a3, feat] of baseByA3.entries()) {
-	const nameKey = normalizeLabelKey(feat.properties?.NAME)
-	const abbrevKey = normalizeLabelKey(feat.properties?.ABBREV)
-	addToIndex(baseA3ByName, nameKey, a3)
-	addToIndex(baseA3ByAbbrev, abbrevKey, a3)
-	addToIndex(baseA3ByPair, labelPairKey(nameKey, abbrevKey), a3)
-}
-
-function pickSingleCandidate(set) {
-	if (!set || set.size !== 1) return ''
-	for (const value of set) return value
-	return ''
-}
-
-const originalCentroidByA3 = new Map()
-const centroidMatchStats = {
-	source_point_count: baseCentroidFeatures.length,
-	matched_source_points: 0,
-	ambiguous_source_points: 0,
-	unmatched_source_points: 0,
-}
-
-for (const feat of baseCentroidFeatures) {
-	const p = feat.properties ?? {}
-	const nameKey = normalizeLabelKey(p.NAME)
-	const abbrevKey = normalizeLabelKey(p.ABBREV)
-	const pairKey = labelPairKey(nameKey, abbrevKey)
-
-	let a3 = pickSingleCandidate(baseA3ByPair.get(pairKey))
-	if (!a3) a3 = pickSingleCandidate(baseA3ByName.get(nameKey))
-	if (!a3) a3 = pickSingleCandidate(baseA3ByAbbrev.get(abbrevKey))
-
-	if (a3) {
-		if (!originalCentroidByA3.has(a3)) {
-			originalCentroidByA3.set(a3, feat.geometry.coordinates)
-		}
-		centroidMatchStats.matched_source_points += 1
-		continue
-	}
-
-	const pairSet = baseA3ByPair.get(pairKey)
-	const nameSet = baseA3ByName.get(nameKey)
-	const abbrevSet = baseA3ByAbbrev.get(abbrevKey)
-	const isAmbiguous =
-		(pairSet && pairSet.size > 1) ||
-		(!pairSet &&
-			((nameSet && nameSet.size > 1) || (abbrevSet && abbrevSet.size > 1)))
-
-	if (isAmbiguous) centroidMatchStats.ambiguous_source_points += 1
-	else centroidMatchStats.unmatched_source_points += 1
-}
-
-const centroidSourceStats = {
-	from_original: 0,
-	from_fallback_point_on_feature: 0,
-}
-
-function buildCentroidGeometry(a3, props, geometry) {
-	const originalCoords = originalCentroidByA3.get(a3)
-	if (Array.isArray(originalCoords) && originalCoords.length === 2) {
-		centroidSourceStats.from_original += 1
-		return {
-			type: 'Point',
-			coordinates: originalCoords,
-		}
-	}
-
-	const centroidPoint = pointOnFeature({
-		type: 'Feature',
-		properties: props,
-		geometry,
-	})
-	centroidSourceStats.from_fallback_point_on_feature += 1
-	return centroidPoint.geometry
-}
+const baseByA3 = new Map(
+	baseCountries.features.map(feat => [feat.properties.ADM0_A3, feat]),
+)
 
 const errors = []
 
@@ -496,14 +352,12 @@ function buildCurrency(a3, ov, rest) {
 	}
 }
 
-function buildCountry(a3, baseFeat, neFeat) {
-	const base = baseFeat?.properties ?? {}
-	const ne = neFeat?.properties ?? {}
+function buildCountry(a3, base) {
 	const ov = overrides.countries?.[a3] ?? {}
 
 	const id = firstNonEmpty(
 		normalizeIsoToken(ov.isoN3),
-		pickNeIsoN3(ne),
+		pickNeIsoN3(base),
 		normalizeIsoToken(restByA3.get(a3)?.codes?.ccn3),
 	)
 	const rest = restByN3.get(id)
@@ -541,8 +395,7 @@ function buildCountry(a3, baseFeat, neFeat) {
 	const continent = canonicalizeContinent(
 		firstNonEmpty(
 			base.CONTINENT,
-			ne.CONTINENT,
-			ne.REGION_UN,
+			base.REGION_UN,
 			firstArrayValue(rest.continents),
 		),
 		a3,
@@ -563,6 +416,8 @@ function buildCountry(a3, baseFeat, neFeat) {
 		currency: buildCurrency(a3, ov, rest),
 		continent,
 		difficulty: playable.difficultyByA3.get(a3),
+		subregion: base.SUBREGION,
+		labelRank: base.LABELRANK,
 		population: rest.population,
 		flagUrl: firstNonEmpty(rest.flag?.url_svg, rest.flag?.url_png),
 		independent: rest.classification?.sovereign,
@@ -589,24 +444,18 @@ function buildCountry(a3, baseFeat, neFeat) {
 }
 
 const countries = []
-const supplementalCountries = []
 for (const a3 of playable.all) {
 	const baseFeat = baseByA3.get(a3)
-	const neFeat = neByA3.get(a3)
-	const geometry = baseFeat?.geometry ?? neFeat?.geometry
-	if (!geometry) {
-		errors.push(`${a3}: no geometry`)
+	if (!baseFeat) {
+		errors.push(`${a3}: no geometry in ${BASE_COUNTRIES}`)
 		continue
 	}
+	const { properties, geometry } = baseFeat
 
-	const country = buildCountry(a3, baseFeat, neFeat)
+	const country = buildCountry(a3, properties)
 	if (!country?.capital.coordinates) continue
 
-	country.centroid = buildCentroidGeometry(
-		a3,
-		{ ADM0_A3: a3 },
-		geometry,
-	).coordinates
+	country.centroid = [properties.LABEL_X, properties.LABEL_Y]
 	country.bounds = mainBounds(geometry, [
 		country.centroid,
 		country.capital.coordinates,
@@ -617,14 +466,6 @@ for (const a3 of playable.all) {
 		continue
 	}
 	countries.push(country)
-
-	if (!baseFeat) {
-		supplementalCountries.push({
-			type: 'Feature',
-			properties: { adm0_a3: a3, iso_n3: country.id },
-			geometry,
-		})
-	}
 }
 
 const seenIds = new Map()
@@ -646,13 +487,42 @@ const geolines = Object.entries(overrides.geolines ?? {}).map(
 	},
 )
 
-if (errors.length > 0) {
-	console.error(
-		`Build blocked: ${errors.length} problem(s). Nothing was written.`,
-	)
-	for (const error of errors) console.error(`  ${error}`)
-	process.exit(1)
+const seaOverrides = overrides.seas ?? {}
+for (const [neId, texts] of Object.entries(seaOverrides)) {
+	if (!baseSeas.some(sea => String(sea.properties.ne_id) === neId)) {
+		errors.push(`seas override ${neId}: no such sea in ${BASE_SEAS}`)
+	}
+	for (const language of LANGUAGES) {
+		requireText(`seas override ${neId}`, language, texts[language])
+	}
 }
+
+const seaLabels = baseSeas.map(({ properties, geometry }) => {
+	const wd = seaNamesById.get(properties.wikidata) ?? {}
+	const uz = /[\u0400-\u04ff]/.test(wd.uz ?? '') ? '' : wd.uz
+	const names = seaOverrides[properties.ne_id] ?? {
+		en: properties.name_en,
+		ru: properties.name_ru || wd.ru,
+		'uz-Latn': uz,
+	}
+	return {
+		type: 'Feature',
+		properties: {
+			kind: properties.kind,
+			rank: properties.scalerank,
+			...Object.fromEntries(
+				LANGUAGES.filter(language => names[language]).map(language => [
+					tileField('label', language),
+					localize(language, names[language]),
+				]),
+			),
+		},
+		geometry,
+		tippecanoe: { minzoom: Math.floor(properties.min_label) },
+	}
+})
+
+exitOnProblems(errors)
 
 countries.sort((a, b) => a.id.localeCompare(b.id))
 
@@ -677,6 +547,7 @@ writeJson('build/centroids.geojson', {
 		type: 'Feature',
 		properties: {
 			iso_n3: country.id,
+			rank: country.labelRank,
 			...localizedTileProps('label', country.label),
 		},
 		geometry: { type: 'Point', coordinates: country.centroid },
@@ -695,9 +566,9 @@ writeJson('build/capitals.geojson', {
 	})),
 })
 
-writeJson('build/supplemental_countries.geojson', {
+writeJson('build/sea_labels.geojson', {
 	type: 'FeatureCollection',
-	features: supplementalCountries,
+	features: seaLabels,
 })
 
 const report = {
@@ -705,9 +576,14 @@ const report = {
 	easy_count: playable.easyCount,
 	medium_count: playable.mediumCount,
 	hard_count: playable.hardCount,
-	supplemental_country_count: supplementalCountries.length,
-	...centroidMatchStats,
-	...centroidSourceStats,
+	sea_label_count: seaLabels.length,
+	sea_labels_missing: Object.fromEntries(
+		LANGUAGES.map(language => [
+			language,
+			seaLabels.filter(sea => !sea.properties[tileField('label', language)])
+				.length,
+		]),
+	),
 }
 writeJson('build/build_data_report.json', report)
 

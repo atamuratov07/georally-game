@@ -109,10 +109,7 @@
 					"ru": "Иерусалим",
 					"uz-Latn": "Quddus"
 				},
-				"coordinates": [
-					35.2137,
-					31.7683
-				]
+				"coordinates": [35.2137, 31.7683]
 			},
 			"currencyCode": "ILS"
 		},
@@ -167,6 +164,28 @@
 			"en": "Antarctic Circle",
 			"ru": "Южный полярный круг",
 			"uz-Latn": "Janubiy qutb doirasi"
+		}
+	},
+	"seas": {
+		"1159115057": {
+			"en": "North Atlantic Ocean",
+			"ru": "Северная Атлантика",
+			"uz-Latn": "Shimoliy Atlantika"
+		},
+		"1159115149": {
+			"en": "South Atlantic Ocean",
+			"ru": "Южная Атлантика",
+			"uz-Latn": "Janubiy Atlantika"
+		},
+		"1159115079": {
+			"en": "North Pacific Ocean",
+			"ru": "Северная часть Тихого океана",
+			"uz-Latn": "Shimoliy Tinch okeani"
+		},
+		"1159115099": {
+			"en": "South Pacific Ocean",
+			"ru": "Южная часть Тихого океана",
+			"uz-Latn": "Janubiy Tinch okeani"
 		}
 	}
 }

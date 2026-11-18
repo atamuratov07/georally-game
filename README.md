@@ -28,7 +28,7 @@ GeoRally is a real-time geography quiz game: a player sees a country prompt, fin
 - **Reconnect support with mode-aware amnesty.** Host and player sessions persist a `memberSessionToken` in `localStorage`, so a refresh or dropped connection doesn't kick you out of a room: the client resumes the session as soon as Socket.IO reconnects, and opening the same session in a second tab moves it there instead of fighting over it. How long a room tolerates a disconnected host differs by mode (shorter for classroom, since the teacher is the pacing authority) and is configurable server-side.
 - **Multi-language UI.** English, Russian, and Uzbek (Latin script), with locale-prefixed routes (`/en`, `/ru`, `/uz`) and automatic language detection/redirect for unprefixed URLs.
 - **Typed realtime protocol.** Rooms are created and looked up over a small HTTP API (`/api`); everything inside a room runs over Socket.IO. Every request and socket event is schema-validated with `zod`, and every response is an explicit `{ ok, data }` / `{ ok: false, error }` ack, over HTTP and sockets alike; the server never sends raw internal room state, only role-specific projected views.
-- **Self-built map data.** The playable country catalog and vector map tiles are generated offline from open data sources (Natural Earth, MapLibre demotiles, REST Countries, Wikidata) rather than pulled from a paid map provider at runtime.
+- **Self-built map data.** The playable country catalog and vector map tiles are generated offline from open data sources (Natural Earth, REST Countries, Wikidata) rather than pulled from a paid map provider at runtime.
 - **Product analytics.** GA4 event tracking across both singleplayer and multiplayer, covering visits, game starts/completions, per-question outcomes, room size, and room mode, without relying on GA4's automatic page-view tracking alone (see [Analytics](#analytics)).
 - **Automated server tests.** Unit tests for the room service and integration tests that boot a real server and drive its HTTP API and socket flows, run with Vitest.
 - **Load-tested realtime layer.** A harness plays full games with up to 930 sockets and checks every answer and final result (see [Performance](#performance)).
@@ -46,7 +46,7 @@ GeoRally is a real-time geography quiz game: a player sees a country prompt, fin
 | Testing                 | Vitest, Supertest (server unit + HTTP integration tests)                                                     |
 | Game rules              | Hand-written TypeScript state machines (no game engine/framework)                                            |
 | Monorepo tooling        | pnpm workspaces                                                                                              |
-| Map/data build pipeline | Natural Earth, MapLibre demotiles, REST Countries, Wikidata (SPARQL/WDQS), Tippecanoe/tile-join (Dockerized) |
+| Map/data build pipeline | Natural Earth, REST Countries, Wikidata (SPARQL/WDQS), Tippecanoe/tile-join (Dockerized) |
 | Analytics               | Google Analytics 4 (`gtag.js`, custom event tracking)                                                        |
 | Deployment              | Docker Compose (server + nginx + certbot), Let's Encrypt                                                     |
 

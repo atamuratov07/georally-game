@@ -97,6 +97,8 @@ export function BaseMap({
 	const handleLoad = useCallback(
 		(event: MapEvent) => {
 			onLoad()
+			event.target.scrollZoom.setWheelZoomRate(1 / 100)
+			event.target.scrollZoom.setZoomRate(1 / 50)
 			// MapLibre opens compact attribution expanded until the first move; start
 			// it collapsed so it does not sit under the bottom action button.
 			event.target

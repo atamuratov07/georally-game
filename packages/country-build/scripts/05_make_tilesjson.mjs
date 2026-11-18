@@ -37,8 +37,7 @@ const tilejson = {
 	minzoom: 0,
 	maxzoom: 6,
 	bounds: [-180, -85.051129, 180, 85.05112900000002],
-	attribution:
-		'MapLibre demotiles base geometry; Natural Earth fallback; REST Countries; Wikidata',
+	attribution: 'Natural Earth; REST Countries; Wikidata',
 	tiles: [`${tilesUrlTemplate}?v=${hashTiles(tilesDir)}`],
 	center: [0, 2.5444437451708134e-14, 1],
 	vector_layers: JSON.parse(metadata.json).vector_layers.map(

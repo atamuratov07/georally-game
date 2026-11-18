@@ -108,7 +108,7 @@ georally-game/
 |           |   |   |-- continent-view.ts
 |           |   |   |-- map-styles.tsx  # fixed layer specs driven by feature state
 |           |   |   |-- style.json, mapStyle.ts # base style; inlines the tile list and outlines URL
-|           |   |   |-- generated/      # tiles.json, archipelagos.geojson (country-build output)
+|           |   |   |-- generated/      # tiles.json, archipelagos.geojson, border-lines.geojson (country-build output)
 |           |   |   |-- prefetchMap.ts  # warms the outlines, low-zoom tiles and common glyphs
 |           |   |   |-- useFeatureState.ts # sets per-country states, applying only the changes
 |           |   |   `-- types.ts
@@ -238,6 +238,7 @@ georally-game/
 |   |       |-- shared/                  # base types, result, errors, random, time
 |   |       |-- catalog/                 # country eligibility selectors, question set selection
 |   |       |-- answers/                 # typed and spoken answer matcher (Name It)
+|   |       |-- borders/                 # the land border graph type
 |   |       |-- singleplayer/
 |   |       |   |-- rounds.ts            # phases, state shape and selectors shared by the modes
 |   |       |   |-- locate/              # find-on-the-map mode
@@ -260,6 +261,7 @@ georally-game/
 |   |   |-- data/
 |   |   |   `-- aliases.json             # hand-curated extra answer names
 |   |   |-- generated/
+|   |   |   |-- borders.json             # land borders as id pairs, written by country-build
 |   |   |   |-- countries.json           # playable countries, written by country-build
 |   |   |   `-- regions.geojson          # continent outlines, written by country-build
 |   |   `-- src/
@@ -267,20 +269,21 @@ georally-game/
 |   |       |-- catalog.ts               # in-memory catalog + country pool
 |   |       |-- aliases.ts               # registry names + aliases → answer entries
 |   |       |-- aliases.test.ts
+|   |       |-- borders.ts               # borders.json → border graph
+|   |       |-- borders.test.ts
 |   |       `-- types.ts
 |   |-- country-build/
 |   |   |-- data/
+|   |   |   |-- border_overrides.json
 |   |   |   |-- playable_states_195.json
 |   |   |   `-- manual_overrides.json
 |   |   |-- docker/
 |   |   |   `-- Dockerfile               # tippecanoe image
-|   |   |-- upstream/                    # source zip/mbtiles inputs
+|   |   |-- upstream/                    # Natural Earth zips
 |   |   |-- tools/                       # bundled tippecanoe/tile-join binaries
 |   |   `-- scripts/
-|   |       |-- 01_get_fallback_sources.sh
-|   |       |-- 02_prepare_base.sh
-|   |       |-- 02b_dump_base_country_tiles.sh
-|   |       |-- 02c_merge_base_countries.mjs
+|   |       |-- 01_get_sources.sh        # downloads missing Natural Earth zips
+|   |       |-- 02_prepare_base.mjs      # Natural Earth layers → build/*.geojson
 |   |       |-- 03_build_data.mjs
 |   |       |-- 03b_fetch_flags.mjs     # downloads and checks the flags
 |   |       |-- 04_build_tiles.sh
@@ -288,10 +291,14 @@ georally-game/
 |   |       |-- 06_build_registry.mjs
 |   |       |-- 07_build_archipelago_outlines.mjs
 |   |       |-- 08_build_regions.mjs
+|   |       |-- 09_build_borders.mjs     # measures land borders
 |   |       `-- lib/
 |   |           |-- cache.mjs
 |   |           |-- continent.mjs
+|   |           |-- countries.mjs        # reads build/countries.json
+|   |           |-- natural-earth.mjs    # reads an upstream/ zip
 |   |           |-- output-paths.mjs     # the shared --out option
+|   |           |-- problems.mjs         # print all problems, exit before writing
 |   |           |-- restcountries.mjs
 |   |           |-- uz-latn.mjs          # Uzbek apostrophe normalization
 |   |           `-- wdqs.mjs

@@ -49,3 +49,9 @@ export type AliasesPayload = Record<
 	CountryId,
 	AliasNames & { typing?: AliasNames; voice?: AliasNames }
 >
+
+export interface BordersPayload {
+	version: number
+	generated_at: string
+	edges: [CountryId, CountryId][]
+}

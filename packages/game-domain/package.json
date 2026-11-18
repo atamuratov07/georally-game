@@ -24,6 +24,12 @@
 			"import": "./dist/answers/index.js",
 			"default": "./dist/answers/index.js"
 		},
+		"./borders": {
+			"types": "./src/borders/index.ts",
+			"development": "./src/borders/index.ts",
+			"import": "./dist/borders/index.js",
+			"default": "./dist/borders/index.js"
+		},
 		"./singleplayer/locate": {
 			"types": "./src/singleplayer/locate/index.ts",
 			"development": "./src/singleplayer/locate/index.ts",

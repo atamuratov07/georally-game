@@ -30,6 +30,12 @@
 			"import": "./dist/aliases.js",
 			"default": "./dist/aliases.js"
 		},
+		"./borders": {
+			"types": "./src/borders.ts",
+			"development": "./src/borders.ts",
+			"import": "./dist/borders.js",
+			"default": "./dist/borders.js"
+		},
 		"./regions.geojson": "./generated/regions.geojson"
 	},
 	"sideEffects": false,

@@ -4,6 +4,7 @@ export default defineConfig({
 	entry: [
 		'src/index.ts',
 		'src/answers/index.ts',
+		'src/borders/index.ts',
 		'src/singleplayer/locate/index.ts',
 		'src/singleplayer/name-it/index.ts',
 		'src/singleplayer/recall-sprint/index.ts',

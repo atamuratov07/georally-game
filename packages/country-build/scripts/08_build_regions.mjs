@@ -1,45 +1,27 @@
 import { geoStitch } from 'd3-geo-projection'
 import fs from 'node:fs'
 import path from 'node:path'
-import shp from 'shpjs'
 import { merge } from 'topojson-client'
 import { topology } from 'topojson-server'
 import { canonicalizeContinent, GAME_CONTINENTS } from './lib/continent.mjs'
-import {
-	ensureDir,
-	parseOutDir,
-	resolvePackagePath,
-} from './lib/output-paths.mjs'
-
-const NE_COUNTRIES_ZIP = resolvePackagePath(
-	'upstream',
-	'ne_110m_admin_0_countries.zip',
-)
-const COUNTRIES_JSON = resolvePackagePath('build', 'countries.json')
+import { readCountries } from './lib/countries.mjs'
+import { readNaturalEarth } from './lib/natural-earth.mjs'
+import { ensureDir, parseOutDir } from './lib/output-paths.mjs'
 
 const outDir = parseOutDir()
 
-if (!fs.existsSync(COUNTRIES_JSON)) {
-	throw new Error(`Missing ${COUNTRIES_JSON}. Run build:data first.`)
-}
-
 const continentByA3 = new Map(
-	JSON.parse(fs.readFileSync(COUNTRIES_JSON, 'utf8')).map(country => [
-		country.a3,
-		country.continent,
-	]),
+	readCountries().map(country => [country.a3, country.continent]),
 )
 
-const parsed = await shp(fs.readFileSync(NE_COUNTRIES_ZIP))
-const shapes = Array.isArray(parsed)
-	? parsed.find(collection => collection.type === 'FeatureCollection')
-	: parsed
+const shapes = await readNaturalEarth('ne_110m_admin_0_countries')
 
 const features = shapes.features
 	.map(feature => {
 		const { ADM0_A3: a3, CONTINENT, REGION_UN } = feature.properties
 		const continent =
-			continentByA3.get(a3) ?? canonicalizeContinent(CONTINENT || REGION_UN, a3)
+			continentByA3.get(a3) ??
+			canonicalizeContinent(CONTINENT || REGION_UN, a3)
 		return { ...feature, properties: { continent } }
 	})
 	.filter(feature => GAME_CONTINENTS.has(feature.properties.continent))

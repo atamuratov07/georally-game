@@ -18,6 +18,7 @@ export const COUNTRY_LAYER = 'countries'
 export const CENTROIDS_LAYER = 'centroids'
 export const CAPITALS_LAYER = 'capitals'
 export const GEOLINES_LAYER = 'geolines'
+export const SEAS_LAYER = 'seas'
 
 export const BASE_STYLE_LAYER_ID = 'countries-fill'
 export const HOVER_LAYER_ID = 'countries-hovered'
@@ -29,6 +30,7 @@ export const COUNTRY_LABEL_LAYER_ID = 'countries-label'
 export const CAPITAL_LABEL_LAYER_ID = 'capitals-label'
 export const CAPITAL_DOT_LAYER_ID = 'capitals-dot'
 export const GEOLINES_LABEL_LAYER_ID = 'geolines-label'
+export const SEA_LABEL_LAYER_ID = 'seas-label'
 export const ARCHIPELAGO_SOURCE_ID = 'archipelagos'
 export const ARCHIPELAGO_FILL_LAYER_ID = 'archipelagos-fill'
 export const ARCHIPELAGO_OUTLINE_LAYER_ID = 'archipelagos-outline'
@@ -38,6 +40,7 @@ export const TARGET_OUTLINE_LAYER_ID = 'countries-target-outline'
 export const GLYPHS_URL = '/map/fonts/{fontstack}/{range}.pbf'
 export const COUNTRY_LABEL_FONT = 'Noto Sans Bold'
 export const CAPITAL_LABEL_FONT = 'Noto Sans Regular'
+export const SEA_LABEL_FONT = 'Noto Sans Italic'
 
 export const WATER_FILL = '#D8F2FF'
 export const WRONG_FILL = '#fb5f4c'
@@ -192,6 +195,7 @@ export function buildCountryLabelLayer(
 				stops: zoomStops([2, 10], [4, 12], [6, 16]),
 			},
 			visibility: 'visible',
+			'symbol-sort-key': ['get', 'rank'],
 			'text-max-width': 14,
 			'text-transform': {
 				type: 'interval',
@@ -273,6 +277,40 @@ export function buildGeolinesLablelLayer(
 	}
 }
 
+const isOcean: ExpressionSpecification = ['==', ['get', 'kind'], 'ocean']
+
+export function buildSeaLabelLayer(
+	language: AppLanguage,
+): SymbolLayerSpecification {
+	return {
+		id: SEA_LABEL_LAYER_ID,
+		type: 'symbol',
+		source: SOURCE_ID,
+		'source-layer': SEAS_LAYER,
+		layout: {
+			'text-field': labelTextField(language),
+			'text-font': [SEA_LABEL_FONT],
+			'text-size': [
+				'interpolate',
+				['linear'],
+				['zoom'],
+				1,
+				['case', isOcean, 11, 9],
+				6,
+				['case', isOcean, 22, 14],
+			],
+			'text-letter-spacing': ['case', isOcean, 0.12, 0.04],
+			'text-max-width': 7,
+			'symbol-sort-key': ['get', 'rank'],
+		},
+		paint: {
+			'text-color': '#3f86bd',
+			'text-halo-color': WATER_FILL,
+			'text-halo-width': 1,
+		},
+	}
+}
+
 const capitalRadiusByZoom: DataDrivenPropertyValueSpecification<number> = [
 	'interpolate',
 	['linear'],
@@ -311,14 +349,7 @@ export const archipelagoFillLayer: FillLayerSpecification = {
 			'#9b6cfb',
 			toneColor('#ffffff'),
 		],
-		'fill-opacity': [
-			'case',
-			stateFlag(HOVER_STATE),
-			0.3,
-			hasTone,
-			0.4,
-			0,
-		],
+		'fill-opacity': ['case', stateFlag(HOVER_STATE), 0.3, hasTone, 0.4, 0],
 	},
 }
 

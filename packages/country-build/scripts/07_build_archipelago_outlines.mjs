@@ -1,5 +1,5 @@
 /* Builds outlines for countries spread over many small islands: every island in
- * the zoom-6 tile dump (stage 02b) is buffered by the country's `archipelagos`
+ * the base geometry (stage 02) is buffered by the country's `archipelagos`
  * distance in data/playable_states_195.json, the buffers are merged, holes are
  * dropped, and so are parts around a single island.
  */
@@ -9,13 +9,14 @@ import { featureCollection, multiPolygon, polygon } from '@turf/helpers'
 import union from '@turf/union'
 import fs from 'node:fs'
 import path from 'node:path'
+import { readCountries } from './lib/countries.mjs'
 import {
 	ensureDir,
 	parseOutDir,
 	resolvePackagePath,
 } from './lib/output-paths.mjs'
 
-const DUMP_DIR = resolvePackagePath('build', 'tmp_base_country_tiles')
+const BASE_GEOJSON = resolvePackagePath('build', 'base_countries.geojson')
 const outDir = parseOutDir()
 const OUT_FILE = path.join(outDir, 'archipelagos.geojson')
 const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8'))
@@ -23,33 +24,30 @@ const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8'))
 const { all, archipelagos } = readJson(
 	resolvePackagePath('data', 'playable_states_195.json'),
 )
-const idByA3 = new Map(
-	readJson(resolvePackagePath('build', 'countries.json')).map(country => [
-		country.a3,
-		country.id,
-	]),
-)
+const idByA3 = new Map(readCountries().map(country => [country.a3, country.id]))
 for (const a3 of Object.keys(archipelagos)) {
 	if (!all.includes(a3))
 		throw new Error(`archipelagos contains ${a3} which is not in all`)
 }
 
-// tippecanoe-decode -c emits one Feature JSON object per line.
-const islandsByA3 = new Map(Object.keys(archipelagos).map(a3 => [a3, []]))
-for (const file of fs.readdirSync(DUMP_DIR)) {
-	const text = fs.readFileSync(path.join(DUMP_DIR, file), 'utf8')
-	for (const line of text.split('\n')) {
-		if (!line.trim()) continue
-		const { properties, geometry } = JSON.parse(line)
-		const islands = islandsByA3.get(properties.ADM0_A3)
-		if (!islands) continue
-		islands.push(
-			...(geometry.type === 'Polygon'
+const geometryByA3 = new Map(
+	readJson(BASE_GEOJSON).features.map(({ properties, geometry }) => [
+		properties.ADM0_A3,
+		geometry,
+	]),
+)
+const islandsByA3 = new Map(
+	Object.keys(archipelagos).map(a3 => {
+		const geometry = geometryByA3.get(a3)
+		if (!geometry) throw new Error(`${a3}: missing from ${BASE_GEOJSON}`)
+		return [
+			a3,
+			geometry.type === 'Polygon'
 				? [geometry.coordinates]
-				: geometry.coordinates),
-		)
-	}
-}
+				: geometry.coordinates,
+		]
+	}),
+)
 
 const COORD_DECIMALS = 4
 const LANDMASS_MERGE_KM = 2
@@ -101,7 +99,7 @@ const features = Object.entries(archipelagos)
 	.sort()
 	.map(([a3, bufferKm]) => {
 		const { centred, centreLng } = centreOnZero(islandsByA3.get(a3))
-		// Tile pieces of one island and islets right next to it count as one landmass.
+		// Islets right next to an island count as one landmass with it.
 		const landmasses = bufferAndMerge(centred, LANDMASS_MERGE_KM)
 		const outlines = bufferAndMerge(centred, bufferKm).filter(
 			part =>

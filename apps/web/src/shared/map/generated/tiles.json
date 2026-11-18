@@ -13,9 +13,9 @@
     180,
     85.05112900000002
   ],
-  "attribution": "MapLibre demotiles base geometry; Natural Earth fallback; REST Countries; Wikidata",
+  "attribution": "Natural Earth; REST Countries; Wikidata",
   "tiles": [
-    "/map/tiles/{z}/{x}/{y}.pbf?v=1740d13ef690"
+    "/map/tiles/{z}/{x}/{y}.pbf?v=c4175f4b285d"
   ],
   "center": [
     0,
@@ -42,7 +42,8 @@
         "iso_n3": "String",
         "label_en": "String",
         "label_ru": "String",
-        "label_uz_latn": "String"
+        "label_uz_latn": "String",
+        "rank": "Number"
       }
     },
     {
@@ -57,11 +58,23 @@
     {
       "id": "geolines",
       "minzoom": 0,
-      "maxzoom": 4,
+      "maxzoom": 6,
       "fields": {
         "label_en": "String",
         "label_ru": "String",
         "label_uz_latn": "String"
+      }
+    },
+    {
+      "id": "seas",
+      "minzoom": 1,
+      "maxzoom": 6,
+      "fields": {
+        "kind": "String",
+        "label_en": "String",
+        "label_ru": "String",
+        "label_uz_latn": "String",
+        "rank": "Number"
       }
     }
   ]

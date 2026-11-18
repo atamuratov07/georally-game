@@ -6,6 +6,7 @@ import {
 	buildCapitalLabelLayer,
 	buildCountryLabelLayer,
 	buildGeolinesLablelLayer,
+	buildSeaLabelLayer,
 	capitalDotLayer,
 } from '../map-styles'
 
@@ -20,6 +21,7 @@ export function LabelLayers({ countryIds }: LabelLayersProps) {
 		() => buildGeolinesLablelLayer(language),
 		[language],
 	)
+	const seaLabelLayer = useMemo(() => buildSeaLabelLayer(language), [language])
 	const capitalLabelLayer = useMemo(
 		() => buildCapitalLabelLayer(language),
 		[language],
@@ -40,6 +42,7 @@ export function LabelLayers({ countryIds }: LabelLayersProps) {
 	return (
 		<>
 			<Layer {...geolinesLabelLayer} />
+			<Layer {...seaLabelLayer} />
 			<Layer {...capitalDotLayer} filter={filter} />
 			<Layer {...capitalLabelLayer} filter={filter} />
 			<Layer {...countryLabelLayer} filter={filter} />

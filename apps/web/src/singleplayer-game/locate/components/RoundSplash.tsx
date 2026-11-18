@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/utils'
+import { FlagImage } from '@/shared/widgets/FlagImage'
 
 export interface RoundInfo {
 	current: number
@@ -42,7 +43,7 @@ export function RoundSplash({
 			</p>
 
 			{round.flagUrl ? (
-				<img
+				<FlagImage
 					data-hud-part='flag'
 					src={round.flagUrl}
 					alt=''

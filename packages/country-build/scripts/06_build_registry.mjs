@@ -7,6 +7,7 @@ import {
 } from './lib/output-paths.mjs'
 
 const COUNTRIES_JSON = resolvePackagePath('build', 'countries.json')
+const FLAGS_JSON = resolvePackagePath('build', 'flags.json')
 
 const outDir = parseOutDir()
 
@@ -14,7 +15,20 @@ if (!fs.existsSync(COUNTRIES_JSON)) {
 	throw new Error(`Missing ${COUNTRIES_JSON}. Run build:data first.`)
 }
 
+if (!fs.existsSync(FLAGS_JSON)) {
+	throw new Error(`Missing ${FLAGS_JSON}. Run build:flags first.`)
+}
+
 const countries = JSON.parse(fs.readFileSync(COUNTRIES_JSON, 'utf8'))
+const flagUrls = JSON.parse(fs.readFileSync(FLAGS_JSON, 'utf8'))
+
+function flagUrl(country) {
+	const url = flagUrls[country.id]
+	if (!url) {
+		throw new Error(`No flag for ${country.a3} in ${FLAGS_JSON}. Run build:flags again.`)
+	}
+	return url
+}
 
 ensureDir(outDir)
 fs.writeFileSync(
@@ -35,7 +49,7 @@ fs.writeFileSync(
 				centroidLng: country.centroid[0],
 				centroidLat: country.centroid[1],
 				bounds: country.bounds,
-				flagUrl: country.flagUrl,
+				flagUrl: flagUrl(country),
 				independent: country.independent,
 				unMember: country.unMember,
 			})),

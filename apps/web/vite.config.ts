@@ -74,6 +74,7 @@ export default defineConfig({
 					'**/*.html',
 					'assets/**/*.{js,css,woff2,png,svg,geojson}',
 					'icon-*.png',
+					'flags/*.svg',
 					'map/tiles/{0,1,2,3,4}/**/*.pbf',
 				],
 				globIgnores: ['assets/rubik-{arabic,hebrew}-*'],

@@ -9,6 +9,8 @@ graph TD
     Countries["build/countries.json<br/>one record per playable country"]
     BuildTiles["04_build_tiles.sh<br/>(pnpm build:map-tiles)"]
     TileJson["05_make_tilesjson.mjs<br/>invoked by 04_build_tiles.sh"]
+    BuildFlags["03b_fetch_flags.mjs<br/>(pnpm build:flags)"]
+    WebFlags["apps/web/public/flags/*.svg<br/>+ build/flags.json"]
     BuildRegistry["06_build_registry.mjs<br/>(pnpm build:country-registry)"]
     CatalogJson["packages/country-catalog/generated/countries.json"]
     BuildOutlines["07_build_archipelago_outlines.mjs<br/>(pnpm build:archipelago-outlines)"]
@@ -20,6 +22,9 @@ graph TD
     Upstream --> BuildData
     BuildData --> Countries
     Countries --> BuildTiles
+    Countries --> BuildFlags
+    BuildFlags --> WebFlags
+    WebFlags --> BuildRegistry
     Countries --> BuildRegistry
     Countries --> BuildOutlines
     Countries --> BuildRegions
@@ -32,25 +37,26 @@ graph TD
     CatalogRegions --> RegionPlugin
 ```
 
-Stage 03 is the only stage that fetches data and the only one that validates it. It joins every source into one record per playable country, checks that nothing is missing, and only then writes. The later stages are projections of those records: 04 into map tiles, 06 into the catalog registry, 07 into archipelago outlines, 08 into continent shapes. None of them fills in a missing value.
+Stage 03 is the only stage that fetches country data and the only one that validates it. Stage 03b fetches the flag images that 03 points to, and checks the files themselves (see [Flags](#flags)). It joins every source into one record per playable country, checks that nothing is missing, and only then writes. The later stages are projections of those records: 04 into map tiles, 06 into the catalog registry, 07 into archipelago outlines, 08 into continent shapes. None of them fills in a missing value.
 
 ## Stages
 
 Run from `packages/country-build`, in this order. Intermediate files go to `build/` (gitignored).
 
-**Outputs stay inside the package unless told otherwise.** Every stage that produces a deliverable (04, 06, 07, 08) takes `--out <directory>` and writes into `dist/` (or `dist/tiles` for 04) inside the package by default; no script knows where other packages live. Only the root scripts in `package.json` choose destinations elsewhere in the repo. Stage 04 empties its output directory first.
+**Outputs stay inside the package unless told otherwise.** Every stage that produces a deliverable (03b, 04, 06, 07, 08) takes `--out <directory>` and writes into `dist/` (or `dist/tiles` for 04) inside the package by default; no script knows where other packages live. Only the root scripts in `package.json` choose destinations elsewhere in the repo. Stages 03b and 04 empty their output directory first.
 
 | Stage | Input | Output | Network |
 | --- | --- | --- | --- |
 | `01_get_fallback_sources.sh` | none | `upstream/ne_110m_admin_0_countries.zip` | Natural Earth (`naciscdn.org`), only if the zip is missing; it's committed |
 | `02_prepare_base.sh` → `02b_dump_base_country_tiles.sh` → `02c_merge_base_countries.mjs` | `upstream/maplibre.mbtiles` | `build/base_geolines_z0.geojson`, `build/base_centroids_z0.geojson`, one dump per zoom-6 tile in `build/tmp_base_country_tiles/`, `build/base_countries.geojson` | None; `tippecanoe-decode` / `tippecanoe-enumerate` in Docker |
 | `03_build_data.mjs` (`pnpm build:data`) | `build/base_countries.geojson`, `build/base_centroids_z0.geojson`, the Natural Earth zip, `data/manual_overrides.json`, `data/playable_states_195.json` | `build/countries.json`, `build/countries_join.csv`, `build/geolines_join.csv`, `build/centroids.geojson`, `build/capitals.geojson`, `build/supplemental_countries.geojson`, `build/build_data_report.json` | REST Countries (`rc-countries`, paged 100 per request) and one Wikidata Query Service request (`wdqs-country-capital-names`) |
+| `03b_fetch_flags.mjs` (`pnpm build:flags`) | `build/countries.json` (each country's `flagUrl`) | `<id>.svg` per country in `--out`, `build/flags.json` | The flag SVGs from `flags.restcountries.com`, cached in `build/cache/flags/<id>.svg` |
 | `04_build_tiles.sh` → `05_make_tilesjson.mjs` (`pnpm build:map-tiles`) | `upstream/maplibre.mbtiles` and the stage 03 outputs | `build/*.mbtiles`, `build/world_complete.mbtiles`; the `.pbf` tile directory and `tiles.json` in `--out` | None; `tile-join` and `tippecanoe` in Docker, one container per call |
-| `06_build_registry.mjs` (`pnpm build:country-registry`) | `build/countries.json` | `countries.json` in `--out` | None |
+| `06_build_registry.mjs` (`pnpm build:country-registry`) | `build/countries.json`, `build/flags.json` | `countries.json` in `--out` | None |
 | `07_build_archipelago_outlines.mjs` (`pnpm build:archipelago-outlines`) | `build/tmp_base_country_tiles` (the zoom-6 tile dump from 02b), `build/countries.json`, `data/playable_states_195.json` (the `archipelagos` buffers) | `archipelagos.geojson` in `--out` | None |
 | `08_build_regions.mjs` (`pnpm build:regions`) | the Natural Earth zip, `build/countries.json` | `regions.geojson` in `--out` | None |
 
-**Cache.** `scripts/lib/cache.mjs` keeps every API response in `build/cache/<key>.json` and reads it first: a run requests an API only when that file is missing, or when `COUNTRY_BUILD_REFRESH=1` is set (for example `COUNTRY_BUILD_REFRESH=1 pnpm build:data`). A request overwrites the file on success; if it fails (HTTP error, network error, or a 429 after the retries), the client falls back to the file when there is one. The Wikidata client sends a descriptive `User-Agent` and retries a 429 after `Retry-After`; the REST Countries client needs `RESTCOUNTRIES_API_KEY` in `packages/country-build/.env` only when it actually requests, and does not retry.
+**Cache.** `scripts/lib/cache.mjs` keeps every API response in `build/cache/<key>.json` and reads it first: a run requests an API only when that file is missing, or when `COUNTRY_BUILD_REFRESH=1` is set (for example `COUNTRY_BUILD_REFRESH=1 pnpm build:data`). A request overwrites the file on success; if it fails (HTTP error, network error, or a 429 after the retries), the client falls back to the file when there is one. Flags follow the same rules, as raw SVG files in `build/cache/flags/`. The Wikidata client sends a descriptive `User-Agent` and retries a 429 after `Retry-After`; the REST Countries client needs `RESTCOUNTRIES_API_KEY` in `packages/country-build/.env` only when it actually requests, and does not retry.
 
 **Docker.** Stages 02 and 04 need the `tippecanoe:latest` image (`pnpm build:tippecanoe-image`, which clones and compiles tippecanoe 2.79.0). The wrappers in `tools/` start one container per call; `02b` decodes the zoom-6 tiles in one container, one `tippecanoe-decode` per CPU at a time.
 
@@ -105,7 +111,7 @@ Every playable country must have, in all three languages, a name, a label, a cap
 
 `tiles.json` (in `apps/web/src/shared/map/generated/`, written where `--tilejson-out` says; next to the tiles without it) lists the layers and fields of the actual tiles: `05_make_tilesjson.mjs` reads them from the `metadata.json` that `tile-join` writes and removes that file. Every property is a string. Text properties follow `label_<language>`, with the language tag lowercased and `-` turned into `_`.
 
-**Cache busting.** nginx (and `public/_headers`) serves tiles with `Cache-Control: public, max-age=31536000, immutable`, so browsers never ask for a tile URL again once they have it. `05_make_tilesjson.mjs` therefore appends `?v=<hash>` to the tile URL template, where the hash covers every `.pbf` file's path and bytes. `tiles.json` is bundled into the hashed JS (`shared/map/mapStyle.ts` inlines its tile template into the style's `world` source), so after a rebuild the next deploy's JS carries the new URLs; an unchanged tile set keeps the same hash. The map fonts are also `immutable` under fixed URLs: if the glyph files ever change, version `GLYPHS_URL` in `apps/web/src/shared/map/map-styles.tsx` the same way.
+**Cache busting.** nginx serves tiles with `Cache-Control: public, max-age=31536000, immutable`, so browsers never ask for a tile URL again once they have it. `05_make_tilesjson.mjs` therefore appends `?v=<hash>` to the tile URL template, where the hash covers every `.pbf` file's path and bytes. `tiles.json` is bundled into the hashed JS (`shared/map/mapStyle.ts` inlines its tile template into the style's `world` source), so after a rebuild the next deploy's JS carries the new URLs; an unchanged tile set keeps the same hash. The map fonts are also `immutable` under fixed URLs: if the glyph files ever change, version `GLYPHS_URL` in `apps/web/src/shared/map/map-styles.tsx` the same way.
 
 **Compression.** tippecanoe writes the tiles gzipped, so nginx sends them as they are with `Content-Encoding: gzip` and must never compress them again (`gzip off`, `gzip_static off` on that location). Everything else is compressed once at build time: the `precompress` Vite plugin (`apps/web/vite/precompress.ts`) writes a `.gz` next to every JS, CSS, HTML, JSON, GeoJSON, SVG and glyph PBF over 1 KB that shrinks by at least 10%, and nginx's `gzip_static` sends that file to clients that accept gzip. On-the-fly `gzip` stays on for anything without a `.gz` (API responses); `application/x-protobuf` is left out of its types, so a tile can't get a second layer.
 
@@ -138,7 +144,7 @@ Every playable country must have, in all three languages, a name, a label, a cap
 	"centroidLng": 62.666016,
 	"centroidLat": 42.293564,
 	"bounds": [55.9753, 37.1854, 73.1484, 45.5583],
-	"flagUrl": "https://flags.restcountries.com/v5/svg/uz.svg",
+	"flagUrl": "/flags/860.svg?v=1f0c2a9e",
 	"independent": true,
 	"unMember": true
 }
@@ -156,6 +162,14 @@ Localized fields are keyed by the app's locale tags, so the web app reads `count
 
 The catalog exports the file as `@georally/country-catalog/regions.geojson`, and its index never imports it, so no runtime code loads it. The web app's Vite plugin `apps/web/vite/regionMap.ts` reads it at bundle time and serves the `virtual:region-map` module: SVG paths per continent and their `viewBox`. The projection (Equal Earth, rotated 11° so the seam falls in the Bering Strait), the 800 px width, the removal of islands smaller than 3 px² and the rounding all live there, and the browser receives only finished path strings. The paths are not simplified: a simplified version, smoothed or not, looked crude next to the detailed game map. `RegionPicker` colours each continent from its own palette of six vivid colours, since the app's theme has only five hues and a repeated colour made two continents look like one choice.
 
+### Flags
+
+Flags are served from our own origin, so the service worker can precache them and offline play shows them (see [`pwa.md`](pwa.md)). The source is REST Countries' flag CDN, whose artwork is mostly public-domain Wikimedia flags. Stage 03 records each country's REST Countries URL. Stage 03b downloads the files, checks them and writes `apps/web/public/flags/<id>.svg` (checked in, like the tiles). Stage 06 then puts `/flags/<id>.svg?v=<hash>` into the catalog, where the hash is the first 8 hex digits of the file's SHA-256. The URL changes only when the file does, so nginx can cache flags as `immutable`. Stage 06 fails if a country has no flag, so it can't silently run against an old 03b output.
+
+- **Served as downloaded.** The files are byte-identical to the source, and gzip (`precompress`, nginx `gzip_static`) does the compression. SVGO was tried and dropped. At the precision where no flag changed visibly, it cut the gzipped total only from 1026 KB to 854 KB. Its rounding is the only lossy step, and lower precision damaged real flags: Australia, New Zealand and Tuvalu draw the Union Jack's diagonals inside `scale(840)` with stroke widths of .4 and .6, so rounding to the root `viewBox` removed the red saltire, and Korea's yin-yang arcs span exactly a diameter, so a 0.01 rounding moved the circle. Staying safe needed a precision per flag from the transforms and a pixel comparison after every refresh, which 160 KB doesn't justify. SVGO stays as the XML parser for the checks.
+- **Sizes.** 195 flags: 2.7 MB, 1026 KB gzipped (the precache downloads them gzipped). Most are a few KB. The emblem flags are the large ones: El Salvador 243 KB, Bolivia 235 KB, Afghanistan 217 KB, Ecuador 212 KB.
+- **Checks.** A flag fails the build if its root element isn't `<svg>`, if it contains `<script>` or `<foreignObject>`, if it has an `on*` attribute or an `href` that isn't a local `#id`, or if it is larger than 300 KB (about 20% above the largest flag today, so a broken download or a much heavier redraw stands out). Inside `<img>` an SVG can't run scripts or load anything. But the files are on our origin, so opening one directly would run its scripts with access to `localStorage`, which holds room session tokens. nginx therefore also serves `/flags/` with `Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'`.
+
 ### Other outputs
 
 - `apps/web/public/map/tiles` — the generated vector tiles, written by `pnpm build:map-tiles`, which passes `--out`, `--tiles-url-template /map/tiles/{z}/{x}/{y}.pbf` and `--tilejson-out` (for `tiles.json`) down to `country-build`.
@@ -167,6 +181,7 @@ The catalog exports the file as `@georally/country-catalog/regions.geojson`, and
 | Root script | Wraps | Produces |
 | --- | --- | --- |
 | `pnpm build:data` | `@georally/country-build`'s `build:data` script (`node --env-file=.env scripts/03_build_data.mjs`) | `build/countries.json` and the tile inputs |
+| `pnpm build:flags` | `@georally/country-build`'s `build:flags` script (`node scripts/03b_fetch_flags.mjs`) | `apps/web/public/flags/*.svg`, `build/flags.json` |
 | `pnpm build:country-registry` | `@georally/country-build`'s `build:registry` script (`node scripts/06_build_registry.mjs`) | `packages/country-catalog/generated/countries.json` |
 | `pnpm build:regions` | `@georally/country-build`'s `build:regions` script (`node scripts/08_build_regions.mjs`) | `packages/country-catalog/generated/regions.geojson` |
 | `pnpm build:map-tiles` | `@georally/country-build`'s `build:tiles` script (`bash scripts/04_build_tiles.sh`) | `apps/web/public/map/tiles/**`, `apps/web/src/shared/map/generated/tiles.json` |

@@ -7,6 +7,7 @@ import {
 	toFormattingLocale,
 } from '../i18n'
 import { useCurrentLocale } from '../../app/LocaleContext'
+import { FlagImage } from './FlagImage'
 
 type CountryTagTone = 'independent' | 'unMember'
 
@@ -41,7 +42,7 @@ export function CountryInfoCard({ info }: { info: CountryInfo }) {
 	return (
 		<article className='w-68 animate-pop-in overflow-hidden rounded-3xl bg-white text-ink shadow-[0_0_0_2px_white,0_22px_48px_-10px_rgb(24_34_61/0.35)]'>
 			<div className='relative aspect-[16/10] overflow-hidden bg-paper-deep'>
-				<img
+				<FlagImage
 					src={info.flagUrl}
 					alt={t('countryInfo.flagAlt', { country: displayName })}
 					className='size-full object-cover'

@@ -54,12 +54,11 @@ georally-game/
 |       |-- index.html
 |       |-- locales/                    # one Vite entry per locale: en.html, ru.html, uz.html
 |       |-- public/
-|       |   |-- _headers
-|       |   |-- _redirects
 |       |   |-- manifest.webmanifest
 |       |   |-- icon-*.png, apple-touch-icon.png, favicon-*.png
 |       |   |-- robots.txt
 |       |   |-- sitemap.xml
+|       |   |-- flags/                  # one SVG per country, written by pnpm build:flags
 |       |   `-- map/                    # checked-in vector tiles and fonts
 |       `-- src/
 |           |-- app/
@@ -283,6 +282,7 @@ georally-game/
 |   |       |-- 02b_dump_base_country_tiles.sh
 |   |       |-- 02c_merge_base_countries.mjs
 |   |       |-- 03_build_data.mjs
+|   |       |-- 03b_fetch_flags.mjs     # downloads and checks the flags
 |   |       |-- 04_build_tiles.sh
 |   |       |-- 05_make_tilesjson.mjs
 |   |       |-- 06_build_registry.mjs

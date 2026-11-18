@@ -5,7 +5,7 @@ GeoRally can be installed to the home screen and opens full screen. After the fi
 ```mermaid
 graph LR
     Page["page + MapLibre worker"] -->|fetch| SW["sw.js<br/>(apps/web/sw/sw.ts)"]
-    SW -->|navigations, /assets, tiles z0–4| Precache["workbox precache<br/>(build manifest, revisioned)"]
+    SW -->|navigations, /assets, flags, tiles z0–4| Precache["workbox precache<br/>(build manifest, revisioned)"]
     SW -->|tiles z5–6| Tiles["map-tiles-&lt;v&gt;<br/>cache first"]
     SW -->|glyphs| Fonts["map-fonts<br/>cache first"]
     SW -.->|/api, /socket.io, /health| Network["network only"]
@@ -29,9 +29,10 @@ graph LR
   - every HTML entry, including the three locale shells;
   - `/assets/**`;
   - the app icons;
+  - every flag (195 files, about 1 MB gzipped);
   - map tiles for zoom 0–4 (335 files, about 2.3 MB).
 
-  The Rubik Arabic and Hebrew subsets are left out because no locale uses them. That's about 5 MB in total, downloaded in the background on the first visit. Hashed assets the page already loaded come from the HTTP cache.
+  The Rubik Arabic and Hebrew subsets are left out because no locale uses them. That's about 6 MB in total (608 files), downloaded in the background on the first visit. Hashed assets the page already loaded come from the HTTP cache.
 - **Navigations** copy `nginx.conf` and never hit the network:
   - `/en|ru|uz/...` → the precached `locales/<lang>.html`
   - `/` → `index.html`, through Workbox's `directoryIndex`
@@ -44,7 +45,7 @@ graph LR
   - Requests from MapLibre's Web Worker go through the service worker too.
   - The tiles are gzip on disk and served with `Content-Encoding: gzip`. The browser decodes them before caching, so cached responses replay correctly.
 - **Glyphs** (`/map/fonts/**`) are cached on first use in `map-fonts`. The files never change.
-- **Flags are not cached.** They come from `flags.restcountries.com`, which sends no CORS headers, so the worker would only see opaque responses. Chrome counts each opaque cache entry as several MB of quota, so caching ~250 flags that way risks eviction on phones with little storage. Offline, a flag shows as a broken image. The fix is to self-host the flags in the data pipeline.
+- **Flags are precached.** All 195 (`flags/*.svg`, about 1 MB gzipped) are served from our origin (see [Flags in data-pipeline.md](data-pipeline.md#flags)). They are precached up front rather than on first view, because any country can come up in an offline round or review. When a flag fails to load anyway, `FlagImage` renders nothing instead of a broken image.
 
 ## Updates
 
@@ -53,7 +54,7 @@ graph LR
 - `AppUpdateNotice` shows a toast with an "Update" button. It is mounted only on the home page, the single-player setup pages and the multiplayer home page, so it never appears inside a game or a room, and it is dismissed when the player leaves those pages. If the player ignores it, the new worker takes over the next time every GeoRally tab is closed.
 - "Update" sends `SKIP_WAITING`. The page reloads on `controllerchange`. workbox-window's own reload only runs when the page was already controlled at registration, which isn't true in a session that started on the very first visit.
 - The worker calls `clients.claim()` on activation, so runtime caching starts on the first visit, not after a reload.
-- `nginx.conf` and `public/_headers` serve `/sw.js` with `Cache-Control: no-cache`, so the browser always checks it for changes.
+- `nginx.conf` serves `/sw.js` with `Cache-Control: no-cache`, so the browser always checks it for changes.
 - **Kill switch:** if a broken worker ever ships, build once with `selfDestroying: true` in the `VitePWA` options. That worker unregisters itself and clears its caches on every device.
 
 ## Offline and standalone behaviour

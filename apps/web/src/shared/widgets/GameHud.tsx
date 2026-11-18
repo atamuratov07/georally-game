@@ -2,6 +2,7 @@ import { Timer } from 'lucide-react'
 import type { CSSProperties, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/utils'
+import { FlagImage } from './FlagImage'
 
 interface GameHudProps {
 	current: number
@@ -60,7 +61,7 @@ export function GameHud({
 								{targetName}
 							</span>
 							{targetFlagUrl ? (
-								<img
+								<FlagImage
 									data-hud-part='flag'
 									src={targetFlagUrl}
 									alt=''

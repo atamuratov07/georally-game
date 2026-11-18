@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-07T18:48:25.854Z",
+  "generated_at": "2026-11-18T07:05:13.794Z",
   "country_count": 195,
   "countries": [
     {
@@ -39,7 +39,7 @@
         74.8925,
         38.4741
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/af.svg",
+      "flagUrl": "/flags/004.svg?v=adebcd50",
       "independent": true,
       "unMember": true
     },
@@ -79,7 +79,7 @@
         21.0361,
         42.6552
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/al.svg",
+      "flagUrl": "/flags/008.svg?v=173ec6b2",
       "independent": true,
       "unMember": true
     },
@@ -119,7 +119,7 @@
         11.9683,
         37.0936
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/dz.svg",
+      "flagUrl": "/flags/012.svg?v=51bda9bd",
       "independent": true,
       "unMember": true
     },
@@ -159,7 +159,7 @@
         1.7647,
         42.6492
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ad.svg",
+      "flagUrl": "/flags/020.svg?v=e2cf35be",
       "independent": true,
       "unMember": true
     },
@@ -199,7 +199,7 @@
         24.0615,
         -4.3915
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ao.svg",
+      "flagUrl": "/flags/024.svg?v=0f10545c",
       "independent": true,
       "unMember": true
     },
@@ -239,7 +239,7 @@
         -61.6676,
         17.7278
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ag.svg",
+      "flagUrl": "/flags/028.svg?v=73f382e9",
       "independent": true,
       "unMember": true
     },
@@ -279,7 +279,7 @@
         50.6264,
         41.8901
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/az.svg",
+      "flagUrl": "/flags/031.svg?v=963c074a",
       "independent": true,
       "unMember": true
     },
@@ -319,7 +319,7 @@
         -53.6613,
         -21.7875
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ar.svg",
+      "flagUrl": "/flags/032.svg?v=0828d651",
       "independent": true,
       "unMember": true
     },
@@ -359,7 +359,7 @@
         153.6301,
         -9.2403
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/au.svg",
+      "flagUrl": "/flags/036.svg?v=b826e039",
       "independent": true,
       "unMember": true
     },
@@ -399,7 +399,7 @@
         17.1483,
         49.01
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/at.svg",
+      "flagUrl": "/flags/040.svg?v=5c5bded6",
       "independent": true,
       "unMember": true
     },
@@ -439,7 +439,7 @@
         -72.7459,
         26.9282
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/bs.svg",
+      "flagUrl": "/flags/044.svg?v=44946f0b",
       "independent": true,
       "unMember": true
     },
@@ -479,7 +479,7 @@
         50.6456,
         26.243
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/bh.svg",
+      "flagUrl": "/flags/048.svg?v=4cb584ef",
       "independent": true,
       "unMember": true
     },
@@ -519,7 +519,7 @@
         92.6423,
         26.6242
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/bd.svg",
+      "flagUrl": "/flags/050.svg?v=b509e5c2",
       "independent": true,
       "unMember": true
     },
@@ -559,7 +559,7 @@
         46.6027,
         41.2902
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/am.svg",
+      "flagUrl": "/flags/051.svg?v=1eb2190d",
       "independent": true,
       "unMember": true
     },
@@ -599,7 +599,7 @@
         -59.4264,
         13.3442
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/bb.svg",
+      "flagUrl": "/flags/052.svg?v=b38fe14e",
       "independent": true,
       "unMember": true
     },
@@ -639,7 +639,7 @@
         6.3749,
         51.496
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/be.svg",
+      "flagUrl": "/flags/056.svg?v=95933c38",
       "independent": true,
       "unMember": true
     },
@@ -679,7 +679,7 @@
         92.0888,
         28.3588
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/bt.svg",
+      "flagUrl": "/flags/064.svg?v=39a47be4",
       "independent": true,
       "unMember": true
     },
@@ -719,7 +719,7 @@
         -57.4653,
         -9.6792
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/bo.svg",
+      "flagUrl": "/flags/068.svg?v=7d724dac",
       "independent": true,
       "unMember": true
     },
@@ -759,7 +759,7 @@
         19.6189,
         45.2846
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ba.svg",
+      "flagUrl": "/flags/070.svg?v=1c83a2cf",
       "independent": true,
       "unMember": true
     },
@@ -799,7 +799,7 @@
         29.35,
         -17.7813
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/bw.svg",
+      "flagUrl": "/flags/072.svg?v=e89b9cb2",
       "independent": true,
       "unMember": true
     },
@@ -839,7 +839,7 @@
         -34.7937,
         5.2674
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/br.svg",
+      "flagUrl": "/flags/076.svg?v=e0215eff",
       "independent": true,
       "unMember": true
     },
@@ -879,7 +879,7 @@
         -87.7835,
         18.4914
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/bz.svg",
+      "flagUrl": "/flags/084.svg?v=0284c300",
       "independent": true,
       "unMember": true
     },
@@ -919,7 +919,7 @@
         162.757,
         -6.6004
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/sb.svg",
+      "flagUrl": "/flags/090.svg?v=56e24d58",
       "independent": true,
       "unMember": true
     },
@@ -959,7 +959,7 @@
         115.3606,
         5.0568
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/bn.svg",
+      "flagUrl": "/flags/096.svg?v=cdb37ed2",
       "independent": true,
       "unMember": true
     },
@@ -999,7 +999,7 @@
         28.603,
         44.2285
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/bg.svg",
+      "flagUrl": "/flags/100.svg?v=829c1f5f",
       "independent": true,
       "unMember": true
     },
@@ -1039,7 +1039,7 @@
         101.1745,
         28.5387
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/mm.svg",
+      "flagUrl": "/flags/104.svg?v=2ebf5312",
       "independent": true,
       "unMember": true
     },
@@ -1079,7 +1079,7 @@
         30.8346,
         -2.3023
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/bi.svg",
+      "flagUrl": "/flags/108.svg?v=00f86f04",
       "independent": true,
       "unMember": true
     },
@@ -1119,7 +1119,7 @@
         32.7201,
         56.1571
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/by.svg",
+      "flagUrl": "/flags/112.svg?v=2af1ac1e",
       "independent": true,
       "unMember": true
     },
@@ -1159,7 +1159,7 @@
         107.6111,
         14.7045
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/kh.svg",
+      "flagUrl": "/flags/116.svg?v=bdff2091",
       "independent": true,
       "unMember": true
     },
@@ -1199,7 +1199,7 @@
         16.2076,
         13.0809
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/cm.svg",
+      "flagUrl": "/flags/120.svg?v=e00c6cbb",
       "independent": true,
       "unMember": true
     },
@@ -1239,7 +1239,7 @@
         -52.6162,
         83.1166
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ca.svg",
+      "flagUrl": "/flags/124.svg?v=3cd6c2b9",
       "independent": true,
       "unMember": true
     },
@@ -1279,7 +1279,7 @@
         -22.6661,
         17.1973
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/cv.svg",
+      "flagUrl": "/flags/132.svg?v=bcbf0add",
       "independent": true,
       "unMember": true
     },
@@ -1319,7 +1319,7 @@
         27.4412,
         11.0006
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/cf.svg",
+      "flagUrl": "/flags/140.svg?v=f36cc981",
       "independent": true,
       "unMember": true
     },
@@ -1359,7 +1359,7 @@
         81.8908,
         9.8296
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/lk.svg",
+      "flagUrl": "/flags/144.svg?v=c6d5351f",
       "independent": true,
       "unMember": true
     },
@@ -1399,7 +1399,7 @@
         23.9846,
         23.4444
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/td.svg",
+      "flagUrl": "/flags/148.svg?v=46d9a786",
       "independent": true,
       "unMember": true
     },
@@ -1439,7 +1439,7 @@
         -66.4205,
         -17.5065
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/cl.svg",
+      "flagUrl": "/flags/152.svg?v=ca4d50dc",
       "independent": true,
       "unMember": true
     },
@@ -1479,7 +1479,7 @@
         134.7721,
         53.5697
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/cn.svg",
+      "flagUrl": "/flags/156.svg?v=ce797608",
       "independent": true,
       "unMember": true
     },
@@ -1519,7 +1519,7 @@
         -66.8751,
         13.578
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/co.svg",
+      "flagUrl": "/flags/170.svg?v=ec3daa5a",
       "independent": true,
       "unMember": true
     },
@@ -1559,7 +1559,7 @@
         44.529,
         -11.3615
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/km.svg",
+      "flagUrl": "/flags/174.svg?v=21e3ee9d",
       "independent": true,
       "unMember": true
     },
@@ -1599,7 +1599,7 @@
         18.6425,
         3.7081
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/cg.svg",
+      "flagUrl": "/flags/178.svg?v=3bff163b",
       "independent": true,
       "unMember": true
     },
@@ -1639,7 +1639,7 @@
         31.2699,
         5.3754
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/cd.svg",
+      "flagUrl": "/flags/180.svg?v=e2e70cf2",
       "independent": true,
       "unMember": true
     },
@@ -1679,7 +1679,7 @@
         -82.5622,
         11.2094
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/cr.svg",
+      "flagUrl": "/flags/188.svg?v=f7e60b87",
       "independent": true,
       "unMember": true
     },
@@ -1719,7 +1719,7 @@
         19.4074,
         46.5466
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/hr.svg",
+      "flagUrl": "/flags/191.svg?v=fa441578",
       "independent": true,
       "unMember": true
     },
@@ -1759,7 +1759,7 @@
         -74.1329,
         23.2654
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/cu.svg",
+      "flagUrl": "/flags/192.svg?v=afba6d3e",
       "independent": true,
       "unMember": true
     },
@@ -1799,7 +1799,7 @@
         34.0989,
         35.1873
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/cy.svg",
+      "flagUrl": "/flags/196.svg?v=4473ff55",
       "independent": true,
       "unMember": true
     },
@@ -1839,7 +1839,7 @@
         18.8375,
         51.0397
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/cz.svg",
+      "flagUrl": "/flags/203.svg?v=5f4ba801",
       "independent": true,
       "unMember": true
     },
@@ -1879,7 +1879,7 @@
         3.837,
         12.3991
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/bj.svg",
+      "flagUrl": "/flags/204.svg?v=03e7fd78",
       "independent": true,
       "unMember": true
     },
@@ -1919,7 +1919,7 @@
         12.6742,
         57.7511
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/dk.svg",
+      "flagUrl": "/flags/208.svg?v=eb4ea992",
       "independent": true,
       "unMember": true
     },
@@ -1959,7 +1959,7 @@
         -61.2487,
         15.6337
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/dm.svg",
+      "flagUrl": "/flags/212.svg?v=b4371e47",
       "independent": true,
       "unMember": true
     },
@@ -1999,7 +1999,7 @@
         -68.328,
         19.9373
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/do.svg",
+      "flagUrl": "/flags/214.svg?v=ed01134a",
       "independent": true,
       "unMember": true
     },
@@ -2039,7 +2039,7 @@
         -75.2275,
         1.435
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ec.svg",
+      "flagUrl": "/flags/218.svg?v=59c54050",
       "independent": true,
       "unMember": true
     },
@@ -2079,7 +2079,7 @@
         -87.6928,
         14.4454
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/sv.svg",
+      "flagUrl": "/flags/222.svg?v=cbd0f1c0",
       "independent": true,
       "unMember": true
     },
@@ -2119,7 +2119,7 @@
         11.3366,
         3.7725
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/gq.svg",
+      "flagUrl": "/flags/226.svg?v=c9127828",
       "independent": true,
       "unMember": true
     },
@@ -2159,7 +2159,7 @@
         47.9787,
         14.8798
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/et.svg",
+      "flagUrl": "/flags/231.svg?v=980ec719",
       "independent": true,
       "unMember": true
     },
@@ -2199,7 +2199,7 @@
         43.1241,
         18.0049
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/er.svg",
+      "flagUrl": "/flags/232.svg?v=69f92c17",
       "independent": true,
       "unMember": true
     },
@@ -2239,7 +2239,7 @@
         28.1868,
         59.6713
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ee.svg",
+      "flagUrl": "/flags/233.svg?v=a880630e",
       "independent": true,
       "unMember": true
     },
@@ -2279,7 +2279,7 @@
         181.784,
         -16.121
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/fj.svg",
+      "flagUrl": "/flags/242.svg?v=e2c0c872",
       "independent": true,
       "unMember": true
     },
@@ -2319,7 +2319,7 @@
         31.5693,
         70.0755
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/fi.svg",
+      "flagUrl": "/flags/246.svg?v=5d1ab833",
       "independent": true,
       "unMember": true
     },
@@ -2359,7 +2359,7 @@
         9.5595,
         51.0872
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/fr.svg",
+      "flagUrl": "/flags/250.svg?v=09645c97",
       "independent": true,
       "unMember": true
     },
@@ -2399,7 +2399,7 @@
         43.4194,
         12.7074
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/dj.svg",
+      "flagUrl": "/flags/262.svg?v=072cd869",
       "independent": true,
       "unMember": true
     },
@@ -2439,7 +2439,7 @@
         14.4993,
         2.323
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ga.svg",
+      "flagUrl": "/flags/266.svg?v=43e2be0b",
       "independent": true,
       "unMember": true
     },
@@ -2479,7 +2479,7 @@
         46.6947,
         43.5755
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ge.svg",
+      "flagUrl": "/flags/268.svg?v=dfba0d29",
       "independent": true,
       "unMember": true
     },
@@ -2519,7 +2519,7 @@
         -13.818,
         13.8195
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/gm.svg",
+      "flagUrl": "/flags/270.svg?v=d4418b31",
       "independent": true,
       "unMember": true
     },
@@ -2559,7 +2559,7 @@
         35.5724,
         32.5422
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ps.svg",
+      "flagUrl": "/flags/275.svg?v=6ccd9cba",
       "independent": true,
       "unMember": false
     },
@@ -2599,7 +2599,7 @@
         15.0225,
         55.065
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/de.svg",
+      "flagUrl": "/flags/276.svg?v=595d7718",
       "independent": true,
       "unMember": true
     },
@@ -2639,7 +2639,7 @@
         1.1879,
         11.1636
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/gh.svg",
+      "flagUrl": "/flags/288.svg?v=a8c4320f",
       "independent": true,
       "unMember": true
     },
@@ -2679,7 +2679,7 @@
         205.0599,
         4.7229
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ki.svg",
+      "flagUrl": "/flags/296.svg?v=3c5c18f1",
       "independent": true,
       "unMember": true
     },
@@ -2719,7 +2719,7 @@
         28.2404,
         41.7509
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/gr.svg",
+      "flagUrl": "/flags/300.svg?v=e8a25b9e",
       "independent": true,
       "unMember": true
     },
@@ -2759,7 +2759,7 @@
         -61.4218,
         12.5291
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/gd.svg",
+      "flagUrl": "/flags/308.svg?v=a2068c16",
       "independent": true,
       "unMember": true
     },
@@ -2799,7 +2799,7 @@
         -88.2215,
         17.8154
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/gt.svg",
+      "flagUrl": "/flags/320.svg?v=d59addea",
       "independent": true,
       "unMember": true
     },
@@ -2839,7 +2839,7 @@
         -7.6629,
         12.6739
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/gn.svg",
+      "flagUrl": "/flags/324.svg?v=4932e18d",
       "independent": true,
       "unMember": true
     },
@@ -2879,7 +2879,7 @@
         -56.482,
         8.558
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/gy.svg",
+      "flagUrl": "/flags/328.svg?v=910830b8",
       "independent": true,
       "unMember": true
     },
@@ -2919,7 +2919,7 @@
         -71.639,
         20.0895
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ht.svg",
+      "flagUrl": "/flags/332.svg?v=65839463",
       "independent": true,
       "unMember": true
     },
@@ -2959,7 +2959,7 @@
         12.4805,
         41.9044
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/va.svg",
+      "flagUrl": "/flags/336.svg?v=23174e1d",
       "independent": true,
       "unMember": false
     },
@@ -2999,7 +2999,7 @@
         -83.1307,
         17.4188
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/hn.svg",
+      "flagUrl": "/flags/340.svg?v=d2dd47a4",
       "independent": true,
       "unMember": true
     },
@@ -3039,7 +3039,7 @@
         22.8777,
         48.5694
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/hu.svg",
+      "flagUrl": "/flags/348.svg?v=2025b7ca",
       "independent": true,
       "unMember": true
     },
@@ -3079,7 +3079,7 @@
         -13.5035,
         66.5642
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/is.svg",
+      "flagUrl": "/flags/352.svg?v=b14a9078",
       "independent": true,
       "unMember": true
     },
@@ -3119,7 +3119,7 @@
         97.3623,
         35.4954
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/in.svg",
+      "flagUrl": "/flags/356.svg?v=ea996669",
       "independent": true,
       "unMember": true
     },
@@ -3159,7 +3159,7 @@
         140.978,
         5.9098
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/id.svg",
+      "flagUrl": "/flags/360.svg?v=b9d9dea9",
       "independent": true,
       "unMember": true
     },
@@ -3199,7 +3199,7 @@
         63.3198,
         39.7717
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ir.svg",
+      "flagUrl": "/flags/364.svg?v=8e3015ef",
       "independent": true,
       "unMember": true
     },
@@ -3239,7 +3239,7 @@
         48.5596,
         37.3757
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/iq.svg",
+      "flagUrl": "/flags/368.svg?v=b0de86ef",
       "independent": true,
       "unMember": true
     },
@@ -3279,7 +3279,7 @@
         -5.993,
         55.3862
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ie.svg",
+      "flagUrl": "/flags/372.svg?v=5a2e2ec7",
       "independent": true,
       "unMember": true
     },
@@ -3319,7 +3319,7 @@
         35.8883,
         33.4063
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/il.svg",
+      "flagUrl": "/flags/376.svg?v=9e884f0c",
       "independent": true,
       "unMember": true
     },
@@ -3359,7 +3359,7 @@
         18.5175,
         47.0851
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/it.svg",
+      "flagUrl": "/flags/380.svg?v=7f818fa8",
       "independent": true,
       "unMember": true
     },
@@ -3399,7 +3399,7 @@
         -2.5062,
         10.7268
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ci.svg",
+      "flagUrl": "/flags/384.svg?v=aaf7093d",
       "independent": true,
       "unMember": true
     },
@@ -3439,7 +3439,7 @@
         -76.1874,
         18.5252
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/jm.svg",
+      "flagUrl": "/flags/388.svg?v=44504dda",
       "independent": true,
       "unMember": true
     },
@@ -3479,7 +3479,7 @@
         145.8243,
         45.5208
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/jp.svg",
+      "flagUrl": "/flags/392.svg?v=e8e6f6e7",
       "independent": true,
       "unMember": true
     },
@@ -3519,7 +3519,7 @@
         87.3235,
         55.4345
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/kz.svg",
+      "flagUrl": "/flags/398.svg?v=71a7d90e",
       "independent": true,
       "unMember": true
     },
@@ -3559,7 +3559,7 @@
         39.2927,
         33.3719
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/jo.svg",
+      "flagUrl": "/flags/400.svg?v=fb2b2896",
       "independent": true,
       "unMember": true
     },
@@ -3599,7 +3599,7 @@
         41.8854,
         5.0308
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ke.svg",
+      "flagUrl": "/flags/404.svg?v=0c65788e",
       "independent": true,
       "unMember": true
     },
@@ -3639,7 +3639,7 @@
         130.7003,
         43.0107
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/kp.svg",
+      "flagUrl": "/flags/408.svg?v=2891274f",
       "independent": true,
       "unMember": true
     },
@@ -3679,7 +3679,7 @@
         131.8621,
         38.6244
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/kr.svg",
+      "flagUrl": "/flags/410.svg?v=4e0b6d5f",
       "independent": true,
       "unMember": true
     },
@@ -3719,7 +3719,7 @@
         48.4333,
         30.0989
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/kw.svg",
+      "flagUrl": "/flags/414.svg?v=ce622987",
       "independent": true,
       "unMember": true
     },
@@ -3759,7 +3759,7 @@
         80.2579,
         43.2613
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/kg.svg",
+      "flagUrl": "/flags/417.svg?v=b6e67c6f",
       "independent": true,
       "unMember": true
     },
@@ -3799,7 +3799,7 @@
         107.6647,
         22.4961
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/la.svg",
+      "flagUrl": "/flags/418.svg?v=c0cbe90a",
       "independent": true,
       "unMember": true
     },
@@ -3839,7 +3839,7 @@
         36.6037,
         34.6875
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/lb.svg",
+      "flagUrl": "/flags/422.svg?v=2c69b33a",
       "independent": true,
       "unMember": true
     },
@@ -3879,7 +3879,7 @@
         29.4365,
         -28.5712
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ls.svg",
+      "flagUrl": "/flags/426.svg?v=66002ab4",
       "independent": true,
       "unMember": true
     },
@@ -3919,7 +3919,7 @@
         28.2171,
         58.075
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/lv.svg",
+      "flagUrl": "/flags/428.svg?v=470445d5",
       "independent": true,
       "unMember": true
     },
@@ -3959,7 +3959,7 @@
         -7.3841,
         8.5648
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/lr.svg",
+      "flagUrl": "/flags/430.svg?v=b722560b",
       "independent": true,
       "unMember": true
     },
@@ -3999,7 +3999,7 @@
         25.156,
         33.1813
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ly.svg",
+      "flagUrl": "/flags/434.svg?v=e2b01974",
       "independent": true,
       "unMember": true
     },
@@ -4039,7 +4039,7 @@
         9.6158,
         47.2625
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/li.svg",
+      "flagUrl": "/flags/438.svg?v=308d212c",
       "independent": true,
       "unMember": true
     },
@@ -4079,7 +4079,7 @@
         26.8012,
         56.4428
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/lt.svg",
+      "flagUrl": "/flags/440.svg?v=9743f780",
       "independent": true,
       "unMember": true
     },
@@ -4119,7 +4119,7 @@
         6.5026,
         50.1752
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/lu.svg",
+      "flagUrl": "/flags/442.svg?v=23c57bfe",
       "independent": true,
       "unMember": true
     },
@@ -4159,7 +4159,7 @@
         50.5042,
         -11.9439
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/mg.svg",
+      "flagUrl": "/flags/450.svg?v=00a57050",
       "independent": true,
       "unMember": true
     },
@@ -4199,7 +4199,7 @@
         35.9047,
         -9.3813
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/mw.svg",
+      "flagUrl": "/flags/454.svg?v=81a7dc8d",
       "independent": true,
       "unMember": true
     },
@@ -4239,7 +4239,7 @@
         119.2786,
         7.3557
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/my.svg",
+      "flagUrl": "/flags/458.svg?v=1d3284c7",
       "independent": true,
       "unMember": true
     },
@@ -4279,7 +4279,7 @@
         73.7526,
         7.1078
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/mv.svg",
+      "flagUrl": "/flags/462.svg?v=a825c00d",
       "independent": true,
       "unMember": true
     },
@@ -4319,7 +4319,7 @@
         4.2353,
         24.9948
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ml.svg",
+      "flagUrl": "/flags/466.svg?v=ae9516c4",
       "independent": true,
       "unMember": true
     },
@@ -4359,7 +4359,7 @@
         14.5665,
         36.0758
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/mt.svg",
+      "flagUrl": "/flags/470.svg?v=708f8eef",
       "independent": true,
       "unMember": true
     },
@@ -4399,7 +4399,7 @@
         -4.8216,
         27.2852
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/mr.svg",
+      "flagUrl": "/flags/478.svg?v=1655e7ed",
       "independent": true,
       "unMember": true
     },
@@ -4439,7 +4439,7 @@
         57.8321,
         -19.9798
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/mu.svg",
+      "flagUrl": "/flags/480.svg?v=c35ef838",
       "independent": true,
       "unMember": true
     },
@@ -4479,7 +4479,7 @@
         -86.6999,
         32.7134
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/mx.svg",
+      "flagUrl": "/flags/484.svg?v=baa6f716",
       "independent": true,
       "unMember": true
     },
@@ -4519,7 +4519,7 @@
         7.4378,
         43.7711
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/mc.svg",
+      "flagUrl": "/flags/492.svg?v=bb97fd4d",
       "independent": true,
       "unMember": true
     },
@@ -4559,7 +4559,7 @@
         119.9076,
         52.1293
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/mn.svg",
+      "flagUrl": "/flags/496.svg?v=4f89f928",
       "independent": true,
       "unMember": true
     },
@@ -4599,7 +4599,7 @@
         30.1314,
         48.4857
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/md.svg",
+      "flagUrl": "/flags/498.svg?v=a61c465c",
       "independent": true,
       "unMember": true
     },
@@ -4639,7 +4639,7 @@
         20.355,
         43.5476
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/me.svg",
+      "flagUrl": "/flags/499.svg?v=4c5a11bc",
       "independent": true,
       "unMember": true
     },
@@ -4679,7 +4679,7 @@
         -1.0313,
         35.9269
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ma.svg",
+      "flagUrl": "/flags/504.svg?v=1f6f0d1b",
       "independent": true,
       "unMember": true
     },
@@ -4719,7 +4719,7 @@
         40.8486,
         -10.4689
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/mz.svg",
+      "flagUrl": "/flags/508.svg?v=649e978e",
       "independent": true,
       "unMember": true
     },
@@ -4759,7 +4759,7 @@
         59.844,
         26.3858
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/om.svg",
+      "flagUrl": "/flags/512.svg?v=38f39605",
       "independent": true,
       "unMember": true
     },
@@ -4799,7 +4799,7 @@
         25.2604,
         -16.9504
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/na.svg",
+      "flagUrl": "/flags/516.svg?v=ddc9fc88",
       "independent": true,
       "unMember": true
     },
@@ -4839,7 +4839,7 @@
         166.9579,
         -0.4902
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/nr.svg",
+      "flagUrl": "/flags/520.svg?v=1db65631",
       "independent": true,
       "unMember": true
     },
@@ -4879,7 +4879,7 @@
         88.1695,
         30.4168
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/np.svg",
+      "flagUrl": "/flags/524.svg?v=f4a65e69",
       "independent": true,
       "unMember": true
     },
@@ -4919,7 +4919,7 @@
         7.1988,
         53.5583
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/nl.svg",
+      "flagUrl": "/flags/528.svg?v=2f746357",
       "independent": true,
       "unMember": true
     },
@@ -4959,7 +4959,7 @@
         169.8995,
         -13.0647
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/vu.svg",
+      "flagUrl": "/flags/548.svg?v=18232f22",
       "independent": true,
       "unMember": true
     },
@@ -4999,7 +4999,7 @@
         178.8437,
         -34.3978
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/nz.svg",
+      "flagUrl": "/flags/554.svg?v=aa29843a",
       "independent": true,
       "unMember": true
     },
@@ -5039,7 +5039,7 @@
         -82.7256,
         15.0311
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ni.svg",
+      "flagUrl": "/flags/558.svg?v=ed4fbc93",
       "independent": true,
       "unMember": true
     },
@@ -5079,7 +5079,7 @@
         15.9701,
         23.5175
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ne.svg",
+      "flagUrl": "/flags/562.svg?v=28609886",
       "independent": true,
       "unMember": true
     },
@@ -5119,7 +5119,7 @@
         14.6695,
         13.8808
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ng.svg",
+      "flagUrl": "/flags/566.svg?v=3dbebd9f",
       "independent": true,
       "unMember": true
     },
@@ -5159,7 +5159,7 @@
         31.0776,
         71.1652
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/no.svg",
+      "flagUrl": "/flags/578.svg?v=0d4b9a52",
       "independent": true,
       "unMember": true
     },
@@ -5199,7 +5199,7 @@
         158.3391,
         8.9869
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/fm.svg",
+      "flagUrl": "/flags/583.svg?v=d88d4388",
       "independent": true,
       "unMember": true
     },
@@ -5239,7 +5239,7 @@
         172.0295,
         11.7115
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/mh.svg",
+      "flagUrl": "/flags/584.svg?v=4d9431d2",
       "independent": true,
       "unMember": true
     },
@@ -5279,7 +5279,7 @@
         134.7268,
         8.096
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/pw.svg",
+      "flagUrl": "/flags/585.svg?v=47fc578c",
       "independent": true,
       "unMember": true
     },
@@ -5319,7 +5319,7 @@
         77.0485,
         37.0541
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/pk.svg",
+      "flagUrl": "/flags/586.svg?v=2011fe01",
       "independent": true,
       "unMember": true
     },
@@ -5359,7 +5359,7 @@
         -77.1638,
         9.6292
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/pa.svg",
+      "flagUrl": "/flags/591.svg?v=8e8c7cf8",
       "independent": true,
       "unMember": true
     },
@@ -5399,7 +5399,7 @@
         155.9675,
         -1.3457
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/pg.svg",
+      "flagUrl": "/flags/598.svg?v=d98adee3",
       "independent": true,
       "unMember": true
     },
@@ -5439,7 +5439,7 @@
         -54.2449,
         -19.2865
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/py.svg",
+      "flagUrl": "/flags/600.svg?v=5bb06bf5",
       "independent": true,
       "unMember": true
     },
@@ -5479,7 +5479,7 @@
         -68.6837,
         -0.0288
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/pe.svg",
+      "flagUrl": "/flags/604.svg?v=a35cf7c9",
       "independent": true,
       "unMember": true
     },
@@ -5519,7 +5519,7 @@
         126.6175,
         21.123
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ph.svg",
+      "flagUrl": "/flags/608.svg?v=d5542973",
       "independent": true,
       "unMember": true
     },
@@ -5559,7 +5559,7 @@
         24.1439,
         54.8387
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/pl.svg",
+      "flagUrl": "/flags/616.svg?v=da6d9e34",
       "independent": true,
       "unMember": true
     },
@@ -5599,7 +5599,7 @@
         -6.2059,
         42.1533
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/pt.svg",
+      "flagUrl": "/flags/620.svg?v=f60337f2",
       "independent": true,
       "unMember": true
     },
@@ -5639,7 +5639,7 @@
         -13.6601,
         12.6792
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/gw.svg",
+      "flagUrl": "/flags/624.svg?v=00dd3c38",
       "independent": true,
       "unMember": true
     },
@@ -5679,7 +5679,7 @@
         127.3137,
         -8.1353
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/tl.svg",
+      "flagUrl": "/flags/626.svg?v=1f25223c",
       "independent": true,
       "unMember": true
     },
@@ -5719,7 +5719,7 @@
         51.6166,
         26.1604
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/qa.svg",
+      "flagUrl": "/flags/634.svg?v=5332c024",
       "independent": true,
       "unMember": true
     },
@@ -5759,7 +5759,7 @@
         29.7002,
         48.275
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ro.svg",
+      "flagUrl": "/flags/642.svg?v=20c8e695",
       "independent": true,
       "unMember": true
     },
@@ -5799,7 +5799,7 @@
         191.0056,
         81.8587
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ru.svg",
+      "flagUrl": "/flags/643.svg?v=eb1dbd97",
       "independent": true,
       "unMember": true
     },
@@ -5839,7 +5839,7 @@
         30.8881,
         -1.0587
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/rw.svg",
+      "flagUrl": "/flags/646.svg?v=21b67e23",
       "independent": true,
       "unMember": true
     },
@@ -5879,7 +5879,7 @@
         -62.5369,
         17.4162
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/kn.svg",
+      "flagUrl": "/flags/659.svg?v=5274df62",
       "independent": true,
       "unMember": true
     },
@@ -5919,7 +5919,7 @@
         -60.8834,
         14.1113
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/lc.svg",
+      "flagUrl": "/flags/662.svg?v=13f4f19e",
       "independent": true,
       "unMember": true
     },
@@ -5959,7 +5959,7 @@
         -61.1238,
         13.3803
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/vc.svg",
+      "flagUrl": "/flags/670.svg?v=c2a36b00",
       "independent": true,
       "unMember": true
     },
@@ -5999,7 +5999,7 @@
         12.4929,
         43.983
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/sm.svg",
+      "flagUrl": "/flags/674.svg?v=bb35493b",
       "independent": true,
       "unMember": true
     },
@@ -6039,7 +6039,7 @@
         7.4625,
         1.6999
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/st.svg",
+      "flagUrl": "/flags/678.svg?v=a9507595",
       "independent": true,
       "unMember": true
     },
@@ -6079,7 +6079,7 @@
         55.6376,
         32.121
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/sa.svg",
+      "flagUrl": "/flags/682.svg?v=7176d38f",
       "independent": true,
       "unMember": true
     },
@@ -6119,7 +6119,7 @@
         -11.3777,
         16.6915
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/sn.svg",
+      "flagUrl": "/flags/686.svg?v=c0593c9c",
       "independent": true,
       "unMember": true
     },
@@ -6159,7 +6159,7 @@
         22.9848,
         46.1742
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/rs.svg",
+      "flagUrl": "/flags/688.svg?v=5bc4c829",
       "independent": true,
       "unMember": true
     },
@@ -6199,7 +6199,7 @@
         56.2871,
         -3.7916
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/sc.svg",
+      "flagUrl": "/flags/690.svg?v=b7a1ccdf",
       "independent": true,
       "unMember": true
     },
@@ -6239,7 +6239,7 @@
         -10.2818,
         9.996
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/sl.svg",
+      "flagUrl": "/flags/694.svg?v=21d7e066",
       "independent": true,
       "unMember": true
     },
@@ -6279,7 +6279,7 @@
         104.0035,
         1.4487
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/sg.svg",
+      "flagUrl": "/flags/702.svg?v=d8782c5c",
       "independent": true,
       "unMember": true
     },
@@ -6319,7 +6319,7 @@
         22.5399,
         49.6019
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/sk.svg",
+      "flagUrl": "/flags/703.svg?v=e684da4c",
       "independent": true,
       "unMember": true
     },
@@ -6359,7 +6359,7 @@
         109.4719,
         23.3663
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/vn.svg",
+      "flagUrl": "/flags/704.svg?v=bd236e52",
       "independent": true,
       "unMember": true
     },
@@ -6399,7 +6399,7 @@
         16.5152,
         46.864
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/si.svg",
+      "flagUrl": "/flags/705.svg?v=31b0d198",
       "independent": true,
       "unMember": true
     },
@@ -6439,7 +6439,7 @@
         51.4174,
         11.9897
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/so.svg",
+      "flagUrl": "/flags/706.svg?v=3a342342",
       "independent": true,
       "unMember": true
     },
@@ -6479,7 +6479,7 @@
         32.8931,
         -22.1263
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/za.svg",
+      "flagUrl": "/flags/710.svg?v=6fbf0b68",
       "independent": true,
       "unMember": true
     },
@@ -6519,7 +6519,7 @@
         33.0428,
         -15.6151
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/zw.svg",
+      "flagUrl": "/flags/716.svg?v=f0b79e88",
       "independent": true,
       "unMember": true
     },
@@ -6559,7 +6559,7 @@
         4.3369,
         43.7939
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/es.svg",
+      "flagUrl": "/flags/724.svg?v=d672868d",
       "independent": true,
       "unMember": true
     },
@@ -6599,7 +6599,7 @@
         35.9212,
         12.2166
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ss.svg",
+      "flagUrl": "/flags/728.svg?v=0f2a925c",
       "independent": true,
       "unMember": true
     },
@@ -6639,7 +6639,7 @@
         38.6033,
         22.2269
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/sd.svg",
+      "flagUrl": "/flags/729.svg?v=305064d3",
       "independent": true,
       "unMember": true
     },
@@ -6679,7 +6679,7 @@
         -53.9868,
         6.0122
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/sr.svg",
+      "flagUrl": "/flags/740.svg?v=098067b9",
       "independent": true,
       "unMember": true
     },
@@ -6719,7 +6719,7 @@
         32.1172,
         -25.7355
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/sz.svg",
+      "flagUrl": "/flags/748.svg?v=3d48fcbb",
       "independent": true,
       "unMember": true
     },
@@ -6759,7 +6759,7 @@
         24.1631,
         69.0362
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/se.svg",
+      "flagUrl": "/flags/752.svg?v=426348d9",
       "independent": true,
       "unMember": true
     },
@@ -6799,7 +6799,7 @@
         10.4673,
         47.8012
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ch.svg",
+      "flagUrl": "/flags/756.svg?v=a5ec3bbf",
       "independent": true,
       "unMember": true
     },
@@ -6839,7 +6839,7 @@
         42.3771,
         37.3254
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/sy.svg",
+      "flagUrl": "/flags/760.svg?v=114f63ff",
       "independent": true,
       "unMember": true
     },
@@ -6879,7 +6879,7 @@
         75.1644,
         41.0401
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/tj.svg",
+      "flagUrl": "/flags/762.svg?v=597f154c",
       "independent": true,
       "unMember": true
     },
@@ -6919,7 +6919,7 @@
         105.6514,
         20.4451
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/th.svg",
+      "flagUrl": "/flags/764.svg?v=6b5a7a86",
       "independent": true,
       "unMember": true
     },
@@ -6959,7 +6959,7 @@
         1.7826,
         11.1353
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/tg.svg",
+      "flagUrl": "/flags/768.svg?v=8d50a481",
       "independent": true,
       "unMember": true
     },
@@ -6999,7 +6999,7 @@
         -173.9135,
         -18.5655
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/to.svg",
+      "flagUrl": "/flags/776.svg?v=aaf4a1b5",
       "independent": true,
       "unMember": true
     },
@@ -7039,7 +7039,7 @@
         -60.5223,
         11.3508
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/tt.svg",
+      "flagUrl": "/flags/780.svg?v=89fa29d1",
       "independent": true,
       "unMember": true
     },
@@ -7079,7 +7079,7 @@
         56.3833,
         26.0753
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ae.svg",
+      "flagUrl": "/flags/784.svg?v=8db8bfc3",
       "independent": true,
       "unMember": true
     },
@@ -7119,7 +7119,7 @@
         11.5645,
         37.3451
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/tn.svg",
+      "flagUrl": "/flags/788.svg?v=b0d8964e",
       "independent": true,
       "unMember": true
     },
@@ -7159,7 +7159,7 @@
         44.8064,
         42.0993
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/tr.svg",
+      "flagUrl": "/flags/792.svg?v=f15da84b",
       "independent": true,
       "unMember": true
     },
@@ -7199,7 +7199,7 @@
         66.6459,
         42.7914
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/tm.svg",
+      "flagUrl": "/flags/795.svg?v=a03b94f6",
       "independent": true,
       "unMember": true
     },
@@ -7239,7 +7239,7 @@
         179.9067,
         -5.6774
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/tv.svg",
+      "flagUrl": "/flags/798.svg?v=8596575d",
       "independent": true,
       "unMember": true
     },
@@ -7279,7 +7279,7 @@
         35.0066,
         4.2191
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ug.svg",
+      "flagUrl": "/flags/800.svg?v=b0d36274",
       "independent": true,
       "unMember": true
     },
@@ -7319,7 +7319,7 @@
         40.1592,
         52.3689
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ua.svg",
+      "flagUrl": "/flags/804.svg?v=542eaacd",
       "independent": true,
       "unMember": true
     },
@@ -7359,7 +7359,7 @@
         23.0095,
         42.3708
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/mk.svg",
+      "flagUrl": "/flags/807.svg?v=72a37e58",
       "independent": true,
       "unMember": true
     },
@@ -7399,7 +7399,7 @@
         36.899,
         31.6569
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/eg.svg",
+      "flagUrl": "/flags/818.svg?v=07129395",
       "independent": true,
       "unMember": true
     },
@@ -7439,7 +7439,7 @@
         1.7716,
         60.8476
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/gb.svg",
+      "flagUrl": "/flags/826.svg?v=42f04826",
       "independent": true,
       "unMember": true
     },
@@ -7479,7 +7479,7 @@
         40.449,
         -0.9859
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/tz.svg",
+      "flagUrl": "/flags/834.svg?v=0bdf0b45",
       "independent": true,
       "unMember": true
     },
@@ -7519,7 +7519,7 @@
         -66.8916,
         49.3699
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/us.svg",
+      "flagUrl": "/flags/840.svg?v=e1792c01",
       "independent": true,
       "unMember": true
     },
@@ -7559,7 +7559,7 @@
         2.3896,
         15.0801
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/bf.svg",
+      "flagUrl": "/flags/854.svg?v=4c88dba8",
       "independent": true,
       "unMember": true
     },
@@ -7599,7 +7599,7 @@
         -53.1106,
         -30.0964
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/uy.svg",
+      "flagUrl": "/flags/858.svg?v=856fc0e1",
       "independent": true,
       "unMember": true
     },
@@ -7639,7 +7639,7 @@
         73.1484,
         45.5583
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/uz.svg",
+      "flagUrl": "/flags/860.svg?v=7ce6e8b7",
       "independent": true,
       "unMember": true
     },
@@ -7679,7 +7679,7 @@
         -59.815,
         12.1991
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ve.svg",
+      "flagUrl": "/flags/862.svg?v=756f64b7",
       "independent": true,
       "unMember": true
     },
@@ -7719,7 +7719,7 @@
         -171.4375,
         -13.463
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ws.svg",
+      "flagUrl": "/flags/882.svg?v=acedd8fb",
       "independent": true,
       "unMember": true
     },
@@ -7759,7 +7759,7 @@
         54.5403,
         18.996
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/ye.svg",
+      "flagUrl": "/flags/887.svg?v=a92f3989",
       "independent": true,
       "unMember": true
     },
@@ -7799,7 +7799,7 @@
         33.6745,
         -8.2223
       ],
-      "flagUrl": "https://flags.restcountries.com/v5/svg/zm.svg",
+      "flagUrl": "/flags/894.svg?v=b64a4ec9",
       "independent": true,
       "unMember": true
     }

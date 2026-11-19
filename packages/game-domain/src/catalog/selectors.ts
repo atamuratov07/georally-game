@@ -1,7 +1,10 @@
 import type { CountryId, GameQuestionSetConfig } from '../shared/types'
 import type { CountryPool, CountryPoolEntry } from './types'
 
-const DIFFICULTY_RANK: Record<GameQuestionSetConfig['difficulty'], number> = {
+export const DIFFICULTY_RANK: Record<
+	GameQuestionSetConfig['difficulty'],
+	number
+> = {
 	easy: 0,
 	medium: 1,
 	hard: 2,

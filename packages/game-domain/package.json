@@ -48,6 +48,12 @@
 			"import": "./dist/singleplayer/recall-sprint/index.js",
 			"default": "./dist/singleplayer/recall-sprint/index.js"
 		},
+		"./singleplayer/routes": {
+			"types": "./src/singleplayer/routes/index.ts",
+			"development": "./src/singleplayer/routes/index.ts",
+			"import": "./dist/singleplayer/routes/index.js",
+			"default": "./dist/singleplayer/routes/index.js"
+		},
 		"./multiplayer": {
 			"types": "./src/multiplayer/index.ts",
 			"development": "./src/multiplayer/index.ts",

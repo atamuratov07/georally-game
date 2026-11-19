@@ -1,3 +1,10 @@
-import type { CountryId } from '../shared/types'
-
-export type BorderGraph = Readonly<Record<CountryId, readonly CountryId[]>>
+export {
+	bestCompletion,
+	detour,
+	distancesFrom,
+	easiestShortestPathRank,
+	fromEdges,
+	routeDistances,
+	shortestPath,
+} from './graph'
+export type { BorderGraph, RouteDistances } from './types'

@@ -238,12 +238,13 @@ georally-game/
 |   |       |-- shared/                  # base types, result, errors, random, time
 |   |       |-- catalog/                 # country eligibility selectors, question set selection
 |   |       |-- answers/                 # typed and spoken answer matcher (Name It)
-|   |       |-- borders/                 # the land border graph type
+|   |       |-- borders/                 # the land border graph and its searches
 |   |       |-- singleplayer/
 |   |       |   |-- rounds.ts            # phases, state shape and selectors shared by the modes
 |   |       |   |-- locate/              # find-on-the-map mode
 |   |       |   |-- name-it/             # name-the-country mode
-|   |       |   `-- recall-sprint/       # name-as-many-as-you-can mode
+|   |       |   |-- recall-sprint/       # name-as-many-as-you-can mode
+|   |       |   `-- routes/              # connect-two-countries mode
 |   |       `-- multiplayer/
 |   |           |-- orchestration.ts     # room + game commands combined (start, submit, reveal, advance)
 |   |           |-- errors.ts

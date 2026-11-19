@@ -58,6 +58,18 @@ stateDiagram-v2
 
 **Name It.** `ATTEMPT` carries a `MatchResult` from the answer matcher ([`answers.md`](answers.md)) and the input method. A wrong attempt is recorded on the round (`attempts`) and costs only time; a correct one scores `50 + 50 × (time left / time limit)`. The round ends as `timeUp` at its deadline: `TIME_UP` before the deadline is ignored, and an attempt arriving at or after it resolves as `timeUp`, so the order of the timer and the input never matters. Attempts with an input method the config doesn't allow are ignored.
 
+**Routes** (`routes/`, connect two countries by naming the ones between them; the web app doesn't use it yet) has Recall Sprint's single-session shape and its names: `RouteSession`, `prepareRouteSession`, `reduceRouteState`. Its phases are `idle` → `playing` → `finished`.
+
+- **The board.** `createRouteBoard(graph, ends)` binds the border graph to one start and target. It answers verdicts, par, solves and hints.
+- **One board per game.** The game page builds it once and passes it to every `reduceRouteState(board, state, action)` call, so the reducer never sees the graph. The screens use the same board, so their colours match the reducer's.
+- **A board from another game throws** on its first use.
+- **The graph is loaded lazily and never saved.** Only the board and `prepareRouteSession` take it.
+- **The state holds only what the player did:** the config, the endpoints, and the guesses and hints with their times. Verdicts and par come from the board.
+- **The actions:** `ATTEMPT` stops at the name that solves the puzzle. `HINT` adds the first unknown country of the best completion and can solve it. `GIVE_UP` finishes.
+- **Practice and the daily share the engine;** only the session's source differs.
+
+The rules and their reasons are in [`proposals/routes-mode.md`](../proposals/routes-mode.md).
+
 ## Find It in the browser
 
 - **Nothing white while loading.** The play route of every mode shows `GameLoader` while the page's code downloads (the `<Suspense>` fallback in `routes.tsx`, in the main bundle, so it shows at once): a dark full-screen panel with the leave button and a loading bar. Find It's own intro then takes its place at the same spot: the same panel, leave button and bar, now with the first question above the bar. Every bar sweeps in step with the clock (its animation delay is the current time modulo the sweep), so the swap doesn't restart it. On the same timer and Start hover that prefetch the game page, the setup pages warm the HTTP cache (`shared/map/prefetchMap.ts`) with the archipelago outlines, the tiles up to zoom 2 and the glyph ranges that at least 5% of the language's country or capital labels use; rarer ranges (a dash in two Russian names, Uzbek ʻ, two English capitals) still load on demand, since each glyph file is 50–130 KB. Loading the game page also evaluates `BaseMap`, which calls MapLibre's `prewarm()`: the worker starts during setup and stays alive for the session, where MapLibre would otherwise end it with the last map and restart it, re-parsing every tile, for the next game. MapLibre has its own chunk (`manualChunks` in `vite.config.ts`), and no setup page may import a module that imports `maplibre-gl` at runtime (`shared/map/camera/framing.ts` does, for `LngLat`): Recall Sprint's setup counts its countries with `regionCountries.ts` rather than `sprintRegion.ts` for that reason, so a setup page never waits for MapLibre's 300 KB.

@@ -15,8 +15,8 @@ import type { SingleplayerModeId } from '../../paths'
 interface SetupCardProps {
 	mode: SingleplayerModeId
 	copyLink: string
-	canStart: boolean
-	eligibleCount: number
+	canStart?: boolean
+	eligibleCount?: number
 	onStart: () => void
 	onPrefetch: () => void
 	children: ReactNode
@@ -25,8 +25,8 @@ interface SetupCardProps {
 export function SetupCard({
 	mode,
 	copyLink,
-	canStart,
-	eligibleCount,
+	canStart = true,
+	eligibleCount = 0,
 	onStart,
 	onPrefetch,
 	children,

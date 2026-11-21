@@ -158,7 +158,7 @@ for (const kind of ['add', 'remove']) {
 		overrideProblems.push(`border_overrides: "${kind}" must be a list`)
 		continue
 	}
-	for (const { a, b, reason } of overrides[kind]) {
+	for (const { a, b, reason, crossing } of overrides[kind]) {
 		const label = `border_overrides ${kind} ${a}-${b}`
 		if (!idByA3.has(a) || !idByA3.has(b) || a === b) {
 			overrideProblems.push(
@@ -177,7 +177,7 @@ for (const kind of ['add', 'remove']) {
 				overrideProblems.push(
 					`${label}: the geometry already has this border`,
 				)
-			} else borders.set(key, null)
+			} else borders.set(key, crossing ? { crossing } : null)
 		} else if (!borders.delete(key)) {
 			overrideProblems.push(`${label}: the geometry has no such border`)
 		}
@@ -202,7 +202,8 @@ const crossings = Object.fromEntries(
 	keysById
 		.filter(key => borders.get(key))
 		.map(key => {
-			const { lines } = borders.get(key)
+			const { lines, crossing } = borders.get(key)
+			if (crossing) return [idPair(key).join('-'), roundPoint(crossing)]
 			const longest = lines.reduce((best, line) =>
 				lineKm(line) > lineKm(best) ? line : best,
 			)

@@ -1,10 +1,23 @@
 import { useEffect, useRef, type FormEvent } from 'react'
-import { useTranslation } from 'react-i18next'
 import {
 	ANSWER_FIELD_ATTRIBUTES,
 	useInitialFocus,
 } from '@/shared/answers/answerField'
-import type { SprintInputState } from '../useSprintInput'
+
+export interface GuessFieldInput {
+	text: string
+	change: (value: string) => void
+	submit: () => void
+	mistake: { at: number } | null
+	listening: boolean
+	interim: string
+}
+
+interface GuessFieldLabels {
+	placeholder: string
+	inputLabel: string
+	listening: string
+}
 
 const SHAKE: Keyframe[] = [
 	{ transform: 'translateX(0)' },
@@ -15,8 +28,10 @@ const SHAKE: Keyframe[] = [
 	{ transform: 'translateX(0)' },
 ]
 
-export function useSprintField(input: SprintInputState) {
-	const { t } = useTranslation()
+export function useGuessField(
+	input: GuessFieldInput,
+	labels: GuessFieldLabels,
+) {
 	const formRef = useRef<HTMLFormElement>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
 	const mistakeAt = input.mistake?.at
@@ -45,9 +60,9 @@ export function useSprintField(input: SprintInputState) {
 		onChange: (event: { target: { value: string } }) =>
 			input.change(event.target.value),
 		placeholder: input.listening
-			? input.interim || t('voice.listening')
-			: t('recallSprint.placeholder'),
-		'aria-label': t('recallSprint.inputLabel'),
+			? input.interim || labels.listening
+			: labels.placeholder,
+		'aria-label': labels.inputLabel,
 	}
 
 	return { formRef, onSubmit, fieldProps }

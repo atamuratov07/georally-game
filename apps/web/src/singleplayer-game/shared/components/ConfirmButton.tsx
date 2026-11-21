@@ -1,21 +1,24 @@
-import { Flag } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Button } from '@/shared/ui'
 import { cn } from '@/shared/utils'
 
 const CONFIRM_MS = 3000
 
-interface FinishButtonProps {
-	onFinish: () => void
+interface ConfirmButtonProps {
+	label: string
+	confirmLabel: string
+	icon: ReactNode
+	onConfirm: () => void
 	confirmClassName: string
 }
 
-export function FinishButton({
-	onFinish,
+export function ConfirmButton({
+	label: idleLabel,
+	confirmLabel,
+	icon,
+	onConfirm,
 	confirmClassName,
-}: FinishButtonProps) {
-	const { t } = useTranslation()
+}: ConfirmButtonProps) {
 	const [confirming, setConfirming] = useState(false)
 	const areaRef = useRef<HTMLDivElement>(null)
 
@@ -45,9 +48,7 @@ export function FinishButton({
 		}
 	}, [confirming])
 
-	const label = confirming
-		? t('recallSprint.finishConfirm')
-		: t('recallSprint.finish')
+	const label = confirming ? confirmLabel : idleLabel
 
 	return (
 		<div ref={areaRef} className='relative'>
@@ -57,9 +58,9 @@ export function FinishButton({
 				variant={confirming ? 'coral' : 'neutral'}
 				aria-label={label}
 				title={label}
-				onClick={confirming ? onFinish : () => setConfirming(true)}
+				onClick={confirming ? onConfirm : () => setConfirming(true)}
 			>
-				<Flag aria-hidden='true' />
+				{icon}
 			</Button>
 			{confirming ? (
 				<Button
@@ -70,9 +71,9 @@ export function FinishButton({
 						'absolute h-11 animate-pop-in whitespace-nowrap',
 						confirmClassName,
 					)}
-					onClick={onFinish}
+					onClick={onConfirm}
 				>
-					{t('recallSprint.finishConfirm')}
+					{confirmLabel}
 				</Button>
 			) : null}
 		</div>

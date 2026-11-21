@@ -4,7 +4,8 @@ export {
 	distancesFrom,
 	easiestShortestPathRank,
 	fromEdges,
+	pathLinks,
 	routeDistances,
 	shortestPath,
 } from './graph'
-export type { BorderGraph, RouteDistances } from './types'
+export type { BorderGraph, BorderLink, RouteDistances } from './types'

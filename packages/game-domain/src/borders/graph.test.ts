@@ -77,6 +77,27 @@ describe('border graph', () => {
 		).toEqual(['ESP', 'FRA', 'DEU', 'AUT'])
 	})
 
+	it('prefers fewer crossings between completions that need as many countries', () => {
+		const ring = fromEdges([
+			['S', 'X'],
+			['X', 'K'],
+			['K', 'T'],
+			['S', 'A'],
+			['A', 'B'],
+			['B', 'C'],
+			['C', 'D'],
+			['D', 'Y'],
+			['Y', 'T'],
+		])
+		const known = new Set(['K', 'A', 'B', 'C', 'D'])
+		expect(bestCompletion(ring, known, 'S', 'T')).toEqual([
+			'S',
+			'X',
+			'K',
+			'T',
+		])
+	})
+
 	it('finds the easiest rank a shortest path can keep to', () => {
 		const ranks: Record<string, number> = { CHE: 2, DEU: 2 }
 		const rank = (id: string) => ranks[id] ?? 0

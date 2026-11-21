@@ -1,5 +1,5 @@
 import type { CountryId } from '../shared/types'
-import type { BorderGraph, RouteDistances } from './types'
+import type { BorderGraph, BorderLink, RouteDistances } from './types'
 
 type Allowed = (id: CountryId) => boolean
 
@@ -23,6 +23,10 @@ export function fromEdges(
 	const graph: Record<CountryId, CountryId[]> = {}
 	for (const [id, set] of neighbours) graph[id] = [...set].sort()
 	return graph
+}
+
+export function pathLinks(path: readonly CountryId[]): BorderLink[] {
+	return path.slice(1).map((id, i) => [path[i], id] as const)
 }
 
 export function distancesFrom(
@@ -97,6 +101,8 @@ export function detour(
 	return a === undefined || b === undefined ? Infinity : a + b - shortest
 }
 
+const UNKNOWN_COST = 1 << 16
+
 export function bestCompletion(
 	graph: BorderGraph,
 	free: ReadonlySet<CountryId>,
@@ -105,25 +111,29 @@ export function bestCompletion(
 ): CountryId[] | null {
 	const cost = new Map<CountryId, number>([[from, 0]])
 	const parent = new Map<CountryId, CountryId>()
-	let layer = [from]
+	const settled = new Set<CountryId>()
+	const open = [from]
 
-	for (let c = 0; layer.length > 0; c++) {
-		const next: CountryId[] = []
-		for (let i = 0; i < layer.length; i++) {
-			const node = layer[i]
-			if (cost.get(node) !== c) continue
-			if (node === to) return trace(parent, from, to)
-
-			for (const neighbour of graph[node] ?? []) {
-				const step = neighbour === to || free.has(neighbour) ? 0 : 1
-				const known = cost.get(neighbour)
-				if (known !== undefined && known <= c + step) continue
-				cost.set(neighbour, c + step)
-				parent.set(neighbour, node)
-				;(step === 0 ? layer : next).push(neighbour)
-			}
+	while (open.length > 0) {
+		let best = 0
+		for (let i = 1; i < open.length; i++) {
+			if (cost.get(open[i])! < cost.get(open[best])!) best = i
 		}
-		layer = next
+		const [node] = open.splice(best, 1)
+		if (node === to) return trace(parent, from, to)
+		if (settled.has(node)) continue
+		settled.add(node)
+
+		for (const neighbour of graph[node] ?? []) {
+			const step =
+				neighbour === to || free.has(neighbour) ? 1 : 1 + UNKNOWN_COST
+			const next = cost.get(node)! + step
+			const known = cost.get(neighbour)
+			if (known !== undefined && known <= next) continue
+			cost.set(neighbour, next)
+			parent.set(neighbour, node)
+			open.push(neighbour)
+		}
 	}
 	return null
 }

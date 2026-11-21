@@ -1,7 +1,17 @@
 export { createRouteBoard, type RouteBoard } from './board'
 export { ratingRank, ROUTE_SCOPE_CONTINENTS, routeLevels } from './difficulty'
 export { createIdleState, reduceRouteState } from './engine'
-export { getKnownIds, getScore, getTimeline } from './selectors'
+export { routeLinks, type RouteLink } from './links'
+export {
+	getFinalChain,
+	getKnownIds,
+	getLastMove,
+	getMissingIds,
+	getMoves,
+	getScore,
+	getTimeline,
+	isPerfect,
+} from './selectors'
 export { dailyRouteSession, prepareRouteSession } from './session'
 export {
 	ROUTE_SCOPES,
@@ -16,6 +26,7 @@ export {
 	type RouteConfig,
 	type RouteDailyConfig,
 	type RouteEnds,
+	type RouteMove,
 	type RouteOutcome,
 	type RoutePhase,
 	type RoutePracticeConfig,

@@ -101,6 +101,12 @@ export type RouteAction =
 	| { type: 'HINT'; now: number }
 	| { type: 'GIVE_UP'; now: number }
 
+export interface RouteMove {
+	kind: 'guess' | 'hint'
+	at: number
+	countryIds: readonly CountryId[]
+}
+
 export type TimelineEvent =
 	| { kind: 'guess'; countryId: CountryId; at: number }
 	| { kind: 'hint'; countryId: CountryId; at: number }

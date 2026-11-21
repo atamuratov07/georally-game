@@ -1,6 +1,6 @@
 import { assertNever } from '../../shared/errors'
 import type { RouteBoard } from './board'
-import { getKnownIds } from './selectors'
+import { getKnownIds, getTimeline } from './selectors'
 import type {
 	Attempt,
 	FinishedRouteState,
@@ -109,7 +109,10 @@ export function reduceRouteState(
 			}
 
 			const known = new Set(getKnownIds(state))
-			const countryId = board.nextHint(known)
+			const countryId = board.nextHint(
+				known,
+				getTimeline(state).map(event => event.countryId),
+			)
 			if (countryId === null) {
 				return state
 			}

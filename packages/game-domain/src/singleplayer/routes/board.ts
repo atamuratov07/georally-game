@@ -13,7 +13,10 @@ export interface RouteBoard extends RouteEnds {
 	verdict(id: CountryId): RouteVerdict
 	isSolved(known: ReadonlySet<CountryId>): boolean
 	completion(known: ReadonlySet<CountryId>): CountryId[] | null
-	nextHint(known: ReadonlySet<CountryId>): CountryId | null
+	nextHint(
+		known: ReadonlySet<CountryId>,
+		order: readonly CountryId[],
+	): CountryId | null
 	chainWithin(known: ReadonlySet<CountryId>): CountryId[] | null
 }
 
@@ -41,8 +44,24 @@ export function createRouteBoard(
 		},
 		isSolved: known => chainWithin(known) !== null,
 		completion,
-		nextHint: known =>
-			completion(known)?.find(id => !isEnd(id) && !known.has(id)) ?? null,
+		nextHint(known, order) {
+			const path = completion(known)
+			const gaps =
+				path?.flatMap((id, i) => (isEnd(id) || known.has(id) ? [] : [i])) ??
+				[]
+			if (!path || gaps.length === 0) return null
+			const latest = [...order]
+				.reverse()
+				.find(id => path.includes(id) && !isEnd(id))
+			const from = latest === undefined ? -1 : path.indexOf(latest)
+			const nearest =
+				from < 0
+					? gaps[0]
+					: gaps.reduce((a, b) =>
+							Math.abs(b - from) < Math.abs(a - from) ? b : a,
+						)
+			return path[nearest]
+		},
 		chainWithin,
 	}
 }

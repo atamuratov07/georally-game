@@ -5,7 +5,7 @@ import { fromEdges } from '../../borders'
 import { createRouteBoard } from './board'
 import { routeLevels } from './difficulty'
 import { createIdleState, reduceRouteState } from './engine'
-import { getKnownIds, getScore, getTimeline } from './selectors'
+import { getKnownIds, getScore, getTimeline, isPerfect } from './selectors'
 import { dailyRouteSession } from './session'
 import type { RouteAction, RouteConfig, RouteEnds, RouteState } from './types'
 
@@ -162,10 +162,11 @@ describe('route engine', () => {
 		const sentence = say(started(), ['FRA', 'DEU', 'ITA'])
 		expect(sentence).toMatchObject({ phase: 'finished', outcome: 'solved' })
 		expect(getScore(sentence)).toBe(2)
+		expect(isPerfect(boardFor(sentence as RouteEnds), sentence)).toBe(true)
 		expect(getKnownIds(sentence).has('ITA')).toBe(false)
 	})
 
-	it('hints the next country of the best completion, at a cost of one', () => {
+	it('hints the country of the best completion next to the latest one, at a cost of one', () => {
 		const named = say(started(), ['ITA'])
 		const hinted = reduce(named, { type: 'HINT', now: T0 + 2_000 })
 		expect(hinted).toMatchObject({
@@ -174,6 +175,7 @@ describe('route engine', () => {
 			hints: [{ countryId: 'FRA', at: T0 + 2_000 }],
 		})
 		expect(getScore(hinted)).toBe(2)
+		expect(isPerfect(boardFor(hinted as RouteEnds), hinted)).toBe(false)
 
 		const fresh = reduce(started(), { type: 'HINT', now: T0 + 1_000 })
 		expect(fresh).toMatchObject({
@@ -183,6 +185,11 @@ describe('route engine', () => {
 		expect(say(fresh, ['FRA'])).toMatchObject({
 			lastAttempt: { repeatedIds: ['FRA'] },
 		})
+
+		const fromTarget = say(started('PRT', 'AUT'), ['DEU'])
+		expect(
+			reduce(fromTarget, { type: 'HINT', now: T0 + 2_000 }),
+		).toMatchObject({ hints: [{ countryId: 'FRA' }] })
 	})
 
 	it('gives up and then ignores everything but a new start', () => {

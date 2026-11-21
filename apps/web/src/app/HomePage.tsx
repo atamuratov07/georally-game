@@ -13,14 +13,14 @@ import { LocalizedLink } from './LocalizedLink'
 const HeroGlobe = lazy(() => import('./landing/HeroGlobe'))
 const NameItDemo = lazy(() => import('./landing/NameItDemo'))
 const SprintDemo = lazy(() => import('./landing/SprintDemo'))
-
-const MODE_POINTS = ['point1', 'point2', 'point3'] as const
+const RoutesDemo = lazy(() => import('./landing/RoutesDemo'))
 
 const MODES = [
 	{
 		key: 'solo',
 		to: '/singleplayer',
 		cta: 'playSolo',
+		points: ['point1', 'point2', 'point3', 'point4'],
 		button: 'primary',
 		panel: 'bg-sunflower-100 [--edge:var(--color-sunflower-300)]',
 		bullet: 'bg-sunflower-500',
@@ -29,6 +29,7 @@ const MODES = [
 		key: 'multiplayer',
 		to: '/multiplayer',
 		cta: 'playTogether',
+		points: ['point1', 'point2', 'point3'],
 		button: 'grape',
 		panel: 'bg-grape-100 [--edge:var(--color-grape-200)]',
 		bullet: 'bg-grape-500',
@@ -116,6 +117,15 @@ export default function HomePage() {
 							accent='coral'
 							text={t('landing.recallSprint.text')}
 						/>
+						<ModeShowcase
+							id='routes'
+							copyKey='routes'
+							to={singleplayerPaths('routes').setup}
+							Demo={RoutesDemo}
+							demoSide='left'
+							accent='grass'
+							text={t('landing.routes.text')}
+						/>
 
 						<section
 							aria-labelledby='modes-title'
@@ -145,7 +155,7 @@ export default function HomePage() {
 											</p>
 										</div>
 										<ul className='flex flex-1 flex-col gap-2'>
-											{MODE_POINTS.map(point => (
+											{mode.points.map(point => (
 												<li
 													key={point}
 													className='flex items-start gap-3 font-semibold'

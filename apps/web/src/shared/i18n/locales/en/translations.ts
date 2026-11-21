@@ -73,12 +73,19 @@ const translations = {
 			text: 'Name countries several in one breath. Whatever you forget waits on the map when time is up.',
 			cta: 'Start a sprint',
 		},
+		routes: {
+			eyebrow: 'Know the neighbours',
+			title: 'Find the shortest way <hl>between any two countries</hl>',
+			text: 'Name the countries in between, typed or out loud, and match the shortest route.',
+			cta: 'Plan a route',
+		},
 		solo: {
 			title: 'Solo game',
-			text: 'Train at your own pace, in three modes.',
+			text: 'Train at your own pace, in four modes.',
 			point1: 'Find it: spot the named country on the map',
 			point2: 'Name it: say or type the highlighted country',
 			point3: 'Recall sprint: name a whole region from memory',
+			point4: 'Routes: link two countries through the ones in between',
 		},
 		multiplayer: {
 			title: 'Live multiplayer',

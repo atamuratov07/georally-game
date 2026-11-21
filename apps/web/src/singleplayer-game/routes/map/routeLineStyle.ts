@@ -27,7 +27,7 @@ export const OFF_WAY: FilterSpecification = ['!', ['get', 'main']]
 export const NAVY = '#17224a'
 export const TOURED_CORD = '#ffd23f'
 export const TOURED_RIM = '#f5a400'
-const COUNTRY_FILL = '#ffd23f'
+export const COUNTRY_FILL = '#ffd23f'
 
 const SHADOW_TRANSLATE: [number, number] = [0, 2.5]
 const isMain: ExpressionSpecification = ['get', 'main']

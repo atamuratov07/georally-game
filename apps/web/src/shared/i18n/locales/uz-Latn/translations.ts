@@ -75,13 +75,20 @@ const translations = {
 			text: 'Davlatlarni bir nafasda bir nechtadan ayting. Vaqt tugagach, unutganlaringiz xaritada kutib turadi.',
 			cta: 'Sprintni boshlash',
 		},
+		routes: {
+			eyebrow: 'Qoʻshnilarni biling',
+			title: 'Istalgan ikki davlat orasidagi <hl>eng qisqa yoʻlni</hl> toping',
+			text: 'Oradagi davlatlarni yozib yoki ovoz bilan ayting va ortiqcha qadamsiz yeting.',
+			cta: 'Marshrut tuzish',
+		},
 		solo: {
 			title: "Yakka o'yin",
-			text: "O'z sur'atingizda, uch rejimda mashq qiling.",
+			text: "O'z sur'atingizda, to'rt rejimda mashq qiling.",
 			point1: '«Top»: nomi aytilgan davlatni xaritada toping',
 			point2:
 				'«Nomini ayt»: ajratilgan davlat nomini ovoz yoki matn bilan ayting',
 			point3: '«Sprint»: hududning barcha davlatlarini xotiradan nomlang',
+			point4: '«Marshrutlar»: ikki davlatni oradagilari orqali bogʻlang',
 		},
 		multiplayer: {
 			title: "Jonli ko'p o'yinchi",

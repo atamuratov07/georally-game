@@ -178,7 +178,7 @@ const ROUTE_FILL = {
 	near: SELECTION_FILL,
 	off: WRONG_FILL,
 } as const
-const ROUTE_UNKNOWN_FILL = '#d3d8de'
+export const ROUTE_UNKNOWN_FILL = '#d3d8de'
 const ROUTE_UNKNOWN_OPACITY = 0.85
 const ROUTE_EDGE = {
 	route: '#2f861b',

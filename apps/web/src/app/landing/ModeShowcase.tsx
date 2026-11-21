@@ -14,7 +14,7 @@ import { useNearViewport } from './useNearViewport'
 
 interface ModeShowcaseProps {
 	id: string
-	copyKey: 'nameIt' | 'recallSprint'
+	copyKey: 'nameIt' | 'recallSprint' | 'routes'
 	to: string
 	Demo: LazyExoticComponent<ComponentType<{ active: boolean }>>
 	demoSide: 'left' | 'right'
@@ -31,6 +31,10 @@ const ACCENTS = {
 	coral: {
 		badge: 'border-coral-600 bg-coral-500 [--edge:var(--color-coral-700)]',
 		button: 'coral',
+	},
+	grass: {
+		badge: 'border-grass-600 bg-grass-500 [--edge:var(--color-grass-700)]',
+		button: 'grass',
 	},
 } as const
 

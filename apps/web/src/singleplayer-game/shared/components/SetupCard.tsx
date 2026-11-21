@@ -19,6 +19,7 @@ interface SetupCardProps {
 	eligibleCount?: number
 	onStart: () => void
 	onPrefetch: () => void
+	note?: ReactNode
 	children: ReactNode
 }
 
@@ -29,6 +30,7 @@ export function SetupCard({
 	eligibleCount = 0,
 	onStart,
 	onPrefetch,
+	note,
 	children,
 }: SetupCardProps) {
 	const { t } = useTranslation()
@@ -55,7 +57,9 @@ export function SetupCard({
 					</CopyButton>
 				</div>
 				{descriptionKey ? (
-					<CardDescription>{t(descriptionKey)}</CardDescription>
+					<CardDescription>
+						{t(descriptionKey)} {note}
+					</CardDescription>
 				) : null}
 			</CardHeader>
 

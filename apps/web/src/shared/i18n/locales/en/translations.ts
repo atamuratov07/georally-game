@@ -258,6 +258,25 @@ const translations = {
 			guesses_one: '{{count}} country named',
 			guesses_other: '{{count}} countries named',
 		},
+		borders: {
+			open: 'What counts as a border?',
+			title: 'What counts as a border',
+			rule: 'Two countries border each other when they touch on land on the map, or when a bridge or tunnel joins them. Ferries don’t count.',
+			fixedLinks:
+				'<b>The Channel Tunnel, the Øresund Bridge and two causeways</b> join the United Kingdom and France, Denmark and Sweden, Malaysia and Singapore, and Saudi Arabia and Bahrain.',
+			frenchGuiana:
+				'<b>French Guiana</b> is France, so France borders Brazil and Suriname.',
+			ceutaMelilla:
+				'<b>Ceuta and Melilla</b> are Spain, so Spain borders Morocco.',
+			kaliningrad:
+				'<b>Kaliningrad</b> is Russia, so Russia borders Poland and Lithuania.',
+			cabinda:
+				'<b>Cabinda</b> is Angola, so Angola borders the Republic of the Congo.',
+			kazungula:
+				'<b>Kazungula</b>: Zambia and Botswana share about 150 m of border.',
+			gaps: '<b>Kosovo, Western Sahara and Somaliland</b> aren’t playable, so Serbia and Albania, Morocco and Mauritania, and Somalia and Djibouti don’t border.',
+			done: 'Got it',
+		},
 	},
 	nameIt: {
 		waiting: 'Get ready…',

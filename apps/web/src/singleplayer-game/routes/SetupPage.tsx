@@ -23,6 +23,7 @@ import {
 	routeScopeLabel,
 	toSearchParams,
 } from './config'
+import { BordersNote } from './components/BordersNote'
 import { useCountryName } from './countryNames'
 import { routeGameStore } from './store'
 
@@ -100,6 +101,7 @@ export default function SetupPage() {
 			<SetupCard
 				mode='routes'
 				copyLink={setupLink()}
+				note={<BordersNote />}
 				onStart={handleStart}
 				onPrefetch={prefetchGame}
 			>

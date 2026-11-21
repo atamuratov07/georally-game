@@ -262,6 +262,25 @@ const translations = {
 			guesses_one: '{{count}} ta davlat aytildi',
 			guesses_other: '{{count}} ta davlat aytildi',
 		},
+		borders: {
+			open: 'Chegara deb nima hisoblanadi?',
+			title: 'Chegara deb nima hisoblanadi',
+			rule: 'Xaritada quruqlikda bir-biriga tegib turgan yoki koʻprik yoxud tunnel bilan bogʻlangan davlatlar chegaradosh hisoblanadi. Paromlar hisobga olinmaydi.',
+			fixedLinks:
+				'<b>La-Mansh tunneli, Øresund koʻprigi va ikkita damba</b> Birlashgan Qirollik bilan Fransiyani, Daniya bilan Shvetsiyani, Malayziya bilan Singapurni, Saudiya Arabistoni bilan Bahraynni bogʻlaydi.',
+			frenchGuiana:
+				'<b>Fransuz Gvianasi</b> Fransiyaga tegishli, shuning uchun Fransiya Braziliya va Surinam bilan chegaradosh.',
+			ceutaMelilla:
+				'<b>Seuta va Melilya</b> Ispaniyaga tegishli, shuning uchun Ispaniya Marokash bilan chegaradosh.',
+			kaliningrad:
+				'<b>Kaliningrad</b> Rossiyaga tegishli, shuning uchun Rossiya Polsha va Litva bilan chegaradosh.',
+			cabinda:
+				'<b>Kabinda</b> Angolaga tegishli, shuning uchun Angola Kongo Respublikasi bilan chegaradosh.',
+			kazungula:
+				'<b>Kazungula</b>: Zambiya va Botsvana taxminan 150 m umumiy chegaraga ega.',
+			gaps: '<b>Kosovo, Gʻarbiy Sahroi Kabir va Somalilend</b> oʻyinda yoʻq, shuning uchun Serbiya va Albaniya, Marokash va Mavritaniya, Somali va Jibuti chegaradosh emas.',
+			done: 'Tushunarli',
+		},
 	},
 	nameIt: {
 		waiting: 'Tayyorlaning…',

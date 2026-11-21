@@ -30,7 +30,8 @@ export function trackRoomJoined(roomMode: RoomModeParam): void {
 	gtagEvent('room_joined', { room_mode: roomMode })
 }
 
-export type SingleplayerModeParam = 'locate' | 'name_it' | 'recall_sprint'
+export type SingleplayerModeParam =
+	'locate' | 'name_it' | 'recall_sprint' | 'routes'
 
 export function trackSingleplayerGameStart(params: {
 	mode: SingleplayerModeParam
@@ -136,6 +137,44 @@ export function trackSingleplayerGameEnd(params: {
 		question_count: params.questionCount,
 		score: params.score,
 		correct_count: params.correctCount,
+		duration_ms: params.durationMs,
+	})
+}
+
+interface RoutesGameParams {
+	kind: 'practice' | 'daily'
+	difficulty: string
+	scope: string
+	par: number
+}
+
+export function trackRoutesStart(params: RoutesGameParams): void {
+	gtagEvent('sp_game_start', {
+		mode: 'routes',
+		route_kind: params.kind,
+		difficulty: params.difficulty,
+		scope: params.scope,
+		par: params.par,
+	})
+}
+
+export function trackRoutesEnd(
+	params: RoutesGameParams & {
+		guesses: number
+		hints: number
+		outcome: 'solved' | 'gave_up'
+		durationMs: number
+	},
+): void {
+	gtagEvent('sp_game_end', {
+		mode: 'routes',
+		route_kind: params.kind,
+		difficulty: params.difficulty,
+		scope: params.scope,
+		par: params.par,
+		guesses: params.guesses,
+		hints: params.hints,
+		outcome: params.outcome,
 		duration_ms: params.durationMs,
 	})
 }

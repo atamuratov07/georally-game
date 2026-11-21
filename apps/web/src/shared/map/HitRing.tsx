@@ -1,7 +1,15 @@
 import { motion } from 'motion/react'
 import { cn } from '../utils'
 
-export function HitRing({ className }: { className?: string }) {
+export function HitRing({
+	className,
+	delay = 0.15,
+	onDone,
+}: {
+	className?: string
+	delay?: number
+	onDone?: () => void
+}) {
 	return (
 		<motion.span
 			aria-hidden='true'
@@ -11,7 +19,8 @@ export function HitRing({ className }: { className?: string }) {
 			)}
 			initial={{ scale: 0, opacity: 0 }}
 			animate={{ scale: [0, 1.6, 2.4], opacity: [0, 0.9, 0] }}
-			transition={{ duration: 1.1, delay: 0.15, ease: 'easeOut' }}
+			transition={{ duration: 1.1, delay, ease: 'easeOut' }}
+			onAnimationComplete={onDone}
 		/>
 	)
 }

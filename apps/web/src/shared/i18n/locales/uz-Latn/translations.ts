@@ -12,12 +12,15 @@ const translations = {
 		updateNow: 'Yangilash',
 		install: "O'rnatish",
 		iosTitle: "GeoRally'ni bosh ekranga qo'shing",
-		iosText: "O'yin ilova kabi to'liq ekranda ochiladi, yakka o'yin esa internetsiz ham ishlaydi.",
-		iosStep1: 'Safari panelida <share></share> <b>Ulashish</b> tugmasini bosing',
+		iosText:
+			"O'yin ilova kabi to'liq ekranda ochiladi, yakka o'yin esa internetsiz ham ishlaydi.",
+		iosStep1:
+			'Safari panelida <share></share> <b>Ulashish</b> tugmasini bosing',
 		iosStep2: '<b>Bosh ekranga</b> bandini tanlang',
 		share: 'Ulashish',
 		gotIt: 'Tushunarli',
-		offline: "Internet yo'q. Ko'p o'yinchili rejim uchun internet kerak, yakka o'yin esa ishlayveradi.",
+		offline:
+			"Internet yo'q. Ko'p o'yinchili rejim uchun internet kerak, yakka o'yin esa ishlayveradi.",
 	},
 	feedback: {
 		open: 'Fikr bildirish',
@@ -159,6 +162,11 @@ const translations = {
 				description:
 					'Vaqt tugaguncha mintaqadagi imkon qadar koʻp davlatni nomlang.',
 			},
+			routes: {
+				title: 'Marshrutlar',
+				description:
+					'Oradagi davlatlarni nomlab, bir davlatdan boshqasiga yetib boring.',
+			},
 		},
 		start: "O'yinni boshlash",
 		exit: 'Chiqish',
@@ -218,6 +226,41 @@ const translations = {
 			outside: '{{name}} «{{region}}» hududiga kirmaydi',
 			ambiguous: 'Qaysi {{text}}?',
 			unknown: '«{{text}}» nomaʼlum',
+		},
+	},
+	routes: {
+		americas: 'Amerika',
+		placeholder: 'Yoʻldagi davlatni ayting',
+		inputLabel: 'Mamlakat nomi',
+		journey: '{{start}} → {{target}}',
+		score: 'Hisob',
+		scoreLabel: 'Hisob {{score}}, meʼyor {{par}}',
+		hint: 'Yordam',
+		giveUpConfirm: 'Taslim boʻlasizmi?',
+		guesses: 'Siz aytgan davlatlar',
+		verdict: {
+			route: 'marshrutda',
+			near: 'marshrutdan bir qadam chetda',
+			off: 'marshrutda emas',
+		},
+		announce: '{{name}}: {{verdict}}',
+		announceHint: 'Yordam: {{name}}, {{verdict}}',
+		note: {
+			repeated: '{{name}} allaqachon aytilgan',
+			start: '{{name}} — boshlangʻich nuqta',
+			target: '{{name}} — manzil',
+			ambiguous: 'Qaysi {{text}}?',
+			unknown: '«{{text}}» nomaʼlum',
+		},
+		result: {
+			perfect: 'Mukammal!',
+			solved: 'Yechildi',
+			gaveUp: 'Taslim boʻldingiz',
+			next: 'Keyingi topshiriq',
+		},
+		resume: {
+			guesses_one: '{{count}} ta davlat aytildi',
+			guesses_other: '{{count}} ta davlat aytildi',
 		},
 	},
 	nameIt: {

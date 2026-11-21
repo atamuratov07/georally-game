@@ -12,12 +12,14 @@ const translations = {
 		updateNow: 'Обновить',
 		install: 'Установить',
 		iosTitle: 'Добавьте GeoRally на экран «Домой»',
-		iosText: 'Игра откроется на весь экран, как приложение, а одиночный режим будет работать без интернета.',
+		iosText:
+			'Игра откроется на весь экран, как приложение, а одиночный режим будет работать без интернета.',
 		iosStep1: 'Нажмите <share></share> <b>Поделиться</b> на панели Safari',
 		iosStep2: 'Выберите <b>На экран «Домой»</b>',
 		share: 'Поделиться',
 		gotIt: 'Понятно',
-		offline: 'Нет подключения к интернету. Для мультиплеера нужен интернет, а одиночная игра работает и так.',
+		offline:
+			'Нет подключения к интернету. Для мультиплеера нужен интернет, а одиночная игра работает и так.',
 	},
 	feedback: {
 		open: 'Отзыв',
@@ -157,6 +159,11 @@ const translations = {
 				description:
 					'Назовите как можно больше стран региона, пока не вышло время.',
 			},
+			routes: {
+				title: 'Маршруты',
+				description:
+					'Доберитесь от одной страны до другой, называя страны между ними.',
+			},
 		},
 		start: 'Начать игру',
 		exit: 'Выйти',
@@ -222,6 +229,43 @@ const translations = {
 			outside: '{{name}} не входит в регион «{{region}}»',
 			ambiguous: 'Какая именно: «{{text}}»?',
 			unknown: 'Не знаю «{{text}}»',
+		},
+	},
+	routes: {
+		americas: 'Америка',
+		placeholder: 'Назовите страну на пути',
+		inputLabel: 'Название страны',
+		journey: 'От: {{start}}, до: {{target}}',
+		score: 'Счёт',
+		scoreLabel: 'Счёт {{score}}, норма {{par}}',
+		hint: 'Подсказка',
+		giveUpConfirm: 'Сдаться сейчас?',
+		guesses: 'Ваши страны',
+		verdict: {
+			route: 'на маршруте',
+			near: 'в одном шаге от маршрута',
+			off: 'не на маршруте',
+		},
+		announce: '{{name}}: {{verdict}}',
+		announceHint: 'Подсказка: {{name}}, {{verdict}}',
+		note: {
+			repeated: 'Уже было: {{name}}',
+			start: '{{name}} — это старт',
+			target: '{{name}} — это финиш',
+			ambiguous: 'Какая именно: «{{text}}»?',
+			unknown: 'Не знаю «{{text}}»',
+		},
+		result: {
+			perfect: 'Идеально!',
+			solved: 'Решено',
+			gaveUp: 'Вы сдались',
+			next: 'Следующая задача',
+		},
+		resume: {
+			guesses_one: 'Названа {{count}} страна',
+			guesses_few: 'Названо {{count}} страны',
+			guesses_many: 'Названо {{count}} стран',
+			guesses_other: 'Названо {{count}} страны',
 		},
 	},
 	nameIt: {

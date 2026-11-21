@@ -12,9 +12,10 @@ import {
 
 interface LabelLayersProps {
 	countryIds: readonly string[]
+	namesAbovePoint?: boolean
 }
 
-export function LabelLayers({ countryIds }: LabelLayersProps) {
+export function LabelLayers({ countryIds, namesAbovePoint }: LabelLayersProps) {
 	const language = useCurrentLocale()
 
 	const geolinesLabelLayer = useMemo(
@@ -26,10 +27,19 @@ export function LabelLayers({ countryIds }: LabelLayersProps) {
 		() => buildCapitalLabelLayer(language),
 		[language],
 	)
-	const countryLabelLayer = useMemo(
-		() => buildCountryLabelLayer(language),
-		[language],
-	)
+	const countryLabelLayer = useMemo(() => {
+		const layer = buildCountryLabelLayer(language)
+		return namesAbovePoint
+			? {
+					...layer,
+					layout: {
+						...layer.layout,
+						'text-anchor': 'bottom' as const,
+						'text-offset': [0, -0.6] as [number, number],
+					},
+				}
+			: layer
+	}, [language, namesAbovePoint])
 
 	const filter = useMemo<FilterSpecification>(
 		() =>

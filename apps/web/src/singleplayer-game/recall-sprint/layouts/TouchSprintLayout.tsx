@@ -1,8 +1,10 @@
+import { Flag } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
+import { useTranslation } from 'react-i18next'
 import { ProjectionToggle } from '@/shared/map/ProjectionToggle'
+import { ConfirmButton } from '../../shared/components/ConfirmButton'
 import { LeaveButton } from '../../shared/components/LeaveButton'
 import { VoiceButton } from '../../shared/components/VoiceButton'
-import { FinishButton } from '../components/FinishButton'
 import { TouchSprintBar } from '../components/TouchSprintBar'
 import type { SprintLayoutProps } from '../sprintControls'
 
@@ -15,6 +17,7 @@ export function TouchSprintLayout({
 	controls,
 	keyboardInset,
 }: SprintLayoutProps) {
+	const { t } = useTranslation()
 	const reduceMotion = useReducedMotion()
 	const { input, map } = controls
 
@@ -33,8 +36,17 @@ export function TouchSprintLayout({
 				onLeave={controls.onLeave}
 				className='absolute top-22 left-3 z-30'
 			/>
+			<div className='absolute top-22 right-3 z-30'>
+				<ConfirmButton
+					label={t('recallSprint.finish')}
+					confirmLabel={t('recallSprint.finishConfirm')}
+					icon={<Flag aria-hidden='true' />}
+					onConfirm={controls.onFinish}
+					confirmClassName='top-0 right-full mr-2'
+				/>
+			</div>
 			<ProjectionToggle
-				className='absolute top-22 right-3 z-30'
+				className='absolute top-36 left-3 z-30'
 				value={map.projection}
 				globeDisabled={!map.globeAllowed}
 				onChange={map.onProjectionChange}
@@ -49,22 +61,14 @@ export function TouchSprintLayout({
 							: TOUCH_EDGE_GAP_PX,
 				}}
 			>
-				<div className='relative grid size-16 place-items-center'>
-					<div className='pointer-events-auto absolute right-full mr-6'>
-						<FinishButton
-							onFinish={controls.onFinish}
-							confirmClassName='bottom-full left-0 mb-5'
+				{input.voiceAvailable ? (
+					<div className='pointer-events-auto'>
+						<VoiceButton
+							listening={input.listening}
+							onPress={input.toggleVoice}
 						/>
 					</div>
-					{input.voiceAvailable ? (
-						<div className='pointer-events-auto'>
-							<VoiceButton
-								listening={input.listening}
-								onPress={input.toggleVoice}
-							/>
-						</div>
-					) : null}
-				</div>
+				) : null}
 			</div>
 		</>
 	)

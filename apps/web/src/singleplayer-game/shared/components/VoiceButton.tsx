@@ -11,7 +11,7 @@ interface VoiceButtonProps {
 
 function SoundBars() {
 	return (
-		<span aria-hidden='true' className='flex h-7 items-center gap-1'>
+		<span aria-hidden='true' className='flex h-6 items-center gap-1'>
 			{SOUND_BAR_DELAYS.map(delay => (
 				<span
 					key={delay}
@@ -28,12 +28,12 @@ export function VoiceButton({ listening, onPress }: VoiceButtonProps) {
 	const label = listening ? t('voice.stop') : t('voice.start')
 
 	return (
-		<span className='relative grid size-16 animate-pop-in place-items-center'>
+		<span className='relative grid size-14 animate-pop-in place-items-center'>
 			<Button
 				type='button'
 				size='icon'
 				variant={listening ? 'coral' : 'grape'}
-				className="relative size-16 [&_svg:not([class*='size-'])]:size-7"
+				className="relative size-14 [&_svg:not([class*='size-'])]:size-6"
 				aria-label={label}
 				aria-pressed={listening}
 				title={label}

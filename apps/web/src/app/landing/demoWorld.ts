@@ -107,6 +107,10 @@ export function cameraFor(
 	}
 }
 
+export function project(point: [number, number]): [number, number] {
+	return projection(point) ?? [0, 0]
+}
+
 export function labelPoint(id: string): [number, number] {
 	return projection(geoCentroid(mainland(id))) ?? [0, 0]
 }

@@ -1,15 +1,18 @@
+import { Flag } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
+import { useTranslation } from 'react-i18next'
 import { ProjectionToggle } from '@/shared/map/ProjectionToggle'
 import { CountdownBar } from '../../shared/components/CountdownBar'
+import { ConfirmButton } from '../../shared/components/ConfirmButton'
 import { LeaveButton } from '../../shared/components/LeaveButton'
 import { DesktopSprintBar } from '../components/DesktopSprintBar'
-import { FinishButton } from '../components/FinishButton'
 import type { SprintLayoutProps } from '../sprintControls'
 
 export function DesktopSprintLayout({
 	controls,
 	keyboardInset,
 }: SprintLayoutProps) {
+	const { t } = useTranslation()
 	const reduceMotion = useReducedMotion()
 	const { map } = controls
 
@@ -24,8 +27,11 @@ export function DesktopSprintLayout({
 				className='absolute top-4 left-3 z-30'
 			/>
 			<div className='absolute top-4 right-3 z-30'>
-				<FinishButton
-					onFinish={controls.onFinish}
+				<ConfirmButton
+					label={t('recallSprint.finish')}
+					confirmLabel={t('recallSprint.finishConfirm')}
+					icon={<Flag aria-hidden='true' />}
+					onConfirm={controls.onFinish}
 					confirmClassName='top-0 right-full mr-2'
 				/>
 			</div>

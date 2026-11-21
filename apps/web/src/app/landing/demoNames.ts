@@ -11,6 +11,8 @@ const NAMES: Record<string, Record<AppLanguage, string>> = {
 		ru: 'Великобритания',
 		'uz-Latn': 'Birlashgan Qirollik',
 	},
+	'620': { en: 'Portugal', ru: 'Португалия', 'uz-Latn': 'Portugaliya' },
+	'203': { en: 'Czechia', ru: 'Чехия', 'uz-Latn': 'Chexiya' },
 	'250': { en: 'France', ru: 'Франция', 'uz-Latn': 'Fransiya' },
 	'724': { en: 'Spain', ru: 'Испания', 'uz-Latn': 'Ispaniya' },
 	'300': { en: 'Greece', ru: 'Греция', 'uz-Latn': 'Yunoniston' },

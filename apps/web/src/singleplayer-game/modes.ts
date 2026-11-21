@@ -31,4 +31,11 @@ export const SINGLEPLAYER_MODES: readonly SingleplayerMode[] = [
 		SetupPage: lazy(() => import('./recall-sprint/SetupPage')),
 		GamePage: lazy(() => import('./recall-sprint/GamePage')),
 	},
+	{
+		id: 'routes',
+		titleKey: 'singleplayer.modes.routes.title',
+		descriptionKey: 'singleplayer.modes.routes.description',
+		SetupPage: lazy(() => import('./routes/SetupPage')),
+		GamePage: lazy(() => import('./routes/GamePage')),
+	},
 ]

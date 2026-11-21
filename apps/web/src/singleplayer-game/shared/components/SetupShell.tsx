@@ -11,6 +11,7 @@ const REACTION_MODES: Record<SingleplayerModeId, ReactionModeParam> = {
 	locate: 'locate',
 	'name-it': 'name_it',
 	'recall-sprint': 'recall_sprint',
+	routes: 'routes',
 }
 
 interface SetupShellProps {

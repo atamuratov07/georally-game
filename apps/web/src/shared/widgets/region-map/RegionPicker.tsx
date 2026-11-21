@@ -6,7 +6,7 @@ import { getScopeLabel } from '@/shared/i18n'
 import { cn } from '@/shared/utils'
 import { REGION_MAP_VIEWBOX, REGION_PATHS } from 'virtual:region-map'
 
-type Continent = keyof typeof REGION_PATHS
+export type Continent = keyof typeof REGION_PATHS
 
 const CONTINENTS = Object.keys(REGION_PATHS) as Continent[]
 
@@ -48,36 +48,82 @@ const CONTINENT_COLORS: Record<
 	},
 }
 
+export interface RegionOption<Scope extends string> {
+	value: Scope
+	continents: readonly Continent[]
+}
+
+interface RegionMapPickerProps<Scope extends string> {
+	label: string
+	value: Scope | 'all'
+	/** Continents in no option are drawn as land that can't be picked. */
+	options: readonly RegionOption<Scope>[]
+	labelOf: (scope: Scope | 'all') => string
+	onChange: (scope: Scope | 'all') => void
+}
+
+const GAME_SCOPE_OPTIONS: readonly RegionOption<Continent>[] = CONTINENTS.map(
+	continent => ({ value: continent, continents: [continent] }),
+)
+
 interface RegionPickerProps {
 	label: string
 	value: GameScope
 	onChange: (scope: GameScope) => void
 }
 
-/** Continents are keyboard-focusable radio items, so the map needs no separate list. */
 export function RegionPicker({ label, value, onChange }: RegionPickerProps) {
 	const { t } = useTranslation()
-	const labelId = useId()
-	const [hovered, setHovered] = useState<Continent | null>(null)
-	const isWorld = value === 'all'
 
-	function select(continent: Continent) {
-		onChange(value === continent ? 'all' : continent)
+	return (
+		<RegionMapPicker<Continent>
+			label={label}
+			value={value}
+			options={GAME_SCOPE_OPTIONS}
+			labelOf={scope => getScopeLabel(t, scope)}
+			onChange={onChange}
+		/>
+	)
+}
+
+/** Each option is a keyboard-focusable radio item, so the map needs no separate list. */
+export function RegionMapPicker<Scope extends string>({
+	label,
+	value,
+	options,
+	labelOf,
+	onChange,
+}: RegionMapPickerProps<Scope>) {
+	const labelId = useId()
+	const [hovered, setHovered] = useState<Scope | null>(null)
+	const isWorld = value === 'all'
+	const selected = options.find(option => option.value === value)
+	const optionOf = (continent: Continent) =>
+		options.find(option => option.continents.includes(continent))
+	const colorsOf = (option: RegionOption<Scope>) =>
+		CONTINENT_COLORS[option.continents[0]]
+
+	function select(scope: Scope) {
+		onChange(value === scope ? 'all' : scope)
 	}
 
-	function handleKeyDown(
-		event: KeyboardEvent<SVGPathElement>,
-		continent: Continent,
-	) {
+	function handleKeyDown(event: KeyboardEvent<SVGGElement>, scope: Scope) {
 		if (event.key === 'Enter' || event.key === ' ') {
 			event.preventDefault()
-			select(continent)
+			select(scope)
 		}
 	}
 
-	function faceClass(continent: Continent): string {
-		const isSelected = isWorld || value === continent
-		const isHovered = hovered === continent
+	function isDimmed(option: RegionOption<Scope> | undefined): boolean {
+		return (
+			!option ||
+			(!isWorld && value !== option.value && hovered !== option.value)
+		)
+	}
+
+	function faceClass(scope: Scope): string {
+		const isSelected = isWorld || value === scope
+		const isHovered = hovered === scope
 
 		if (isSelected) {
 			return isHovered ? '-translate-y-1' : ''
@@ -100,64 +146,88 @@ export function RegionPicker({ label, value, onChange }: RegionPickerProps) {
 				className='-mx-1 h-auto w-[calc(100%+0.5rem)] overflow-visible sm:mx-0 sm:w-full'
 				onMouseLeave={() => setHovered(null)}
 			>
-				{CONTINENTS.map(continent => (
-					<path
-						key={continent}
-						aria-hidden='true'
-						d={REGION_PATHS[continent]}
-						transform={`translate(0 ${EDGE_DEPTH})`}
-						className={cn(
-							'pointer-events-none transition-[opacity,filter] duration-200',
-							CONTINENT_COLORS[continent].edge,
-							!isWorld &&
-								value !== continent &&
-								hovered !== continent &&
-								'opacity-45 grayscale',
-						)}
-					/>
-				))}
-				{CONTINENTS.map(continent => (
-					<path
-						key={continent}
+				{CONTINENTS.map(continent => {
+					const option = optionOf(continent)
+					return (
+						<path
+							key={continent}
+							aria-hidden='true'
+							d={REGION_PATHS[continent]}
+							transform={`translate(0 ${EDGE_DEPTH})`}
+							className={cn(
+								'pointer-events-none transition-[opacity,filter] duration-200',
+								(option
+									? colorsOf(option)
+									: CONTINENT_COLORS[continent]
+								).edge,
+								isDimmed(option) && 'opacity-45 grayscale',
+							)}
+						/>
+					)
+				})}
+				{CONTINENTS.filter(continent => !optionOf(continent)).map(
+					continent => (
+						<path
+							key={continent}
+							aria-hidden='true'
+							d={REGION_PATHS[continent]}
+							strokeWidth={1.5}
+							strokeLinejoin='round'
+							className={cn(
+								'translate-y-1 stroke-white opacity-45 grayscale',
+								CONTINENT_COLORS[continent].face,
+							)}
+						/>
+					),
+				)}
+				{options.map(option => (
+					<g
+						key={option.value}
 						role='radio'
 						tabIndex={0}
-						aria-checked={value === continent}
-						aria-label={getScopeLabel(t, continent)}
-						d={REGION_PATHS[continent]}
-						strokeWidth={1.5}
-						strokeLinejoin='round'
+						aria-checked={value === option.value}
+						aria-label={labelOf(option.value)}
 						className={cn(
-							'cursor-pointer stroke-white transition-[translate,opacity,filter] duration-200 outline-none',
-							'focus-visible:stroke-ink focus-visible:[stroke-width:3]',
-							CONTINENT_COLORS[continent].face,
-							faceClass(continent),
+							'cursor-pointer transition-[translate,opacity,filter] duration-200 outline-none',
+							'focus-visible:[&>path]:stroke-ink focus-visible:[&>path]:[stroke-width:3]',
+							faceClass(option.value),
 						)}
-						onMouseEnter={() => setHovered(continent)}
-						onFocus={() => setHovered(continent)}
+						onMouseEnter={() => setHovered(option.value)}
+						onFocus={() => setHovered(option.value)}
 						onBlur={() => setHovered(null)}
-						onClick={() => select(continent)}
-						onKeyDown={event => handleKeyDown(event, continent)}
-					/>
+						onClick={() => select(option.value)}
+						onKeyDown={event => handleKeyDown(event, option.value)}
+					>
+						{option.continents.map(continent => (
+							<path
+								key={continent}
+								d={REGION_PATHS[continent]}
+								strokeWidth={1.5}
+								strokeLinejoin='round'
+								className={cn('stroke-white', colorsOf(option).face)}
+							/>
+						))}
+					</g>
 				))}
 			</svg>
 
 			<div className='flex min-h-10 items-center justify-center'>
-				{isWorld ? (
+				{isWorld || !selected ? (
 					<span className='text-lg font-black text-ink'>
-						{getScopeLabel(t, 'all')}
+						{labelOf('all')}
 					</span>
 				) : (
 					<span
 						className={cn(
 							'inline-flex items-center gap-1 rounded-full py-1 pr-1 pl-4 text-base font-extrabold text-white sm:text-sm',
-							CONTINENT_COLORS[value].chip,
+							colorsOf(selected).chip,
 						)}
 					>
-						{getScopeLabel(t, value)}
+						{labelOf(selected.value)}
 						<button
 							type='button'
-							aria-label={getScopeLabel(t, 'all')}
-							title={getScopeLabel(t, 'all')}
+							aria-label={labelOf('all')}
+							title={labelOf('all')}
 							onClick={() => onChange('all')}
 							className='grid size-9 place-items-center rounded-full transition-colors hover:bg-white/20 sm:size-7'
 						>

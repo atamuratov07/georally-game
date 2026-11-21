@@ -70,7 +70,7 @@ function FeedbackMessage({ attempt }: { attempt: Attempt }) {
 	return (
 		<p
 			role='status'
-			className='truncate rounded-full border-2 border-coral-600 bg-coral-500 px-4 py-1.5 text-sm font-extrabold text-white shadow-[0_3px_0_0_var(--color-coral-700)]'
+			className='truncate rounded-full bg-coral-500 px-4 py-1.5 text-sm font-extrabold text-white'
 		>
 			{message}
 		</p>

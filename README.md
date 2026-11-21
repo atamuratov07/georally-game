@@ -234,7 +234,7 @@ graph LR
 | Doc                                                                                      | Covers                                                                           |
 | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | [`docs/architecture/source-tree.md`](docs/architecture/source-tree.md)                   | Full annotated source tree                                                       |
-| [`docs/architecture/singleplayer.md`](docs/architecture/singleplayer.md)                 | Local game flow and state machine                                                |
+| [`docs/architecture/singleplayer.md`](docs/architecture/singleplayer.md)                 | Local game flow, saving and loading; links to one doc per mode                   |
 | [`docs/architecture/multiplayer.md`](docs/architecture/multiplayer.md)                   | Client/server realtime flow, room + game state model, protocol, view projection  |
 | [`docs/architecture/data-pipeline.md`](docs/architecture/data-pipeline.md)               | Offline build pipeline for the country catalog and map tiles                     |
 | [`docs/architecture/answers.md`](docs/architecture/answers.md)                           | Matching typed and spoken country answers, and the decisions behind it           |

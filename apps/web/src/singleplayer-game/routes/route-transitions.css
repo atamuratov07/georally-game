@@ -1,0 +1,22 @@
+.route-journey [data-part='start'] {
+	view-transition-name: route-start;
+}
+
+.route-journey [data-part='middle'] {
+	view-transition-name: route-middle;
+}
+
+.route-journey [data-part='target'] {
+	view-transition-name: route-target;
+}
+
+::view-transition-old(route-start),
+::view-transition-new(route-start),
+::view-transition-old(route-middle),
+::view-transition-new(route-middle),
+::view-transition-old(route-target),
+::view-transition-new(route-target) {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}

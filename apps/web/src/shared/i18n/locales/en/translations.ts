@@ -12,12 +12,14 @@ const translations = {
 		updateNow: 'Update',
 		install: 'Install',
 		iosTitle: 'Add GeoRally to your Home Screen',
-		iosText: 'It opens full screen, like an app, and single-player works offline.',
+		iosText:
+			'It opens full screen, like an app, and single-player works offline.',
 		iosStep1: 'Tap <share></share> <b>Share</b> in the Safari toolbar',
 		iosStep2: 'Choose <b>Add to Home Screen</b>',
 		share: 'Share',
 		gotIt: 'Got it',
-		offline: 'You are offline. Multiplayer needs an internet connection, but single-player still works.',
+		offline:
+			'You are offline. Multiplayer needs an internet connection, but single-player still works.',
 	},
 	feedback: {
 		open: 'Feedback',
@@ -71,12 +73,19 @@ const translations = {
 			text: 'Name countries several in one breath. Whatever you forget waits on the map when time is up.',
 			cta: 'Start a sprint',
 		},
+		routes: {
+			eyebrow: 'Know the neighbours',
+			title: 'Find the shortest way <hl>between any two countries</hl>',
+			text: 'Name the countries in between, typed or out loud, and match the shortest route.',
+			cta: 'Plan a route',
+		},
 		solo: {
 			title: 'Solo game',
-			text: 'Train at your own pace, in three modes.',
+			text: 'Train at your own pace, in four modes.',
 			point1: 'Find it: spot the named country on the map',
 			point2: 'Name it: say or type the highlighted country',
 			point3: 'Recall sprint: name a whole region from memory',
+			point4: 'Routes: link two countries through the ones in between',
 		},
 		multiplayer: {
 			title: 'Live multiplayer',
@@ -156,6 +165,11 @@ const translations = {
 				description:
 					'Name as many countries of the region as you can before time runs out.',
 			},
+			routes: {
+				title: 'Routes',
+				description:
+					'Get from one country to another by naming the countries in between.',
+			},
 		},
 		start: 'Start game',
 		exit: 'Exit',
@@ -215,6 +229,60 @@ const translations = {
 			outside: '{{name}} isn’t in {{region}}',
 			ambiguous: 'Which {{text}}?',
 			unknown: 'Don’t know “{{text}}”',
+		},
+	},
+	routes: {
+		americas: 'Americas',
+		placeholder: 'Name a country on the way',
+		inputLabel: 'Country name',
+		journey: 'From {{start}} to {{target}}',
+		score: 'Score',
+		scoreLabel: 'Score {{score}}, par {{par}}',
+		hint: 'Hint',
+		giveUpConfirm: 'Give up now?',
+		guesses: 'Your countries',
+		verdict: {
+			route: 'on the route',
+			near: 'one step off',
+			off: 'off the route',
+		},
+		announce: '{{name}}: {{verdict}}',
+		announceHint: 'Hint: {{name}}, {{verdict}}',
+		note: {
+			repeated: '{{name}}: already named',
+			start: '{{name}} is the start',
+			target: '{{name}} is the target',
+			ambiguous: 'Which {{text}}?',
+			unknown: 'Don’t know “{{text}}”',
+		},
+		result: {
+			perfect: 'Perfect!',
+			solved: 'Solved',
+			gaveUp: 'Gave up',
+			next: 'Next puzzle',
+		},
+		resume: {
+			guesses_one: '{{count}} country named',
+			guesses_other: '{{count}} countries named',
+		},
+		borders: {
+			open: 'What counts as a border?',
+			title: 'What counts as a border',
+			rule: 'Two countries border each other when they touch on land on the map, or when a bridge or tunnel joins them. Ferries don’t count.',
+			fixedLinks:
+				'<b>The Channel Tunnel, the Øresund Bridge and two causeways</b> join the United Kingdom and France, Denmark and Sweden, Malaysia and Singapore, and Saudi Arabia and Bahrain.',
+			frenchGuiana:
+				'<b>French Guiana</b> is France, so France borders Brazil and Suriname.',
+			ceutaMelilla:
+				'<b>Ceuta and Melilla</b> are Spain, so Spain borders Morocco.',
+			kaliningrad:
+				'<b>Kaliningrad</b> is Russia, so Russia borders Poland and Lithuania.',
+			cabinda:
+				'<b>Cabinda</b> is Angola, so Angola borders the Republic of the Congo.',
+			kazungula:
+				'<b>Kazungula</b>: Zambia and Botswana share about 150 m of border.',
+			gaps: '<b>Kosovo, Western Sahara and Somaliland</b> aren’t playable, so Serbia and Albania, Morocco and Mauritania, and Somalia and Djibouti don’t border.',
+			done: 'Got it',
 		},
 	},
 	nameIt: {

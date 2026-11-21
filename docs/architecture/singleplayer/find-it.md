@@ -1,0 +1,16 @@
+# Find It
+
+The player finds the named country on the map. The code calls the mode `locate`. The shared flow, saving and round shape are in [`../singleplayer.md`](../singleplayer.md).
+
+## Engine
+
+`PICK` answers. A wrong pick is recorded on the round (`wrongPicks`); the round ends as `outOfAttempts` once `attemptsPerQuestion` wrong picks are used. A correct pick scores `50 + 50 × (time left of a 30 s window)`, minus 10 per wrong pick, never below 0, so a correct answer is always worth at least 30 with the default three attempts.
+
+## In the browser
+
+- **The first round starts once the map has loaded.** The hook keeps a saved idle game idle and prepares its questions, so the intro can show the first target. The map's `load` ends the wait; the intro stays at least 900 ms, shows "Go!" for 300 ms and collapses into the header. A restored game in progress gets the same intro; a finished one doesn't.
+- **The header and the full-screen panels are one element in a view transition** (`useRoundStages`, `shared/lib/viewTransition.ts`, `round-transitions.css`). The panel (`.vt-panel`) and the header (`.vt-hud`) carry the same `view-transition-name`s, never both at once, and `data-hud-part` marks the parts that morph: the leave button's cell, the count, the name, the flag, the timer and the progress strip. On Next the header expands into a full-screen panel for the next round, holds 350 ms and contracts back, while the map flies home underneath: the root's new view is live, and its crossfade is off (otherwise the old map ghosts over the new one). On the expand only the frame morphs: the old name and flag fade with the header and the new ones pop in, since one country's name morphing into another's read as a glitch. The progress strip is the panel's bottom edge, so it travels with the panel instead of crossing it.
+- **The panels' top row is the HUD's own row** (`GameHudRow`). On wide screens the HUD's centre column (count and name) sets the row's height, so a panel puts an invisible copy of it there (`GameHudRowSpacer`); otherwise the leave button and the timer sat a few pixels higher on the panels.
+- **Names are one line, sized by their character count** (the `text-fit` utility: Rubik Black averages 0.64 em per character), in the shared HUD too, multiplayer included, so both ends of the morph have the same shape; a name that wrapped in one and not the other made the morph jump. The HUD name still truncates if the estimate is ever too small.
+- **The clock starts when the round can be played.** `START` and `NEXT` carry the time the collapse or the contract will end, so the 30 s scoring window doesn't lose the animation. This relies on every transition ending exactly at its duration: the hook sets the duration (`--view-transition-duration`), and every delay and animation in `round-transitions.css` is a fraction of it, so changing a duration in the hook rescales the whole choreography. A view transition ends only when its last animation does, so a fixed delay longer than the duration would silently stretch it. Without View Transition support, or with reduced motion, the screens swap at once, Next shows no panel and the round starts at once.
+- **Flags come from a CDN,** so the next round's flag is preloaded during the current one, and a flag still loading keeps a 3:2 box instead of collapsing to its ring.

@@ -15,20 +15,22 @@ import type { SingleplayerModeId } from '../../paths'
 interface SetupCardProps {
 	mode: SingleplayerModeId
 	copyLink: string
-	canStart: boolean
-	eligibleCount: number
+	canStart?: boolean
+	eligibleCount?: number
 	onStart: () => void
 	onPrefetch: () => void
+	note?: ReactNode
 	children: ReactNode
 }
 
 export function SetupCard({
 	mode,
 	copyLink,
-	canStart,
-	eligibleCount,
+	canStart = true,
+	eligibleCount = 0,
 	onStart,
 	onPrefetch,
+	note,
 	children,
 }: SetupCardProps) {
 	const { t } = useTranslation()
@@ -55,7 +57,9 @@ export function SetupCard({
 					</CopyButton>
 				</div>
 				{descriptionKey ? (
-					<CardDescription>{t(descriptionKey)}</CardDescription>
+					<CardDescription>
+						{t(descriptionKey)} {note}
+					</CardDescription>
 				) : null}
 			</CardHeader>
 

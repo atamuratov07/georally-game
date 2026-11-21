@@ -2,8 +2,6 @@
  * two countries are neighbours when they share a stretch of boundary, then
  * data/border_overrides.json is applied.
  */
-import simplify from '@turf/simplify'
-import { featureCollection, multiLineString } from '@turf/helpers'
 import fs from 'node:fs'
 import path from 'node:path'
 import { mesh, neighbors } from 'topojson-client'
@@ -22,10 +20,9 @@ const OVERRIDES_JSON = resolvePackagePath('data', 'border_overrides.json')
 const REPORT_JSON = resolvePackagePath('build', 'borders_report.json')
 
 const outDir = parseOutDir()
-const linesOutDir = parsePathOption('--lines-out', outDir)
+const crossingsOutDir = parsePathOption('--crossings-out', outDir)
 
 const REPORT_SHORT_KM = 20
-const LINE_TOLERANCE_DEGREES = 0.01
 const COORD_DECIMALS = 4
 
 for (const file of [BASE_GEOJSON, OVERRIDES_JSON]) {
@@ -161,7 +158,7 @@ for (const kind of ['add', 'remove']) {
 		overrideProblems.push(`border_overrides: "${kind}" must be a list`)
 		continue
 	}
-	for (const { a, b, reason } of overrides[kind]) {
+	for (const { a, b, reason, crossing } of overrides[kind]) {
 		const label = `border_overrides ${kind} ${a}-${b}`
 		if (!idByA3.has(a) || !idByA3.has(b) || a === b) {
 			overrideProblems.push(
@@ -180,7 +177,7 @@ for (const kind of ['add', 'remove']) {
 				overrideProblems.push(
 					`${label}: the geometry already has this border`,
 				)
-			} else borders.set(key, null)
+			} else borders.set(key, crossing ? { crossing } : null)
 		} else if (!borders.delete(key)) {
 			overrideProblems.push(`${label}: the geometry has no such border`)
 		}
@@ -201,21 +198,18 @@ const edges = keysById.map(idPair)
 const round = value => Number(value.toFixed(COORD_DECIMALS))
 const roundPoint = ([lng, lat]) => [round(lng), round(lat)]
 
-const borderLines = keysById
-	.filter(key => borders.get(key))
-	.map(key => {
-		const { lines } = borders.get(key)
-		const longest = lines.reduce((best, line) =>
-			lineKm(line) > lineKm(best) ? line : best,
-		)
-		const simplified = simplify(multiLineString(lines), {
-			tolerance: LINE_TOLERANCE_DEGREES,
-		})
-		return multiLineString(
-			simplified.geometry.coordinates.map(line => line.map(roundPoint)),
-			{ id: idPair(key).join('-'), crossing: roundPoint(midpoint(longest)) },
-		)
-	})
+const crossings = Object.fromEntries(
+	keysById
+		.filter(key => borders.get(key))
+		.map(key => {
+			const { lines, crossing } = borders.get(key)
+			if (crossing) return [idPair(key).join('-'), roundPoint(crossing)]
+			const longest = lines.reduce((best, line) =>
+				lineKm(line) > lineKm(best) ? line : best,
+			)
+			return [idPair(key).join('-'), roundPoint(midpoint(longest))]
+		}),
+)
 
 const describe = (a, b) => `${a3Of(a)}-${a3Of(b)} (${nameOf(a)} / ${nameOf(b)})`
 const bothPlayable = ([a, b]) => isPlayable(a) && isPlayable(b)
@@ -251,20 +245,22 @@ const writeJson = (file, value, space) =>
 	fs.writeFileSync(file, `${JSON.stringify(value, null, space)}\n`)
 
 ensureDir(outDir)
-ensureDir(linesOutDir)
+ensureDir(crossingsOutDir)
 writeJson(
 	path.join(outDir, 'borders.json'),
 	{ version: 1, generated_at: new Date().toISOString(), edges },
 	2,
 )
-writeJson(
-	path.join(linesOutDir, 'border-lines.geojson'),
-	featureCollection(borderLines),
+fs.writeFileSync(
+	path.join(crossingsOutDir, 'border-crossings.json'),
+	`{\n${Object.entries(crossings)
+		.map(([id, point]) => `\t${JSON.stringify(id)}: ${JSON.stringify(point)}`)
+		.join(',\n')}\n}\n`,
 )
 writeJson(REPORT_JSON, report, 2)
 
 const connected = new Set(edges.flat()).size
 console.log(
-	`Wrote ${edges.length} borders among ${connected} countries (${countries.length - connected} without a land border), ${borderLines.length} border lines`,
+	`Wrote ${edges.length} borders among ${connected} countries (${countries.length - connected} without a land border), ${Object.keys(crossings).length} crossings`,
 )
 console.log(`Review ${REPORT_JSON}`)

@@ -43,7 +43,7 @@ export const CAPITAL_LABEL_FONT = 'Noto Sans Regular'
 export const SEA_LABEL_FONT = 'Noto Sans Italic'
 
 export const WATER_FILL = '#D8F2FF'
-export const WRONG_FILL = '#fb5f4c'
+export const WRONG_FILL = '#f44f3c'
 export const REVEALED_FILL = '#3fa625'
 export const SELECTION_FILL = '#ffc01a'
 export const SELECTION_EDGE = '#a86200'
@@ -162,6 +162,99 @@ export function buildRevealDimLayer({
 			],
 		},
 	}
+}
+
+export const ROUTE_STATE = 'route'
+/** A country shown to the player rather than named: a hint, or the rest of the route after giving up. */
+export const ROUTE_REVEALED_STATE = 'routeRevealed'
+export const ROUTE_LAYER_ID = 'countries-route'
+export const ROUTE_REVEALED_LAYER_ID = 'countries-route-revealed'
+
+export const ROUTE_END_FILL = '#1b7ff0'
+const ROUTE_FILL = {
+	start: ROUTE_END_FILL,
+	target: ROUTE_END_FILL,
+	route: REVEALED_FILL,
+	near: SELECTION_FILL,
+	off: WRONG_FILL,
+} as const
+export const ROUTE_UNKNOWN_FILL = '#d3d8de'
+const ROUTE_UNKNOWN_OPACITY = 0.85
+const ROUTE_EDGE = {
+	route: '#2f861b',
+	near: '#d68400',
+	off: '#cc2c1c',
+} as const
+const ROUTE_REVEALED_FILL = {
+	route: '#d9edd3',
+	near: '#f5ecc9',
+	off: '#f6d9d4',
+} as const
+
+const routeState: ExpressionSpecification = [
+	'to-string',
+	['feature-state', ROUTE_STATE],
+]
+
+function byRouteState(
+	values: Record<string, string>,
+	fallback: string,
+): ExpressionSpecification {
+	return [
+		'match',
+		routeState,
+		...Object.entries(values).flat(),
+		fallback,
+	] as ExpressionSpecification
+}
+
+export const routeFillLayer: FillLayerSpecification = {
+	id: ROUTE_LAYER_ID,
+	type: 'fill',
+	source: SOURCE_ID,
+	'source-layer': COUNTRY_LAYER,
+	paint: {
+		'fill-color': [
+			'case',
+			stateFlag(ROUTE_REVEALED_STATE),
+			byRouteState(ROUTE_REVEALED_FILL, 'transparent'),
+			byRouteState(ROUTE_FILL, ROUTE_UNKNOWN_FILL),
+		],
+		'fill-outline-color': '#ffffff',
+		'fill-opacity': [
+			'case',
+			['==', routeState, ''],
+			ROUTE_UNKNOWN_OPACITY,
+			1,
+		],
+	},
+}
+
+export const routeRevealedLayer: LineLayerSpecification = {
+	id: ROUTE_REVEALED_LAYER_ID,
+	type: 'line',
+	source: SOURCE_ID,
+	'source-layer': COUNTRY_LAYER,
+	paint: {
+		'line-color': byRouteState(ROUTE_EDGE, 'transparent'),
+		'line-width': {
+			type: 'exponential',
+			stops: zoomStops([2, 1.2], [4, 2], [6, 2.5]),
+		},
+		'line-offset': [
+			'interpolate',
+			['linear'],
+			['zoom'],
+			2.5,
+			0,
+			3.5,
+			1.2,
+			6,
+			1.5,
+		],
+		'line-dasharray': [4, 3],
+		'line-opacity': ['case', stateFlag(ROUTE_REVEALED_STATE), 1, 0],
+	},
 }
 
 export const hoverLayer: FillLayerSpecification = {

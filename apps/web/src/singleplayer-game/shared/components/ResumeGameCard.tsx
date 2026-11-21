@@ -1,18 +1,14 @@
-import type { GameDifficulty, GameScope } from '@georally/game-domain'
 import { Play } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { getDifficultyLabel, getScopeLabel } from '@/shared/i18n'
 import { Button, Card } from '@/shared/ui'
 import { cn } from '@/shared/utils'
 
 interface ResumeGameCardProps {
-	current: number
-	answered: number
-	total: number
-	scope: GameScope
-	difficulty: GameDifficulty
+	heading: string
+	details: string
+	progress?: { done: number; total: number }
 	onResume: () => void
 	onDiscard: () => void
 }
@@ -128,11 +124,9 @@ function pickTheme(): CardTheme {
 }
 
 export function ResumeGameCard({
-	current,
-	answered,
-	total,
-	scope,
-	difficulty,
+	heading,
+	details,
+	progress,
 	onResume,
 	onDiscard,
 }: ResumeGameCardProps) {
@@ -151,31 +145,33 @@ export function ResumeGameCard({
 				{t('singleplayer.resume.title')}
 			</h1>
 			<p className='mt-2 text-3xl font-black tracking-tight sm:text-4xl'>
-				{t('game.progress', { current, total })}
+				{heading}
 			</p>
-			<p className={cn('mt-1 font-bold', theme.details)}>
-				{getScopeLabel(t, scope)} · {getDifficultyLabel(t, difficulty)}
-			</p>
+			<p className={cn('mt-1 font-bold', theme.details)}>{details}</p>
 
-			<div
-				role='progressbar'
-				aria-valuemin={0}
-				aria-valuemax={total}
-				aria-valuenow={answered}
-				className={cn('mt-6 h-5 rounded-full p-1', theme.track)}
-			>
-				<motion.div
-					className={cn('h-full rounded-full', theme.fill)}
-					initial={reduceMotion ? false : { width: 0 }}
-					animate={{ width: `${(answered / total) * 100}%` }}
-					transition={{
-						type: 'spring',
-						stiffness: 120,
-						damping: 18,
-						delay: 0.15,
-					}}
-				/>
-			</div>
+			{progress ? (
+				<div
+					role='progressbar'
+					aria-valuemin={0}
+					aria-valuemax={progress.total}
+					aria-valuenow={progress.done}
+					className={cn('mt-6 h-5 rounded-full p-1', theme.track)}
+				>
+					<motion.div
+						className={cn('h-full rounded-full', theme.fill)}
+						initial={reduceMotion ? false : { width: 0 }}
+						animate={{
+							width: `${(progress.done / progress.total) * 100}%`,
+						}}
+						transition={{
+							type: 'spring',
+							stiffness: 120,
+							damping: 18,
+							delay: 0.15,
+						}}
+					/>
+				</div>
+			) : null}
 
 			<div className='mt-7 flex items-center justify-between gap-3'>
 				<Button

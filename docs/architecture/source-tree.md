@@ -108,7 +108,7 @@ georally-game/
 |           |   |   |-- continent-view.ts
 |           |   |   |-- map-styles.tsx  # fixed layer specs driven by feature state
 |           |   |   |-- style.json, mapStyle.ts # base style; inlines the tile list and outlines URL
-|           |   |   |-- generated/      # tiles.json, archipelagos.geojson, border-lines.geojson (country-build output)
+|           |   |   |-- generated/      # tiles.json, archipelagos.geojson, border-crossings.json (country-build output)
 |           |   |   |-- prefetchMap.ts  # warms the outlines, low-zoom tiles and common glyphs
 |           |   |   |-- useFeatureState.ts # sets per-country states, applying only the changes
 |           |   |   `-- types.ts
@@ -167,19 +167,46 @@ georally-game/
 |           |   |   |-- sprintControls.ts, reviewControls.ts # what a layout receives
 |           |   |   |-- layouts/          # Desktop/Touch SprintLayout and ReviewLayout, their overlays
 |           |   |   |-- config.ts, store.ts, analytics.ts
-|           |   |   `-- components/       # DesktopSprintBar, TouchSprintBar, useSprintField, FoundCounter,
-|           |   |                         # SprintNote, FinishButton, ReviewBar, ReviewArrow
+|           |   |   `-- components/       # DesktopSprintBar, TouchSprintBar, FoundCounter,
+|           |   |                         # SprintNote, ReviewBar, ReviewArrow
+|           |   |-- routes/
+|           |   |   |-- SetupPage.tsx, GamePage.tsx # GamePage remounts the game for the next puzzle
+|           |   |   |-- RoutesScreen.tsx  # joins the map, the controls, a layout and the opening
+|           |   |   |-- useRouteIntro.ts  # the opening's stages, its View Transition; route-transitions.css
+|           |   |   |-- useRouteFinish.ts # which finish camera runs, when Next puzzle shows
+|           |   |   |-- RouteAnnouncements.tsx # screen-reader guess list and announcements
+|           |   |   |-- map/              # everything drawn on the map
+|           |   |   |   |-- RoutesMap.tsx     # BaseMap, opening view; mounts the layers and cameras
+|           |   |   |   |-- RouteLayers.tsx   # verdict fills, dashed outline on revealed countries,
+|           |   |   |   |                     # labels, the line and the rings
+|           |   |   |   |-- routeFrame.ts     # bounds that keep both ends in view, however large a country
+|           |   |   |   |-- routeGeometry.ts  # border crossings, arcs along the links
+|           |   |   |   |-- routeBeads.ts     # bead points in nested zoom levels, country beads
+|           |   |   |   |-- routeLineStyle.ts # line data, cord and bead paint
+|           |   |   |   |-- BeadLayers.tsx    # one circle layer per bead level, for the line and the tour
+|           |   |   |   |-- RouteLine.tsx     # grows the links the engine works out
+|           |   |   |   |-- RouteRings.tsx, useRouteRings.ts # rings on new countries and on the ends
+|           |   |   |   |-- routeCameras.tsx  # follow camera, give-up flight; moveCamera.ts awaits a move
+|           |   |   |   `-- RouteTour.tsx     # the tour after a solve and its puck
+|           |   |   |-- useRoutesGame.ts  # restores or prepares, builds the one board, runs and saves
+|           |   |   |-- useRoutesInput.ts, countryNames.ts, routesControls.ts
+|           |   |   |-- layouts/          # Desktop/Touch RoutesLayout and their map padding
+|           |   |   |-- config.ts, store.ts, analytics.ts
+|           |   |   `-- components/       # RouteJourney and IntroJourney over JourneyView (ends and counter,
+|           |   |                         # no catalog, so the landing demo shares it), RouteFeedback,
+|           |   |                         # HintButton, GiveUpButton, RouteResult, SlideIn, BordersNote, verdictStyle
 |           |   `-- shared/
 |           |       |-- touch.ts          # the touch-screen media query
 |           |       |-- gameStore.ts      # createGameStore, hasValidQuestionProgress
 |           |       |-- useStoredGame.ts
+|           |       |-- useGuessField.ts  # the open guess field of Recall Sprint and Routes
 |           |       |-- questionCountFit.ts
 |           |       |-- setupParams.ts    # shared URL parameter readers and the difficulty options
 |           |       |-- useRoundEvents.ts
 |           |       `-- components/       # SetupShell, SetupCard, ModeTabs, GameErrorBoundary,
 |           |                             # GameErrorScreen, GameResultModal, ResumeGameCard,
 |           |                             # KeyboardGameFrame, LeaveButton, CountdownBar,
-|           |                             # MicButton, VoiceButton, AnswerNotice
+|           |                             # MicButton, VoiceButton, AnswerNotice, ConfirmButton
 |           `-- multiplayer-game/
 |               |-- index.ts
 |               |-- api/
@@ -238,12 +265,13 @@ georally-game/
 |   |       |-- shared/                  # base types, result, errors, random, time
 |   |       |-- catalog/                 # country eligibility selectors, question set selection
 |   |       |-- answers/                 # typed and spoken answer matcher (Name It)
-|   |       |-- borders/                 # the land border graph type
+|   |       |-- borders/                 # the land border graph and its searches
 |   |       |-- singleplayer/
 |   |       |   |-- rounds.ts            # phases, state shape and selectors shared by the modes
 |   |       |   |-- locate/              # find-on-the-map mode
 |   |       |   |-- name-it/             # name-the-country mode
-|   |       |   `-- recall-sprint/       # name-as-many-as-you-can mode
+|   |       |   |-- recall-sprint/       # name-as-many-as-you-can mode
+|   |       |   `-- routes/              # connect-two-countries mode
 |   |       `-- multiplayer/
 |   |           |-- orchestration.ts     # room + game commands combined (start, submit, reveal, advance)
 |   |           |-- errors.ts
@@ -304,6 +332,7 @@ georally-game/
 |   |           `-- wdqs.mjs
 |-- docs/
 |   |-- architecture/                    # this folder
+|   |   `-- singleplayer/                # one doc per singleplayer mode
 |   `-- proposals/                       # reviewed improvements, not yet implemented
 |-- docker-compose.yaml
 |-- README.md

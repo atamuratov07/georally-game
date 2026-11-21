@@ -3,7 +3,32 @@
 		{
 			"a": "ZMB",
 			"b": "BWA",
-			"reason": "Kazungula: a border of about 150 m, drawn as touching at a point"
+			"reason": "Kazungula: a border of about 150 m, drawn as touching at a point",
+			"crossing": [25.26, -17.79]
+		},
+		{
+			"a": "GBR",
+			"b": "FRA",
+			"reason": "Channel Tunnel: fixed links count as borders",
+			"crossing": [1.47, 51.01]
+		},
+		{
+			"a": "DNK",
+			"b": "SWE",
+			"reason": "Øresund Bridge: fixed links count as borders",
+			"crossing": [12.83, 55.58]
+		},
+		{
+			"a": "MYS",
+			"b": "SGP",
+			"reason": "Johor–Singapore Causeway: fixed links count as borders",
+			"crossing": [103.77, 1.45]
+		},
+		{
+			"a": "SAU",
+			"b": "BHR",
+			"reason": "King Fahd Causeway: fixed links count as borders",
+			"crossing": [50.33, 26.18]
 		}
 	],
 	"remove": []

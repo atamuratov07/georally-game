@@ -1,14 +1,20 @@
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/utils'
 import { AnswerNotice } from '../../shared/components/AnswerNotice'
 import { CountdownBar } from '../../shared/components/CountdownBar'
+import { useGuessField } from '../../shared/useGuessField'
 import type { SprintControls } from '../sprintControls'
 import { FoundCounter } from './FoundCounter'
 import { SprintNote } from './SprintNote'
-import { useSprintField } from './useSprintField'
 
 export function TouchSprintBar({ controls }: { controls: SprintControls }) {
 	const { input } = controls
-	const { formRef, onSubmit, fieldProps } = useSprintField(input)
+	const { t } = useTranslation()
+	const { formRef, onSubmit, fieldProps } = useGuessField(input, {
+		placeholder: t('recallSprint.placeholder'),
+		inputLabel: t('recallSprint.inputLabel'),
+		listening: t('voice.listening'),
+	})
 
 	return (
 		<div className='flex flex-col gap-2'>

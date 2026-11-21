@@ -53,17 +53,17 @@ Run from `packages/country-build`, in this order. Intermediate files go to `buil
 
 **Outputs stay inside the package unless told otherwise.** Every stage that produces a deliverable (03b, 04, 06, 07, 08, 09) takes `--out <directory>` and writes into `dist/` (or `dist/tiles` for 04) inside the package by default; no script knows where other packages live. Only the root scripts in `package.json` choose destinations elsewhere in the repo. Stages 03b and 04 empty their output directory first.
 
-| Stage | Input | Output | Network |
-| --- | --- | --- | --- |
-| `01_get_sources.sh` | none | the Natural Earth zips in `upstream/` (see [Sources and joins](#sources-and-joins)) | Natural Earth (`naciscdn.org`), only for a zip that is missing; they're committed |
-| `02_prepare_base.mjs` | the 1:10m zips in `upstream/` | `build/base_countries.geojson`, `build/geolines.geojson`, `build/seas.geojson` | None |
-| `03_build_data.mjs` (`pnpm build:data`) | `build/base_countries.geojson`, `build/seas.geojson`, `data/manual_overrides.json`, `data/playable_states_195.json` | `build/countries.json`, `build/countries_join.csv`, `build/geolines_join.csv`, `build/centroids.geojson`, `build/capitals.geojson`, `build/sea_labels.geojson`, `build/build_data_report.json` | REST Countries (`rc-countries`, paged 100 per request) and two Wikidata Query Service requests (`wdqs-country-capital-names`, and `wdqs-sea-names-<hash>` for the seas' names) |
-| `03b_fetch_flags.mjs` (`pnpm build:flags`) | `build/countries.json` (each country's `flagUrl`) | `<id>.svg` per country in `--out`, `build/flags.json` | The flag SVGs from `flags.restcountries.com`, cached in `build/cache/flags/<id>.svg` |
-| `04_build_tiles.sh` → `05_make_tilesjson.mjs` (`pnpm build:map-tiles`) | the stage 02 and 03 outputs | one `build/layer_<name>.mbtiles` per layer, `build/world.mbtiles`; the `.pbf` tile directory and `tiles.json` in `--out` | None; `tile-join` and `tippecanoe` in Docker, one container per call |
-| `06_build_registry.mjs` (`pnpm build:country-registry`) | `build/countries.json`, `build/flags.json` | `countries.json` in `--out` | None |
-| `07_build_archipelago_outlines.mjs` (`pnpm build:archipelago-outlines`) | `build/base_countries.geojson`, `build/countries.json`, `data/playable_states_195.json` (the `archipelagos` buffers) | `archipelagos.geojson` in `--out` | None |
-| `08_build_regions.mjs` (`pnpm build:regions`) | `upstream/ne_110m_admin_0_countries.zip`, `build/countries.json` | `regions.geojson` in `--out` | None |
-| `09_build_borders.mjs` (`pnpm build:borders`) | `build/base_countries.geojson`, `build/countries.json`, `data/border_overrides.json` | `borders.json` in `--out`, `border-lines.geojson` in `--lines-out`, `build/borders_report.json` | None |
+| Stage                                                                   | Input                                                                                                                | Output                                                                                                                                                                                         | Network                                                                                                                                                                        |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `01_get_sources.sh`                                                     | none                                                                                                                 | the Natural Earth zips in `upstream/` (see [Sources and joins](#sources-and-joins))                                                                                                            | Natural Earth (`naciscdn.org`), only for a zip that is missing; they're committed                                                                                              |
+| `02_prepare_base.mjs`                                                   | the 1:10m zips in `upstream/`                                                                                        | `build/base_countries.geojson`, `build/geolines.geojson`, `build/seas.geojson`                                                                                                                 | None                                                                                                                                                                           |
+| `03_build_data.mjs` (`pnpm build:data`)                                 | `build/base_countries.geojson`, `build/seas.geojson`, `data/manual_overrides.json`, `data/playable_states_195.json`  | `build/countries.json`, `build/countries_join.csv`, `build/geolines_join.csv`, `build/centroids.geojson`, `build/capitals.geojson`, `build/sea_labels.geojson`, `build/build_data_report.json` | REST Countries (`rc-countries`, paged 100 per request) and two Wikidata Query Service requests (`wdqs-country-capital-names`, and `wdqs-sea-names-<hash>` for the seas' names) |
+| `03b_fetch_flags.mjs` (`pnpm build:flags`)                              | `build/countries.json` (each country's `flagUrl`)                                                                    | `<id>.svg` per country in `--out`, `build/flags.json`                                                                                                                                          | The flag SVGs from `flags.restcountries.com`, cached in `build/cache/flags/<id>.svg`                                                                                           |
+| `04_build_tiles.sh` → `05_make_tilesjson.mjs` (`pnpm build:map-tiles`)  | the stage 02 and 03 outputs                                                                                          | one `build/layer_<name>.mbtiles` per layer, `build/world.mbtiles`; the `.pbf` tile directory and `tiles.json` in `--out`                                                                       | None; `tile-join` and `tippecanoe` in Docker, one container per call                                                                                                           |
+| `06_build_registry.mjs` (`pnpm build:country-registry`)                 | `build/countries.json`, `build/flags.json`                                                                           | `countries.json` in `--out`                                                                                                                                                                    | None                                                                                                                                                                           |
+| `07_build_archipelago_outlines.mjs` (`pnpm build:archipelago-outlines`) | `build/base_countries.geojson`, `build/countries.json`, `data/playable_states_195.json` (the `archipelagos` buffers) | `archipelagos.geojson` in `--out`                                                                                                                                                              | None                                                                                                                                                                           |
+| `08_build_regions.mjs` (`pnpm build:regions`)                           | `upstream/ne_110m_admin_0_countries.zip`, `build/countries.json`                                                     | `regions.geojson` in `--out`                                                                                                                                                                   | None                                                                                                                                                                           |
+| `09_build_borders.mjs` (`pnpm build:borders`)                           | `build/base_countries.geojson`, `build/countries.json`, `data/border_overrides.json`                                 | `borders.json` in `--out`, `border-crossings.json` in `--crossings-out`, `build/borders_report.json`                                                                                           | None                                                                                                                                                                           |
 
 **Cache.** `scripts/lib/cache.mjs` keeps every API response in `build/cache/<key>.json` and reads it first: a run requests an API only when that file is missing, or when `COUNTRY_BUILD_REFRESH=1` is set (for example `COUNTRY_BUILD_REFRESH=1 pnpm build:data`). A request overwrites the file on success; if it fails (HTTP error, network error, or a 429 after the retries), the client falls back to the file when there is one. Flags follow the same rules, as raw SVG files in `build/cache/flags/`. The Wikidata client sends a descriptive `User-Agent` and retries a 429 after `Retry-After`; the REST Countries client needs `RESTCOUNTRIES_API_KEY` in `packages/country-build/.env` only when it actually requests, and does not retry.
 
@@ -103,7 +103,11 @@ Every playable country must have, in all three languages, a name, a label, a cap
 		"PSX": {
 			"name": { "uz-Latn": "Falastin" },
 			"capital": {
-				"name": { "en": "Jerusalem", "ru": "Иерусалим", "uz-Latn": "Quddus" },
+				"name": {
+					"en": "Jerusalem",
+					"ru": "Иерусалим",
+					"uz-Latn": "Quddus"
+				},
 				"coordinates": [35.2137, 31.7683]
 			},
 			"currencyCode": "ILS"
@@ -127,13 +131,13 @@ Every playable country must have, in all three languages, a name, a label, a cap
 
 **Compression.** tippecanoe writes the tiles gzipped, so nginx sends them as they are with `Content-Encoding: gzip` and must never compress them again (`gzip off`, `gzip_static off` on that location). Everything else is compressed once at build time: the `precompress` Vite plugin (`apps/web/vite/precompress.ts`) writes a `.gz` next to every JS, CSS, HTML, JSON, GeoJSON, SVG and glyph PBF over 1 KB that shrinks by at least 10%, and nginx's `gzip_static` sends that file to clients that accept gzip. On-the-fly `gzip` stays on for anything without a `.gz` (API responses); `application/x-protobuf` is left out of its types, so a tile can't get a second layer.
 
-| Layer | Features | Properties |
-| --- | --- | --- |
-| `countries` | every base country | `adm0_a3` (Natural Earth's code) on every country; `iso_n3` on playable countries, an empty string on the rest |
-| `centroids` | playable countries, at their label points | `iso_n3`, `rank`, `label_en`, `label_ru`, `label_uz_latn` |
-| `capitals` | playable countries' capitals | `iso_n3`, `label_en`, `label_ru`, `label_uz_latn` |
-| `geolines` | the geographic lines except the date line | `label_en`, `label_ru`, `label_uz_latn` |
-| `seas` | one point per marine area, from the zoom Natural Earth labels it at | `kind` (`ocean`, `sea`, `bay`…), `rank`, `label_en`, `label_ru`, `label_uz_latn` |
+| Layer       | Features                                                            | Properties                                                                                                     |
+| ----------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `countries` | every base country                                                  | `adm0_a3` (Natural Earth's code) on every country; `iso_n3` on playable countries, an empty string on the rest |
+| `centroids` | playable countries, at their label points                           | `iso_n3`, `rank`, `label_en`, `label_ru`, `label_uz_latn`                                                      |
+| `capitals`  | playable countries' capitals                                        | `iso_n3`, `label_en`, `label_ru`, `label_uz_latn`                                                              |
+| `geolines`  | the geographic lines except the date line                           | `label_en`, `label_ru`, `label_uz_latn`                                                                        |
+| `seas`      | one point per marine area, from the zoom Natural Earth labels it at | `kind` (`ocean`, `sea`, `bay`…), `rank`, `label_en`, `label_ru`, `label_uz_latn`                               |
 
 `04_build_tiles.sh` builds each layer with tippecanoe from zoom 0 to 6. Countries use `--detect-shared-borders`, so neighbours are simplified along the same line and no gap opens between them, and `--no-tiny-polygon-reduction`, so microstates keep their real shape. Point layers keep every feature (`-r1 -pf`). The countries and geolines keep only Natural Earth's `ADM0_A3` and `name`; `tile-join -c` adds the game's codes and labels from the join CSVs, and `-x` drops the key. Zoom 6 already carries the full 1:10m detail: its vertices are 1.5–2.5 km apart, and a zoom-6 tile resolves about 150 m. The tiles total 3.7 MB, against 3.8 MB for the demotiles-based set they replaced. The join CSVs quote every non-empty value, so `tile-join` keeps ids like `250` as strings instead of numbers; an empty value stays unquoted, because `tile-join` reads a quoted empty field as a literal `"`. `style.json` colours countries by `adm0_a3`, which is why every country keeps it, playable or not. The style reads every map text from these properties; the catalog never supplies map text.
 
@@ -148,7 +152,11 @@ Every playable country must have, in all three languages, a name, a label, a cap
 	"capital": { "en": "Tashkent", "ru": "Ташкент", "uz-Latn": "Toshkent" },
 	"currency": {
 		"code": "UZS",
-		"name": { "en": "Uzbekistani Som", "ru": "узбекский сум", "uz-Latn": "Oʻzbekiston soʻmi" },
+		"name": {
+			"en": "Uzbekistani Som",
+			"ru": "узбекский сум",
+			"uz-Latn": "Oʻzbekiston soʻmi"
+		},
 		"symbol": { "en": "UZS", "ru": "UZS", "uz-Latn": "soʻm" }
 	},
 	"continent": "asia",
@@ -185,13 +193,24 @@ Flags are served from our own origin, so the service worker can precache them an
 
 ### Borders
 
-Two playable countries are neighbours when the map shows them touching, unless `data/border_overrides.json` says otherwise. Stage 09 measures this on `build/base_countries.geojson`, the same geometry the tiles draw, so a player never sees a border the game denies, or the reverse.
+Two playable countries are neighbours when the map shows them touching, or a bridge or tunnel joins them, unless `data/border_overrides.json` says otherwise. Stage 09 measures this on `build/base_countries.geojson`, the same geometry the tiles draw, so a player never sees a border the game denies, or the reverse.
 
 - **Measuring.** The countries go into a topology (`topojson-server`) without quantization, so the coordinates stay exact and two countries share an arc exactly where their outlines coincide. Two countries are neighbours when they share an arc (`topojson-client`'s `neighbors`); the shared boundary is `mesh` over the pair. Lengths are haversine km. Non-playable features (Western Sahara, Kosovo, Somaliland, Kashmir, Bir Tawil, the Southern Patagonian Ice Field) are part of the topology but are not nodes, so they block the borders across them.
 - **Input check.** Stage 02 already guarantees unique `ADM0_A3` codes and polygon geometry. Stage 09 checks only that every playable country is in the base geometry, since a stale `build/countries.json` would otherwise leave a country silently without borders.
-- **Overrides.** `data/border_overrides.json` has exactly two keys, `add` and `remove`, both lists of `{ a, b, reason }`, keyed by `ADM0_A3`. The stage fails on any other key, and when an override names a non-playable country or the same country twice, has no reason, appears twice, or no longer changes anything (adding a border the geometry already has, removing one it doesn't), so a stale override can't linger. Today it adds only Zambia–Botswana: the Kazungula border is about 150 m, and Natural Earth draws the two as touching at a point.
-- **Outputs.** `packages/country-catalog/generated/borders.json` is `{ version, generated_at, edges }`, each pair and the list sorted by id; the catalog exports it as a graph from `@georally/country-catalog/borders`. `apps/web/src/shared/map/generated/border-lines.geojson` has one MultiLineString per measured border, `id` `"<a>-<b>"`, simplified to 0.01° (about 1 km, under a pixel at zoom 6), with a `crossing` property at the middle of its longest part. A border added by an override has no line. A line has several parts only where the border does: exclaves (Nakhichevan), Alaska, Ceuta and Melilla, a lake in between. `build/borders_report.json` lists for review every border under 20 km, every pair that touches only at a point (Namibia–Zimbabwe, Zambia–Botswana), and every non-playable feature that touches two or more playable countries.
-- **Today.** 311 borders among 156 countries; 39 playable countries have no land border. China and Russia have the most neighbours, 14 each.
+- **Overrides.** `data/border_overrides.json` has exactly two keys, `add` and `remove`, both lists of `{ a, b, reason }`, keyed by `ADM0_A3`; an added border may give its `crossing` point. The stage fails on any other key, and when an override names a non-playable country or the same country twice, has no reason, appears twice, or no longer changes anything (adding a border the geometry already has, removing one it doesn't), so a stale override can't linger. Today it adds Zambia–Botswana (the Kazungula border is about 150 m, and Natural Earth draws the two as touching at a point) and the four fixed links: the Channel Tunnel (UK–France), the Øresund Bridge (Denmark–Sweden), the Johor–Singapore Causeway and the King Fahd Causeway (Saudi Arabia–Bahrain). Ferries don't count.
+- **Outputs.** `packages/country-catalog/generated/borders.json` is `{ version, generated_at, edges }`, each pair and the list sorted by id; the catalog exports it as a graph from `@georally/country-catalog/borders`. `apps/web/src/shared/map/generated/border-crossings.json` maps each measured border's id `"<a>-<b>"` to its crossing point `[lng, lat]`, the middle of the border's longest part (a border has several parts only where the border does: exclaves such as Nakhichevan, Alaska, Ceuta and Melilla, a lake in between). It is about 10 KB, one border per line, and the routes mode bundles it. A border added by an override uses the override's `crossing`; without one it has no entry, and the route line crosses midway between the two centroids. `build/borders_report.json` lists for review every border under 20 km, every pair that touches only at a point (Namibia–Zimbabwe, Zambia–Botswana), and every non-playable feature that touches two or more playable countries.
+- **Rulings.** The geometry decides most surprising cases, and they are kept because they are real borders. The routes setup page explains them in a help note.
+   - French Guiana is drawn as France, so France borders Brazil and Suriname.
+   - Ceuta and Melilla join Spain to Morocco.
+   - Kaliningrad joins Russia to Poland and Lithuania.
+   - Cabinda joins Angola to the Republic of the Congo.
+   - Nakhchivan joins Azerbaijan to Turkey.
+
+   Non-playable features leave gaps: Kosovo between Serbia and Albania, Somaliland between Somalia and Djibouti, and Western Sahara between Morocco and Mauritania. Gibraltar and the UK bases on Cyprus give the UK no border with Spain or Cyprus. Namibia and Zimbabwe touch only at a point and get no border.
+
+- **Today.** 315 borders among 158 countries; 37 playable countries have neither a land border nor a fixed link.
+   - 156 of the 158 form one connected part. French Guiana is the only link between the Americas and the rest; Haiti and the Dominican Republic form the other part.
+   - China and Russia have the most neighbours, 14 each.
 
 ### Other outputs
 
@@ -201,12 +220,12 @@ Two playable countries are neighbours when the map shows them touching, unless `
 
 ## Invocation
 
-| Root script | Wraps | Produces |
-| --- | --- | --- |
-| `pnpm build:data` | `@georally/country-build`'s `build:data` script (`node --env-file=.env scripts/03_build_data.mjs`) | `build/countries.json` and the tile inputs |
-| `pnpm build:flags` | `@georally/country-build`'s `build:flags` script (`node scripts/03b_fetch_flags.mjs`) | `apps/web/public/flags/*.svg`, `build/flags.json` |
-| `pnpm build:country-registry` | `@georally/country-build`'s `build:registry` script (`node scripts/06_build_registry.mjs`) | `packages/country-catalog/generated/countries.json` |
-| `pnpm build:regions` | `@georally/country-build`'s `build:regions` script (`node scripts/08_build_regions.mjs`) | `packages/country-catalog/generated/regions.geojson` |
-| `pnpm build:map-tiles` | `@georally/country-build`'s `build:tiles` script (`bash scripts/04_build_tiles.sh`) | `apps/web/public/map/tiles/**`, `apps/web/src/shared/map/generated/tiles.json` |
-| `pnpm build:archipelago-outlines` | `@georally/country-build`'s `build:outlines` script (`node scripts/07_build_archipelago_outlines.mjs`) | `apps/web/src/shared/map/generated/archipelagos.geojson` |
-| `pnpm build:borders` | `@georally/country-build`'s `build:borders` script (`node scripts/09_build_borders.mjs`) | `packages/country-catalog/generated/borders.json`, `apps/web/src/shared/map/generated/border-lines.geojson` |
+| Root script                       | Wraps                                                                                                  | Produces                                                                                                     |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| `pnpm build:data`                 | `@georally/country-build`'s `build:data` script (`node --env-file=.env scripts/03_build_data.mjs`)     | `build/countries.json` and the tile inputs                                                                   |
+| `pnpm build:flags`                | `@georally/country-build`'s `build:flags` script (`node scripts/03b_fetch_flags.mjs`)                  | `apps/web/public/flags/*.svg`, `build/flags.json`                                                            |
+| `pnpm build:country-registry`     | `@georally/country-build`'s `build:registry` script (`node scripts/06_build_registry.mjs`)             | `packages/country-catalog/generated/countries.json`                                                          |
+| `pnpm build:regions`              | `@georally/country-build`'s `build:regions` script (`node scripts/08_build_regions.mjs`)               | `packages/country-catalog/generated/regions.geojson`                                                         |
+| `pnpm build:map-tiles`            | `@georally/country-build`'s `build:tiles` script (`bash scripts/04_build_tiles.sh`)                    | `apps/web/public/map/tiles/**`, `apps/web/src/shared/map/generated/tiles.json`                               |
+| `pnpm build:archipelago-outlines` | `@georally/country-build`'s `build:outlines` script (`node scripts/07_build_archipelago_outlines.mjs`) | `apps/web/src/shared/map/generated/archipelagos.geojson`                                                     |
+| `pnpm build:borders`              | `@georally/country-build`'s `build:borders` script (`node scripts/09_build_borders.mjs`)               | `packages/country-catalog/generated/borders.json`, `apps/web/src/shared/map/generated/border-crossings.json` |

@@ -393,9 +393,6 @@ importers:
       '@turf/helpers':
         specifier: ^7.4.0
         version: 7.4.0
-      '@turf/simplify':
-        specifier: ^7.4.0
-        version: 7.4.0
       '@turf/union':
         specifier: ^7.4.0
         version: 7.4.0
@@ -2463,17 +2460,11 @@ packages:
   '@turf/boolean-point-in-polygon@7.4.0':
     resolution: {integrity: sha512-GQrHc6WSDHhf32GB/b9AGyOeC05AQ3nGN7ooWTrlCYefKn7X9/2wG9BNexF47AuyDq5jPdOvITVR26BLFWV+mA==}
 
-  '@turf/boolean-point-on-line@7.4.0':
-    resolution: {integrity: sha512-5i5UBeZf/LuzgavkIj8L8L5/8SYWItWzQQcE9ymFZr60lV5lM8eFvQDfzAz2R3WQFCrxXExPqNvAVZOKGUyvoA==}
-
   '@turf/buffer@7.4.0':
     resolution: {integrity: sha512-ewYjC7NmmP+BZ8JcjX1TglzYH1FCMWAh5L08j0iAP4lbn3/AutVjjbwIXedZZy5He1OfgmXf+rIBcNXdeEYceg==}
 
   '@turf/center@7.4.0':
     resolution: {integrity: sha512-JVuTaIdnQtmTV8eQfVxqza1okKiaFzgVeIA6Xoy/u6aBMxg2+oBpS6GcHZkEqR8OapPWValB1AYYqimUSiyOXw==}
-
-  '@turf/clean-coords@7.4.0':
-    resolution: {integrity: sha512-xl3lVPey/FyVc3Z+drAWtVuVtvt737RHKGUMGyuskmKYW0JUeFDgqSR0OnrDfxXWb58Im/65BgPd1B+TUA9WfA==}
 
   '@turf/clone@7.4.0':
     resolution: {integrity: sha512-IfYnuil7XYJauy3crzIYEr26QkmBiTgFdGfYwUUe3S6dawX+lyb3vhuaYyssEPcCJq83g0G7hwxZy7141Mmzjg==}
@@ -2492,9 +2483,6 @@ packages:
 
   '@turf/projection@7.4.0':
     resolution: {integrity: sha512-ZS932qM+18V1UBvNlrNXUCD7mh9CzQqZzw/ElVtb0kAk6N00FYQ9bo26Cca08UZKXh3rZqG/e4eCK74JNGS4Zg==}
-
-  '@turf/simplify@7.4.0':
-    resolution: {integrity: sha512-HTolHFuXLReKHJoh3iz92+WpF5EsuCmmZR7fNv3hWnA4hZfkuEzbGB/WZqRdQpvDs99IUS8QIc6BAp6FHzQbBQ==}
 
   '@turf/union@7.4.0':
     resolution: {integrity: sha512-SYVtsCW9IznTyKlcGWxssRrf90p/hdpch1UeIcZc31pkSVdmeLOyuzPx0ef3UPmaF//fgXAphMph6JWA/FpKbA==}
@@ -7176,13 +7164,6 @@ snapshots:
       point-in-polygon-hao: 1.2.4
       tslib: 2.8.1
 
-  '@turf/boolean-point-on-line@7.4.0':
-    dependencies:
-      '@turf/helpers': 7.4.0
-      '@turf/invariant': 7.4.0
-      '@types/geojson': 7946.0.16
-      tslib: 2.8.1
-
   '@turf/buffer@7.4.0':
     dependencies:
       '@turf/bbox': 7.4.0
@@ -7199,14 +7180,6 @@ snapshots:
     dependencies:
       '@turf/bbox': 7.4.0
       '@turf/helpers': 7.4.0
-      '@types/geojson': 7946.0.16
-      tslib: 2.8.1
-
-  '@turf/clean-coords@7.4.0':
-    dependencies:
-      '@turf/boolean-point-on-line': 7.4.0
-      '@turf/helpers': 7.4.0
-      '@turf/invariant': 7.4.0
       '@types/geojson': 7946.0.16
       tslib: 2.8.1
 
@@ -7239,15 +7212,6 @@ snapshots:
 
   '@turf/projection@7.4.0':
     dependencies:
-      '@turf/clone': 7.4.0
-      '@turf/helpers': 7.4.0
-      '@turf/meta': 7.4.0
-      '@types/geojson': 7946.0.16
-      tslib: 2.8.1
-
-  '@turf/simplify@7.4.0':
-    dependencies:
-      '@turf/clean-coords': 7.4.0
       '@turf/clone': 7.4.0
       '@turf/helpers': 7.4.0
       '@turf/meta': 7.4.0

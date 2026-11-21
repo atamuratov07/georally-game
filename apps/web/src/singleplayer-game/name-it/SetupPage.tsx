@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
 import { useLocalizedSearchParams } from '@/app/useLocalizedSearchParams'
+import { getDifficultyLabel, getScopeLabel } from '@/shared/i18n'
 import { prefetchMap } from '@/shared/map/prefetchMap'
 import { RegionPicker } from '@/shared/widgets/region-map/RegionPicker'
 import {
@@ -85,13 +86,16 @@ export default function SetupPage() {
 		return (
 			<SetupShell mode='name-it'>
 				<ResumeGameCard
-					current={saved.index + 1}
-					answered={
-						saved.phase === 'revealed' ? saved.index + 1 : saved.index
-					}
-					total={saved.questionIds.length}
-					scope={saved.config.scope}
-					difficulty={saved.config.difficulty}
+					heading={t('game.progress', {
+						current: saved.index + 1,
+						total: saved.questionIds.length,
+					})}
+					details={`${getScopeLabel(t, saved.config.scope)} · ${getDifficultyLabel(t, saved.config.difficulty)}`}
+					progress={{
+						done:
+							saved.phase === 'revealed' ? saved.index + 1 : saved.index,
+						total: saved.questionIds.length,
+					}}
 					onResume={() => navigate(paths.play)}
 					onDiscard={() => {
 						nameItGameStore.clear()

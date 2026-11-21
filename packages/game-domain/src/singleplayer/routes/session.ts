@@ -7,7 +7,7 @@ import type { CountryPool } from '../../catalog/types'
 import type { SessionPreparationError } from '../../shared/errors'
 import { pickRandomIds, type RandomNumberGenerator } from '../../shared/random'
 import { err, ok, type Result } from '../../shared/result'
-import type { CountryId } from '../../shared/types'
+import type { CountryId, GameContinent } from '../../shared/types'
 import {
 	parFits,
 	ratingRank,
@@ -19,6 +19,36 @@ import type {
 	RoutePracticeConfig,
 	RouteSession,
 } from './types'
+
+const regionOf = (continent: GameContinent) =>
+	continent === 'north-america' || continent === 'south-america'
+		? 'americas'
+		: continent === 'oceania'
+			? 'asia'
+			: continent
+
+function byRegionPair(
+	pairs: readonly [CountryId, CountryId][],
+	pool: CountryPool,
+	rng: RandomNumberGenerator,
+): [CountryId, CountryId][] {
+	const groups = new Map<string, [CountryId, CountryId][]>()
+	for (const pair of pairs) {
+		const [x, y] = pair
+			.map(id => regionOf(pool.countriesById[id].continent))
+			.sort()
+		const key =
+			x !== y && (x === 'americas' || y === 'americas')
+				? 'americas-world'
+				: `${x}-${y}`
+		const group = groups.get(key)
+		if (group) group.push(pair)
+		else groups.set(key, [pair])
+	}
+	return pickRandomIds([...groups.values()], groups.size, rng).flatMap(group =>
+		pickRandomIds(group, group.length, rng),
+	)
+}
 
 export function prepareRouteSession(
 	graph: BorderGraph,
@@ -42,7 +72,11 @@ export function prepareRouteSession(
 	const rank = ratingRank(pool)
 	const fromStart = new Map<CountryId, ReadonlyMap<CountryId, number>>()
 
-	for (const [startId, targetId] of pickRandomIds(pairs, pairs.length, rng)) {
+	const candidates =
+		config.difficulty === 'hard'
+			? byRegionPair(pairs, pool, rng)
+			: pickRandomIds(pairs, pairs.length, rng)
+	for (const [startId, targetId] of candidates) {
 		let distances = fromStart.get(startId)
 		if (!distances) {
 			distances = distancesFrom(graph, startId)

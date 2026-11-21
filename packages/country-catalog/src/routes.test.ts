@@ -53,4 +53,28 @@ describe('route practice sessions', () => {
 		)!
 		expect(routeLevels(board.par, best)).toContain(difficulty)
 	})
+
+	it('keeps hard world puzzles from crowding into Africa', () => {
+		const rng = seeded(11)
+		let african = 0
+		for (let i = 0; i < 300; i++) {
+			const prepared = prepareRouteSession(
+				borderGraph,
+				playableCountryPool,
+				{ kind: 'practice', scope: 'all', difficulty: 'hard' },
+				rng,
+			)
+			if (!prepared.ok) throw new Error('No hard world puzzle.')
+			const { startId, targetId } = prepared.value
+			if (
+				[startId, targetId].some(
+					id =>
+						playableCountryPool.countriesById[id].continent === 'africa',
+				)
+			) {
+				african++
+			}
+		}
+		expect(african / 300).toBeLessThan(0.55)
+	})
 })

@@ -1,21 +1,21 @@
 import { countryCatalog } from '@georally/country-catalog'
 import type { Attempt } from '@georally/game-domain/singleplayer/recall-sprint'
-import type { GameScope } from '@georally/game-domain'
+import type { GameRegions } from '@georally/game-domain'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { useCurrentLocale } from '@/app/LocaleContext'
-import { getCountryName, getScopeLabel } from '@/shared/i18n'
+import { getCountryName, getRegionsLabel } from '@/shared/i18n'
 
 const OFFSET_Y = 14
 const SHOWN = { opacity: 1, y: 0, scale: 1 }
 
 interface SprintNoteProps {
 	attempt: Attempt | null
-	scope: GameScope
+	regions: GameRegions
 	enterFrom: 'above' | 'below'
 }
 
-export function SprintNote({ attempt, scope, enterFrom }: SprintNoteProps) {
+export function SprintNote({ attempt, regions, enterFrom }: SprintNoteProps) {
 	const reduceMotion = useReducedMotion()
 	const hidden = reduceMotion
 		? { opacity: 0 }
@@ -36,7 +36,7 @@ export function SprintNote({ attempt, scope, enterFrom }: SprintNoteProps) {
 					exit={hidden}
 					transition={{ duration: 0.22, ease: [0.2, 0.9, 0.3, 1.3] }}
 				>
-					<NoteMessage attempt={attempt} scope={scope} />
+					<NoteMessage attempt={attempt} regions={regions} />
 				</motion.div>
 			) : null}
 		</AnimatePresence>
@@ -45,10 +45,10 @@ export function SprintNote({ attempt, scope, enterFrom }: SprintNoteProps) {
 
 function NoteMessage({
 	attempt,
-	scope,
+	regions,
 }: {
 	attempt: Attempt
-	scope: GameScope
+	regions: GameRegions
 }) {
 	const { t } = useTranslation()
 	const language = useCurrentLocale()
@@ -67,7 +67,7 @@ function NoteMessage({
 			: attempt.outsideIds.length > 0
 				? t('recallSprint.note.outside', {
 						name: countryName(attempt.outsideIds[0]),
-						region: getScopeLabel(t, scope),
+						region: getRegionsLabel(t, regions),
 					})
 				: unresolved?.kind === 'ambiguous'
 					? t('recallSprint.note.ambiguous', { text: unresolved.heard })

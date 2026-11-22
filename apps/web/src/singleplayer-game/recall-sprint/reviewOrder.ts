@@ -1,5 +1,5 @@
 import { countryCatalog } from '@georally/country-catalog'
-import { GAME_CONTINENTS, type GameScope } from '@georally/game-domain'
+import { GAME_CONTINENTS, type GameRegions } from '@georally/game-domain'
 import { regionBounds } from './sprintRegion'
 
 const wrap = (degrees: number) => ((degrees + 540) % 360) - 180
@@ -9,8 +9,8 @@ function centroidOf(countryId: string): [number, number] {
 	return info ? [info.centroidLng, info.centroidLat] : [0, 0]
 }
 
-function centreLongitude(scope: GameScope): number {
-	const [west, , east] = regionBounds(scope)
+function centreLongitude(regions: GameRegions): number {
+	const [west, , east] = regionBounds(regions)
 	return wrap((west + east) / 2)
 }
 
@@ -47,19 +47,20 @@ function orderByNearest(
 
 export function reviewOrder(
 	countryIds: readonly string[],
-	scope: GameScope,
+	regions: GameRegions,
 ): string[] {
-	if (scope !== 'all') {
-		return orderByNearest(countryIds, centreLongitude(scope))
+	if (regions.length === 1) {
+		return orderByNearest(countryIds, centreLongitude(regions))
 	}
-	return GAME_CONTINENTS.flatMap(continent =>
-		orderByNearest(
-			countryIds.filter(
-				countryId =>
-					countryCatalog.countriesById.get(countryId)?.continent ===
-					continent,
+	return (regions.length === 0 ? GAME_CONTINENTS : regions).flatMap(
+		continent =>
+			orderByNearest(
+				countryIds.filter(
+					countryId =>
+						countryCatalog.countriesById.get(countryId)?.continent ===
+						continent,
+				),
+				centreLongitude([continent]),
 			),
-			centreLongitude(continent),
-		),
 	)
 }

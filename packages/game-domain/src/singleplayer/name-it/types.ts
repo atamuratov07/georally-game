@@ -12,7 +12,7 @@ export interface GameConfig extends GameQuestionSetConfig {
 export const DEFAULT_GAME_CONFIG: GameConfig = {
 	questionCount: 10,
 	difficulty: 'easy',
-	scope: 'all',
+	regions: [],
 	timeLimitMs: 20_000,
 	inputs: ['typing', 'voice'],
 }

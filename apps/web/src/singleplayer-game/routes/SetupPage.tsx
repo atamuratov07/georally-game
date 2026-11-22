@@ -1,13 +1,13 @@
 import {
 	createIdleState,
 	type RoutePracticeConfig,
-	type RouteScope,
+	type RouteRegion,
 } from '@georally/game-domain/singleplayer/routes'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
 import { useLocalizedSearchParams } from '@/app/useLocalizedSearchParams'
-import { getDifficultyLabel } from '@/shared/i18n'
+import { getDifficultyLabel, getRegionLabel } from '@/shared/i18n'
 import { prefetchMap } from '@/shared/map/prefetchMap'
 import { RegionMapPicker } from '@/shared/widgets/region-map/RegionPicker'
 import { difficultyOptions } from '@/shared/widgets/settingOptions'
@@ -19,8 +19,9 @@ import { SetupShell } from '../shared/components/SetupShell'
 import { DIFFICULTY_OPTIONS } from '../shared/setupParams'
 import {
 	readSetupConfig,
-	ROUTE_SCOPE_OPTIONS,
-	routeScopeLabel,
+	ROUTE_REGION_OPTIONS,
+	routeRegionLabel,
+	routeRegionsLabel,
 	toSearchParams,
 } from './config'
 import { BordersNote } from './components/BordersNote'
@@ -74,7 +75,7 @@ export default function SetupPage() {
 		const settings =
 			saved.config.kind === 'practice'
 				? [
-						routeScopeLabel(t, saved.config.scope),
+						routeRegionsLabel(t, saved.config.regions),
 						getDifficultyLabel(t, saved.config.difficulty),
 					]
 				: []
@@ -105,12 +106,13 @@ export default function SetupPage() {
 				onStart={handleStart}
 				onPrefetch={prefetchGame}
 			>
-				<RegionMapPicker<RouteScope>
+				<RegionMapPicker<RouteRegion>
 					label={t('settings.region')}
-					value={config.scope}
-					options={ROUTE_SCOPE_OPTIONS}
-					labelOf={scope => routeScopeLabel(t, scope)}
-					onChange={scope => update({ scope })}
+					value={config.regions}
+					options={ROUTE_REGION_OPTIONS}
+					labelOf={region => routeRegionLabel(t, region)}
+					worldLabel={getRegionLabel(t, 'all')}
+					onChange={regions => update({ regions })}
 				/>
 				<SettingToggleGroup
 					label={t('settings.difficulty')}

@@ -9,13 +9,19 @@ export { elapsedSeconds } from './shared/time'
 export {
 	GAME_CONTINENTS,
 	GAME_DIFFICULTIES,
-	GAME_SCOPES,
 	type CountryId,
 	type GameContinent,
 	type GameDifficulty,
 	type GameQuestionSetConfig,
-	type GameScope,
+	type GameRegions,
 } from './shared/types'
+export {
+	isGameRegions,
+	isWholeWorld,
+	normalizeGameRegions,
+	normalizeRegions,
+	regionsInclude,
+} from './shared/regions'
 
 export {
 	getCountryIds,
@@ -23,8 +29,5 @@ export {
 	hasCountry,
 	selectEligibleCountryIds,
 } from './catalog/selectors'
-export {
-	prepareQuestionSet,
-	type QuestionSet,
-} from './catalog/questionSet'
+export { prepareQuestionSet, type QuestionSet } from './catalog/questionSet'
 export { type CountryPool, type CountryPoolEntry } from './catalog/types'

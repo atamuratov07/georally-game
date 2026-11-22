@@ -2,18 +2,12 @@ import type { InputMethod, MatchResult } from '../../answers'
 import type { CountryId, GameDifficulty } from '../../shared/types'
 import type { IdleState } from '../rounds'
 
-export const ROUTE_SCOPES = [
-	'all',
-	'europe',
-	'asia',
-	'africa',
-	'americas',
-] as const
-export type RouteScope = (typeof ROUTE_SCOPES)[number]
+export const ROUTE_REGIONS = ['europe', 'asia', 'africa', 'americas'] as const
+export type RouteRegion = (typeof ROUTE_REGIONS)[number]
 
 export interface RoutePracticeConfig {
 	kind: 'practice'
-	scope: RouteScope
+	regions: readonly RouteRegion[]
 	difficulty: GameDifficulty
 }
 

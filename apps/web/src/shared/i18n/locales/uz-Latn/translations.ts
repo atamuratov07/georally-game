@@ -4,6 +4,7 @@ const translations = {
 		language: 'Til',
 	},
 	common: {
+		remove: 'Olib tashlash',
 		home: 'Bosh sahifa',
 		retry: 'Qayta urinish',
 	},
@@ -144,6 +145,8 @@ const translations = {
 		questions: 'Savollar',
 		attempts: 'Urinishlar',
 		region: 'Hudud',
+		clearRegions: 'Tozalash',
+		regionsHint: 'Bir nechtasini tanlash mumkin',
 		difficulty: 'Qiyinlik',
 		timer: 'Taymer',
 		timerOff: "Yo'q",

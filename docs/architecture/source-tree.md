@@ -97,7 +97,7 @@ georally-game/
 |           |   |-- map/
 |           |   |   |-- PickCountryMap.tsx # the pick-a-country map (locate, multiplayer), composed from the parts below
 |           |   |   |-- BaseMap.tsx     # MapLibre map, style, load and error, projection and its toggle
-|           |   |   |-- camera/         # useScopeCamera (region presets, reset), useRevealCamera, useFitCamera,
+|           |   |   |-- camera/         # useRegionCamera (region views, reset), useRevealCamera, useFitCamera,
 |           |   |   |                   # framing (fitCamera, flight settings, isTinyAt,
 |           |   |   |                   # loosenCameraConstraint, keepVisibleAreaOnMap)
 |           |   |   |-- interaction/    # useCountryPicking (hover and click)

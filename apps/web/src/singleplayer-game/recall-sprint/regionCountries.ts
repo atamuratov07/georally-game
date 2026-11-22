@@ -1,9 +1,12 @@
 import { playableCountryPool } from '@georally/country-catalog'
-import { selectEligibleCountryIds, type GameScope } from '@georally/game-domain'
+import {
+	selectEligibleCountryIds,
+	type GameRegions,
+} from '@georally/game-domain'
 
-export function regionCountryIds(scope: GameScope): string[] {
+export function regionCountryIds(regions: GameRegions): string[] {
 	return selectEligibleCountryIds(playableCountryPool, {
-		scope,
+		regions,
 		difficulty: 'hard',
 	})
 }

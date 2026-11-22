@@ -1,4 +1,8 @@
-import type { GameDifficulty, GameScope } from '@georally/game-domain'
+import {
+	isGameRegions,
+	normalizeGameRegions,
+	type GameDifficulty,
+} from '@georally/game-domain'
 import {
 	DEFAULT_GAME_CONFIG,
 	type GameConfig,
@@ -12,18 +16,6 @@ export const QUESTION_DURATION_MS_OPTIONS = [
 export const DIFFICULTY_OPTIONS: Array<{
 	value: GameDifficulty
 }> = [{ value: 'easy' }, { value: 'medium' }, { value: 'hard' }]
-
-export const SCOPE_OPTIONS: Array<{
-	value: GameScope
-}> = [
-	{ value: 'all' },
-	{ value: 'africa' },
-	{ value: 'asia' },
-	{ value: 'europe' },
-	{ value: 'north-america' },
-	{ value: 'south-america' },
-	{ value: 'oceania' },
-]
 
 const CONFIG_STORAGE_PREFIX = 'georally.multiplayer.gameConfig'
 
@@ -62,12 +54,9 @@ function normalizeGameConfig(value: unknown): GameConfig {
 		)
 			? draft.difficulty
 			: DEFAULT_GAME_CONFIG.difficulty,
-		scope: includesValue(
-			SCOPE_OPTIONS.map(option => option.value),
-			draft.scope,
-		)
-			? draft.scope
-			: DEFAULT_GAME_CONFIG.scope,
+		regions: isGameRegions(draft.regions)
+			? normalizeGameRegions(draft.regions)
+			: DEFAULT_GAME_CONFIG.regions,
 	}
 }
 

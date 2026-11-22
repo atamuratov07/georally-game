@@ -90,8 +90,8 @@ export function GameConfigPanel({
 				<div className='flex flex-col gap-6'>
 					<RegionPicker
 						label={t('settings.region')}
-						value={config.scope}
-						onChange={scope => update({ scope })}
+						value={config.regions}
+						onChange={regions => update({ regions })}
 					/>
 					<SettingToggleGroup
 						label={t('settings.difficulty')}

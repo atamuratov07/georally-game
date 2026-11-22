@@ -142,7 +142,7 @@ export function GameScreen({
 	const mapProps: PickCountryMapProps = {
 		onPick: answering ? onPick : () => undefined,
 		interactiveIds,
-		scope: state.config.scope,
+		regions: state.config.regions,
 		highlights: highlights,
 		revealTarget,
 		popupElement: revealedInfo ? (

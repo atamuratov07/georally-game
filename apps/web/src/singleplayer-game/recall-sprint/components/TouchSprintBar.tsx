@@ -47,7 +47,7 @@ export function TouchSprintBar({ controls }: { controls: SprintControls }) {
 			<div className='px-14'>
 				<SprintNote
 					attempt={input.mistake}
-					scope={controls.scope}
+					regions={controls.regions}
 					enterFrom='above'
 				/>
 			</div>

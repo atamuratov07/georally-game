@@ -37,7 +37,7 @@ export default function SetupPage() {
 	const navigate = useLocalizedNavigate()
 	const [searchParams, setSearchParams] = useLocalizedSearchParams()
 	const config = readSetupConfig(searchParams)
-	const countryCount = regionCountryIds(config.scope).length
+	const countryCount = regionCountryIds(config.regions).length
 
 	useEffect(() => {
 		const timer = setTimeout(prefetchGame, 500)
@@ -73,8 +73,8 @@ export default function SetupPage() {
 			>
 				<RegionPicker
 					label={t('settings.region')}
-					value={config.scope}
-					onChange={scope => update({ scope })}
+					value={config.regions}
+					onChange={regions => update({ regions })}
 				/>
 				<SettingToggleGroup
 					label={t('settings.sprintLength')}

@@ -1,5 +1,5 @@
 import { countryCatalog } from '@georally/country-catalog'
-import type { GameScope } from '@georally/game-domain'
+import type { GameRegions } from '@georally/game-domain'
 import type { MapMouseEvent } from 'maplibre-gl'
 import { useEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import { Layer, useMap } from 'react-map-gl/maplibre'
@@ -31,7 +31,7 @@ const WORLD = { source: SOURCE_ID, sourceLayer: COUNTRY_LAYER }
 const ISLANDS = { source: ARCHIPELAGO_SOURCE_ID }
 
 interface ReviewLayersProps {
-	scope: GameScope
+	regions: GameRegions
 	regionIds: ReadonlySet<string>
 	activeId: string | null
 	onSelect: (countryId: string | null) => void
@@ -41,7 +41,7 @@ interface ReviewLayersProps {
 }
 
 export function ReviewLayers({
-	scope,
+	regions,
 	regionIds,
 	activeId,
 	onSelect,
@@ -95,7 +95,7 @@ export function ReviewLayers({
 			return
 		}
 
-		const bounds = activeId ? boundsOf([activeId]) : regionBounds(scope)
+		const bounds = activeId ? boundsOf([activeId]) : regionBounds(regions)
 		const camera =
 			bounds &&
 			fitCamera(map, bounds, overlaysRef.current.padding, {
@@ -110,7 +110,7 @@ export function ReviewLayers({
 		} else {
 			map.flyTo({ ...camera, ...FLIGHT, essential: true })
 		}
-	}, [activeId, holdRef, map, overlaysRef, scope, takenOverRef])
+	}, [activeId, holdRef, map, overlaysRef, regions, takenOverRef])
 
 	const lifted = useMemo(() => flagsFor([activeId]), [activeId])
 	useFeatureState(true, WORLD, LIFTED_STATE, lifted)

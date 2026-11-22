@@ -19,6 +19,11 @@ function gtagEvent(
 	window.gtag('event', name, clean)
 }
 
+/** Named `scope` so existing GA reports keep working. */
+function scopeParam(regions: readonly string[]): string {
+	return regions.length === 0 ? 'all' : regions.join('+')
+}
+
 export type RoomModeParam = 'group' | 'classroom'
 export type RoleParam = 'host' | 'player'
 
@@ -36,7 +41,7 @@ export type SingleplayerModeParam =
 export function trackSingleplayerGameStart(params: {
 	mode: SingleplayerModeParam
 	difficulty: string
-	scope: string
+	regions: readonly string[]
 	questionCount: number
 	attemptsPerQuestion?: number
 	timeLimitSeconds?: number
@@ -45,7 +50,7 @@ export function trackSingleplayerGameStart(params: {
 	gtagEvent('sp_game_start', {
 		mode: params.mode,
 		difficulty: params.difficulty,
-		scope: params.scope,
+		scope: scopeParam(params.regions),
 		question_count: params.questionCount,
 		attempts_per_question: params.attemptsPerQuestion,
 		time_limit_s: params.timeLimitSeconds,
@@ -56,7 +61,7 @@ export function trackSingleplayerGameStart(params: {
 export function trackMultiplayerGameStart(params: {
 	roomMode: RoomModeParam
 	difficulty: string
-	scope: string
+	regions: readonly string[]
 	questionCount: number
 	questionDurationMs: number | undefined
 	memberCountAtStart: number
@@ -64,7 +69,7 @@ export function trackMultiplayerGameStart(params: {
 	gtagEvent('mp_game_start', {
 		room_mode: params.roomMode,
 		difficulty: params.difficulty,
-		scope: params.scope,
+		scope: scopeParam(params.regions),
 		question_count: params.questionCount,
 		question_duration_ms: params.questionDurationMs,
 		member_count_at_start: params.memberCountAtStart,
@@ -75,14 +80,14 @@ export function trackGameEntered(params: {
 	roomMode: RoomModeParam
 	role: RoleParam
 	questionCount: number
-	scope: string
+	regions: readonly string[]
 	participantCount: number
 }): void {
 	gtagEvent('game_entered', {
 		room_mode: params.roomMode,
 		role: params.role,
 		question_count: params.questionCount,
-		scope: params.scope,
+		scope: scopeParam(params.regions),
 		participant_count: params.participantCount,
 	})
 }
@@ -124,7 +129,7 @@ export function trackMultiplayerQuestionAnswered(params: {
 export function trackSingleplayerGameEnd(params: {
 	mode: SingleplayerModeParam
 	difficulty: string
-	scope: string
+	regions: readonly string[]
 	questionCount: number
 	score: number
 	correctCount: number
@@ -133,7 +138,7 @@ export function trackSingleplayerGameEnd(params: {
 	gtagEvent('sp_game_end', {
 		mode: params.mode,
 		difficulty: params.difficulty,
-		scope: params.scope,
+		scope: scopeParam(params.regions),
 		question_count: params.questionCount,
 		score: params.score,
 		correct_count: params.correctCount,
@@ -144,7 +149,7 @@ export function trackSingleplayerGameEnd(params: {
 interface RoutesGameParams {
 	kind: 'practice' | 'daily'
 	difficulty: string
-	scope: string
+	regions: readonly string[]
 	par: number
 }
 
@@ -153,7 +158,7 @@ export function trackRoutesStart(params: RoutesGameParams): void {
 		mode: 'routes',
 		route_kind: params.kind,
 		difficulty: params.difficulty,
-		scope: params.scope,
+		scope: scopeParam(params.regions),
 		par: params.par,
 	})
 }
@@ -170,7 +175,7 @@ export function trackRoutesEnd(
 		mode: 'routes',
 		route_kind: params.kind,
 		difficulty: params.difficulty,
-		scope: params.scope,
+		scope: scopeParam(params.regions),
 		par: params.par,
 		guesses: params.guesses,
 		hints: params.hints,

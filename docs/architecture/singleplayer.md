@@ -27,6 +27,8 @@ graph TD
 
 ## Setup
 
+- **Regions are a list of continents** (`GameRegions` in `game-domain`); an empty list means the whole world. `normalizeRegions` gives one canonical form (continent order, no repeats, every continent picked becomes `[]`), so equal choices make equal configs, setup links and best keys. The setup URL carries `regions=asia,europe`; old `scope=` links still parse, with `americas` meaning both American continents. Several regions are framed together (`regionsView` in `shared/map/continent-view.ts`); past 250° of longitude the map opens on the world. The globe is offered only when the map opens on the world.
+- **The region map** (`RegionMapPicker`) is a group of checkboxes, one per region. The first click on the world picks that region, later clicks add or remove one, and a click on the sea goes back to the world. Picked regions show as chips in one row that scrolls sideways; from two regions on, Clear takes the hint's place. Routes passes its own options, with the Americas as one region.
 - **Difficulty is cumulative:** the highlight (`SettingToggleGroup` with `cumulative`) spans Easy up to the chosen level, since a harder level also asks the easier countries. Routes' levels are bands of par, so its toggle highlights one option.
 - **Toggles follow a pressed pointer** and commit on release. The value is shown through `useOptimistic`, because the router applies it a render later.
 - **The map projection is remembered** across games and reloads (`useProjectionPreference`, `georally.map.projection`).

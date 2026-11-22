@@ -23,7 +23,7 @@ export function useSprintAnalytics(
 			trackSingleplayerGameStart({
 				mode: 'recall_sprint',
 				difficulty: 'all',
-				scope: state.config.scope,
+				regions: state.config.regions,
 				questionCount: state.countryIds.length,
 				timeLimitSeconds: state.durationMs / 1000,
 				isRetry: false,
@@ -33,7 +33,7 @@ export function useSprintAnalytics(
 			trackSingleplayerGameEnd({
 				mode: 'recall_sprint',
 				difficulty: 'all',
-				scope: state.config.scope,
+				regions: state.config.regions,
 				questionCount: state.countryIds.length,
 				score: state.found.length,
 				correctCount: state.found.length,

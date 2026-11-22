@@ -1,4 +1,4 @@
-import type { GameScope } from '@georally/game-domain'
+import type { GameRegions } from '@georally/game-domain'
 import type { Attempt } from '@georally/game-domain/singleplayer/recall-sprint'
 import { memo, useCallback, useMemo, useRef, useState } from 'react'
 import type { MapRef } from 'react-map-gl/maplibre'
@@ -16,7 +16,7 @@ const ZOOM_AROUND_CENTER = { around: 'center' } as const
 
 interface SprintMapProps {
 	projection: ProjectionKind
-	scope: GameScope
+	regions: GameRegions
 	countryIds: readonly string[]
 	found: readonly string[]
 	attempt: Attempt | null
@@ -35,7 +35,7 @@ const NO_IDS: ReadonlySet<string> = new Set()
 
 function SprintMapInner({
 	projection,
-	scope,
+	regions,
 	countryIds,
 	found,
 	attempt,
@@ -47,7 +47,7 @@ function SprintMapInner({
 	const mapRef = useRef<MapRef | null>(null)
 	const [isLoaded, setIsLoaded] = useState(false)
 	const [initialViewState] = useState(() =>
-		regionViewState(scope, overlays.padding),
+		regionViewState(regions, overlays.padding),
 	)
 	const [restoredAttemptAt] = useState(attempt?.at ?? null)
 	const [landedAt, setLandedAt] = useState<number | null>(null)
@@ -83,7 +83,7 @@ function SprintMapInner({
 	const { overlaysRef, takenOverRef } = useOverlayCamera({
 		mapRef,
 		isLoaded,
-		scope,
+		regions,
 		overlays,
 		holdRef,
 	})
@@ -122,7 +122,7 @@ function SprintMapInner({
 			/>
 			{isLoaded && review ? (
 				<ReviewLayers
-					scope={scope}
+					regions={regions}
 					regionIds={regionIds}
 					activeId={review.activeId}
 					onSelect={review.onSelect}

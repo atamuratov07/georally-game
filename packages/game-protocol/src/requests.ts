@@ -1,9 +1,16 @@
 import { z } from 'zod'
 
-import { GAME_DIFFICULTIES, GAME_SCOPES } from '@georally/game-domain'
+import {
+	GAME_CONTINENTS,
+	GAME_DIFFICULTIES,
+	normalizeGameRegions,
+} from '@georally/game-domain'
 
 export const difficultySchema = z.enum(GAME_DIFFICULTIES)
-export const scopeSchema = z.enum(GAME_SCOPES)
+export const regionsSchema = z
+	.array(z.enum(GAME_CONTINENTS))
+	.max(GAME_CONTINENTS.length)
+	.transform(normalizeGameRegions)
 export const roomCodeSchema = z
 	.string()
 	.trim()
@@ -39,7 +46,7 @@ export const startGameRequestSchema = z.object({
 	gameConfig: z.object({
 		questionCount: z.number().int().min(1).max(50),
 		difficulty: difficultySchema,
-		scope: scopeSchema,
+		regions: regionsSchema,
 		questionDurationMs: z.number().int().min(5_000).max(120_000).optional(),
 	}),
 })

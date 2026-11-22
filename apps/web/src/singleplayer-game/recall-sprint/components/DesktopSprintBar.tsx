@@ -20,7 +20,7 @@ export function DesktopSprintBar({ controls }: { controls: SprintControls }) {
 		<div className='flex flex-col gap-2'>
 			<SprintNote
 				attempt={input.mistake}
-				scope={controls.scope}
+				regions={controls.regions}
 				enterFrom='below'
 			/>
 			<form ref={formRef} className='relative' onSubmit={onSubmit}>

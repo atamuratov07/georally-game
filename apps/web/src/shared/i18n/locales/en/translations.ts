@@ -4,6 +4,7 @@ const translations = {
 		language: 'Language',
 	},
 	common: {
+		remove: 'Remove',
 		home: 'Home',
 		retry: 'Try again',
 	},
@@ -140,6 +141,8 @@ const translations = {
 		questions: 'Questions',
 		attempts: 'Attempts',
 		region: 'Region',
+		clearRegions: 'Clear',
+		regionsHint: 'You can pick several',
 		difficulty: 'Difficulty',
 		timer: 'Timer',
 		timerOff: 'Off',

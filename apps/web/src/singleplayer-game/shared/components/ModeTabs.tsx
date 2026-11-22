@@ -5,7 +5,7 @@ import { cn } from '@/shared/utils'
 import { SINGLEPLAYER_MODES } from '../../modes'
 import { singleplayerPaths, type SingleplayerModeId } from '../../paths'
 
-const SHARED_PARAMS = ['scope', 'difficulty']
+const SHARED_PARAMS = ['regions', 'scope', 'difficulty']
 
 export function ModeTabs({ current }: { current: SingleplayerModeId }) {
 	const { t } = useTranslation()

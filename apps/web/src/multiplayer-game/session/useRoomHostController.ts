@@ -120,11 +120,13 @@ export function useRoomHostController<TAction extends string>(
 			const { roomMode, connectedMemberCount } = runtime.state.room
 
 			await runAction('start', async () => {
-				await gateway.startGame({ gameConfig })
+				await gateway.startGame({
+					gameConfig: { ...gameConfig, regions: [...gameConfig.regions] },
+				})
 				trackMultiplayerGameStart({
 					roomMode,
 					difficulty: gameConfig.difficulty,
-					scope: gameConfig.scope,
+					regions: gameConfig.regions,
 					questionCount: gameConfig.questionCount,
 					questionDurationMs: gameConfig.questionDurationMs,
 					memberCountAtStart: connectedMemberCount,

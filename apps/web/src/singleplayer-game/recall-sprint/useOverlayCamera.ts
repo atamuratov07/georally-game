@@ -1,4 +1,4 @@
-import type { GameScope } from '@georally/game-domain'
+import type { GameRegions } from '@georally/game-domain'
 import type { MapLibreEvent } from 'maplibre-gl'
 import { useEffect, useRef, type RefObject } from 'react'
 import type { MapRef } from 'react-map-gl/maplibre'
@@ -15,7 +15,7 @@ const REFRAME_EASE_MS = 250
 interface OverlayCameraOptions {
 	mapRef: RefObject<MapRef | null>
 	isLoaded: boolean
-	scope: GameScope
+	regions: GameRegions
 	overlays: Overlays
 	holdRef: RefObject<boolean>
 }
@@ -27,7 +27,7 @@ export function prefersReducedMotion(): boolean {
 export function useOverlayCamera({
 	mapRef,
 	isLoaded,
-	scope,
+	regions,
 	overlays,
 	holdRef,
 }: OverlayCameraOptions) {
@@ -80,7 +80,7 @@ export function useOverlayCamera({
 			const regionCamera =
 				!takenOverRef.current &&
 				!holdRef.current &&
-				fitCamera(map, regionBounds(scope), overlaysRef.current.padding, {
+				fitCamera(map, regionBounds(regions), overlaysRef.current.padding, {
 					margin: REGION_MARGIN,
 				})
 			map.easeTo({
@@ -100,7 +100,7 @@ export function useOverlayCamera({
 		return () => {
 			map.off('resize', followOverlays)
 		}
-	}, [overlays, holdRef, isLoaded, mapRef, scope])
+	}, [overlays, holdRef, isLoaded, mapRef, regions])
 
 	return { overlaysRef, takenOverRef }
 }

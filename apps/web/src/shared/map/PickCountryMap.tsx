@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo, useRef, useState } from 'react'
 import type { MapRef } from 'react-map-gl/maplibre'
 import { BaseMap } from './BaseMap'
 import { useRevealCamera } from './camera/useRevealCamera'
-import { useScopeCamera } from './camera/useScopeCamera'
+import { useRegionCamera } from './camera/useRegionCamera'
 import { CardToggle } from './CardToggle'
 import { ProjectionToggle } from './ProjectionToggle'
 import { useProjectionPreference } from './useProjectionPreference'
@@ -19,7 +19,7 @@ const NO_MARKERS: readonly MapMarker[] = []
 function PickCountryMapInner({
 	onPick,
 	interactiveIds,
-	scope,
+	regions,
 	highlights = NO_HIGHLIGHTS,
 	markers = NO_MARKERS,
 	revealTarget = null,
@@ -50,10 +50,10 @@ function PickCountryMapInner({
 		clearHover()
 		unsettle()
 	}, [clearHover, unsettle])
-	const { allowGlobe, maxBounds } = useScopeCamera({
+	const { allowGlobe, maxBounds } = useRegionCamera({
 		mapRef,
 		isLoaded,
-		scope,
+		regions,
 		resetViewKey,
 		onReset: handleReset,
 	})

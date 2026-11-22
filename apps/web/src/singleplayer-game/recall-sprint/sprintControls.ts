@@ -1,4 +1,4 @@
-import type { GameScope } from '@georally/game-domain'
+import type { GameRegions } from '@georally/game-domain'
 import type { ProjectionKind } from '@/shared/map/ProjectionToggle'
 import type { SprintInputState } from './useSprintInput'
 
@@ -10,7 +10,7 @@ export interface MapChoice {
 
 export interface SprintControls {
 	input: SprintInputState
-	scope: GameScope
+	regions: GameRegions
 	found: number
 	total: number
 	timer: { deadlineAt: number | null; frozenAt: null; limitMs: number }

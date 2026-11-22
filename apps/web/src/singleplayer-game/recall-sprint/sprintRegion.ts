@@ -1,30 +1,30 @@
 import { countryCatalog } from '@georally/country-catalog'
-import type { GameScope } from '@georally/game-domain'
+import type { GameRegions } from '@georally/game-domain'
 import type { MapProps } from 'react-map-gl/maplibre'
 import {
 	viewPadding,
 	type Bounds,
 	type Insets,
 } from '@/shared/map/camera/framing'
-import { CONTINENT_VIEW_PRESETS } from '@/shared/map/continent-view'
+import { regionsView } from '@/shared/map/continent-view'
 
 export const REGION_MARGIN = 0.06
 const WORLD_BOUNDS: Bounds = [-168, -56, 180, 76]
 
-export function regionBounds(scope: GameScope): Bounds {
-	if (scope === 'all') {
+export function regionBounds(regions: GameRegions): Bounds {
+	const view = regionsView(regions)
+	if (!view) {
 		return WORLD_BOUNDS
 	}
-	const [[west, south], [east, north]] =
-		CONTINENT_VIEW_PRESETS[scope].focusBounds
+	const [[west, south], [east, north]] = view.focusBounds
 	return [west, south, east, north]
 }
 
 export function regionViewState(
-	scope: GameScope,
+	regions: GameRegions,
 	insets: Insets,
 ): MapProps['initialViewState'] {
-	const [west, south, east, north] = regionBounds(scope)
+	const [west, south, east, north] = regionBounds(regions)
 	return {
 		bounds: [west, south, east, north],
 		fitBoundsOptions: {

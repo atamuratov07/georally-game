@@ -2,13 +2,14 @@ import {
 	DEFAULT_GAME_CONFIG,
 	type GameConfig,
 } from '@georally/game-domain/singleplayer/name-it'
+import { isGameRegions } from '@georally/game-domain'
 import {
 	isDifficulty,
 	isOption,
-	isScope,
 	readDifficulty,
 	readNumberOption,
-	readScope,
+	setRegions,
+	readGameRegions,
 } from '../shared/setupParams'
 
 export const QUESTION_COUNT_OPTIONS = [10, 20, 30] as const
@@ -35,18 +36,18 @@ export function isGameConfig(value: unknown): value is GameConfig {
 		typeof config.timeLimitMs === 'number' &&
 		isOption(config.timeLimitMs / 1000, TIME_LIMIT_SECONDS_OPTIONS) &&
 		isDifficulty(config.difficulty) &&
-		isScope(config.scope) &&
+		isGameRegions(config.regions) &&
 		hasDefaultInputs(config.inputs)
 	)
 }
 
 export function toSearchParams(config: GameConfig): URLSearchParams {
-	return new URLSearchParams({
+	const params = new URLSearchParams({
 		questionCount: String(config.questionCount),
 		time: String(config.timeLimitMs / 1000),
 		difficulty: config.difficulty,
-		scope: config.scope,
 	})
+	return setRegions(params, config.regions)
 }
 
 export function readSetupConfig(searchParams: URLSearchParams): GameConfig {
@@ -65,7 +66,7 @@ export function readSetupConfig(searchParams: URLSearchParams): GameConfig {
 				DEFAULT_TIME_LIMIT_SECONDS,
 			) * 1000,
 		difficulty: readDifficulty(searchParams, DEFAULT_GAME_CONFIG.difficulty),
-		scope: readScope(searchParams, DEFAULT_GAME_CONFIG.scope),
+		regions: readGameRegions(searchParams),
 		inputs: DEFAULT_GAME_CONFIG.inputs,
 	}
 }

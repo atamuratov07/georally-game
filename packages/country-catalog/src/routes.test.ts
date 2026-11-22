@@ -3,9 +3,10 @@ import {
 	createRouteBoard,
 	prepareRouteSession,
 	ratingRank,
-	ROUTE_SCOPE_CONTINENTS,
-	ROUTE_SCOPES,
+	ROUTE_REGIONS,
 	routeLevels,
+	routeRegionOf,
+	type RouteRegion,
 } from '@georally/game-domain/singleplayer/routes'
 import { GAME_DIFFICULTIES } from '@georally/game-domain'
 import { describe, expect, it } from 'vitest'
@@ -22,26 +23,37 @@ function seeded(seed: number) {
 const rank = ratingRank(playableCountryPool)
 
 describe('route practice sessions', () => {
+	const regionSets: (readonly RouteRegion[])[] = [
+		[],
+		...ROUTE_REGIONS.map(region => [region]),
+		['europe', 'asia'],
+		['africa', 'americas'],
+	]
+	const regionOfId = (id: string) =>
+		routeRegionOf(playableCountryPool.countriesById[id].continent)
+
 	it.each(
-		ROUTE_SCOPES.flatMap(scope =>
-			GAME_DIFFICULTIES.map(difficulty => [scope, difficulty] as const),
+		regionSets.flatMap(regions =>
+			GAME_DIFFICULTIES.map(difficulty => [regions, difficulty] as const),
 		),
-	)('%s %s has puzzles at its level', (scope, difficulty) => {
+	)('%j %s has puzzles at its level', (regions, difficulty) => {
 		const prepared = prepareRouteSession(
 			borderGraph,
 			playableCountryPool,
-			{ kind: 'practice', scope, difficulty },
+			{ kind: 'practice', regions, difficulty },
 			seeded(7),
 		)
-		if (!prepared.ok) throw new Error(`No ${scope} ${difficulty} puzzle.`)
+		if (!prepared.ok) {
+			throw new Error(`No ${regions.join('+')} ${difficulty} puzzle.`)
+		}
 
 		const { startId, targetId } = prepared.value
-		const continents = ROUTE_SCOPE_CONTINENTS[scope]
 		for (const id of [startId, targetId]) {
-			const { continent } = playableCountryPool.countriesById[id]
-			expect(continents === null || continents.includes(continent)).toBe(
-				true,
-			)
+			const region = regionOfId(id)
+			expect(
+				regions.length === 0 ||
+					(region !== null && regions.includes(region)),
+			).toBe(true)
 		}
 
 		const board = createRouteBoard(borderGraph, prepared.value)!
@@ -61,7 +73,7 @@ describe('route practice sessions', () => {
 			const prepared = prepareRouteSession(
 				borderGraph,
 				playableCountryPool,
-				{ kind: 'practice', scope: 'all', difficulty: 'hard' },
+				{ kind: 'practice', regions: [], difficulty: 'hard' },
 				rng,
 			)
 			if (!prepared.ok) throw new Error('No hard world puzzle.')
@@ -76,5 +88,19 @@ describe('route practice sessions', () => {
 			}
 		}
 		expect(african / 300).toBeLessThan(0.55)
+	})
+
+	it('connects two picked regions when the level allows it', () => {
+		const prepared = prepareRouteSession(
+			borderGraph,
+			playableCountryPool,
+			{ kind: 'practice', regions: ['europe', 'asia'], difficulty: 'hard' },
+			seeded(3),
+		)
+		if (!prepared.ok) throw new Error('No Europe and Asia puzzle.')
+		const { startId, targetId } = prepared.value
+		expect(new Set([regionOfId(startId), regionOfId(targetId)])).toEqual(
+			new Set(['europe', 'asia']),
+		)
 	})
 })

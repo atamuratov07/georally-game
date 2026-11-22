@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
 import { useLocalizedSearchParams } from '@/app/useLocalizedSearchParams'
-import { getDifficultyLabel, getScopeLabel } from '@/shared/i18n'
+import { getDifficultyLabel, getRegionsLabel } from '@/shared/i18n'
 import { prefetchMap } from '@/shared/map/prefetchMap'
 import { RegionPicker } from '@/shared/widgets/region-map/RegionPicker'
 import {
@@ -95,7 +95,7 @@ export default function SetupPage() {
 						current: saved.index + 1,
 						total: saved.questionIds.length,
 					})}
-					details={`${getScopeLabel(t, saved.config.scope)} · ${getDifficultyLabel(t, saved.config.difficulty)}`}
+					details={`${getRegionsLabel(t, saved.config.regions)} · ${getDifficultyLabel(t, saved.config.difficulty)}`}
 					progress={{
 						done:
 							saved.phase === 'revealed' ? saved.index + 1 : saved.index,
@@ -120,8 +120,8 @@ export default function SetupPage() {
 			>
 				<RegionPicker
 					label={t('settings.region')}
-					value={config.scope}
-					onChange={scope => update({ scope })}
+					value={config.regions}
+					onChange={regions => update({ regions })}
 				/>
 				<SettingToggleGroup
 					label={t('settings.difficulty')}

@@ -15,10 +15,8 @@ import { useCallback, useMemo, useState } from 'react'
 import { useRequestReaction } from '@/shared/feedback'
 import { useKeyboardInset } from '@/shared/lib/useKeyboardInset'
 import { useMediaQuery } from '@/shared/lib/useMediaQuery'
-import {
-	ProjectionToggle,
-	type ProjectionKind,
-} from '@/shared/map/ProjectionToggle'
+import { ProjectionToggle } from '@/shared/map/ProjectionToggle'
+import { useProjectionPreference } from '@/shared/map/useProjectionPreference'
 import { cn } from '@/shared/utils'
 import { TOUCH_QUERY } from '../shared/touch'
 import { IntroJourney } from './components/RouteJourney'
@@ -66,8 +64,7 @@ export function RoutesScreen({
 		() => layout.padding(keyboardInset),
 		[keyboardInset, layout],
 	)
-	const [chosenProjection, setChosenProjection] =
-		useState<ProjectionKind>('flat')
+	const [chosenProjection, setChosenProjection] = useProjectionPreference()
 	const globeAllowed =
 		state.config.kind === 'daily' || state.config.scope === 'all'
 	const projection = globeAllowed ? chosenProjection : 'flat'

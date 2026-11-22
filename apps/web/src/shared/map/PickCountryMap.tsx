@@ -4,7 +4,8 @@ import { BaseMap } from './BaseMap'
 import { useRevealCamera } from './camera/useRevealCamera'
 import { useScopeCamera } from './camera/useScopeCamera'
 import { CardToggle } from './CardToggle'
-import { ProjectionToggle, type ProjectionKind } from './ProjectionToggle'
+import { ProjectionToggle } from './ProjectionToggle'
+import { useProjectionPreference } from './useProjectionPreference'
 import { useCountryPicking } from './interaction/useCountryPicking'
 import { CountryLayers } from './layers/CountryLayers'
 import { LabelLayers } from './layers/LabelLayers'
@@ -70,8 +71,7 @@ function PickCountryMapInner({
 		return [...ids]
 	}, [highlights, revealCountryId])
 
-	const [chosenProjection, setChosenProjection] =
-		useState<ProjectionKind>('flat')
+	const [chosenProjection, setChosenProjection] = useProjectionPreference()
 	const projection = allowGlobe ? chosenProjection : 'flat'
 	const handleLoad = useCallback(() => {
 		setIsLoaded(true)

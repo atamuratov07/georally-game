@@ -25,6 +25,10 @@ graph TD
     Screen --> Map["shared/map/PickCountryMap.tsx"]
 ```
 
+## Setup
+
+- **The map projection is remembered** across games and reloads (`useProjectionPreference`, `georally.map.projection`).
+
 ## Saved games
 
 A game survives a refresh: the stored game is the only source of a game in progress, and the play URL carries nothing.

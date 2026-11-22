@@ -12,7 +12,7 @@ import { getCountryName } from '@/shared/i18n'
 import { useKeyboardInset } from '@/shared/lib/useKeyboardInset'
 import { runViewTransition } from '@/shared/lib/viewTransition'
 import { useMediaQuery } from '@/shared/lib/useMediaQuery'
-import type { ProjectionKind } from '@/shared/map/ProjectionToggle'
+import { useProjectionPreference } from '@/shared/map/useProjectionPreference'
 import { TOUCH_QUERY } from '../shared/touch'
 import { FinalScore } from './components/FinalScore'
 import { desktopLayout, touchLayout, type SprintLayout } from './layouts'
@@ -52,8 +52,7 @@ export function SprintScreen({
 		onLeave()
 	}, [requestReaction, onLeave])
 	const layout = useMediaQuery(TOUCH_QUERY) ? touchLayout : desktopLayout
-	const [chosenProjection, setChosenProjection] =
-		useState<ProjectionKind>('flat')
+	const [chosenProjection, setChosenProjection] = useProjectionPreference()
 	const { scope } = state.config
 	const globeAllowed = scope === 'all'
 	const projection = globeAllowed ? chosenProjection : 'flat'

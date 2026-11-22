@@ -205,6 +205,50 @@
 	white-space: nowrap;
 }
 
+html[data-view-transition='mode-next']::view-transition-old(setup-card) {
+	animation: card-to-left var(--view-transition-duration) both;
+}
+
+html[data-view-transition='mode-next']::view-transition-new(setup-card) {
+	animation: card-from-right var(--view-transition-duration) both;
+}
+
+html[data-view-transition='mode-prev']::view-transition-old(setup-card) {
+	animation: card-to-right var(--view-transition-duration) both;
+}
+
+html[data-view-transition='mode-prev']::view-transition-new(setup-card) {
+	animation: card-from-left var(--view-transition-duration) both;
+}
+
+@keyframes card-to-left {
+	to {
+		opacity: 0;
+		translate: -40vw 0;
+	}
+}
+
+@keyframes card-from-right {
+	from {
+		opacity: 0;
+		translate: 40vw 0;
+	}
+}
+
+@keyframes card-to-right {
+	to {
+		opacity: 0;
+		translate: 40vw 0;
+	}
+}
+
+@keyframes card-from-left {
+	from {
+		opacity: 0;
+		translate: -40vw 0;
+	}
+}
+
 html[data-view-transition]::view-transition-group(*) {
 	animation-duration: var(--view-transition-duration);
 	animation-timing-function: cubic-bezier(0.7, 0, 0.2, 1);

@@ -203,6 +203,7 @@ georally-game/
 |           |       |-- questionCountFit.ts
 |           |       |-- setupParams.ts    # shared URL parameter readers and the difficulty options
 |           |       |-- personalBests.ts  # best results per mode and settings, kept in localStorage
+|           |       |-- modeSwitch.ts     # the card slide between modes (view transition)
 |           |       |-- useRoundEvents.ts
 |           |       `-- components/       # SetupShell, SetupCard, ModeTabs, modeTones, GameErrorBoundary,
 |           |                             # GameErrorScreen, GameResultModal, ResumeGameCard,

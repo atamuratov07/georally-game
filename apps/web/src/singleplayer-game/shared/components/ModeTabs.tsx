@@ -13,6 +13,7 @@ import { useLocalizedSearchParams } from '@/app/useLocalizedSearchParams'
 import { cn } from '@/shared/utils'
 import { SINGLEPLAYER_MODES } from '../../modes'
 import { singleplayerPaths, type SingleplayerModeId } from '../../paths'
+import { switchMode } from '../modeSwitch'
 import { MODE_TONES } from './modeTones'
 
 const SHARED_PARAMS = ['regions', 'scope', 'difficulty']
@@ -45,7 +46,9 @@ export function ModeTabs({ current }: { current: SingleplayerModeId }) {
 		(mode: SingleplayerModeId) => {
 			if (mode === current || switchingRef.current === mode) return
 			switchingRef.current = mode
-			navigate({ pathname: singleplayerPaths(mode).setup, search })
+			void switchMode(current, mode, () =>
+				navigate({ pathname: singleplayerPaths(mode).setup, search }),
+			)
 		},
 		[current, navigate, search],
 	)

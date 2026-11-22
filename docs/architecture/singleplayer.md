@@ -34,6 +34,7 @@ graph TD
 - **The header names the section:** "Solo game" on the setup pages, "Multiplayer" on the multiplayer pages.
 - **Mode tabs** keep the regions and difficulty when switching modes, and the card opens with the mode's description, one phrase of it in the mode's colour (`<hl>` in the translations).
 - **On phones the tabs are a sticky carousel:** the current mode in the centre, the neighbours fading at the edges. A swipe that settles on a tab selects it (`scrollend`, or a 120 ms pause where that event is missing), and tapping a side tab scrolls it to the centre.
+- **Switching modes slides the card** toward the new mode (`modeSwitch.ts`, view transition `setup-card`). The new page's code is preloaded, and the snapshot waits up to a second for its `SetupShell` to show. Back and forward don't slide.
 - **The map projection is remembered** across games and reloads (`useProjectionPreference`, `georally.map.projection`).
 
 ## Personal bests

@@ -3,7 +3,7 @@ import type {
 	RouteMove,
 } from '@georally/game-domain/singleplayer/routes'
 import type { Map as MapLibreMap } from 'maplibre-gl'
-import { useEffect, useEffectEvent } from 'react'
+import { useEffect, useEffectEvent, useRef } from 'react'
 import { useMap } from 'react-map-gl/maplibre'
 import { prefersReducedMotion } from '@/shared/lib/prefersReducedMotion'
 import { FLIGHT, fitCamera, type Insets } from '@/shared/map/camera/framing'
@@ -12,6 +12,7 @@ import { joinFrames, NEAR_CENTRE, routeFrame } from './routeFrame'
 import { centroidOf } from './routeGeometry'
 
 const FOLLOW_MS = 650
+const REFRAME_MS = 250
 
 export function FollowCamera({
 	board,
@@ -25,9 +26,26 @@ export function FollowCamera({
 	padding: Insets
 }) {
 	const map = useMap().current?.getMap()
+	const framedPadding = useRef(padding)
+	const onWay = (id: string) => board.verdict(id) !== 'off'
+
+	const frameRoute = useEffectEvent((map: MapLibreMap, duration: number) => {
+		const bounds = joinFrames(
+			routeFrame([board.startId, board.targetId]),
+			routeFrame(knownIds.filter(onWay), NEAR_CENTRE),
+		)
+		const camera = bounds && fitCamera(map, bounds, padding)
+		if (!camera) {
+			return
+		}
+		if (prefersReducedMotion()) {
+			map.jumpTo(camera)
+		} else {
+			map.easeTo({ ...camera, duration, essential: true })
+		}
+	})
 
 	const follow = useEffectEvent((map: MapLibreMap, move: RouteMove) => {
-		const onWay = (id: string) => board.verdict(id) !== 'off'
 		const container = map.getContainer()
 		const outside = move.countryIds.filter(onWay).some(id => {
 			const point = centroidOf(id)
@@ -42,20 +60,8 @@ export function FollowCamera({
 				y > container.clientHeight - padding.bottom
 			)
 		})
-		const bounds =
-			outside &&
-			joinFrames(
-				routeFrame([board.startId, board.targetId]),
-				routeFrame(knownIds.filter(onWay), NEAR_CENTRE),
-			)
-		const camera = bounds && fitCamera(map, bounds, padding)
-		if (!camera) {
-			return
-		}
-		if (prefersReducedMotion()) {
-			map.jumpTo(camera)
-		} else {
-			map.easeTo({ ...camera, duration: FOLLOW_MS, essential: true })
+		if (outside) {
+			frameRoute(map, FOLLOW_MS)
 		}
 	})
 
@@ -64,6 +70,24 @@ export function FollowCamera({
 			follow(map, move)
 		}
 	}, [map, move])
+
+	useEffect(() => {
+		if (map && padding !== framedPadding.current) {
+			framedPadding.current = padding
+			frameRoute(map, REFRAME_MS)
+		}
+	}, [map, padding])
+
+	useEffect(() => {
+		if (!map) {
+			return
+		}
+		const onResize = () => frameRoute(map, REFRAME_MS)
+		map.on('resize', onResize)
+		return () => {
+			map.off('resize', onResize)
+		}
+	}, [map])
 
 	return null
 }

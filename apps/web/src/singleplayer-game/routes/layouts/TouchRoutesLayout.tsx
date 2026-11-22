@@ -11,7 +11,7 @@ import { SlideIn } from '../components/SlideIn'
 import { useRouteField } from '../components/useRouteField'
 import type { RoutesLayoutProps } from '../routesControls'
 
-const TOUCH_KEYBOARD_GAP_PX = 12
+export const TOUCH_KEYBOARD_GAP_PX = 12
 const TOUCH_EDGE_GAP_PX = 12
 
 export function TouchRoutesLayout({

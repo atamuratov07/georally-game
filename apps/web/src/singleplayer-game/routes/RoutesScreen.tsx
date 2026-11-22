@@ -62,6 +62,10 @@ export function RoutesScreen({
 	const keyboardInset = useKeyboardInset()
 	const requestReaction = useRequestReaction()
 	const layout = useMediaQuery(TOUCH_QUERY) ? touchLayout : desktopLayout
+	const padding = useMemo(
+		() => layout.padding(keyboardInset),
+		[keyboardInset, layout],
+	)
 	const [chosenProjection, setChosenProjection] =
 		useState<ProjectionKind>('flat')
 	const globeAllowed =
@@ -137,7 +141,7 @@ export function RoutesScreen({
 					revealedIds={revealedIds}
 					chain={finish.chain}
 					move={newMove}
-					padding={layout.padding}
+					padding={padding}
 					finishPadding={layout.finishPadding}
 					navigationTop={layout.navigationTop}
 					projection={projection}

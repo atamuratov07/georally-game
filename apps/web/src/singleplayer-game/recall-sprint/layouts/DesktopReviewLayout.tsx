@@ -17,6 +17,7 @@ export function DesktopReviewLayout({
 				found={controls.found}
 				total={controls.total}
 				endedBy={controls.endedBy}
+				best={controls.best}
 				onLeave={controls.onLeave}
 				className='top-4'
 			/>

@@ -9,6 +9,8 @@ import { RedirectWithSearch } from '../RedirectWithSearch'
 import { GameErrorBoundary } from '../shared/components/GameErrorBoundary'
 import { GameErrorScreen } from '../shared/components/GameErrorScreen'
 import { GameResultModal } from '../shared/components/GameResultModal'
+import { useBestView } from '../shared/personalBests'
+import { bestKey } from './config'
 import { KeyboardGameFrame } from '../shared/components/KeyboardGameFrame'
 import { RoundScreen } from './RoundScreen'
 import { nameItGameStore } from './store'
@@ -39,6 +41,11 @@ function GameContent() {
 		playAgain,
 		leave,
 	} = useNameItGame()
+	const finished = engineState?.phase === 'finished' ? engineState : null
+	const best = useBestView(
+		engineState ? bestKey(engineState.config) : '',
+		finished?.finishedAt ?? null,
+	)
 
 	if (engineState === null) {
 		return <RedirectWithSearch to={paths.setup} />
@@ -61,6 +68,7 @@ function GameContent() {
 				score={getScore(engineState)}
 				correctCount={getCorrectCount(engineState)}
 				totalCount={getQuestionCount(engineState)}
+				best={best}
 				onTryAgain={playAgain}
 				onHome={() => {
 					leave()

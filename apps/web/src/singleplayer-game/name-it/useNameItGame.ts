@@ -3,6 +3,7 @@ import type { InputMethod, MatchResult } from '@georally/game-domain/answers'
 import {
 	createIdleState,
 	getDeadlineAt,
+	getScore,
 	prepareGameSession,
 	reduceGameState,
 	type GameAction,
@@ -14,6 +15,7 @@ import { useCallback, useState } from 'react'
 import { useDeadline } from '@/shared/time/useDeadline'
 import { useStoredGame } from '../shared/useStoredGame'
 import { useNameItAnalytics } from './analytics'
+import { bestKey } from './config'
 import { nameItGameStore } from './store'
 
 type NameItAction = GameAction | { type: 'RESTART' }
@@ -36,6 +38,14 @@ function prepare(config: GameConfig): GameSession | null {
 export function useNameItGame() {
 	const { state, dispatch, restored } = useStoredGame({
 		store: nameItGameStore,
+		best: state =>
+			state.phase === 'finished'
+				? {
+						key: bestKey(state.config),
+						value: getScore(state),
+						at: state.finishedAt,
+					}
+				: null,
 		reduce,
 		start: keepIdle,
 	})

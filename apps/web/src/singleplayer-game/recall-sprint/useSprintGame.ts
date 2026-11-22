@@ -11,6 +11,7 @@ import { useCallback, useState } from 'react'
 import { useDeadline } from '@/shared/time/useDeadline'
 import { useStoredGame } from '../shared/useStoredGame'
 import { useSprintAnalytics } from './analytics'
+import { bestKey } from './config'
 import { sprintGameStore } from './store'
 
 function keepIdle(idle: SprintState): SprintState {
@@ -25,6 +26,14 @@ function prepare(config: SprintConfig) {
 export function useSprintGame() {
 	const { state, dispatch, restored } = useStoredGame({
 		store: sprintGameStore,
+		best: state =>
+			state.phase === 'finished'
+				? {
+						key: bestKey(state.config),
+						value: state.found.length,
+						at: state.finishedAt,
+					}
+				: null,
 		reduce: reduceSprintState,
 		start: keepIdle,
 	})

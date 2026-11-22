@@ -14,7 +14,9 @@ import { runViewTransition } from '@/shared/lib/viewTransition'
 import { useMediaQuery } from '@/shared/lib/useMediaQuery'
 import { regionsView } from '@/shared/map/continent-view'
 import { useProjectionPreference } from '@/shared/map/useProjectionPreference'
+import { useBestView } from '../shared/personalBests'
 import { TOUCH_QUERY } from '../shared/touch'
+import { bestKey } from './config'
 import { FinalScore } from './components/FinalScore'
 import { desktopLayout, touchLayout, type SprintLayout } from './layouts'
 import type { ReviewControls } from './reviewControls'
@@ -62,6 +64,7 @@ export function SprintScreen({
 		() => (finished ? layout.reviewOverlays : layout.overlays(keyboardInset)),
 		[finished, keyboardInset, layout],
 	)
+	const best = useBestView(bestKey(state.config), finished?.finishedAt ?? null)
 	const countryIds = useMemo(() => regionCountryIds(regions), [regions])
 	const started = state.phase === 'idle' ? null : state
 	const missedIds = useMemo(
@@ -117,6 +120,7 @@ export function SprintScreen({
 						found: finished.found.length,
 						total: finished.countryIds.length,
 						endedBy: finished.endedBy,
+						best,
 						missedCount: review.missedCount,
 						position: review.position,
 						map: mapChoice,
@@ -191,6 +195,7 @@ function FinishedControls({
 		<FinalScore
 			found={controls.found}
 			total={controls.total}
+			best={controls.best}
 			onDone={handleScoreDone}
 		/>
 	) : (

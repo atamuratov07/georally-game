@@ -202,6 +202,7 @@ georally-game/
 |           |       |-- useGuessField.ts  # the open guess field of Recall Sprint and Routes
 |           |       |-- questionCountFit.ts
 |           |       |-- setupParams.ts    # shared URL parameter readers and the difficulty options
+|           |       |-- personalBests.ts  # best results per mode and settings, kept in localStorage
 |           |       |-- useRoundEvents.ts
 |           |       `-- components/       # SetupShell, SetupCard, ModeTabs, GameErrorBoundary,
 |           |                             # GameErrorScreen, GameResultModal, ResumeGameCard,

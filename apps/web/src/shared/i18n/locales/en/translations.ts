@@ -151,6 +151,12 @@ const translations = {
 		sprintLength: 'Sprint length',
 	},
 	singleplayer: {
+		best: {
+			new: 'New best!',
+			previous: 'Previous: {{value}}',
+			current: 'Best: {{value}}',
+			setup: 'Best with these settings: {{value}}',
+		},
 		title: 'Solo game',
 		modes: {
 			label: 'Game mode',

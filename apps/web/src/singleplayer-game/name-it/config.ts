@@ -11,6 +11,7 @@ import {
 	setRegions,
 	readGameRegions,
 } from '../shared/setupParams'
+import { regionsKey } from '../shared/personalBests'
 
 export const QUESTION_COUNT_OPTIONS = [10, 20, 30] as const
 export const TIME_LIMIT_SECONDS_OPTIONS = [10, 20, 30] as const
@@ -69,4 +70,8 @@ export function readSetupConfig(searchParams: URLSearchParams): GameConfig {
 		regions: readGameRegions(searchParams),
 		inputs: DEFAULT_GAME_CONFIG.inputs,
 	}
+}
+
+export function bestKey(config: GameConfig): string {
+	return `name-it:${regionsKey(config.regions)}:${config.difficulty}:${config.questionCount}:${config.timeLimitMs}`
 }

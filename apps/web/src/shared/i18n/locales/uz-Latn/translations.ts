@@ -155,6 +155,12 @@ const translations = {
 		sprintLength: 'Davomiyligi',
 	},
 	singleplayer: {
+		best: {
+			new: 'Yangi rekord!',
+			previous: 'Avvalgi: {{value}}',
+			current: 'Rekord: {{value}}',
+			setup: 'Shu sozlamalardagi rekord: {{value}}',
+		},
 		title: "Yakka o'yin",
 		modes: {
 			label: 'Oʻyin rejimi',

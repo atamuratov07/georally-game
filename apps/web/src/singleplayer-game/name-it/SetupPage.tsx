@@ -17,11 +17,13 @@ import { SettingToggleGroup } from '@/shared/widgets/SettingToggleGroup'
 import { singleplayerPaths } from '../paths'
 import { ResumeGameCard } from '../shared/components/ResumeGameCard'
 import { SetupCard } from '../shared/components/SetupCard'
+import { useBestValue } from '../shared/personalBests'
 import { SetupShell } from '../shared/components/SetupShell'
 import { fitQuestionCount } from '../shared/questionCountFit'
 import { DIFFICULTY_OPTIONS } from '../shared/setupParams'
 import {
 	QUESTION_COUNT_OPTIONS,
+	bestKey,
 	readSetupConfig,
 	TIME_LIMIT_SECONDS_OPTIONS,
 	toSearchParams,
@@ -55,6 +57,7 @@ export default function SetupPage() {
 	)
 	const playableConfig =
 		questionCount === null ? null : { ...config, questionCount }
+	const best = useBestValue(bestKey(playableConfig ?? config))
 
 	useEffect(() => {
 		const timer = setTimeout(prefetchGame, 500)
@@ -113,6 +116,7 @@ export default function SetupPage() {
 				copyLink={setupLink()}
 				canStart={playableConfig !== null}
 				eligibleCount={eligibleCount}
+				best={best}
 				onStart={handleStart}
 				onPrefetch={prefetchGame}
 			>

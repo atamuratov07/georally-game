@@ -5,6 +5,7 @@ import {
 	type SprintLength,
 } from '@georally/game-domain/singleplayer/recall-sprint'
 import { isGameRegions } from '@georally/game-domain'
+import { regionsKey } from '../shared/personalBests'
 import { readGameRegions, setRegions } from '../shared/setupParams'
 
 function isLength(value: unknown): value is SprintLength {
@@ -33,4 +34,8 @@ export function readSetupConfig(searchParams: URLSearchParams): SprintConfig {
 		regions: readGameRegions(searchParams),
 		length: isLength(length) ? length : DEFAULT_SPRINT_CONFIG.length,
 	}
+}
+
+export function bestKey(config: SprintConfig): string {
+	return `recall-sprint:${regionsKey(config.regions)}:${config.length}`
 }

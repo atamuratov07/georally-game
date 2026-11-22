@@ -2,6 +2,8 @@ import { animate, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { burst } from '@/shared/lib/confetti'
+import type { BestView } from '../../shared/personalBests'
+import { NewBestBadge } from './NewBestBadge'
 import { SCORE_TEXT } from './scoreText'
 
 const POP_MS = 320
@@ -11,10 +13,11 @@ const HOLD_MS = 400
 interface FinalScoreProps {
 	found: number
 	total: number
+	best: BestView | null
 	onDone: () => void
 }
 
-export function FinalScore({ found, total, onDone }: FinalScoreProps) {
+export function FinalScore({ found, total, best, onDone }: FinalScoreProps) {
 	const { t } = useTranslation()
 	const reduceMotion = useReducedMotion()
 	const scoreRef = useRef<HTMLParagraphElement>(null)
@@ -59,7 +62,7 @@ export function FinalScore({ found, total, onDone }: FinalScoreProps) {
 	}, [found, onDone, reduceMotion])
 
 	return (
-		<div className='absolute inset-0 z-40 grid animate-in place-items-center bg-ink/30 px-4 fade-in [view-transition-name:sprint-backdrop]'>
+		<div className='absolute inset-0 z-40 flex animate-in flex-col items-center justify-center gap-2 bg-ink/30 px-4 fade-in [view-transition-name:sprint-backdrop]'>
 			<p
 				ref={scoreRef}
 				role='status'
@@ -73,6 +76,9 @@ export function FinalScore({ found, total, onDone }: FinalScoreProps) {
 					{t('recallSprint.found', { found, total })}
 				</span>
 			</p>
+			{best?.setNow && best.previous !== null ? (
+				<NewBestBadge className='[animation-delay:900ms]' />
+			) : null}
 		</div>
 	)
 }

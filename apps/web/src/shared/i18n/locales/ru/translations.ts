@@ -153,6 +153,12 @@ const translations = {
 		sprintLength: 'Длительность',
 	},
 	singleplayer: {
+		best: {
+			new: 'Новый рекорд!',
+			previous: 'Прежний: {{value}}',
+			current: 'Рекорд: {{value}}',
+			setup: 'Рекорд с этими настройками: {{value}}',
+		},
 		title: 'Одиночная игра',
 		modes: {
 			label: 'Режим игры',

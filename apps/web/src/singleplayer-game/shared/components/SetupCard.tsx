@@ -17,6 +17,7 @@ interface SetupCardProps {
 	copyLink: string
 	canStart?: boolean
 	eligibleCount?: number
+	best?: number | null
 	onStart: () => void
 	onPrefetch: () => void
 	note?: ReactNode
@@ -28,6 +29,7 @@ export function SetupCard({
 	copyLink,
 	canStart = true,
 	eligibleCount = 0,
+	best = null,
 	onStart,
 	onPrefetch,
 	note,
@@ -65,6 +67,11 @@ export function SetupCard({
 
 			<div className='flex flex-col gap-6'>{children}</div>
 
+			{best === null ? null : (
+				<p className='mt-7 -mb-4 text-center text-sm font-extrabold text-muted tabular-nums'>
+					{t('singleplayer.best.setup', { value: best })}
+				</p>
+			)}
 			<Button
 				type='button'
 				size='lg'

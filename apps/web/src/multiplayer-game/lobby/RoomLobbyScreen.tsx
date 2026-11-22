@@ -164,7 +164,11 @@ export function RoomLobbyScreen({
 	const gameConfigFormId = `room-game-config-${roomCode}`
 
 	return (
-		<PageShell width='xl' className='gap-6 pb-32'>
+		<PageShell
+			width='xl'
+			className='gap-6 pb-32'
+			headerTitle={t('multiplayer.title')}
+		>
 			<RoomNotices
 				isReconnecting={isReconnecting}
 				actionErrorMessage={actionErrorMessage}

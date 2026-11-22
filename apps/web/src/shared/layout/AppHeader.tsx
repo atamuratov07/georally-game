@@ -10,29 +10,44 @@ import { outlinedText } from '@/shared/widgets/outlinedText'
 
 const NAME_TEXT = outlinedText(0.16, 0.12, 'em')
 
-export function AppLogo({ className }: { className?: string }) {
+export function AppLogo({
+	title,
+	className,
+}: {
+	title?: string
+	className?: string
+}) {
 	const { t } = useTranslation()
 
 	return (
 		<LocalizedLink
 			to='/'
+			aria-label={title ? t('app.name') : undefined}
 			className={cn(
 				'inline-flex shrink-0 items-center gap-2 rounded-control text-2xl font-black tracking-tight',
 				className,
 			)}
 		>
-			<img src={logo} alt='' width={45} height={41} className='h-[41px] w-[45px]' />
+			<img
+				src={logo}
+				alt=''
+				width={45}
+				height={41}
+				className='h-[41px] w-[45px]'
+			/>
 			<span className='text-white' style={NAME_TEXT}>
-				{t('app.name')}
+				{title ?? t('app.name')}
 			</span>
 		</LocalizedLink>
 	)
 }
 
 export function AppHeader({
+	title,
 	children,
 	className,
 }: {
+	title?: string
 	children?: ReactNode
 	className?: string
 }) {
@@ -43,7 +58,7 @@ export function AppHeader({
 				className,
 			)}
 		>
-			<AppLogo />
+			<AppLogo title={title} />
 			<div className='flex items-center gap-1 sm:gap-2'>
 				{children}
 				<InstallAppButton />

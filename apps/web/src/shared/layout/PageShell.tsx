@@ -13,6 +13,7 @@ const WIDTH_CLASSES = {
 export interface PageShellProps {
 	width?: keyof typeof WIDTH_CLASSES
 	center?: boolean
+	headerTitle?: string
 	headerActions?: ReactNode
 	className?: string
 	children: ReactNode
@@ -21,6 +22,7 @@ export interface PageShellProps {
 export function PageShell({
 	width = 'md',
 	center = false,
+	headerTitle,
 	headerActions,
 	className,
 	children,
@@ -28,7 +30,9 @@ export function PageShell({
 	return (
 		<div className='relative flex min-h-dvh flex-col'>
 			<SkyBackground />
-			<AppHeader className='relative'>{headerActions}</AppHeader>
+			<AppHeader title={headerTitle} className='relative'>
+				{headerActions}
+			</AppHeader>
 			<main
 				className={cn(
 					'relative mx-auto flex w-full flex-1 flex-col px-2.5 pt-2 pb-12 sm:px-6 sm:pt-6',

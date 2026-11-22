@@ -23,7 +23,7 @@ export function SetupShell({ mode, children }: SetupShellProps) {
 	const { t } = useTranslation()
 
 	return (
-		<PageShell width='lg'>
+		<PageShell width='lg' headerTitle={t('singleplayer.title')}>
 			<AppUpdateNotice />
 			<BackLink to='/'>{t('common.home')}</BackLink>
 			<ModeTabs current={mode} />

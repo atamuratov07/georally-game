@@ -57,12 +57,15 @@ export default function HomePage() {
 	)
 
 	return (
-		<PageShell width='lg'>
+		<PageShell width='lg' headerTitle={t('multiplayer.title')}>
 			<BackLink to='/'>{t('common.home')}</BackLink>
 			<AppUpdateNotice />
 			<h1 className='sr-only'>{t('multiplayer.title')}</h1>
 			{online ? null : (
-				<Alert tone='warning' className='mx-auto mb-4 max-w-md animate-pop-in'>
+				<Alert
+					tone='warning'
+					className='mx-auto mb-4 max-w-md animate-pop-in'
+				>
 					{t('pwa.offline')}
 				</Alert>
 			)}

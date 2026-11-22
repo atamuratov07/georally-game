@@ -28,7 +28,7 @@ const graph = fromEdges([
 const T0 = 1_000_000
 const CONFIG: RouteConfig = {
 	kind: 'practice',
-	scope: 'all',
+	regions: [],
 	difficulty: 'easy',
 }
 

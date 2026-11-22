@@ -25,6 +25,27 @@ graph TD
     Screen --> Map["shared/map/PickCountryMap.tsx"]
 ```
 
+## Setup
+
+- **Regions are a list of continents** (`GameRegions` in `game-domain`); an empty list means the whole world. `normalizeRegions` gives one canonical form (continent order, no repeats, every continent picked becomes `[]`), so equal choices make equal configs, setup links and best keys. The setup URL carries `regions=asia,europe`; old `scope=` links still parse, with `americas` meaning both American continents. Several regions are framed together (`regionsView` in `shared/map/continent-view.ts`); past 250° of longitude the map opens on the world. The globe is offered only when the map opens on the world.
+- **The region map** (`RegionMapPicker`) is a group of checkboxes, one per region. The first click on the world picks that region, later clicks add or remove one, and a click on the sea goes back to the world. Picked regions show as chips in one row that scrolls sideways; from two regions on, Clear takes the hint's place. Routes passes its own options, with the Americas as one region.
+- **Difficulty is cumulative:** the highlight (`SettingToggleGroup` with `cumulative`) spans Easy up to the chosen level, since a harder level also asks the easier countries. Routes' levels are bands of par, so its toggle highlights one option.
+- **Toggles follow a pressed pointer** and commit on release. The value is shown through `useOptimistic`, because the router applies it a render later.
+- **The header names the section:** "Solo game" on the setup pages, "Multiplayer" on the multiplayer pages.
+- **Mode tabs** keep the regions and difficulty when switching modes, and the card opens with the mode's description, one phrase of it in the mode's colour (`<hl>` in the translations).
+- **On phones the tabs are a sticky carousel:** the current mode in the centre, the neighbours fading at the edges. A swipe that settles on a tab selects it (`scrollend`, or a 120 ms pause where that event is missing), and tapping a side tab scrolls it to the centre.
+- **Switching modes slides the card** toward the new mode (`modeSwitch.ts`, view transition `setup-card`). The new page's code is preloaded, and the snapshot waits up to a second for its `SetupShell` to show. Back and forward don't slide.
+- **The map projection is remembered** across games and reloads (`useProjectionPreference`, `georally.map.projection`).
+
+## Personal bests
+
+A best is kept per mode and settings in `georally.singleplayer.bests` (`singleplayer-game/shared/personalBests.ts`), and never expires.
+
+- **The key** (each mode's `bestKey`) is the mode, regions, difficulty and the mode's own settings: question count and attempts for Find It, question count and time for Name It, length for Recall Sprint.
+- **The value** is the score for Find It and Name It, and the countries named for Recall Sprint. Routes has none: each puzzle has its own par, so there is no running number to beat.
+- **The game hook records the best; screens only read it.** `useStoredGame` takes the mode's `best` (key, value and finish time) and records it in a layout effect, before the results paint. The results count a stored best with the game's finish time as set by this game, so reloading the results gives the same verdict.
+- **Shown** on the setup card for the current settings, and on the results as "New best!" with the previous best, or as the best to beat. A first game sets a best without the badge.
+
 ## Saved games
 
 A game survives a refresh: the stored game is the only source of a game in progress, and the play URL carries nothing.
@@ -74,7 +95,7 @@ Recall Sprint and Routes play one session per game instead of rounds; their engi
 - `singleplayer-game/modes.ts` — the mode registry: each mode's id and its lazy setup and game pages. `routes.tsx` turns it into `/singleplayer/<mode>` and `/singleplayer/<mode>/play`, and redirects the old `/singleplayer` and `/singleplayer/play` (keeping the query string) to the first mode. `paths.ts` builds a mode's paths for links.
 - `singleplayer-game/<mode>/` — everything one mode owns: its setup page, game page and screen, config (setting options, the setup URL's query string, `isGameConfig`), saved-game store and game hook. Modes never import each other.
 - `singleplayer-game/shared/` — only what is mode-agnostic: `gameStore.ts` (`createGameStore`, and `hasValidQuestionProgress` for modes with a question set), `useStoredGame.ts` (restore or start from idle, save every change, the `restored` flag), `questionCountFit.ts`, and the error boundary and screen, result modal and resume card. A piece moves here only when it carries no mode knowledge; each mode keeps its own header and screen.
-- `singleplayer-game/shared/components/` — `GamePanel` (a dark full-screen panel on the HUD's row, and `LoadingStatus`), `GameLoader` (the play routes' loading screen), `SetupShell` (page frame and `ModeTabs`, which keep region and difficulty when switching modes), `SetupCard` (title row, Copy setup, Start and the not-enough-countries message), the resume card, result modal, and error boundary and screen; and for the modes answered by typing or voice, `KeyboardGameFrame` (the full-screen frame that locks page scrolling and keeps the phone keyboard open by cancelling every button's pointer-down), `LeaveButton` (to the given mode's setup; `tone='dark'` for dark bars), `CountdownBar`, the two microphone buttons and the voice notice. Answer bars and layouts stay in each mode, since they carry its stages. `useRoundEvents.ts` turns state changes into start, reveal and finish events for analytics, respecting a restored game.
+- `singleplayer-game/shared/components/` — `GamePanel` (a dark full-screen panel on the HUD's row, and `LoadingStatus`), `GameLoader` (the play routes' loading screen), `SetupShell` (page frame, the section's name in the header, and `ModeTabs`), `SetupCard` (the mode's description, Copy setup, the best for these settings, Start and the not-enough-countries message), the resume card, result modal, and error boundary and screen; and for the modes answered by typing or voice, `KeyboardGameFrame` (the full-screen frame that locks page scrolling and keeps the phone keyboard open by cancelling every button's pointer-down), `LeaveButton` (to the given mode's setup; `tone='dark'` for dark bars), `CountdownBar`, the two microphone buttons and the voice notice. Answer bars and layouts stay in each mode, since they carry its stages. `useRoundEvents.ts` turns state changes into start, reveal and finish events for analytics, respecting a restored game.
 - `singleplayer-game/locate/components/` — `GameHeader.tsx` (question progress, the target and the round's elapsed time), `Hearts.tsx` (remaining attempts), and the full-screen `RoundIntro` and `RoundPanel`, which share `RoundSplash` (the question, large). `useRoundStages.ts` sequences them with the header.
 - `packages/game-domain/src/singleplayer/rounds.ts` — the phases, state shape and selectors Find It and Name It share.
 - `packages/game-domain/src/singleplayer/<mode>/session.ts` — chooses the questions from the country pool (`prepareQuestionSet`).

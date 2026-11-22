@@ -21,7 +21,7 @@ export function prepareGameSession(
 		config: {
 			questionCount: questionIds.length,
 			difficulty: config.difficulty,
-			scope: config.scope,
+			regions: config.regions,
 			questionDurationMs: config.questionDurationMs,
 		},
 		eligibleIds,

@@ -8,12 +8,7 @@ import type { SessionPreparationError } from '../../shared/errors'
 import { pickRandomIds, type RandomNumberGenerator } from '../../shared/random'
 import { err, ok, type Result } from '../../shared/result'
 import type { CountryId, GameContinent } from '../../shared/types'
-import {
-	parFits,
-	ratingRank,
-	ROUTE_SCOPE_CONTINENTS,
-	routeLevels,
-} from './difficulty'
+import { parFits, ratingRank, routeLevels, routeRegionOf } from './difficulty'
 import type {
 	DailyRouteEntry,
 	RoutePracticeConfig,
@@ -56,14 +51,17 @@ export function prepareRouteSession(
 	config: RoutePracticeConfig,
 	rng: RandomNumberGenerator = Math.random,
 ): Result<RouteSession, SessionPreparationError> {
-	const continents = ROUTE_SCOPE_CONTINENTS[config.scope]
-	const ids = Object.entries(pool.countriesById)
-		.filter(
-			([id, country]) =>
-				graph[id] !== undefined &&
-				(continents === null || continents.includes(country.continent)),
-		)
-		.map(([id]) => id)
+	const regionOfId = (id: CountryId) =>
+		routeRegionOf(pool.countriesById[id].continent)
+	const ids = Object.keys(pool.countriesById)
+		.filter(id => {
+			if (graph[id] === undefined) return false
+			const region = regionOfId(id)
+			return (
+				config.regions.length === 0 ||
+				(region !== null && config.regions.includes(region))
+			)
+		})
 		.sort()
 
 	const pairs: [CountryId, CountryId][] = []
@@ -72,10 +70,19 @@ export function prepareRouteSession(
 	const rank = ratingRank(pool)
 	const fromStart = new Map<CountryId, ReadonlyMap<CountryId, number>>()
 
-	const candidates =
+	const shuffled =
 		config.difficulty === 'hard'
 			? byRegionPair(pairs, pool, rng)
 			: pickRandomIds(pairs, pairs.length, rng)
+	const crosses = ([a, b]: [CountryId, CountryId]) =>
+		regionOfId(a) !== regionOfId(b)
+	const candidates =
+		config.regions.length > 1
+			? [
+					...shuffled.filter(crosses),
+					...shuffled.filter(pair => !crosses(pair)),
+				]
+			: shuffled
 	for (const [startId, targetId] of candidates) {
 		let distances = fromStart.get(startId)
 		if (!distances) {

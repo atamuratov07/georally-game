@@ -2,12 +2,15 @@ import type { SprintEndedBy } from '@georally/game-domain/singleplayer/recall-sp
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/utils'
 import { LeaveButton } from '../../shared/components/LeaveButton'
+import type { BestView } from '../../shared/personalBests'
+import { NewBestBadge } from './NewBestBadge'
 import { CAPTION_TEXT, SCORE_TEXT } from './scoreText'
 
 interface ReviewBarProps {
 	found: number
 	total: number
 	endedBy: SprintEndedBy
+	best: BestView | null
 	onLeave: () => void
 	className?: string
 }
@@ -16,6 +19,7 @@ export function ReviewBar({
 	found,
 	total,
 	endedBy,
+	best,
 	onLeave,
 	className,
 }: ReviewBarProps) {
@@ -51,6 +55,16 @@ export function ReviewBar({
 			>
 				{t(`recallSprint.review.ended.${endedBy}`)}
 			</p>
+			{best?.setNow && best.previous !== null ? (
+				<NewBestBadge className='mt-2 text-sm [animation-delay:800ms]' />
+			) : best && !best.setNow ? (
+				<p
+					className='mt-0.5 animate-pop-in text-sm font-extrabold text-white/90 tabular-nums [animation-delay:800ms]'
+					style={CAPTION_TEXT}
+				>
+					{t('singleplayer.best.current', { value: best.best })}
+				</p>
+			) : null}
 		</div>
 	)
 }

@@ -11,10 +11,10 @@ function gameParams(config: RouteConfig, board: RouteBoard) {
 		? {
 				kind: config.kind,
 				difficulty: config.difficulty,
-				scope: config.scope,
+				regions: config.regions,
 				par: board.par,
 			}
-		: { kind: config.kind, difficulty: 'daily', scope: 'all', par: board.par }
+		: { kind: config.kind, difficulty: 'daily', regions: [], par: board.par }
 }
 
 export function useRoutesAnalytics(

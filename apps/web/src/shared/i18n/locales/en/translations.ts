@@ -4,6 +4,7 @@ const translations = {
 		language: 'Language',
 	},
 	common: {
+		remove: 'Remove',
 		home: 'Home',
 		retry: 'Try again',
 	},
@@ -140,6 +141,8 @@ const translations = {
 		questions: 'Questions',
 		attempts: 'Attempts',
 		region: 'Region',
+		clearRegions: 'Clear',
+		regionsHint: 'You can pick several',
 		difficulty: 'Difficulty',
 		timer: 'Timer',
 		timerOff: 'Off',
@@ -148,27 +151,33 @@ const translations = {
 		sprintLength: 'Sprint length',
 	},
 	singleplayer: {
+		best: {
+			new: 'New best!',
+			previous: 'Previous: {{value}}',
+			current: 'Best: {{value}}',
+			setup: 'Best with these settings: {{value}}',
+		},
 		title: 'Solo game',
 		modes: {
 			label: 'Game mode',
 			locate: {
 				title: 'Find it',
-				description: 'Find the named country on the map.',
+				description: 'Find the <hl>named country</hl> on the map.',
 			},
 			nameIt: {
 				title: 'Name it',
 				description:
-					'Name the highlighted country before the time runs out.',
+					'Name the <hl>highlighted country</hl> before the time runs out.',
 			},
 			recallSprint: {
 				title: 'Recall sprint',
 				description:
-					'Name as many countries of the region as you can before time runs out.',
+					'Name <hl>as many countries</hl> of the region as you can before time runs out.',
 			},
 			routes: {
 				title: 'Routes',
 				description:
-					'Get from one country to another by naming the countries in between.',
+					'Get from one country to another by <hl>naming the countries in between</hl>.',
 			},
 		},
 		start: 'Start game',
@@ -179,7 +188,6 @@ const translations = {
 		attemptsLeft_other: '{{count}} attempts left',
 		resultTitle: 'Game complete',
 		playAgain: 'Play again',
-		copySetup: 'Copy setup',
 		copySetupLabel: 'Copy a link to these settings',
 		resume: {
 			title: 'Game in progress',

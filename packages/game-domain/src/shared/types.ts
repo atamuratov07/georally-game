@@ -13,11 +13,11 @@ export const GAME_CONTINENTS = [
 ] as const
 export type GameContinent = (typeof GAME_CONTINENTS)[number]
 
-export const GAME_SCOPES = ['all', ...GAME_CONTINENTS] as const
-export type GameScope = (typeof GAME_SCOPES)[number]
+/** Empty means the whole world; see `normalizeRegions`. */
+export type GameRegions = readonly GameContinent[]
 
 export interface GameQuestionSetConfig {
 	questionCount: number
 	difficulty: GameDifficulty
-	scope: GameScope
+	regions: GameRegions
 }

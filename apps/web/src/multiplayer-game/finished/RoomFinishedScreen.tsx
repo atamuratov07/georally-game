@@ -86,7 +86,7 @@ export function RoomFinishedScreen({
 	}, [])
 
 	return (
-		<PageShell width='md'>
+		<PageShell width='md' headerTitle={t('multiplayer.title')}>
 			<RoomNotices
 				isReconnecting={isReconnecting}
 				actionErrorMessage={actionErrorMessage}

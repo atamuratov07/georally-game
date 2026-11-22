@@ -24,7 +24,7 @@ export {
 	resumePlayerRoomRequestSchema,
 	returnToLobbyRequestSchema,
 	roomCodeSchema,
-	scopeSchema,
+	regionsSchema,
 	startGameRequestSchema,
 	advanceRoundRequestSchema,
 	revealRoundRequestSchema,

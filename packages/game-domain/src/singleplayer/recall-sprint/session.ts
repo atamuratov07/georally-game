@@ -10,7 +10,7 @@ export function prepareSprintSession(
 	config: SprintConfig,
 ): Result<SprintSession, SessionPreparationError> {
 	const countryIds = selectEligibleCountryIds(pool, {
-		scope: config.scope,
+		regions: config.regions,
 		difficulty: 'hard',
 	}).sort()
 

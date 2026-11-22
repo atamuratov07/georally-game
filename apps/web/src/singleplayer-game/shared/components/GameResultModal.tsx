@@ -12,6 +12,7 @@ import {
 	DialogTitle,
 	TextButton,
 } from '@/shared/ui'
+import type { BestView } from '../personalBests'
 
 interface GameResultModalProps {
 	open: boolean
@@ -19,6 +20,7 @@ interface GameResultModalProps {
 	score: number
 	correctCount: number
 	totalCount: number
+	best: BestView | null
 	onTryAgain: () => void
 	onHome: () => void
 }
@@ -45,6 +47,7 @@ export function GameResultModal({
 	score,
 	correctCount,
 	totalCount,
+	best,
 	onTryAgain,
 	onHome,
 }: GameResultModalProps) {
@@ -86,6 +89,8 @@ export function GameResultModal({
 					</div>
 				</div>
 
+				<BestNote best={best} />
+
 				<div className='flex flex-col-reverse items-center gap-3 sm:flex-row sm:justify-center sm:gap-5'>
 					<TextButton type='button' onClick={onHome}>
 						{t('common.home')}
@@ -103,5 +108,25 @@ export function GameResultModal({
 				<GameReaction mode={mode} className='mt-1' />
 			</DialogContent>
 		</Dialog>
+	)
+}
+
+function BestNote({ best }: { best: BestView | null }) {
+	const { t } = useTranslation()
+	if (!best || (best.setNow && best.previous === null)) return null
+
+	return best.setNow ? (
+		<div className='-mt-1 flex animate-pop-in flex-col items-center gap-1.5 [animation-delay:1.1s]'>
+			<span className='raised -rotate-2 rounded-full border-2 border-sunflower-500 bg-sunflower-400 px-4 py-1 text-base font-black text-ink [--edge-size:4px] [--edge:var(--color-sunflower-600)]'>
+				{t('singleplayer.best.new')}
+			</span>
+			<span className='text-sm font-bold text-muted tabular-nums'>
+				{t('singleplayer.best.previous', { value: best.previous })}
+			</span>
+		</div>
+	) : (
+		<p className='-mt-1 text-sm font-extrabold text-muted tabular-nums'>
+			{t('singleplayer.best.current', { value: best.best })}
+		</p>
 	)
 }

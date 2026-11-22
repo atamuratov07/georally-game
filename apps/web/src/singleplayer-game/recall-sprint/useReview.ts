@@ -1,14 +1,14 @@
-import type { GameScope } from '@georally/game-domain'
+import type { GameRegions } from '@georally/game-domain'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { reviewOrder } from './reviewOrder'
 
 export function useReview(
 	missedIds: readonly string[] | null,
-	scope: GameScope,
+	regions: GameRegions,
 ) {
 	const order = useMemo(
-		() => (missedIds ? reviewOrder(missedIds, scope) : []),
-		[missedIds, scope],
+		() => (missedIds ? reviewOrder(missedIds, regions) : []),
+		[missedIds, regions],
 	)
 	const [activeId, setActiveId] = useState<string | null>(null)
 	const [cursor, setCursor] = useState(-1)

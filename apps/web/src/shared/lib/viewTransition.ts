@@ -12,11 +12,10 @@ export function canAnimateViewTransitions(): boolean {
 export function runViewTransition(
 	kind: string,
 	durationMs: number,
-	update: () => void,
+	update: () => void | Promise<void>,
 ): Promise<void> {
 	if (!canAnimateViewTransitions()) {
-		update()
-		return Promise.resolve()
+		return Promise.resolve(update())
 	}
 
 	const root = document.documentElement

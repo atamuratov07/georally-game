@@ -11,7 +11,7 @@ export const DEFAULT_GAME_CONFIG: GameConfig = {
 	questionCount: 10,
 	attemptsPerQuestion: 3,
 	difficulty: 'easy',
-	scope: 'all',
+	regions: [],
 }
 
 export interface GameSession {

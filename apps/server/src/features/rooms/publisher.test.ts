@@ -244,7 +244,7 @@ function createHarness(roomMode: RoomMode) {
 						gameConfig: {
 							questionCount: 3,
 							difficulty: 'easy',
-							scope: 'all',
+							regions: [],
 							questionDurationMs: 60_000,
 						},
 					})

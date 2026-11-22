@@ -12,8 +12,11 @@ import { getCountryName } from '@/shared/i18n'
 import { useKeyboardInset } from '@/shared/lib/useKeyboardInset'
 import { runViewTransition } from '@/shared/lib/viewTransition'
 import { useMediaQuery } from '@/shared/lib/useMediaQuery'
-import type { ProjectionKind } from '@/shared/map/ProjectionToggle'
+import { regionsView } from '@/shared/map/continent-view'
+import { useProjectionPreference } from '@/shared/map/useProjectionPreference'
+import { useBestView } from '../shared/personalBests'
 import { TOUCH_QUERY } from '../shared/touch'
+import { bestKey } from './config'
 import { FinalScore } from './components/FinalScore'
 import { desktopLayout, touchLayout, type SprintLayout } from './layouts'
 import type { ReviewControls } from './reviewControls'
@@ -52,17 +55,17 @@ export function SprintScreen({
 		onLeave()
 	}, [requestReaction, onLeave])
 	const layout = useMediaQuery(TOUCH_QUERY) ? touchLayout : desktopLayout
-	const [chosenProjection, setChosenProjection] =
-		useState<ProjectionKind>('flat')
-	const { scope } = state.config
-	const globeAllowed = scope === 'all'
+	const [chosenProjection, setChosenProjection] = useProjectionPreference()
+	const { regions } = state.config
+	const globeAllowed = regionsView(regions) === null
 	const projection = globeAllowed ? chosenProjection : 'flat'
 	const finished = state.phase === 'finished' ? state : null
 	const overlays = useMemo(
 		() => (finished ? layout.reviewOverlays : layout.overlays(keyboardInset)),
 		[finished, keyboardInset, layout],
 	)
-	const countryIds = useMemo(() => regionCountryIds(scope), [scope])
+	const best = useBestView(bestKey(state.config), finished?.finishedAt ?? null)
+	const countryIds = useMemo(() => regionCountryIds(regions), [regions])
 	const started = state.phase === 'idle' ? null : state
 	const missedIds = useMemo(
 		() =>
@@ -73,7 +76,7 @@ export function SprintScreen({
 				: null,
 		[finished],
 	)
-	const review = useReview(missedIds, scope)
+	const review = useReview(missedIds, regions)
 
 	const mapChoice: MapChoice = {
 		projection,
@@ -85,7 +88,7 @@ export function SprintScreen({
 		<section className='relative h-full overflow-hidden'>
 			<SprintMap
 				projection={projection}
-				scope={scope}
+				regions={regions}
 				countryIds={countryIds}
 				found={started?.found ?? NO_COUNTRIES}
 				attempt={started?.lastAttempt ?? null}
@@ -117,6 +120,7 @@ export function SprintScreen({
 						found: finished.found.length,
 						total: finished.countryIds.length,
 						endedBy: finished.endedBy,
+						best,
 						missedCount: review.missedCount,
 						position: review.position,
 						map: mapChoice,
@@ -151,7 +155,7 @@ function RunningControls({
 	const input = useSprintInput({ state, onAttempt })
 	const controls: SprintControls = {
 		input,
-		scope: state.config.scope,
+		regions: state.config.regions,
 		found: state.found.length,
 		total: state.countryIds.length,
 		timer: {
@@ -191,6 +195,7 @@ function FinishedControls({
 		<FinalScore
 			found={controls.found}
 			total={controls.total}
+			best={controls.best}
 			onDone={handleScoreDone}
 		/>
 	) : (

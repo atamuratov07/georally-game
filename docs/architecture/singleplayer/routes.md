@@ -48,9 +48,11 @@ The code has three layers, each knowing less than the one above:
    - A red country gets no link until a later country joins through it, since a red dead end only clutters the map.
    - After a give-up, all the missing countries join in one last step.
 
-**Practice sessions.** The config is `{ kind: 'practice', scope, difficulty }`. The `daily` config and `dailyRouteSession` exist in the engine, but the daily isn't built yet. `prepareRouteSession(graph, pool, config, rng)` draws both ends inside the region; the path between them may leave it, so a Europe puzzle may run through Turkey.
+**Practice sessions.** The config is `{ kind: 'practice', regions, difficulty }`. The `daily` config and `dailyRouteSession` exist in the engine, but the daily isn't built yet. `prepareRouteSession(graph, pool, config, rng)` draws both ends inside the picked regions (anywhere when none are picked); the path between them may leave them, so a Europe puzzle may run through Turkey.
 
-- **Regions** (`ROUTE_SCOPES`): World, Europe, Asia, Africa, and the Americas as one region. Each American continent alone had only about 30 puzzles. Oceania has none: its only bordered country, Papua New Guinea, borders Indonesia, which is in Asia.
+- **Regions** (`ROUTE_REGIONS`): Europe, Asia, Africa and the Americas, any number of them; none picked means the world.
+- **With several regions picked, a route joins two of them:** the session draws its ends from different regions, and falls back to a route inside one only when no such pair fits the level.
+- **The Americas are one region**: each American continent alone had only about 30 puzzles. Oceania has none: its only bordered country, Papua New Guinea, borders Indonesia, which is in Asia.
 - **Difficulty** (`routeLevels`) comes mostly from par. The catalog's country ratings measure how well known a country is, not how well its borders are, so they only keep obscure countries out of the lower levels. The **best-path rating** is the hardest rating on the easiest shortest path, ends included.
 
    | Level  | Par                                                        |
@@ -70,7 +72,7 @@ The code has three layers, each knowing less than the one above:
 
 - **Setup.**
    - The page offers the region and the difficulty; Oceania is shown disabled, not hidden.
-   - `ModeTabs` carries `scope` between modes. Routes maps `north-america` and `south-america` to `americas`, and `oceania` to `all`.
+   - `ModeTabs` carries `regions` between modes. Routes reads `north-america` and `south-america` as `americas` and drops `oceania`.
    - The description ends in a "What counts as a border?" link (`BordersNote`). It opens a dialog with the rule and the surprising cases: the fixed links, French Guiana, Ceuta and Melilla, Kaliningrad, Cabinda, Kazungula, and the gaps left by Kosovo, Somaliland and Western Sahara. The lines are hand-written in the translation files, since they need proper wording in three languages and the runtime never needs border reasons as data. Border rulings are where geography fans push back, and a visible rule settles most of it.
 - **Loading and saving.** The game page lazy-loads the graph and the border crossings with the routes chunk, builds the board, and dispatches `START`. The game is saved under `georally.singleplayer.routes`, with the other modes' lifetime and discard rules. A restored game is discarded when no board can be built for its ends any more. A border change that only moves colours is accepted.
 - **Input.**

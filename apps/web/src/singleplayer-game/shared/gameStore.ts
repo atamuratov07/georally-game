@@ -4,7 +4,7 @@ import {
 	type GameQuestionSetConfig,
 } from '@georally/game-domain'
 
-const STORAGE_VERSION = 1
+const STORAGE_VERSION = 2
 const GAME_TTL_MS = 7 * 24 * 60 * 60 * 1000
 
 interface SessionRecord {

@@ -2,9 +2,10 @@ import { memo, useCallback, useMemo, useRef, useState } from 'react'
 import type { MapRef } from 'react-map-gl/maplibre'
 import { BaseMap } from './BaseMap'
 import { useRevealCamera } from './camera/useRevealCamera'
-import { useScopeCamera } from './camera/useScopeCamera'
+import { useRegionCamera } from './camera/useRegionCamera'
 import { CardToggle } from './CardToggle'
-import { ProjectionToggle, type ProjectionKind } from './ProjectionToggle'
+import { ProjectionToggle } from './ProjectionToggle'
+import { useProjectionPreference } from './useProjectionPreference'
 import { useCountryPicking } from './interaction/useCountryPicking'
 import { CountryLayers } from './layers/CountryLayers'
 import { LabelLayers } from './layers/LabelLayers'
@@ -18,7 +19,7 @@ const NO_MARKERS: readonly MapMarker[] = []
 function PickCountryMapInner({
 	onPick,
 	interactiveIds,
-	scope,
+	regions,
 	highlights = NO_HIGHLIGHTS,
 	markers = NO_MARKERS,
 	revealTarget = null,
@@ -49,10 +50,10 @@ function PickCountryMapInner({
 		clearHover()
 		unsettle()
 	}, [clearHover, unsettle])
-	const { allowGlobe, maxBounds } = useScopeCamera({
+	const { allowGlobe, maxBounds } = useRegionCamera({
 		mapRef,
 		isLoaded,
-		scope,
+		regions,
 		resetViewKey,
 		onReset: handleReset,
 	})
@@ -70,8 +71,7 @@ function PickCountryMapInner({
 		return [...ids]
 	}, [highlights, revealCountryId])
 
-	const [chosenProjection, setChosenProjection] =
-		useState<ProjectionKind>('flat')
+	const [chosenProjection, setChosenProjection] = useProjectionPreference()
 	const projection = allowGlobe ? chosenProjection : 'flat'
 	const handleLoad = useCallback(() => {
 		setIsLoaded(true)

@@ -5,16 +5,23 @@ import type {
 	GameContinent,
 	GameDifficulty,
 } from '../../shared/types'
-import type { RouteScope } from './types'
+import { ROUTE_REGIONS, type RouteRegion } from './types'
 
-export const ROUTE_SCOPE_CONTINENTS: Readonly<
-	Record<RouteScope, readonly GameContinent[] | null>
+export const ROUTE_REGION_CONTINENTS: Readonly<
+	Record<RouteRegion, readonly GameContinent[]>
 > = {
-	all: null,
 	europe: ['europe'],
 	asia: ['asia'],
 	africa: ['africa'],
 	americas: ['north-america', 'south-america'],
+}
+
+export function routeRegionOf(continent: GameContinent): RouteRegion | null {
+	return (
+		ROUTE_REGIONS.find(region =>
+			ROUTE_REGION_CONTINENTS[region].includes(continent),
+		) ?? null
+	)
 }
 
 export function ratingRank(pool: CountryPool): (id: CountryId) => number {

@@ -20,7 +20,7 @@ export function prepareGameSession(
 			questionCount: config.questionCount,
 			attemptsPerQuestion: config.attemptsPerQuestion,
 			difficulty: config.difficulty,
-			scope: config.scope,
+			regions: config.regions,
 		},
 		questionIds: questionSet.value.questionIds,
 	})

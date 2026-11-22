@@ -1,27 +1,27 @@
-import type { GameScope } from '@georally/game-domain'
+import type { GameRegions } from '@georally/game-domain'
 import { useCallback, useEffect, useRef, type RefObject } from 'react'
 import type { MapRef } from 'react-map-gl/maplibre'
-import { CONTINENT_VIEW_PRESETS, WORLD_VIEW } from '../continent-view'
+import { regionsView, WORLD_VIEW } from '../continent-view'
 
 const PRESET_EASE_MS = 800
 const RESET_EASE_MS = 650
 
-interface ScopeCameraOptions {
+interface RegionCameraOptions {
 	mapRef: RefObject<MapRef | null>
 	isLoaded: boolean
-	scope: GameScope
+	regions: GameRegions
 	resetViewKey: string | number | null
 	onReset: () => void
 }
 
-export function useScopeCamera({
+export function useRegionCamera({
 	mapRef,
 	isLoaded,
-	scope,
+	regions,
 	resetViewKey,
 	onReset,
-}: ScopeCameraOptions) {
-	const preset = scope === 'all' ? null : CONTINENT_VIEW_PRESETS[scope]
+}: RegionCameraOptions) {
+	const preset = regionsView(regions)
 
 	useEffect(() => {
 		const map = mapRef.current?.getMap()

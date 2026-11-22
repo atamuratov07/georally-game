@@ -45,7 +45,7 @@ export function useMultiplayerGameAnalytics(
 					roomMode,
 					role,
 					questionCount: activeGame.questionCount,
-					scope: activeGame.scope,
+					regions: activeGame.regions,
 					participantCount: activeGame.participantCount,
 				})
 			}

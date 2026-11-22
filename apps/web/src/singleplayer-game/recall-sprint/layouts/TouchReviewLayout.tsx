@@ -13,6 +13,7 @@ export function TouchReviewLayout({ controls }: { controls: ReviewControls }) {
 				found={controls.found}
 				total={controls.total}
 				endedBy={controls.endedBy}
+				best={controls.best}
 				onLeave={controls.onLeave}
 				className='top-3'
 			/>

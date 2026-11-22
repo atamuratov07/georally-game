@@ -1,17 +1,17 @@
 import type { InputMethod, MatchResult } from '../../answers'
-import type { CountryId, GameScope } from '../../shared/types'
+import type { CountryId, GameRegions } from '../../shared/types'
 import type { IdleState } from '../rounds'
 
 export const SPRINT_LENGTHS = ['short', 'medium', 'long'] as const
 export type SprintLength = (typeof SPRINT_LENGTHS)[number]
 
 export interface SprintConfig {
-	scope: GameScope
+	regions: GameRegions
 	length: SprintLength
 }
 
 export const DEFAULT_SPRINT_CONFIG: SprintConfig = {
-	scope: 'all',
+	regions: [],
 	length: 'medium',
 }
 

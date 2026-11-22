@@ -23,7 +23,7 @@ const HANDLERS: RoundEventHandlers<GameState> = {
 		trackSingleplayerGameStart({
 			mode: 'name_it',
 			difficulty: state.config.difficulty,
-			scope: state.config.scope,
+			regions: state.config.regions,
 			questionCount: state.config.questionCount,
 			timeLimitSeconds: state.config.timeLimitMs / 1000,
 			isRetry,
@@ -51,7 +51,7 @@ const HANDLERS: RoundEventHandlers<GameState> = {
 		trackSingleplayerGameEnd({
 			mode: 'name_it',
 			difficulty: state.config.difficulty,
-			scope: state.config.scope,
+			regions: state.config.regions,
 			questionCount: state.questionIds.length,
 			score: state.score,
 			correctCount: state.correctCount,

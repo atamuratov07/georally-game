@@ -1,8 +1,12 @@
-import type { GameScope } from '@georally/game-domain'
+import {
+	normalizeRegions,
+	type GameContinent,
+	type GameRegions,
+} from '@georally/game-domain'
 import { X } from 'lucide-react'
 import { useId, useState, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { getScopeLabel } from '@/shared/i18n'
+import { getRegionLabel } from '@/shared/i18n'
 import { cn } from '@/shared/utils'
 import { REGION_MAP_VIEWBOX, REGION_PATHS } from 'virtual:region-map'
 
@@ -48,84 +52,93 @@ const CONTINENT_COLORS: Record<
 	},
 }
 
-export interface RegionOption<Scope extends string> {
-	value: Scope
+export interface RegionOption<Region extends string> {
+	value: Region
 	continents: readonly Continent[]
 }
 
-interface RegionMapPickerProps<Scope extends string> {
+interface RegionMapPickerProps<Region extends string> {
 	label: string
-	value: Scope | 'all'
+	/** Empty means the whole world. */
+	value: readonly Region[]
 	/** Continents in no option are drawn as land that can't be picked. */
-	options: readonly RegionOption<Scope>[]
-	labelOf: (scope: Scope | 'all') => string
-	onChange: (scope: Scope | 'all') => void
+	options: readonly RegionOption<Region>[]
+	labelOf: (region: Region) => string
+	worldLabel: string
+	onChange: (regions: Region[]) => void
 }
 
-const GAME_SCOPE_OPTIONS: readonly RegionOption<Continent>[] = CONTINENTS.map(
-	continent => ({ value: continent, continents: [continent] }),
-)
+const GAME_REGION_OPTIONS: readonly RegionOption<GameContinent>[] =
+	CONTINENTS.map(continent => ({ value: continent, continents: [continent] }))
 
 interface RegionPickerProps {
 	label: string
-	value: GameScope
-	onChange: (scope: GameScope) => void
+	value: GameRegions
+	onChange: (regions: GameContinent[]) => void
 }
 
 export function RegionPicker({ label, value, onChange }: RegionPickerProps) {
 	const { t } = useTranslation()
 
 	return (
-		<RegionMapPicker<Continent>
+		<RegionMapPicker<GameContinent>
 			label={label}
 			value={value}
-			options={GAME_SCOPE_OPTIONS}
-			labelOf={scope => getScopeLabel(t, scope)}
+			options={GAME_REGION_OPTIONS}
+			labelOf={region => getRegionLabel(t, region)}
+			worldLabel={getRegionLabel(t, 'all')}
 			onChange={onChange}
 		/>
 	)
 }
 
-/** Each option is a keyboard-focusable radio item, so the map needs no separate list. */
-export function RegionMapPicker<Scope extends string>({
+export function RegionMapPicker<Region extends string>({
 	label,
 	value,
 	options,
 	labelOf,
+	worldLabel,
 	onChange,
-}: RegionMapPickerProps<Scope>) {
+}: RegionMapPickerProps<Region>) {
+	const { t } = useTranslation()
 	const labelId = useId()
-	const [hovered, setHovered] = useState<Scope | null>(null)
-	const isWorld = value === 'all'
-	const selected = options.find(option => option.value === value)
+	const hintId = useId()
+	const [hovered, setHovered] = useState<Region | null>(null)
+	const isWorld = value.length === 0
+	const order = options.map(option => option.value)
+	const picked = options.filter(option => value.includes(option.value))
 	const optionOf = (continent: Continent) =>
 		options.find(option => option.continents.includes(continent))
-	const colorsOf = (option: RegionOption<Scope>) =>
+	const colorsOf = (option: RegionOption<Region>) =>
 		CONTINENT_COLORS[option.continents[0]]
+	const isLit = (option: RegionOption<Region> | undefined) =>
+		option !== undefined && (isWorld || value.includes(option.value))
 
-	function select(scope: Scope) {
-		onChange(value === scope ? 'all' : scope)
+	function change(next: Region[]) {
+		onChange(normalizeRegions(next, order))
 	}
 
-	function handleKeyDown(event: KeyboardEvent<SVGGElement>, scope: Scope) {
+	function toggle(region: Region) {
+		if (isWorld) change([region])
+		else if (value.includes(region)) {
+			change(value.filter(item => item !== region))
+		} else change([...value, region])
+	}
+
+	function handleKeyDown(event: KeyboardEvent<SVGGElement>, region: Region) {
 		if (event.key === 'Enter' || event.key === ' ') {
 			event.preventDefault()
-			select(scope)
+			toggle(region)
 		}
 	}
 
-	function isDimmed(option: RegionOption<Scope> | undefined): boolean {
-		return (
-			!option ||
-			(!isWorld && value !== option.value && hovered !== option.value)
-		)
+	function isDimmed(option: RegionOption<Region> | undefined): boolean {
+		return !isLit(option) && hovered !== option?.value
 	}
 
-	function faceClass(scope: Scope): string {
-		const isSelected = isWorld || value === scope
-		const isHovered = hovered === scope
-
-		if (isSelected) {
+	function faceClass(option: RegionOption<Region>): string {
+		const isHovered = hovered === option.value
+		if (isLit(option)) {
 			return isHovered ? '-translate-y-1' : ''
 		}
 		return isHovered
@@ -135,16 +148,42 @@ export function RegionMapPicker<Scope extends string>({
 
 	return (
 		<div className='flex flex-col gap-2'>
-			<span id={labelId} className='text-sm font-extrabold text-muted'>
-				{label}
-			</span>
+			<div className='flex items-baseline justify-between gap-3'>
+				<span id={labelId} className='text-sm font-extrabold text-muted'>
+					{label}
+				</span>
+				{value.length >= 2 ? (
+					<button
+						type='button'
+						onClick={() => change([])}
+						className='-my-1 inline-flex items-center gap-1 rounded-full px-1.5 py-1 text-xs font-extrabold text-coral-600 transition-colors hover:text-coral-700'
+					>
+						<X
+							aria-hidden='true'
+							className='size-3.5'
+							strokeWidth={3.5}
+						/>
+						{t('settings.clearRegions')}
+					</button>
+				) : (
+					<span id={hintId} className='text-xs font-bold text-muted/80'>
+						{t('settings.regionsHint')}
+					</span>
+				)}
+			</div>
 
 			<svg
-				role='radiogroup'
+				role='group'
 				aria-labelledby={labelId}
+				aria-describedby={value.length >= 2 ? undefined : hintId}
 				viewBox={REGION_MAP_VIEWBOX}
 				className='-mx-1 h-auto w-[calc(100%+0.5rem)] overflow-visible sm:mx-0 sm:w-full'
 				onMouseLeave={() => setHovered(null)}
+				onClick={event => {
+					if (!(event.target as Element).closest('[role="checkbox"]')) {
+						change([])
+					}
+				}}
 			>
 				{CONTINENTS.map(continent => {
 					const option = optionOf(continent)
@@ -183,19 +222,19 @@ export function RegionMapPicker<Scope extends string>({
 				{options.map(option => (
 					<g
 						key={option.value}
-						role='radio'
+						role='checkbox'
 						tabIndex={0}
-						aria-checked={value === option.value}
+						aria-checked={value.includes(option.value)}
 						aria-label={labelOf(option.value)}
 						className={cn(
 							'cursor-pointer transition-[translate,opacity,filter] duration-200 outline-none',
 							'focus-visible:[&>path]:stroke-ink focus-visible:[&>path]:[stroke-width:3]',
-							faceClass(option.value),
+							faceClass(option),
 						)}
 						onMouseEnter={() => setHovered(option.value)}
 						onFocus={() => setHovered(option.value)}
 						onBlur={() => setHovered(null)}
-						onClick={() => select(option.value)}
+						onClick={() => toggle(option.value)}
 						onKeyDown={event => handleKeyDown(event, option.value)}
 					>
 						{option.continents.map(continent => (
@@ -211,33 +250,38 @@ export function RegionMapPicker<Scope extends string>({
 				))}
 			</svg>
 
-			<div className='flex min-h-10 items-center justify-center'>
-				{isWorld || !selected ? (
-					<span className='text-lg font-black text-ink'>
-						{labelOf('all')}
+			<div
+				aria-live='polite'
+				className='-mx-2.5 flex min-h-9 snap-x scroll-px-2.5 items-center gap-1.5 overflow-x-auto px-2.5 py-1 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden'
+			>
+				{isWorld ? (
+					<span className='mx-auto text-base font-black text-ink sm:text-lg'>
+						{worldLabel}
 					</span>
 				) : (
-					<span
-						className={cn(
-							'inline-flex items-center gap-1 rounded-full py-1 pr-1 pl-4 text-base font-extrabold text-white sm:text-sm',
-							colorsOf(selected).chip,
-						)}
-					>
-						{labelOf(selected.value)}
-						<button
-							type='button'
-							aria-label={labelOf('all')}
-							title={labelOf('all')}
-							onClick={() => onChange('all')}
-							className='grid size-9 place-items-center rounded-full transition-colors hover:bg-white/20 sm:size-7'
+					picked.map(option => (
+						<span
+							key={option.value}
+							className={cn(
+								'raised inline-flex shrink-0 snap-start items-center gap-0.5 rounded-full py-0.5 pr-0.5 pl-2.5 text-xs font-extrabold whitespace-nowrap text-white [--edge-size:2px] [--edge:rgb(0_0_0/0.18)] first:ml-auto last:mr-auto sm:pl-3 sm:text-sm',
+								colorsOf(option).chip,
+							)}
 						>
-							<X
-								aria-hidden='true'
-								className='size-5 sm:size-4'
-								strokeWidth={3}
-							/>
-						</button>
-					</span>
+							{labelOf(option.value)}
+							<button
+								type='button'
+								aria-label={`${labelOf(option.value)}: ${t('common.remove')}`}
+								onClick={() => toggle(option.value)}
+								className='relative grid size-5 place-items-center rounded-full transition-colors after:absolute after:-inset-2 hover:bg-white/20 sm:size-6'
+							>
+								<X
+									aria-hidden='true'
+									className='size-3 sm:size-3.5'
+									strokeWidth={3.5}
+								/>
+							</button>
+						</span>
+					))
 				)}
 			</div>
 		</div>

@@ -1,4 +1,4 @@
-import type { CountryId, GameDifficulty, GameScope } from '../../shared/types'
+import type { CountryId, GameDifficulty, GameRegions } from '../../shared/types'
 import type { MemberId } from '../room/types'
 
 export type GamePhase = 'open' | 'revealed' | 'leaderboard' | 'completed'
@@ -7,13 +7,13 @@ export interface GameConfig {
 	questionCount: number
 	questionDurationMs?: number | undefined
 	difficulty: GameDifficulty
-	scope: GameScope
+	regions: GameRegions
 }
 
 export const DEFAULT_GAME_CONFIG: Required<GameConfig> = {
 	questionCount: 10,
 	difficulty: 'easy',
-	scope: 'all',
+	regions: [],
 	questionDurationMs: 30_000,
 }
 

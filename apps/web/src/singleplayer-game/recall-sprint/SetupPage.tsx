@@ -13,8 +13,9 @@ import { RegionPicker } from '@/shared/widgets/region-map/RegionPicker'
 import { SettingToggleGroup } from '@/shared/widgets/SettingToggleGroup'
 import { singleplayerPaths } from '../paths'
 import { SetupCard } from '../shared/components/SetupCard'
+import { useBestValue } from '../shared/personalBests'
 import { SetupShell } from '../shared/components/SetupShell'
-import { readSetupConfig, toSearchParams } from './config'
+import { bestKey, readSetupConfig, toSearchParams } from './config'
 import { regionCountryIds } from './regionCountries'
 import { sprintGameStore } from './store'
 
@@ -37,7 +38,8 @@ export default function SetupPage() {
 	const navigate = useLocalizedNavigate()
 	const [searchParams, setSearchParams] = useLocalizedSearchParams()
 	const config = readSetupConfig(searchParams)
-	const countryCount = regionCountryIds(config.scope).length
+	const countryCount = regionCountryIds(config.regions).length
+	const best = useBestValue(bestKey(config))
 
 	useEffect(() => {
 		const timer = setTimeout(prefetchGame, 500)
@@ -68,13 +70,14 @@ export default function SetupPage() {
 				copyLink={setupLink()}
 				canStart={countryCount > 0}
 				eligibleCount={countryCount}
+				best={best}
 				onStart={handleStart}
 				onPrefetch={prefetchGame}
 			>
 				<RegionPicker
 					label={t('settings.region')}
-					value={config.scope}
-					onChange={scope => update({ scope })}
+					value={config.regions}
+					onChange={regions => update({ regions })}
 				/>
 				<SettingToggleGroup
 					label={t('settings.sprintLength')}

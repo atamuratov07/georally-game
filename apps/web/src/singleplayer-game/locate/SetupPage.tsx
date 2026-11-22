@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
 import { useLocalizedSearchParams } from '@/app/useLocalizedSearchParams'
-import { getDifficultyLabel, getScopeLabel } from '@/shared/i18n'
+import { getDifficultyLabel, getRegionsLabel } from '@/shared/i18n'
 import { prefetchMap } from '@/shared/map/prefetchMap'
 import { RegionPicker } from '@/shared/widgets/region-map/RegionPicker'
 import {
@@ -17,12 +17,14 @@ import { SettingToggleGroup } from '@/shared/widgets/SettingToggleGroup'
 import { singleplayerPaths } from '../paths'
 import { ResumeGameCard } from '../shared/components/ResumeGameCard'
 import { SetupCard } from '../shared/components/SetupCard'
+import { useBestValue } from '../shared/personalBests'
 import { SetupShell } from '../shared/components/SetupShell'
 import { fitQuestionCount } from '../shared/questionCountFit'
 import { DIFFICULTY_OPTIONS } from '../shared/setupParams'
 import {
 	ATTEMPTS_PER_QUESTION_OPTIONS,
 	QUESTION_COUNT_OPTIONS,
+	bestKey,
 	readSetupConfig,
 	toSearchParams,
 } from './config'
@@ -55,6 +57,7 @@ export default function SetupPage() {
 	)
 	const playableConfig =
 		questionCount === null ? null : { ...config, questionCount }
+	const best = useBestValue(bestKey(playableConfig ?? config))
 
 	useEffect(() => {
 		const timer = setTimeout(prefetchGame, 500)
@@ -95,7 +98,7 @@ export default function SetupPage() {
 						current: saved.index + 1,
 						total: saved.questionIds.length,
 					})}
-					details={`${getScopeLabel(t, saved.config.scope)} · ${getDifficultyLabel(t, saved.config.difficulty)}`}
+					details={`${getRegionsLabel(t, saved.config.regions)} · ${getDifficultyLabel(t, saved.config.difficulty)}`}
 					progress={{
 						done:
 							saved.phase === 'revealed' ? saved.index + 1 : saved.index,
@@ -115,16 +118,18 @@ export default function SetupPage() {
 				copyLink={setupLink()}
 				canStart={playableConfig !== null}
 				eligibleCount={eligibleCount}
+				best={best}
 				onStart={handleStart}
 				onPrefetch={prefetchGame}
 			>
 				<RegionPicker
 					label={t('settings.region')}
-					value={config.scope}
-					onChange={scope => update({ scope })}
+					value={config.regions}
+					onChange={regions => update({ regions })}
 				/>
 				<SettingToggleGroup
 					label={t('settings.difficulty')}
+					cumulative
 					value={config.difficulty}
 					options={difficultyOptions(t, DIFFICULTY_OPTIONS)}
 					onChange={difficulty => update({ difficulty })}

@@ -1,4 +1,4 @@
-import type { GameContinent } from '@georally/game-domain'
+import type { GameContinent, GameRegions } from '@georally/game-domain'
 
 export interface ContinentViewPreset {
 	focusBounds: [[number, number], [number, number]]
@@ -65,4 +65,40 @@ export const CONTINENT_VIEW_PRESETS: Record<
 		maxBounds: [100, -55, 245, 20],
 		padding: DEFAULT_PADDING,
 	},
+}
+
+const MAX_REGION_SPAN = 250
+const regionViews = new Map<string, ContinentViewPreset | null>()
+
+/** Cached so the same regions give the same object and camera effects don't rerun. */
+export function regionsView(regions: GameRegions): ContinentViewPreset | null {
+	const key = regions.join()
+	const cached = regionViews.get(key)
+	if (cached !== undefined) return cached
+
+	const presets = regions.map(region => CONTINENT_VIEW_PRESETS[region])
+	let view: ContinentViewPreset | null = null
+	if (presets.length === 1) {
+		view = presets[0]
+	} else if (presets.length > 1) {
+		const west = Math.min(...presets.map(p => p.focusBounds[0][0]))
+		const east = Math.max(...presets.map(p => p.focusBounds[1][0]))
+		if (east - west <= MAX_REGION_SPAN) {
+			view = {
+				focusBounds: [
+					[west, Math.min(...presets.map(p => p.focusBounds[0][1]))],
+					[east, Math.max(...presets.map(p => p.focusBounds[1][1]))],
+				],
+				maxBounds: [
+					Math.min(...presets.map(p => p.maxBounds[0])),
+					Math.min(...presets.map(p => p.maxBounds[1])),
+					Math.max(...presets.map(p => p.maxBounds[2])),
+					Math.max(...presets.map(p => p.maxBounds[3])),
+				],
+				padding: DEFAULT_PADDING,
+			}
+		}
+	}
+	regionViews.set(key, view)
+	return view
 }

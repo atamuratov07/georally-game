@@ -34,7 +34,7 @@ export function PlayerJoinScreen({
 	const [playerName, setPlayerName] = useState('')
 
 	return (
-		<PageShell width='sm' center>
+		<PageShell width='sm' center headerTitle={t('multiplayer.title')}>
 			<BackLink to='/'>{t('common.home')}</BackLink>
 			<Card>
 				<CardHeader className='items-center text-center'>

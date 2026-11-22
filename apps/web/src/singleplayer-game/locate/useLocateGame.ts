@@ -1,6 +1,7 @@
 import { countryCatalog, playableCountryPool } from '@georally/country-catalog'
 import { selectEligibleCountryIds } from '@georally/game-domain'
 import {
+	getScore,
 	prepareGameSession,
 	reduceGameState,
 	type GameConfig,
@@ -10,6 +11,7 @@ import {
 import { useCallback, useMemo, useState } from 'react'
 import { useStoredGame } from '../shared/useStoredGame'
 import { useLocateGameAnalytics } from './analytics'
+import { bestKey } from './config'
 import { locateGameStore } from './store'
 
 interface UseLocateGameResult {
@@ -36,6 +38,14 @@ function prepare(config: GameConfig): GameSession | null {
 export function useLocateGame(): UseLocateGameResult {
 	const { state, dispatch, restored } = useStoredGame({
 		store: locateGameStore,
+		best: state =>
+			state.phase === 'finished'
+				? {
+						key: bestKey(state.config),
+						value: getScore(state),
+						at: state.finishedAt,
+					}
+				: null,
 		reduce: reduceGameState,
 		start: keepIdle,
 	})

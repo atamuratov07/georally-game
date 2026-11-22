@@ -15,5 +15,10 @@ export {
 	getCountryCurrency,
 	getCountryName,
 } from './countryText'
-export { getDifficultyLabel, getScopeLabel } from './gameLabels'
+export {
+	getDifficultyLabel,
+	getRegionLabel,
+	getRegionsLabel,
+	joinRegionLabels,
+} from './gameLabels'
 export { useAppLanguage } from './useAppLanguage'

@@ -1,39 +1,65 @@
+import { normalizeGameRegions, normalizeRegions } from '@georally/game-domain'
 import {
-	ROUTE_SCOPES,
+	ROUTE_REGION_CONTINENTS,
+	ROUTE_REGIONS,
 	type RouteConfig,
 	type RoutePracticeConfig,
-	type RouteScope,
+	type RouteRegion,
 } from '@georally/game-domain/singleplayer/routes'
 import type { TFunction } from 'i18next'
-import { getScopeLabel } from '@/shared/i18n'
+import { getRegionLabel, joinRegionLabels } from '@/shared/i18n'
 import type { RegionOption } from '@/shared/widgets/region-map/RegionPicker'
-import { isDifficulty, readDifficulty } from '../shared/setupParams'
+import {
+	isDifficulty,
+	readDifficulty,
+	readRegionNames,
+	setRegions,
+} from '../shared/setupParams'
 
 export const DEFAULT_ROUTE_CONFIG: RoutePracticeConfig = {
 	kind: 'practice',
-	scope: 'all',
+	regions: [],
 	difficulty: 'easy',
 }
 
-const SCOPE_OF_PARAM: Record<string, RouteScope> = {
+const REGION_OF_NAME: Readonly<Record<string, RouteRegion>> = {
+	europe: 'europe',
+	asia: 'asia',
+	africa: 'africa',
+	americas: 'americas',
 	'north-america': 'americas',
 	'south-america': 'americas',
-	oceania: 'all',
 }
 
-export const ROUTE_SCOPE_OPTIONS: readonly RegionOption<RouteScope>[] = [
+export const ROUTE_REGION_OPTIONS: readonly RegionOption<RouteRegion>[] = [
 	{ value: 'europe', continents: ['europe'] },
 	{ value: 'asia', continents: ['asia'] },
 	{ value: 'africa', continents: ['africa'] },
 	{ value: 'americas', continents: ['north-america', 'south-america'] },
 ]
 
-export function routeScopeLabel(t: TFunction, scope: RouteScope): string {
-	return scope === 'americas' ? t('routes.americas') : getScopeLabel(t, scope)
+export function routeRegionLabel(t: TFunction, region: RouteRegion): string {
+	return region === 'americas'
+		? t('routes.americas')
+		: getRegionLabel(t, region)
 }
 
-export function isRouteScope(value: unknown): value is RouteScope {
-	return ROUTE_SCOPES.includes(value as RouteScope)
+export function routeRegionsLabel(
+	t: TFunction,
+	regions: readonly RouteRegion[],
+): string {
+	return regions.length === 0
+		? getRegionLabel(t, 'all')
+		: joinRegionLabels(regions.map(region => routeRegionLabel(t, region)))
+}
+
+function isRouteRegions(value: unknown): value is readonly RouteRegion[] {
+	return (
+		Array.isArray(value) &&
+		value.every(region => ROUTE_REGIONS.includes(region as RouteRegion)) &&
+		normalizeRegions(value as RouteRegion[], ROUTE_REGIONS).join() ===
+			value.join()
+	)
 }
 
 function isPositiveInteger(value: unknown): value is number {
@@ -48,7 +74,9 @@ export function isRouteConfig(value: unknown): value is RouteConfig {
 	const config = value as Record<string, unknown>
 	switch (config.kind) {
 		case 'practice':
-			return isRouteScope(config.scope) && isDifficulty(config.difficulty)
+			return (
+				isRouteRegions(config.regions) && isDifficulty(config.difficulty)
+			)
 		case 'daily':
 			return isPositiveInteger(config.number)
 		default:
@@ -57,18 +85,10 @@ export function isRouteConfig(value: unknown): value is RouteConfig {
 }
 
 export function toSearchParams(config: RoutePracticeConfig): URLSearchParams {
-	return new URLSearchParams({
-		scope: config.scope,
-		difficulty: config.difficulty,
-	})
-}
-
-function readRouteScope(searchParams: URLSearchParams): RouteScope {
-	const value = searchParams.get('scope')
-	if (value !== null && value in SCOPE_OF_PARAM) {
-		return SCOPE_OF_PARAM[value]
-	}
-	return isRouteScope(value) ? value : DEFAULT_ROUTE_CONFIG.scope
+	return setRegions(
+		new URLSearchParams({ difficulty: config.difficulty }),
+		config.regions,
+	)
 }
 
 export function readSetupConfig(
@@ -76,7 +96,18 @@ export function readSetupConfig(
 ): RoutePracticeConfig {
 	return {
 		kind: 'practice',
-		scope: readRouteScope(searchParams),
+		regions: normalizeRegions(
+			readRegionNames(searchParams).flatMap(name =>
+				name in REGION_OF_NAME ? [REGION_OF_NAME[name]] : [],
+			),
+			ROUTE_REGIONS,
+		),
 		difficulty: readDifficulty(searchParams, DEFAULT_ROUTE_CONFIG.difficulty),
 	}
+}
+
+export function routeContinents(regions: readonly RouteRegion[]) {
+	return normalizeGameRegions(
+		regions.flatMap(region => ROUTE_REGION_CONTINENTS[region]),
+	)
 }

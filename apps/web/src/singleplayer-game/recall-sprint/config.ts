@@ -4,7 +4,9 @@ import {
 	type SprintConfig,
 	type SprintLength,
 } from '@georally/game-domain/singleplayer/recall-sprint'
-import { isScope, readScope } from '../shared/setupParams'
+import { isGameRegions } from '@georally/game-domain'
+import { regionsKey } from '../shared/personalBests'
+import { readGameRegions, setRegions } from '../shared/setupParams'
 
 function isLength(value: unknown): value is SprintLength {
 	return SPRINT_LENGTHS.includes(value as SprintLength)
@@ -16,17 +18,24 @@ export function isSprintConfig(value: unknown): value is SprintConfig {
 	}
 
 	const config = value as Record<keyof SprintConfig, unknown>
-	return isScope(config.scope) && isLength(config.length)
+	return isGameRegions(config.regions) && isLength(config.length)
 }
 
 export function toSearchParams(config: SprintConfig): URLSearchParams {
-	return new URLSearchParams({ scope: config.scope, length: config.length })
+	return setRegions(
+		new URLSearchParams({ length: config.length }),
+		config.regions,
+	)
 }
 
 export function readSetupConfig(searchParams: URLSearchParams): SprintConfig {
 	const length = searchParams.get('length')
 	return {
-		scope: readScope(searchParams, DEFAULT_SPRINT_CONFIG.scope),
+		regions: readGameRegions(searchParams),
 		length: isLength(length) ? length : DEFAULT_SPRINT_CONFIG.length,
 	}
+}
+
+export function bestKey(config: SprintConfig): string {
+	return `recall-sprint:${regionsKey(config.regions)}:${config.length}`
 }

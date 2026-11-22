@@ -1,22 +1,17 @@
 import { Play } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { useTranslation } from 'react-i18next'
-import {
-	Button,
-	Card,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-	CopyButton,
-} from '@/shared/ui'
+import { Trans, useTranslation } from 'react-i18next'
+import { Button, Card, CardHeader, CopyButton } from '@/shared/ui'
 import { SINGLEPLAYER_MODES } from '../../modes'
 import type { SingleplayerModeId } from '../../paths'
+import { MODE_TONES } from './modeTones'
 
 interface SetupCardProps {
 	mode: SingleplayerModeId
 	copyLink: string
 	canStart?: boolean
 	eligibleCount?: number
+	best?: number | null
 	onStart: () => void
 	onPrefetch: () => void
 	note?: ReactNode
@@ -28,43 +23,49 @@ export function SetupCard({
 	copyLink,
 	canStart = true,
 	eligibleCount = 0,
+	best = null,
 	onStart,
 	onPrefetch,
 	note,
 	children,
 }: SetupCardProps) {
 	const { t } = useTranslation()
-	const descriptionKey = SINGLEPLAYER_MODES.find(
-		entry => entry.id === mode,
-	)?.descriptionKey
+	const entry = SINGLEPLAYER_MODES.find(item => item.id === mode)
 
 	return (
 		<Card>
-			<CardHeader>
-				<div className='flex items-center justify-between gap-3'>
-					<CardTitle asChild>
-						<h1>{t('singleplayer.title')}</h1>
-					</CardTitle>
+			<CardHeader className='gap-3'>
+				<div className='flex items-start justify-between gap-4'>
+					{entry ? (
+						<h1 className='text-lg leading-snug font-extrabold text-balance text-ink sm:text-2xl'>
+							<span className='sr-only'>{t(entry.titleKey)}: </span>
+							<Trans
+								i18nKey={entry.descriptionKey}
+								components={{
+									hl: <span className={MODE_TONES[entry.tone].text} />,
+								}}
+							/>
+						</h1>
+					) : null}
 					<CopyButton
 						size='sm'
 						className='shrink-0'
 						textToCopy={copyLink}
 						aria-label={t('singleplayer.copySetupLabel')}
-					>
-						<span className='hidden sm:inline'>
-							{t('singleplayer.copySetup')}
-						</span>
-					</CopyButton>
+					/>
 				</div>
-				{descriptionKey ? (
-					<CardDescription>
-						{t(descriptionKey)} {note}
-					</CardDescription>
+				{note ? (
+					<p className='text-base font-medium text-muted'>{note}</p>
 				) : null}
 			</CardHeader>
 
 			<div className='flex flex-col gap-6'>{children}</div>
 
+			{best === null ? null : (
+				<p className='mt-7 -mb-4 text-center text-sm font-extrabold text-muted tabular-nums'>
+					{t('singleplayer.best.setup', { value: best })}
+				</p>
+			)}
 			<Button
 				type='button'
 				size='lg'

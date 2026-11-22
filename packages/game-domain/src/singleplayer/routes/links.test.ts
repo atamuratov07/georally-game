@@ -15,7 +15,7 @@ function linksAfter(
 	const board = createRouteBoard(graph, { startId, targetId })!
 	const state: PlayingRouteState = {
 		phase: 'playing',
-		config: { kind: 'practice', scope: 'all', difficulty: 'easy' },
+		config: { kind: 'practice', regions: [], difficulty: 'easy' },
 		startId,
 		targetId,
 		guesses: guesses.map((countryId, at) => ({

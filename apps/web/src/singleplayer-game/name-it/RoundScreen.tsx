@@ -11,7 +11,8 @@ import { useCurrentLocale } from '@/app/LocaleContext'
 import { getCountryName } from '@/shared/i18n'
 import { useKeyboardInset } from '@/shared/lib/useKeyboardInset'
 import { useMediaQuery } from '@/shared/lib/useMediaQuery'
-import type { ProjectionKind } from '@/shared/map/ProjectionToggle'
+import { regionsView } from '@/shared/map/continent-view'
+import { useProjectionPreference } from '@/shared/map/useProjectionPreference'
 import { CountryInfoCard } from '@/shared/widgets/CountryInfoCard'
 import { TOUCH_QUERY } from '../shared/touch'
 import { desktopLayout, touchLayout } from './layouts'
@@ -48,10 +49,9 @@ export function RoundScreen({
 		targetId: view.targetId,
 		onAnswer,
 	})
-	const [chosenProjection, setChosenProjection] =
-		useState<ProjectionKind>('flat')
+	const [chosenProjection, setChosenProjection] = useProjectionPreference()
 	const [cardHidden, setCardHidden] = useState(false)
-	const globeAllowed = state.config.scope === 'all'
+	const globeAllowed = regionsView(state.config.regions) === null
 	const projection = globeAllowed ? chosenProjection : 'flat'
 	const insets = useMemo(
 		() => layout.insets(keyboardInset),

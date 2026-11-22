@@ -4,6 +4,7 @@ const translations = {
 		language: 'Til',
 	},
 	common: {
+		remove: 'Olib tashlash',
 		home: 'Bosh sahifa',
 		retry: 'Qayta urinish',
 	},
@@ -144,6 +145,8 @@ const translations = {
 		questions: 'Savollar',
 		attempts: 'Urinishlar',
 		region: 'Hudud',
+		clearRegions: 'Tozalash',
+		regionsHint: 'Bir nechtasini tanlash mumkin',
 		difficulty: 'Qiyinlik',
 		timer: 'Taymer',
 		timerOff: "Yo'q",
@@ -152,27 +155,33 @@ const translations = {
 		sprintLength: 'Davomiyligi',
 	},
 	singleplayer: {
+		best: {
+			new: 'Yangi rekord!',
+			previous: 'Avvalgi: {{value}}',
+			current: 'Rekord: {{value}}',
+			setup: 'Shu sozlamalardagi rekord: {{value}}',
+		},
 		title: "Yakka o'yin",
 		modes: {
 			label: 'Oʻyin rejimi',
 			locate: {
 				title: 'Top',
-				description: 'Nomi aytilgan mamlakatni xaritadan toping.',
+				description: '<hl>Nomi aytilgan mamlakatni</hl> xaritadan toping.',
 			},
 			nameIt: {
 				title: 'Nomini ayt',
 				description:
-					'Ajratilgan mamlakat nomini vaqt tugashidan oldin ayting.',
+					'<hl>Ajratilgan mamlakat</hl> nomini vaqt tugashidan oldin ayting.',
 			},
 			recallSprint: {
 				title: 'Sprint',
 				description:
-					'Vaqt tugaguncha mintaqadagi imkon qadar koʻp davlatni nomlang.',
+					'Vaqt tugaguncha mintaqadagi <hl>imkon qadar koʻp davlatni</hl> nomlang.',
 			},
 			routes: {
 				title: 'Marshrutlar',
 				description:
-					'Oradagi davlatlarni nomlab, bir davlatdan boshqasiga yetib boring.',
+					'<hl>Oradagi davlatlarni nomlab</hl>, bir davlatdan boshqasiga yetib boring.',
 			},
 		},
 		start: "O'yinni boshlash",
@@ -183,7 +192,6 @@ const translations = {
 		attemptsLeft_other: '{{count}} ta urinish qoldi',
 		resultTitle: "O'yin yakunlandi",
 		playAgain: "Yana o'ynash",
-		copySetup: 'Sozlamalarni nusxalash',
 		copySetupLabel: 'Ushbu sozlamalarga havolani nusxalash',
 		resume: {
 			title: "Tugallanmagan o'yin",

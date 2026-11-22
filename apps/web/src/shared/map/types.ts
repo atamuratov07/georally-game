@@ -1,4 +1,4 @@
-import type { GameScope } from '@georally/game-domain'
+import type { GameRegions } from '@georally/game-domain'
 import type { ReactNode } from 'react'
 
 export type MapHighlightTone = 'correct' | 'wrong' | 'selected' | 'target'
@@ -25,7 +25,7 @@ export interface MapRevealTarget {
 export interface PickCountryMapProps {
 	onPick: (countryId: string) => void
 	interactiveIds: ReadonlySet<string>
-	scope: GameScope
+	regions: GameRegions
 	resetViewKey?: string | number | null
 	highlights?: readonly MapHighlight[]
 	markers?: readonly MapMarker[]

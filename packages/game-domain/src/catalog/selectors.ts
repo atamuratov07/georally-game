@@ -1,3 +1,4 @@
+import { regionsInclude } from '../shared/regions'
 import type { CountryId, GameQuestionSetConfig } from '../shared/types'
 import type { CountryPool, CountryPoolEntry } from './types'
 
@@ -36,12 +37,12 @@ export function hasCountry(pool: CountryPool, countryId: string): boolean {
 
 export function selectEligibleCountryIds(
 	pool: CountryPool,
-	config: Pick<GameQuestionSetConfig, 'difficulty' | 'scope'>,
+	config: Pick<GameQuestionSetConfig, 'difficulty' | 'regions'>,
 ): CountryId[] {
 	return Object.entries(pool.countriesById)
 		.filter(([_, country]) => {
 			return (
-				(config.scope === 'all' || country.continent === config.scope) &&
+				regionsInclude(config.regions, country.continent) &&
 				includesDifficulty(country.difficulty, config.difficulty)
 			)
 		})

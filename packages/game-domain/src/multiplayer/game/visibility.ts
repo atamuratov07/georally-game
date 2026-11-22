@@ -1,4 +1,4 @@
-import type { CountryId, GameScope } from '../../shared/types'
+import type { CountryId, GameRegions } from '../../shared/types'
 import type { MemberId } from '../room/types'
 import {
 	getAnsweredParticipantCount,
@@ -35,7 +35,7 @@ interface GameParticipantViewBase {
 	viewerParticipantId: MemberId
 	questionCount: number
 	currentQuestionNumber: number
-	scope: GameScope
+	regions: GameRegions
 	eligibleCountryIds: readonly CountryId[]
 	participantCount: number
 	viewerScore: number
@@ -133,7 +133,7 @@ export function toGameParticipantView(
 		viewerParticipantId: viewerId,
 		questionCount: getGameQuestionCount(state),
 		currentQuestionNumber: getGameCurrentQuestionNumber(state),
-		scope: state.session.config.scope,
+		regions: state.session.config.regions,
 		eligibleCountryIds: state.session.eligibleIds,
 		participantCount: getGameParticipantCount(state),
 		viewerScore:
@@ -219,7 +219,7 @@ interface GameHostViewBase {
 	viewerParticipantId: MemberId
 	questionCount: number
 	currentQuestionNumber: number
-	scope: GameScope
+	regions: GameRegions
 	participantCount: number
 }
 
@@ -297,7 +297,7 @@ export function toGameHostView(
 		viewerParticipantId: viewerId,
 		questionCount: getGameQuestionCount(state),
 		currentQuestionNumber: getGameCurrentQuestionNumber(state),
-		scope: state.session.config.scope,
+		regions: state.session.config.regions,
 		participantCount: getGameParticipantCount(state),
 	}
 	switch (state.phase) {

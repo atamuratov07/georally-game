@@ -69,7 +69,7 @@ export function useGameMap({
 			return {
 				onPick: noopPick,
 				interactiveIds,
-				scope: game.scope,
+				regions: game.regions,
 				highlights: EMPTY_HIGHLIGHTS,
 				markers: EMPTY_MARKERS,
 				popup: null,
@@ -82,7 +82,7 @@ export function useGameMap({
 			return {
 				onPick: handlePick,
 				interactiveIds,
-				scope: game.scope,
+				regions: game.regions,
 				highlights: submissionCountryId
 					? [
 							{
@@ -126,7 +126,7 @@ export function useGameMap({
 		return {
 			onPick: noopPick,
 			interactiveIds,
-			scope: game.scope,
+			regions: game.regions,
 			highlights,
 			markers: EMPTY_MARKERS,
 			revealTarget: correctCountryInfo
@@ -147,7 +147,7 @@ export function useGameMap({
 		correctCountryId,
 		correctCountryInfo,
 		showCountryInfo,
-		game.scope,
+		game.regions,
 		handlePick,
 		isCompleted,
 		interactiveIds,

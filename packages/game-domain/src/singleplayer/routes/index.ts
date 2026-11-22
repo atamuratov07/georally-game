@@ -1,5 +1,10 @@
 export { createRouteBoard, type RouteBoard } from './board'
-export { ratingRank, ROUTE_SCOPE_CONTINENTS, routeLevels } from './difficulty'
+export {
+	ratingRank,
+	ROUTE_REGION_CONTINENTS,
+	routeLevels,
+	routeRegionOf,
+} from './difficulty'
 export { createIdleState, reduceRouteState } from './engine'
 export { routeLinks, type RouteLink } from './links'
 export {
@@ -14,7 +19,7 @@ export {
 } from './selectors'
 export { dailyRouteSession, prepareRouteSession } from './session'
 export {
-	ROUTE_SCOPES,
+	ROUTE_REGIONS,
 	type Attempt,
 	type DailyRouteEntry,
 	type FinishedRouteState,
@@ -30,7 +35,7 @@ export {
 	type RouteOutcome,
 	type RoutePhase,
 	type RoutePracticeConfig,
-	type RouteScope,
+	type RouteRegion,
 	type RouteSession,
 	type RouteState,
 	type RouteVerdict,

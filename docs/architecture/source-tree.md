@@ -97,7 +97,7 @@ georally-game/
 |           |   |-- map/
 |           |   |   |-- PickCountryMap.tsx # the pick-a-country map (locate, multiplayer), composed from the parts below
 |           |   |   |-- BaseMap.tsx     # MapLibre map, style, load and error, projection and its toggle
-|           |   |   |-- camera/         # useScopeCamera (region presets, reset), useRevealCamera, useFitCamera,
+|           |   |   |-- camera/         # useRegionCamera (region views, reset), useRevealCamera, useFitCamera,
 |           |   |   |                   # framing (fitCamera, flight settings, isTinyAt,
 |           |   |   |                   # loosenCameraConstraint, keepVisibleAreaOnMap)
 |           |   |   |-- interaction/    # useCountryPicking (hover and click)
@@ -202,8 +202,10 @@ georally-game/
 |           |       |-- useGuessField.ts  # the open guess field of Recall Sprint and Routes
 |           |       |-- questionCountFit.ts
 |           |       |-- setupParams.ts    # shared URL parameter readers and the difficulty options
+|           |       |-- personalBests.ts  # best results per mode and settings, kept in localStorage
+|           |       |-- modeSwitch.ts     # the card slide between modes (view transition)
 |           |       |-- useRoundEvents.ts
-|           |       `-- components/       # SetupShell, SetupCard, ModeTabs, GameErrorBoundary,
+|           |       `-- components/       # SetupShell, SetupCard, ModeTabs, modeTones, GameErrorBoundary,
 |           |                             # GameErrorScreen, GameResultModal, ResumeGameCard,
 |           |                             # KeyboardGameFrame, LeaveButton, CountdownBar,
 |           |                             # MicButton, VoiceButton, AnswerNotice, ConfirmButton

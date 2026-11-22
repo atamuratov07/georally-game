@@ -275,7 +275,7 @@ describe('RoomsService.startGame', () => {
 			memberSessionToken: created.memberSessionToken,
 			gameConfig: {
 				difficulty: 'easy',
-				scope: 'oceania',
+				regions: ['oceania'],
 				questionCount: 30,
 				questionDurationMs: 30_000,
 			},
@@ -301,7 +301,7 @@ describe('RoomsService.startGame', () => {
 			memberSessionToken: created.memberSessionToken,
 			gameConfig: {
 				difficulty: 'easy',
-				scope: 'all',
+				regions: [],
 				questionCount: 10,
 				questionDurationMs: undefined,
 			},
@@ -329,7 +329,7 @@ describe('RoomsService.startGame', () => {
 			memberSessionToken: created.memberSessionToken,
 			gameConfig: {
 				difficulty: 'easy',
-				scope: 'all',
+				regions: [],
 				questionCount: 10,
 				questionDurationMs: undefined,
 			},
@@ -477,7 +477,7 @@ describe('RoomsService.submitAnswer', () => {
 			memberSessionToken: created.memberSessionToken,
 			gameConfig: {
 				difficulty: 'hard',
-				scope: 'all',
+				regions: [],
 				questionCount: 10,
 				questionDurationMs: undefined,
 			},
@@ -526,7 +526,7 @@ describe('RoomsService.submitAnswer', () => {
 			memberSessionToken: created.memberSessionToken,
 			gameConfig: {
 				difficulty: 'easy',
-				scope: 'all',
+				regions: [],
 				questionCount: 10,
 				questionDurationMs: undefined,
 			},
@@ -575,7 +575,7 @@ describe('RoomsService.submitAnswer', () => {
 			memberSessionToken: created.memberSessionToken,
 			gameConfig: {
 				difficulty: 'easy',
-				scope: 'all',
+				regions: [],
 				questionCount: 10,
 				questionDurationMs: undefined,
 			},
@@ -764,7 +764,7 @@ describe('RoomsService.revealGameRound', () => {
 			memberSessionToken: created.memberSessionToken,
 			gameConfig: {
 				difficulty: 'easy',
-				scope: 'all',
+				regions: [],
 				questionCount: 10,
 				questionDurationMs: undefined,
 			},
@@ -882,7 +882,7 @@ describe('RoomsService.advanceGameRound', () => {
 			memberSessionToken: created.memberSessionToken,
 			gameConfig: {
 				difficulty: 'easy',
-				scope: 'all',
+				regions: [],
 				questionCount: options.questionCount ?? 10,
 				questionDurationMs: undefined,
 			},
@@ -1086,7 +1086,7 @@ describe('RoomsService game auto advance', () => {
 		const started = service.startGame({
 			gameConfig: {
 				difficulty: 'easy',
-				scope: 'all',
+				regions: [],
 				questionCount: 10,
 				questionDurationMs: undefined,
 			},
@@ -1212,7 +1212,7 @@ describe('RoomsService game auto advance', () => {
 			memberSessionToken: created.memberSessionToken,
 			gameConfig: {
 				difficulty: 'easy',
-				scope: 'all',
+				regions: [],
 				questionCount: 1,
 				questionDurationMs: commonTTLMs,
 			},
@@ -1570,7 +1570,7 @@ describe('RoomsService.returnToLobby', () => {
 			memberSessionToken: created.memberSessionToken,
 			gameConfig: {
 				difficulty: 'easy',
-				scope: 'all',
+				regions: [],
 				questionCount: 1,
 				questionDurationMs: commonPhaseDurationMs,
 			},
@@ -1621,7 +1621,7 @@ describe('RoomsService.returnToLobby', () => {
 			memberSessionToken: created.memberSessionToken,
 			gameConfig: {
 				difficulty: 'easy',
-				scope: 'all',
+				regions: [],
 				questionCount: 1,
 				questionDurationMs: commonTTLMs,
 			},

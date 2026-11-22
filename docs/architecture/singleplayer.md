@@ -27,6 +27,8 @@ graph TD
 
 ## Setup
 
+- **Difficulty is cumulative:** the highlight (`SettingToggleGroup` with `cumulative`) spans Easy up to the chosen level, since a harder level also asks the easier countries. Routes' levels are bands of par, so its toggle highlights one option.
+- **Toggles follow a pressed pointer** and commit on release. The value is shown through `useOptimistic`, because the router applies it a render later.
 - **The map projection is remembered** across games and reloads (`useProjectionPreference`, `georally.map.projection`).
 
 ## Saved games

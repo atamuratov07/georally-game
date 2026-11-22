@@ -95,6 +95,7 @@ export function GameConfigPanel({
 					/>
 					<SettingToggleGroup
 						label={t('settings.difficulty')}
+						cumulative
 						value={config.difficulty}
 						options={difficultyOptions(t, DIFFICULTY_OPTIONS)}
 						onChange={difficulty => update({ difficulty })}

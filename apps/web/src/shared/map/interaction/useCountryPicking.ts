@@ -2,6 +2,7 @@ import { normalizeCountryId } from '@georally/country-catalog'
 import { useCallback, useEffect, useMemo, useRef, type RefObject } from 'react'
 import type { MapLayerMouseEvent, MapRef } from 'react-map-gl/maplibre'
 import type { MapPointerProps } from '../BaseMap'
+import { TINY_RINGS_LAYER_ID } from '../layers/TinyCountryRings'
 import {
 	ARCHIPELAGO_FILL_LAYER_ID,
 	ARCHIPELAGO_SOURCE_ID,
@@ -13,7 +14,11 @@ import {
 } from '../map-styles'
 import type { MapHighlight } from '../types'
 
-const PICKABLE_LAYER_IDS = [BASE_STYLE_LAYER_ID, ARCHIPELAGO_FILL_LAYER_ID]
+const PICKABLE_LAYER_IDS = [
+	TINY_RINGS_LAYER_ID,
+	BASE_STYLE_LAYER_ID,
+	ARCHIPELAGO_FILL_LAYER_ID,
+]
 
 interface CountryPickingOptions {
 	mapRef: RefObject<MapRef | null>

@@ -50,7 +50,7 @@ export const SELECTION_EDGE = '#a86200'
 const SELECTION_FADE_MS = 350
 export const SELECTED_FILL = '#8148f0'
 
-const TONE_FILL: Record<MapHighlightTone, string> = {
+export const TONE_FILL: Readonly<Record<MapHighlightTone, string>> = {
 	correct: REVEALED_FILL,
 	wrong: WRONG_FILL,
 	selected: SELECTED_FILL,

@@ -9,6 +9,8 @@ import { useProjectionPreference } from './useProjectionPreference'
 import { useCountryPicking } from './interaction/useCountryPicking'
 import { CountryLayers } from './layers/CountryLayers'
 import { LabelLayers } from './layers/LabelLayers'
+import { TinyCountryRings } from './layers/TinyCountryRings'
+import { TONE_FILL } from './map-styles'
 import { MapMarkers } from './MapMarkers'
 import { RevealPopup } from './RevealPopup'
 import type { MapHighlight, MapMarker, PickCountryMapProps } from './types'
@@ -71,6 +73,17 @@ function PickCountryMapInner({
 		return [...ids]
 	}, [highlights, revealCountryId])
 
+	const ringColors = useMemo(
+		() =>
+			Object.fromEntries(
+				highlights.map(highlight => [
+					highlight.countryId,
+					TONE_FILL[highlight.tone],
+				]),
+			),
+		[highlights],
+	)
+
 	const [chosenProjection, setChosenProjection] = useProjectionPreference()
 	const projection = allowGlobe ? chosenProjection : 'flat'
 	const handleLoad = useCallback(() => {
@@ -113,6 +126,7 @@ function PickCountryMapInner({
 				interactiveIds={interactiveIds}
 				highlights={highlights}
 			/>
+			<TinyCountryRings countryIds={interactiveIds} colors={ringColors} />
 			<LabelLayers countryIds={labelIds} />
 			<MapMarkers markers={markers} />
 			{showCard ? (

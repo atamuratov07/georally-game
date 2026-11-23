@@ -1,0 +1,40 @@
+{
+	"name": "@georally/mastery",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./src/index.ts",
+	"scripts": {
+		"build": "tsup",
+		"check": "tsc -p tsconfig.json --noEmit",
+		"test": "vitest run",
+		"simulate": "tsx --conditions=development scripts/simulate.ts"
+	},
+	"exports": {
+		".": {
+			"types": "./src/index.ts",
+			"development": "./src/index.ts",
+			"import": "./dist/index.js",
+			"default": "./dist/index.js"
+		},
+		"./fsrs": {
+			"types": "./src/fsrs/fsrsScheduler.ts",
+			"development": "./src/fsrs/fsrsScheduler.ts",
+			"import": "./dist/fsrs/fsrsScheduler.js",
+			"default": "./dist/fsrs/fsrsScheduler.js"
+		}
+	},
+	"sideEffects": false,
+	"dependencies": {
+		"@georally/game-domain": "workspace:*",
+		"ts-fsrs": "5.4.2"
+	},
+	"devDependencies": {
+		"@georally/country-catalog": "workspace:*",
+		"tsup": "^8.5.1",
+		"tsx": "^4.21.0",
+		"vitest": "^4.1.10"
+	}
+}

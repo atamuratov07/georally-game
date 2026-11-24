@@ -55,12 +55,13 @@ GeoRally is a real-time geography quiz game: a player sees a country prompt, fin
 ```text
 georally-game/
 ├── apps/
-│   ├── web/       # React + Vite client: singleplayer + multiplayer UI, built as one Vite entry per locale
+│   ├── web/       # React + Vite client: singleplayer, review and multiplayer UI, built as one Vite entry per locale
 │   └── server/    # Express + Socket.IO realtime server (multiplayer only)
 ├── packages/
 │   ├── game-domain/       # pure game rules & state machines, no framework deps
 │   ├── game-protocol/     # socket event names, ack types, zod schemas
 │   ├── country-catalog/   # generated playable-country metadata
+│   ├── mastery/           # spaced review: rules, FSRS scheduler, IndexedDB storage
 │   └── country-build/     # offline pipeline that produces the catalog + map tiles
 ├── docs/
 │   ├── architecture/      # deep-dive docs, see Architecture below
@@ -213,6 +214,7 @@ graph LR
         DOMAIN["@georally/game-domain<br/>pure game rules and state machines"]
         PROTOCOL["@georally/game-protocol<br/>socket event names, ack types, zod schemas"]
         CATALOG["@georally/country-catalog<br/>generated playable country metadata"]
+        MASTERY["@georally/mastery<br/>spaced review rules and storage"]
     end
 
     subgraph BuildPackages
@@ -222,6 +224,8 @@ graph LR
     WEB --> DOMAIN
     WEB --> PROTOCOL
     WEB --> CATALOG
+    WEB --> MASTERY
+    MASTERY --> DOMAIN
     SERVER --> DOMAIN
     SERVER --> PROTOCOL
     SERVER --> CATALOG
@@ -235,6 +239,7 @@ graph LR
 | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | [`docs/architecture/source-tree.md`](docs/architecture/source-tree.md)                   | Full annotated source tree                                                       |
 | [`docs/architecture/singleplayer.md`](docs/architecture/singleplayer.md)                 | Local game flow, saving and loading; links to one doc per mode                   |
+| [`docs/architecture/mastery.md`](docs/architecture/mastery.md)                           | Daily spaced review: FSRS scheduling, the review log in IndexedDB, the session   |
 | [`docs/architecture/multiplayer.md`](docs/architecture/multiplayer.md)                   | Client/server realtime flow, room + game state model, protocol, view projection  |
 | [`docs/architecture/data-pipeline.md`](docs/architecture/data-pipeline.md)               | Offline build pipeline for the country catalog and map tiles                     |
 | [`docs/architecture/answers.md`](docs/architecture/answers.md)                           | Matching typed and spoken country answers, and the decisions behind it           |

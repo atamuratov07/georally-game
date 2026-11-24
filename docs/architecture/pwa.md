@@ -1,6 +1,6 @@
 # Installable app (PWA)
 
-GeoRally can be installed to the home screen and opens full screen. After the first visit it loads from the device, and single-player works offline. Multiplayer always needs the network.
+GeoRally can be installed to the home screen and opens full screen. After the first visit it loads from the device, and single-player and review work offline. Multiplayer always needs the network.
 
 ```mermaid
 graph LR
@@ -65,7 +65,7 @@ graph LR
 - The viewport keeps the default `viewport-fit`, so iOS keeps content out of the notch and home-indicator areas. Game screens paint the document background (`useDocumentBackground`), so those strips match the screen. Opting into `viewport-fit=cover` would mean adding safe-area padding to every edge-anchored HUD and answer bar.
 - `interactive-widget` stays at its default because `useKeyboardInset` already follows the on-screen keyboard through `visualViewport`.
 - iOS standalone has no back button, so every screen needs its own way out. Single-player games have an exit in the HUD, setup and join pages have a back link, and the finished and closed room screens link home. **Gap:** a player in a multiplayer lobby or a running game has no in-app exit (only the host can close the room), so in the installed app on iOS their only way out is closing the app.
-- iOS gives an installed app its own storage, so the language, saved rooms and reaction counters from Safari don't carry over.
+- iOS gives an installed app its own storage, so the language, saved rooms, reaction counters and review progress from Safari don't carry over.
 
 ## Install prompt
 

@@ -101,7 +101,8 @@ georally-game/
 |           |   |   |                   # framing (fitCamera, flight settings, isTinyAt,
 |           |   |   |                   # loosenCameraConstraint, keepVisibleAreaOnMap)
 |           |   |   |-- interaction/    # useCountryPicking (hover and click)
-|           |   |   |-- layers/         # CountryLayers (highlights, dimming, hover), LabelLayers
+|           |   |   |-- layers/         # CountryLayers (highlights, dimming, hover), LabelLayers,
+|           |   |   |                   # TinyCountryRings (pickable rings on microstates)
 |           |   |   |-- CardToggle.tsx, MapMarkers.tsx, ProjectionToggle.tsx, RevealPopup.tsx,
 |           |   |   |   TinyCountryRing.tsx, HitRing.tsx
 |           |   |   |-- map-controls.ts # shared style of the round map buttons
@@ -112,7 +113,7 @@ georally-game/
 |           |   |   |-- prefetchMap.ts  # warms the outlines, low-zoom tiles and common glyphs
 |           |   |   |-- useFeatureState.ts # sets per-country states, applying only the changes
 |           |   |   `-- types.ts
-|           |   |-- time/               # useDeadline, useNow
+|           |   |-- time/               # useDeadline, useNow, localDay (the player's local day)
 |           |   |-- ui/                 # AlertMessage, Button, CopyButton, FloatingNotice, FormControls,
 |           |   |                       # IconButton, ScreenShell, SurfacePanel, buttonStyles
 |           |   |-- utils/
@@ -121,7 +122,24 @@ georally-game/
 |           |       |-- CountryInfoCard.tsx
 |           |       |-- ScoreBanner.tsx
 |           |       `-- region-map/
-|           |           `-- RegionPicker.tsx  # continent picker drawn from virtual:region-map
+|           |           |-- ContinentMap.tsx  # continents drawn from virtual:region-map, as toggles
+|           |           |-- continents.ts     # the options and colours
+|           |           `-- RegionPicker.tsx  # the game modes' region rules on ContinentMap
+|           |-- mastery/                  # review, see mastery.md
+|           |   |-- index.ts              # exports masteryRoutes
+|           |   |-- routes.tsx, paths.ts  # /review and /review/play, lazy pages
+|           |   |-- container.ts          # creates the scheduler and repository; the only import of the adapters
+|           |   |-- home/                 # MasteryHomePage, useToday, ScopePicker
+|           |   |-- session/
+|           |   |   |-- MasterySessionPage.tsx # header, the current card, the summary
+|           |   |   |-- useMasterySession.ts   # loads the plan, saves each answer
+|           |   |   |-- sessionReducer.ts      # queue, current card, save status
+|           |   |   |-- LocateCard.tsx         # Find It's round on PickCountryMap, reports the outcome
+|           |   |   `-- SessionSummary.tsx     # the day's counts and map
+|           |   |-- map/
+|           |   |   `-- MasteryMap.tsx    # countries by level, today's outlined
+|           |   `-- shared/
+|           |       `-- Stat.tsx
 |           |-- singleplayer-game/
 |           |   |-- index.ts              # exports singleplayerRoutes
 |           |   |-- modes.ts              # mode registry: id and lazy pages
@@ -261,6 +279,23 @@ georally-game/
 |                   |-- RoomErrorScreen.tsx
 |                   `-- RoomLoadingScreen.tsx
 |-- packages/
+|   |-- mastery/
+|   |   |-- scripts/
+|   |   |   `-- simulate.ts              # prints the pace table (pnpm --filter @georally/mastery simulate)
+|   |   `-- src/                         # @georally/mastery, see mastery.md
+|   |       |-- index.ts
+|   |       |-- types.ts, ports.ts       # domain types; Scheduler and MasteryRepository
+|   |       |-- cardId.ts, settings.ts, schedulerVersion.ts
+|   |       |-- answerCard.ts            # one answer -> the card's new record and its log entry
+|   |       |-- rebuildCards.ts          # log -> cards, regraded with the current graders
+|   |       |-- skills/                  # registry, grading table, locate (outcome, slow cap)
+|   |       |-- intro/                   # introOrder, seededRandom
+|   |       |-- session/                 # plan (the day's cards), queue (the next card)
+|   |       |-- view/                    # deriveMastery, daySummary, countDue
+|   |       |-- services/                # loadToday, recordAnswer, addScope, loadDayResult
+|   |       |-- simulation/              # the simulated player behind the pace table
+|   |       |-- fsrs/                    # @georally/mastery/fsrs: the ts-fsrs adapter
+|   |       `-- idb/                     # @georally/mastery/idb: schema and migrations, guards, repository
 |   |-- game-domain/
 |   |   `-- src/
 |   |       |-- index.ts

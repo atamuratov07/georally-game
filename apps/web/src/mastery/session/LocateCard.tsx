@@ -12,7 +12,7 @@ import {
 	type AnswerInput,
 	type AnswerOutcome,
 } from '@georally/mastery'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PickCountryMap } from '@/shared/map/PickCountryMap'
 import type { PickCountryMapProps } from '@/shared/map/types'
@@ -59,6 +59,7 @@ export function LocateCard({
 }: LocateCardProps) {
 	const { t } = useTranslation()
 	const pointer = useRef<AnswerInput>('mouse')
+	const nextRef = useRef<HTMLButtonElement>(null)
 	const fresh = useMemo(
 		() => (startedAt === null ? null : startRound(countryId, startedAt)),
 		[countryId, startedAt],
@@ -96,6 +97,12 @@ export function LocateCard({
 				: null,
 		[revealedId, revealedInfo],
 	)
+
+	// A pending button is disabled and can't take focus, so focus it once saved.
+	const ready = revealed !== null && !saving
+	useEffect(() => {
+		if (ready) nextRef.current?.focus()
+	}, [ready])
 
 	function resolve(next: GameState, input: AnswerInput | null) {
 		setPlayed({ turn, round: next })
@@ -141,7 +148,7 @@ export function LocateCard({
 						variant='ocean'
 						size='lg'
 						className='animate-pop-in px-10 [--drop:0_14px_30px_-8px_rgb(24_34_61/0.4)]'
-						autoFocus
+						ref={nextRef}
 						pending={saving}
 						onClick={onNext}
 					>

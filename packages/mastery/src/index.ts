@@ -49,6 +49,7 @@ export {
 export { countDue } from './view/countDue'
 export {
 	MASTERY_LEVELS,
+	masteryViews,
 	type MasteryLevel,
 	type MasteryView,
 } from './view/deriveMastery'

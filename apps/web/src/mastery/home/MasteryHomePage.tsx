@@ -22,6 +22,7 @@ import { mastery } from '../container'
 import { masteryPaths } from '../paths'
 import { ReviewUnavailable } from '../shared/ReviewUnavailable'
 import { Stat } from '../shared/Stat'
+import { MapPreview } from './MapPreview'
 import { ScopePicker } from './ScopePicker'
 import { useToday } from './useToday'
 
@@ -141,6 +142,8 @@ export default function MasteryHomePage() {
 			<h1 className='sr-only'>{t('review.title')}</h1>
 			<Card className='flex animate-pop-in flex-col gap-8'>
 				{isFirstRun ? null : renderToday(ready.today, ready.day)}
+
+				{isFirstRun ? null : <MapPreview views={ready.views} />}
 
 				{isFirstRun || scopeDone ? (
 					<div className='flex flex-col items-center gap-4'>

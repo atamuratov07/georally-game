@@ -334,6 +334,7 @@ const translations = {
 		},
 		comingUp: 'Coming up in your review',
 		notInReview: 'Not in your review',
+		myMap: 'My map',
 	},
 	multiplayer: {
 		title: 'Multiplayer',

@@ -349,6 +349,7 @@ const translations = {
 		},
 		comingUp: 'Скоро в повторении',
 		notInReview: 'Нет в вашем повторении',
+		myMap: 'Моя карта',
 	},
 	multiplayer: {
 		title: 'Мультиплеер',

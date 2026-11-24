@@ -338,6 +338,7 @@ const translations = {
 		},
 		comingUp: 'Tez orada takrorlashda',
 		notInReview: 'Takrorlashingizda yoʻq',
+		myMap: 'Mening xaritam',
 	},
 	multiplayer: {
 		title: "Ko'p o'yinchi",

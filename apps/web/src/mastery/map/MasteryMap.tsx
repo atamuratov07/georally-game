@@ -6,7 +6,7 @@ import {
 	type CardId,
 	type MasteryView,
 } from '@georally/mastery'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { MapRef } from 'react-map-gl/maplibre'
 import { BaseMap } from '@/shared/map/BaseMap'
 import { regionsView } from '@/shared/map/continent-view'
@@ -14,16 +14,26 @@ import { prepareMasteryMap } from './prepareMasteryMap'
 import { MasteryLayers } from './MasteryLayers'
 
 const FIT_PADDING = 12
-// The coastline blue: white would vanish among the white borders at this zoom.
 const TODAY_OUTLINE = '#1077b0'
+
+const WORLD_BOUNDS: [[number, number], [number, number]] = [
+	[-168, -56],
+	[192, 76],
+]
 
 interface MasteryMapProps {
 	views: ReadonlyMap<CardId, MasteryView>
 	todayIds: readonly CardId[]
+	overlay?: ReactNode
 	className?: string
 }
 
-export function MasteryMap({ views, todayIds, className }: MasteryMapProps) {
+export function MasteryMap({
+	views,
+	todayIds,
+	overlay,
+	className,
+}: MasteryMapProps) {
 	const mapRef = useRef<MapRef | null>(null)
 	const [loaded, setLoaded] = useState(false)
 	const onLoad = useCallback(() => {
@@ -43,12 +53,10 @@ export function MasteryMap({ views, todayIds, className }: MasteryMapProps) {
 			id => countryCatalog.countriesById.get(id)?.continent ?? [],
 		)
 		const view = regionsView(normalizeGameRegions(continents))
-		return view
-			? {
-					bounds: view.focusBounds,
-					fitBoundsOptions: { padding: FIT_PADDING },
-				}
-			: undefined
+		return {
+			bounds: view?.focusBounds ?? WORLD_BOUNDS,
+			fitBoundsOptions: { padding: FIT_PADDING },
+		}
 	}, [todayCountries])
 
 	return (
@@ -58,6 +66,7 @@ export function MasteryMap({ views, todayIds, className }: MasteryMapProps) {
 			initialViewState={initialViewState}
 			onLoad={onLoad}
 			navigationTop={null}
+			overlays={overlay}
 			className={className}
 			dragPan={false}
 			dragRotate={false}

@@ -1,6 +1,7 @@
 export { answerCard, type Answer } from './answerCard'
 export { splitCardId, toCardId } from './cardId'
 export { introOrder } from './intro/introOrder'
+export { isPlanned } from './intro/isPlanned'
 export type {
 	MasteryDeps,
 	MasteryMeta,
@@ -11,7 +12,7 @@ export { rebuildCards } from './rebuildCards'
 export { SCHEDULER_VERSION } from './schedulerVersion'
 export { addScope } from './services/addScope'
 export { loadDayResult, type DayResult } from './services/loadDayResult'
-export { loadMastery } from './services/loadMastery'
+export { loadMastery, type MasteryState } from './services/loadMastery'
 export { loadToday, type Today } from './services/loadToday'
 export { recordAnswer } from './services/recordAnswer'
 export { buildSessionPlan, type SessionPlanInput } from './session/plan'
@@ -46,7 +47,11 @@ export {
 	type SkillId,
 } from './types'
 export { countDue } from './view/countDue'
-export type { MasteryLevel, MasteryView } from './view/deriveMastery'
+export {
+	MASTERY_LEVELS,
+	type MasteryLevel,
+	type MasteryView,
+} from './view/deriveMastery'
 export { skillLayer, type MasteryLayer } from './view/layers'
 export {
 	summarizeLayer,

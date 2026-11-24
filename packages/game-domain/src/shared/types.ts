@@ -13,6 +13,8 @@ export const GAME_CONTINENTS = [
 ] as const
 export type GameContinent = (typeof GAME_CONTINENTS)[number]
 
+export type GameScope = GameContinent | 'all'
+
 /** Empty means the whole world; see `normalizeRegions`. */
 export type GameRegions = readonly GameContinent[]
 

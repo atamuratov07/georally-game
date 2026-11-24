@@ -1,11 +1,13 @@
 import type { Scheduler } from '../ports'
 import type { CardId, CardRecord } from '../types'
 
-export type MasteryLevel = 'learning' | 'familiar' | 'mastered'
+export const MASTERY_LEVELS = ['learning', 'familiar', 'mastered'] as const
+export type MasteryLevel = (typeof MASTERY_LEVELS)[number]
 
 export interface MasteryView {
 	level: MasteryLevel
 	fading: boolean
+	due: number
 }
 
 export const MASTERED_STABILITY_DAYS = 21
@@ -15,11 +17,12 @@ export function deriveMastery(
 	card: CardRecord,
 	retrievability: number,
 ): MasteryView {
-	const { phase, stability } = card.scheduling
-	if (phase !== 'review') return { level: 'learning', fading: false }
+	const { phase, stability, due } = card.scheduling
+	if (phase !== 'review') return { level: 'learning', fading: false, due }
 	return {
 		level: stability >= MASTERED_STABILITY_DAYS ? 'mastered' : 'familiar',
 		fading: retrievability < FADING_RETRIEVABILITY,
+		due,
 	}
 }
 

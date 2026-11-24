@@ -14,6 +14,7 @@ export {
 	type GameDifficulty,
 	type GameQuestionSetConfig,
 	type GameRegions,
+	type GameScope,
 } from './shared/types'
 export {
 	isGameRegions,

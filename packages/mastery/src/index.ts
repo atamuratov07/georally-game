@@ -11,6 +11,7 @@ export { rebuildCards } from './rebuildCards'
 export { SCHEDULER_VERSION } from './schedulerVersion'
 export { addScope } from './services/addScope'
 export { loadDayResult, type DayResult } from './services/loadDayResult'
+export { loadMastery } from './services/loadMastery'
 export { loadToday, type Today } from './services/loadToday'
 export { recordAnswer } from './services/recordAnswer'
 export { buildSessionPlan, type SessionPlanInput } from './session/plan'
@@ -46,3 +47,9 @@ export {
 } from './types'
 export { countDue } from './view/countDue'
 export type { MasteryLevel, MasteryView } from './view/deriveMastery'
+export { skillLayer, type MasteryLayer } from './view/layers'
+export {
+	summarizeLayer,
+	type MasteryCount,
+	type MasterySummary,
+} from './view/summarize'

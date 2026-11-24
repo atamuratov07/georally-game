@@ -1,6 +1,7 @@
 import { countryCatalog } from '@georally/country-catalog'
 import { normalizeGameRegions, type CountryId } from '@georally/game-domain'
 import {
+	skillLayer,
 	splitCardId,
 	type CardId,
 	type MasteryLevel,
@@ -68,14 +69,16 @@ export function MasteryMap({ views, todayIds, className }: MasteryMapProps) {
 		setLoaded(true)
 	}, [])
 
-	const levels = useMemo(() => {
-		const byCountry = new Map<CountryId, MasteryLevel>()
-		for (const [cardId, view] of views) {
-			const { countryId, skillId } = splitCardId(cardId)
-			if (skillId === 'locate') byCountry.set(countryId, view.level)
-		}
-		return byCountry
-	}, [views])
+	const levels = useMemo(
+		() =>
+			new Map(
+				[...skillLayer(views, 'locate')].map(([countryId, view]) => [
+					countryId,
+					view.level,
+				]),
+			),
+		[views],
+	)
 
 	const todayCountries = useMemo(
 		() => [...new Set(todayIds.map(id => splitCardId(id).countryId))],

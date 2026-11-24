@@ -1,4 +1,5 @@
-import type { CardRecord } from '../types'
+import type { Scheduler } from '../ports'
+import type { CardId, CardRecord } from '../types'
 
 export type MasteryLevel = 'learning' | 'familiar' | 'mastered'
 
@@ -20,4 +21,17 @@ export function deriveMastery(
 		level: stability >= MASTERED_STABILITY_DAYS ? 'mastered' : 'familiar',
 		fading: retrievability < FADING_RETRIEVABILITY,
 	}
+}
+
+export function masteryViews(
+	cards: readonly CardRecord[],
+	scheduler: Scheduler,
+	now: number,
+): ReadonlyMap<CardId, MasteryView> {
+	return new Map(
+		cards.map(card => [
+			card.id,
+			deriveMastery(card, scheduler.retrievability(card.scheduling, now)),
+		]),
+	)
 }

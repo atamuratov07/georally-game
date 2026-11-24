@@ -2,7 +2,7 @@ import type { LocalDay } from '@georally/game-domain'
 import type { MasteryDeps } from '../ports'
 import type { CardId } from '../types'
 import { summarizeDay, type DaySummary } from '../view/daySummary'
-import { deriveMastery, type MasteryView } from '../view/deriveMastery'
+import { masteryViews, type MasteryView } from '../view/deriveMastery'
 import { countDue } from '../view/countDue'
 
 export interface DayResult extends DaySummary {
@@ -21,14 +21,6 @@ export async function loadDayResult(
 	return {
 		...summarizeDay(log),
 		dueTomorrow: countDue(cards, input.tomorrow.end),
-		views: new Map(
-			cards.map(card => [
-				card.id,
-				deriveMastery(
-					card,
-					scheduler.retrievability(card.scheduling, input.now),
-				),
-			]),
-		),
+		views: masteryViews(cards, scheduler, input.now),
 	}
 }

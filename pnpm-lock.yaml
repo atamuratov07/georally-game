@@ -285,6 +285,9 @@ importers:
       '@georally/game-protocol':
         specifier: workspace:*
         version: link:../../packages/game-protocol
+      '@georally/mastery':
+        specifier: workspace:*
+        version: link:../../packages/mastery
       boring-avatars:
         specifier: ^2.0.4
         version: 2.0.4(react-dom@19.3.1(react@19.3.1))(react@19.3.1)

@@ -21,6 +21,17 @@ const MASTERY_BOUNDARIES = {
 	},
 }
 
+const MASTERY_ADAPTERS = {
+	group: ['@georally/mastery/fsrs', '@georally/mastery/idb'],
+	message: 'Only mastery/container.ts creates the scheduler and repository.',
+}
+
+const MASTERY_FEATURE = {
+	regex: '^(?:@|\\.\\.?)/(?:.*/)?mastery(?:$|/(?!bridge/reportCasualOutcomes$))',
+	message:
+		'A mode reaches review only through mastery/bridge/reportCasualOutcomes.',
+}
+
 function masteryImports(allowedFolder) {
 	return {
 		patterns: Object.entries(MASTERY_BOUNDARIES)
@@ -71,6 +82,49 @@ export default defineConfig([
 		ignores: ['**/*.test.ts'],
 		rules: { 'no-restricted-imports': ['error', masteryImports(folder)] },
 	})),
+	{
+		files: ['packages/mastery/src/**/*.ts'],
+		ignores: ['**/*.test.ts'],
+		rules: {
+			'no-restricted-properties': [
+				'error',
+				{
+					object: 'Date',
+					property: 'now',
+					message: 'Take now as an argument.',
+				},
+				{
+					object: 'Math',
+					property: 'random',
+					message: 'Use seededRandom.',
+				},
+			],
+			'no-restricted-syntax': [
+				'error',
+				{
+					selector:
+						"NewExpression[callee.name='Date'][arguments.length=0]",
+					message: 'Take now as an argument.',
+				},
+			],
+		},
+	},
+	{
+		files: ['apps/web/src/**/*.{ts,tsx}'],
+		ignores: ['apps/web/src/mastery/container.ts'],
+		rules: {
+			'no-restricted-imports': ['error', { patterns: [MASTERY_ADAPTERS] }],
+		},
+	},
+	{
+		files: ['apps/web/src/singleplayer-game/**/*.{ts,tsx}'],
+		rules: {
+			'no-restricted-imports': [
+				'error',
+				{ patterns: [MASTERY_ADAPTERS, MASTERY_FEATURE] },
+			],
+		},
+	},
 	{
 		files: ['**/*.{js,mjs,cjs}'],
 		extends: [js.configs.recommended],

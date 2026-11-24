@@ -8,7 +8,7 @@ import {
 } from '@georally/game-domain/singleplayer/routes'
 import type { TFunction } from 'i18next'
 import { getRegionLabel, joinRegionLabels } from '@/shared/i18n'
-import type { RegionOption } from '@/shared/widgets/region-map/RegionPicker'
+import type { RegionOption } from '@/shared/widgets/region-map/continents'
 import {
 	isDifficulty,
 	readDifficulty,

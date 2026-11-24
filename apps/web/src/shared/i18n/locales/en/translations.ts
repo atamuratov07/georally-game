@@ -305,6 +305,22 @@ const translations = {
 			heard: 'Heard: {{text}}',
 		},
 	},
+	review: {
+		title: 'Review',
+		start: 'Start',
+		add: 'Add',
+		whereToStart: 'Where do you start?',
+		whereNext: 'Where next?',
+		toReview: 'to review',
+		newCards: 'new',
+		niceWork: 'Nice work!',
+		flawless: 'Flawless!',
+		doneToday: 'Done for today',
+		tomorrow: 'Tomorrow: {{count}}',
+		reviewed: 'reviewed',
+		saveFailed: 'Couldn’t save your answer',
+		unavailable: 'Review isn’t available in this browser mode',
+	},
 	multiplayer: {
 		title: 'Multiplayer',
 		tabs: {

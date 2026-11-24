@@ -309,6 +309,22 @@ const translations = {
 			heard: 'Eshitildi: {{text}}',
 		},
 	},
+	review: {
+		title: 'Takrorlash',
+		start: 'Boshlash',
+		add: 'Qoʻshish',
+		whereToStart: 'Qayerdan boshlaysiz?',
+		whereNext: 'Keyingisi qayer?',
+		toReview: 'takrorlash',
+		newCards: 'yangi',
+		niceWork: 'Barakalla!',
+		flawless: 'Xatosiz!',
+		doneToday: 'Bugunga yetarli',
+		tomorrow: 'Ertaga: {{count}}',
+		reviewed: 'takrorlandi',
+		saveFailed: 'Javob saqlanmadi',
+		unavailable: 'Takrorlash brauzerning bu rejimida ishlamaydi',
+	},
 	multiplayer: {
 		title: "Ko'p o'yinchi",
 		tabs: {

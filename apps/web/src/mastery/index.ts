@@ -1,0 +1,1 @@
+export { masteryRoutes } from './routes'

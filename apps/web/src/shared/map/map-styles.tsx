@@ -257,6 +257,52 @@ export const routeRevealedLayer: LineLayerSpecification = {
 	},
 }
 
+export const MASTERY_STATE = 'mastery'
+export const TODAY_STATE = 'today'
+export const MASTERY_FILL_LAYER_ID = 'countries-mastery'
+export const MASTERY_TODAY_LAYER_ID = 'countries-mastery-today'
+
+export const MASTERY_FILL: Readonly<
+	Record<'learning' | 'familiar' | 'mastered', string>
+> = {
+	learning: '#d7f5c8',
+	familiar: '#82d95c',
+	mastered: '#3fa625',
+}
+const MASTERY_UNSEEN_FILL = '#e4e8ee'
+
+export const masteryFillLayer: FillLayerSpecification = {
+	id: MASTERY_FILL_LAYER_ID,
+	type: 'fill',
+	source: SOURCE_ID,
+	'source-layer': COUNTRY_LAYER,
+	paint: {
+		'fill-color': [
+			'match',
+			['to-string', ['feature-state', MASTERY_STATE]],
+			...Object.entries(MASTERY_FILL).flat(),
+			MASTERY_UNSEEN_FILL,
+		] as ExpressionSpecification,
+		'fill-outline-color': '#ffffff',
+	},
+}
+
+export const masteryTodayLayer: LineLayerSpecification = {
+	id: MASTERY_TODAY_LAYER_ID,
+	type: 'line',
+	source: SOURCE_ID,
+	'source-layer': COUNTRY_LAYER,
+	layout: { 'line-join': 'round' },
+	paint: {
+		'line-color': SELECTION_FILL,
+		'line-width': {
+			type: 'exponential',
+			stops: zoomStops([2, 1], [4, 1.6], [6, 2.5]),
+		},
+		'line-opacity': ['case', stateFlag(TODAY_STATE), 1, 0],
+	},
+}
+
 export const hoverLayer: FillLayerSpecification = {
 	id: HOVER_LAYER_ID,
 	type: 'fill',

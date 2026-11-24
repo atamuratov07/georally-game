@@ -1,8 +1,4 @@
-export interface LocalDay {
-	key: string // 'YYYY-MM-DD'
-	start: number // local midnight
-	end: number // the next local midnight, so 23 or 25 hours on a clock change
-}
+import type { LocalDay } from '@georally/game-domain'
 
 function pad(value: number) {
 	return String(value).padStart(2, '0')

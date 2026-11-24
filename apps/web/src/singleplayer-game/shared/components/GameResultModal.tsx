@@ -1,11 +1,11 @@
-import { animate } from 'motion'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { SingleplayerModeParam } from '@/shared/analytics/track'
 import { GameReaction } from '@/shared/feedback'
 import { celebrate } from '@/shared/lib/confetti'
 import {
 	Button,
+	CountUp,
 	Dialog,
 	DialogContent,
 	DialogDescription,
@@ -23,22 +23,6 @@ interface GameResultModalProps {
 	best: BestView | null
 	onTryAgain: () => void
 	onHome: () => void
-}
-
-function CountUp({ value }: { value: number }) {
-	const [display, setDisplay] = useState(0)
-
-	useEffect(() => {
-		const controls = animate(0, value, {
-			duration: 0.9,
-			delay: 0.25,
-			ease: [0.22, 1, 0.36, 1],
-			onUpdate: latest => setDisplay(Math.round(latest)),
-		})
-		return () => controls.stop()
-	}, [value])
-
-	return <>{display}</>
 }
 
 export function GameResultModal({

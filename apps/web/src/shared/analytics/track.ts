@@ -245,3 +245,41 @@ export function setDisplayModeProperty(standalone: boolean): void {
 		display_mode: standalone ? 'standalone' : 'browser',
 	})
 }
+
+export function trackReviewSessionStart(params: {
+	dueCount: number
+	newCount: number
+}): void {
+	gtagEvent('review_session_start', {
+		due_count: params.dueCount,
+		new_count: params.newCount,
+	})
+}
+
+export function trackReviewCardAnswered(params: {
+	skill: string
+	rating: string
+	kind: string
+	input: string | null
+	responseTimeMs: number
+}): void {
+	gtagEvent('review_card_answered', {
+		skill: params.skill,
+		rating: params.rating,
+		kind: params.kind,
+		input: params.input ?? undefined,
+		response_time_ms: params.responseTimeMs,
+	})
+}
+
+export function trackReviewSessionEnd(params: {
+	reviewedCount: number
+	newCount: number
+	durationMs: number
+}): void {
+	gtagEvent('review_session_end', {
+		reviewed_count: params.reviewedCount,
+		new_count: params.newCount,
+		duration_ms: params.durationMs,
+	})
+}

@@ -28,7 +28,7 @@ graph LR
 - **Precache.** The build manifest (`globPatterns` in `vite.config.ts`) covers:
   - every HTML entry, including the three locale shells;
   - `/assets/**`;
-  - the app icons;
+  - the app icons and favicons;
   - every flag (195 files, about 1 MB gzipped);
   - map tiles for zoom 0–4 (335 files, about 2.3 MB).
 

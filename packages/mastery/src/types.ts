@@ -62,3 +62,8 @@ export interface LearnerSettings {
 }
 
 export type Rechecks = Partial<Record<CardId, number>>
+
+export interface ExtraNew {
+	day: string // 'YYYY-MM-DD' in the player's time zone
+	count: number // new cards granted by "Learn 5 more" that day
+}

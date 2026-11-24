@@ -1,7 +1,11 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-	entry: ['src/index.ts', 'src/fsrs/fsrsScheduler.ts'],
+	entry: [
+		'src/index.ts',
+		'src/fsrs/fsrsScheduler.ts',
+		'src/idb/idbRepository.ts',
+	],
 	format: ['esm'],
 	dts: true,
 	clean: true,

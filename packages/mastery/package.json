@@ -24,15 +24,23 @@
 			"development": "./src/fsrs/fsrsScheduler.ts",
 			"import": "./dist/fsrs/fsrsScheduler.js",
 			"default": "./dist/fsrs/fsrsScheduler.js"
+		},
+		"./idb": {
+			"types": "./src/idb/idbRepository.ts",
+			"development": "./src/idb/idbRepository.ts",
+			"import": "./dist/idb/idbRepository.js",
+			"default": "./dist/idb/idbRepository.js"
 		}
 	},
 	"sideEffects": false,
 	"dependencies": {
 		"@georally/game-domain": "workspace:*",
+		"idb": "8.0.4",
 		"ts-fsrs": "5.4.2"
 	},
 	"devDependencies": {
 		"@georally/country-catalog": "workspace:*",
+		"fake-indexeddb": "6.2.8",
 		"tsup": "^8.5.1",
 		"tsx": "^4.21.0",
 		"vitest": "^4.1.10"

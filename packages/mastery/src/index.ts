@@ -1,7 +1,7 @@
 export { answerCard, type Answer } from './answerCard'
 export { parseCardId, toCardId } from './cardId'
 export { introOrder } from './intro/introOrder'
-export type { Scheduler } from './ports'
+export type { MasteryMeta, MasteryRepository, Scheduler } from './ports'
 export { rebuildCards } from './rebuildCards'
 export { buildSessionPlan, type SessionPlanInput } from './session/plan'
 export {
@@ -22,6 +22,7 @@ export {
 	type CardId,
 	type CardPhase,
 	type CardRecord,
+	type ExtraNew,
 	type IntroPlan,
 	type LearnerSettings,
 	type Pace,

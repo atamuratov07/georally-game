@@ -98,37 +98,42 @@ export function ContinentCounters({
 	const { t } = useTranslation()
 
 	return (
-		<div className='flex snap-x scroll-px-4 gap-5 overflow-x-auto px-4 pt-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] [scrollbar-width:none] sm:justify-center'>
-			{SCOPES.map(scope => {
-				const chosen = scope === focus
-				const label = getRegionLabel(t, scope)
-				const { known, total } = summary[scope]
-				return (
-					<motion.button
-						key={scope}
-						type='button'
-						aria-pressed={chosen}
-						aria-label={`${label}: ${known}/${total}`}
-						onClick={event => {
-							event.currentTarget.scrollIntoView({
-								behavior: 'smooth',
-								inline: 'center',
-								block: 'nearest',
-							})
-							onFocus(scope)
-						}}
-						className='flex w-32 shrink-0 snap-start flex-col items-center outline-none focus-visible:[&_svg]:drop-shadow-[0_0_3px_var(--color-ocean-500)]'
-						animate={{ scale: chosen ? 1.1 : 0.92, y: chosen ? -4 : 0 }}
-						whileTap={{ scale: chosen ? 1.04 : 0.86 }}
-						transition={SPRING}
-					>
-						<span className='relative'>
-							<Shape scope={scope} lit={chosen} />
-							{chosen ? null : <Counter count={summary[scope]} />}
-						</span>
-					</motion.button>
-				)
-			})}
+		<div className='snap-x scroll-px-4 overflow-x-auto pt-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] [scrollbar-width:none]'>
+			<div className='mx-auto flex w-max gap-5 px-4'>
+				{SCOPES.map(scope => {
+					const chosen = scope === focus
+					const label = getRegionLabel(t, scope)
+					const { known, total } = summary[scope]
+					return (
+						<motion.button
+							key={scope}
+							type='button'
+							aria-pressed={chosen}
+							aria-label={`${label}: ${known}/${total}`}
+							onClick={event => {
+								event.currentTarget.scrollIntoView({
+									behavior: 'smooth',
+									inline: 'center',
+									block: 'nearest',
+								})
+								onFocus(scope)
+							}}
+							className='flex w-32 shrink-0 snap-start flex-col items-center outline-none focus-visible:[&_svg]:drop-shadow-[0_0_3px_var(--color-ocean-500)]'
+							animate={{
+								scale: chosen ? 1.1 : 0.92,
+								y: chosen ? -4 : 0,
+							}}
+							whileTap={{ scale: chosen ? 1.04 : 0.86 }}
+							transition={SPRING}
+						>
+							<span className='relative'>
+								<Shape scope={scope} lit={chosen} />
+								{chosen ? null : <Counter count={summary[scope]} />}
+							</span>
+						</motion.button>
+					)
+				})}
+			</div>
 		</div>
 	)
 }

@@ -1,15 +1,15 @@
 import { countryCatalog } from '@georally/country-catalog'
 import { splitCardId } from '@georally/mastery'
-import { DatabaseZap, LogOut } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useCurrentLocale } from '@/app/LocaleContext'
 import { LocalizedLink } from '@/app/LocalizedLink'
 import { LocalizedNavigate } from '@/app/LocalizedNavigate'
 import { getCountryName } from '@/shared/i18n'
-import { StatusScreen } from '@/shared/layout'
 import { Button } from '@/shared/ui'
 import { GameHud } from '@/shared/widgets/GameHud'
 import { masteryPaths } from '../paths'
+import { ReviewUnavailable } from '../shared/ReviewUnavailable'
 import { LocateCard } from './LocateCard'
 import { SessionSummary } from './SessionSummary'
 import { useMasterySession } from './useMasterySession'
@@ -20,18 +20,7 @@ export default function MasterySessionPage() {
 	const { session, answer, ready, next } = useMasterySession()
 
 	if (session.status === 'unavailable') {
-		return (
-			<StatusScreen
-				title={t('review.unavailable')}
-				icon={<DatabaseZap />}
-				tone='coral'
-				actions={
-					<Button asChild variant='neutral'>
-						<LocalizedLink to='/'>{t('common.home')}</LocalizedLink>
-					</Button>
-				}
-			/>
-		)
+		return <ReviewUnavailable />
 	}
 	if (session.status === 'empty') {
 		return <LocalizedNavigate to={masteryPaths.home} replace />

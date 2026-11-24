@@ -4,8 +4,10 @@ import { masteryPaths } from './paths'
 
 const MasteryHomePage = lazy(() => import('./home/MasteryHomePage'))
 const MasterySessionPage = lazy(() => import('./session/MasterySessionPage'))
+const MasteryMapPage = lazy(() => import('./map/MasteryMapPage'))
 
 export const masteryRoutes: RouteObject[] = [
 	{ path: masteryPaths.home.slice(1), element: <MasteryHomePage /> },
 	{ path: masteryPaths.play.slice(1), element: <MasterySessionPage /> },
+	{ path: masteryPaths.map.slice(1), element: <MasteryMapPage /> },
 ]

@@ -1,57 +1,21 @@
 import { countryCatalog } from '@georally/country-catalog'
-import { normalizeGameRegions, type CountryId } from '@georally/game-domain'
+import { normalizeGameRegions } from '@georally/game-domain'
 import {
 	skillLayer,
 	splitCardId,
 	type CardId,
-	type MasteryLevel,
 	type MasteryView,
 } from '@georally/mastery'
 import { useCallback, useMemo, useRef, useState } from 'react'
-import { Layer, type MapRef } from 'react-map-gl/maplibre'
+import type { MapRef } from 'react-map-gl/maplibre'
 import { BaseMap } from '@/shared/map/BaseMap'
 import { regionsView } from '@/shared/map/continent-view'
-import { TinyCountryRings } from '@/shared/map/layers/TinyCountryRings'
-import {
-	COUNTRY_LAYER,
-	LABELS_BOTTOM_LAYER_ID,
-	MASTERY_STATE,
-	masteryFillLayer,
-	masteryTodayLayer,
-	SOURCE_ID,
-	TODAY_STATE,
-} from '@/shared/map/map-styles'
-import { flagsFor, useFeatureState } from '@/shared/map/useFeatureState'
+import { prepareMasteryMap } from './prepareMasteryMap'
+import { MasteryLayers } from './MasteryLayers'
 
-const WORLD = { source: SOURCE_ID, sourceLayer: COUNTRY_LAYER }
 const FIT_PADDING = 12
-
-const RING_COLORS: Readonly<Record<MasteryLevel, string>> = {
-	learning: '#82d95c',
-	familiar: '#3fa625',
-	mastered: '#266917',
-}
-
-function MasteryLayers({
-	loaded,
-	levels,
-	todayIds,
-}: {
-	loaded: boolean
-	levels: ReadonlyMap<CountryId, MasteryLevel>
-	todayIds: readonly CountryId[]
-}) {
-	const today = useMemo(() => flagsFor(todayIds), [todayIds])
-	useFeatureState(loaded, WORLD, MASTERY_STATE, levels)
-	useFeatureState(loaded, WORLD, TODAY_STATE, today)
-
-	return (
-		<>
-			<Layer {...masteryFillLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
-			<Layer {...masteryTodayLayer} beforeId={LABELS_BOTTOM_LAYER_ID} />
-		</>
-	)
-}
+// The coastline blue: white would vanish among the white borders at this zoom.
+const TODAY_OUTLINE = '#1077b0'
 
 interface MasteryMapProps {
 	views: ReadonlyMap<CardId, MasteryView>
@@ -63,37 +27,15 @@ export function MasteryMap({ views, todayIds, className }: MasteryMapProps) {
 	const mapRef = useRef<MapRef | null>(null)
 	const [loaded, setLoaded] = useState(false)
 	const onLoad = useCallback(() => {
-		mapRef.current
-			?.getMap()
-			.setLayoutProperty(LABELS_BOTTOM_LAYER_ID, 'visibility', 'none')
+		const map = mapRef.current?.getMap()
+		if (map) prepareMasteryMap(map)
 		setLoaded(true)
 	}, [])
 
-	const levels = useMemo(
-		() =>
-			new Map(
-				[...skillLayer(views, 'locate')].map(([countryId, view]) => [
-					countryId,
-					view.level,
-				]),
-			),
-		[views],
-	)
-
+	const layer = useMemo(() => skillLayer(views, 'locate'), [views])
 	const todayCountries = useMemo(
 		() => [...new Set(todayIds.map(id => splitCardId(id).countryId))],
 		[todayIds],
-	)
-
-	const ringColors = useMemo(
-		() =>
-			Object.fromEntries(
-				[...levels].map(([countryId, level]) => [
-					countryId,
-					RING_COLORS[level],
-				]),
-			),
-		[levels],
 	)
 
 	const initialViewState = useMemo(() => {
@@ -127,10 +69,10 @@ export function MasteryMap({ views, todayIds, className }: MasteryMapProps) {
 		>
 			<MasteryLayers
 				loaded={loaded}
-				levels={levels}
-				todayIds={todayCountries}
+				layer={layer}
+				outlinedIds={todayCountries}
+				outlineColor={TODAY_OUTLINE}
 			/>
-			<TinyCountryRings countryIds={levels.keys()} colors={ringColors} />
 		</BaseMap>
 	)
 }

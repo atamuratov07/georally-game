@@ -1,17 +1,17 @@
 import { loadDayResult, type DayResult } from '@georally/mastery'
-import { DatabaseZap } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LocalizedLink } from '@/app/LocalizedLink'
 import { trackReviewSessionEnd } from '@/shared/analytics/track'
-import { PageShell, StatusScreen } from '@/shared/layout'
+import { PageShell } from '@/shared/layout'
 import { celebrate } from '@/shared/lib/confetti'
 import { localDay } from '@/shared/time/localDay'
 import { Button, CountUp } from '@/shared/ui'
 import { outlinedText } from '@/shared/widgets/outlinedText'
 import { mastery } from '../container'
 import { MasteryMap } from '../map/MasteryMap'
+import { ReviewUnavailable } from '../shared/ReviewUnavailable'
 import { Stat } from '../shared/Stat'
 import type { SessionStats } from './sessionReducer'
 
@@ -71,18 +71,7 @@ export function SessionSummary({ stats }: { stats: SessionStats }) {
 	}, [ready])
 
 	if (state.status === 'failed') {
-		return (
-			<StatusScreen
-				title={t('review.unavailable')}
-				icon={<DatabaseZap />}
-				tone='coral'
-				actions={
-					<Button asChild variant='neutral'>
-						<LocalizedLink to='/'>{t('common.home')}</LocalizedLink>
-					</Button>
-				}
-			/>
-		)
+		return <ReviewUnavailable />
 	}
 	if (state.status === 'loading') return null
 

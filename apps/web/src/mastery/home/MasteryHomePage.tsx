@@ -10,17 +10,17 @@ import {
 	type IntroPlan,
 	type Today,
 } from '@georally/mastery'
-import { DatabaseZap, LoaderCircle } from 'lucide-react'
+import { LoaderCircle } from 'lucide-react'
 import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { LocalizedLink } from '@/app/LocalizedLink'
 import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
 import { getRegionLabel } from '@/shared/i18n'
-import { BackLink, PageShell, StatusScreen } from '@/shared/layout'
+import { BackLink, PageShell } from '@/shared/layout'
 import { localDay } from '@/shared/time/localDay'
 import { Button, Card } from '@/shared/ui'
 import { mastery } from '../container'
 import { masteryPaths } from '../paths'
+import { ReviewUnavailable } from '../shared/ReviewUnavailable'
 import { Stat } from '../shared/Stat'
 import { ScopePicker } from './ScopePicker'
 import { useToday } from './useToday'
@@ -43,18 +43,7 @@ export default function MasteryHomePage() {
 	const mapLabelId = useId()
 
 	if (state.status === 'unavailable') {
-		return (
-			<StatusScreen
-				title={t('review.unavailable')}
-				icon={<DatabaseZap />}
-				tone='coral'
-				actions={
-					<Button asChild variant='neutral'>
-						<LocalizedLink to='/'>{t('common.home')}</LocalizedLink>
-					</Button>
-				}
-			/>
-		)
+		return <ReviewUnavailable />
 	}
 
 	const ready = state.status === 'ready' ? state : null

@@ -324,6 +324,20 @@ const translations = {
 		reviewed: 'takrorlandi',
 		saveFailed: 'Javob saqlanmadi',
 		unavailable: 'Takrorlash brauzerning bu rejimida ishlamaydi',
+		level: {
+			learning: 'Oʻrganilmoqda',
+			familiar: 'Tanish',
+			mastered: 'Oʻzlashtirilgan',
+		},
+		fading: 'Unutilmoqda',
+		nextReview: {
+			today: 'Bugun takrorlanadi',
+			tomorrow: 'Ertaga takrorlanadi',
+			days_one: '{{count}} kundan keyin takrorlanadi',
+			days_other: '{{count}} kundan keyin takrorlanadi',
+		},
+		comingUp: 'Tez orada takrorlashda',
+		notInReview: 'Takrorlashingizda yoʻq',
 	},
 	multiplayer: {
 		title: "Ko'p o'yinchi",

@@ -333,6 +333,22 @@ const translations = {
 		reviewed: 'повторено',
 		saveFailed: 'Не удалось сохранить ответ',
 		unavailable: 'Повторение недоступно в этом режиме браузера',
+		level: {
+			learning: 'Изучается',
+			familiar: 'Знакомо',
+			mastered: 'Освоено',
+		},
+		fading: 'Забывается',
+		nextReview: {
+			today: 'Повторение сегодня',
+			tomorrow: 'Повторение завтра',
+			days_one: 'Повторение через {{count}} день',
+			days_few: 'Повторение через {{count}} дня',
+			days_many: 'Повторение через {{count}} дней',
+			days_other: 'Повторение через {{count}} дня',
+		},
+		comingUp: 'Скоро в повторении',
+		notInReview: 'Нет в вашем повторении',
 	},
 	multiplayer: {
 		title: 'Мультиплеер',

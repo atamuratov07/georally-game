@@ -320,6 +320,20 @@ const translations = {
 		reviewed: 'reviewed',
 		saveFailed: 'Couldn’t save your answer',
 		unavailable: 'Review isn’t available in this browser mode',
+		level: {
+			learning: 'Learning',
+			familiar: 'Familiar',
+			mastered: 'Mastered',
+		},
+		fading: 'Fading',
+		nextReview: {
+			today: 'Review today',
+			tomorrow: 'Review tomorrow',
+			days_one: 'Review in {{count}} day',
+			days_other: 'Review in {{count}} days',
+		},
+		comingUp: 'Coming up in your review',
+		notInReview: 'Not in your review',
 	},
 	multiplayer: {
 		title: 'Multiplayer',

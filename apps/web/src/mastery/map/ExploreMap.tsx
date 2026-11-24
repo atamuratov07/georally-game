@@ -17,9 +17,11 @@ import { CONTINENT_VIEW_PRESETS, WORLD_VIEW } from '@/shared/map/continent-view'
 import { useCountryPicking } from '@/shared/map/interaction/useCountryPicking'
 import { hoverLayer, LABELS_BOTTOM_LAYER_ID } from '@/shared/map/map-styles'
 import { RevealPopup } from '@/shared/map/RevealPopup'
+import { cn } from '@/shared/utils'
 import { MasteryCountryCard } from './MasteryCountryCard'
 import { prepareMasteryMap } from './prepareMasteryMap'
 import { MasteryLayers } from './MasteryLayers'
+import { useShownWhenStyled } from './useShownWhenStyled'
 
 const PICKABLE_IDS: ReadonlySet<CountryId> = new Set(
 	Object.keys(playableCountryPool.countriesById),
@@ -41,6 +43,7 @@ export function ExploreMap({
 }) {
 	const mapRef = useRef<MapRef | null>(null)
 	const [loaded, setLoaded] = useState(false)
+	const fade = useShownWhenStyled(mapRef, loaded)
 	const [selectedId, setSelectedId] = useState<CountryId | null>(null)
 	const onLoad = useCallback(() => {
 		const map = mapRef.current?.getMap()
@@ -95,7 +98,10 @@ export function ExploreMap({
 			projection='flat'
 			onLoad={onLoad}
 			// The continent row covers the bottom corners.
-			className='absolute inset-0 [&_.maplibregl-ctrl-bottom-right]:top-0 [&_.maplibregl-ctrl-bottom-right]:bottom-auto'
+			className={cn(
+				'absolute inset-0 [&_.maplibregl-ctrl-bottom-right]:top-0 [&_.maplibregl-ctrl-bottom-right]:bottom-auto',
+				fade,
+			)}
 			{...pointerProps}
 			onClick={onClick}
 		>

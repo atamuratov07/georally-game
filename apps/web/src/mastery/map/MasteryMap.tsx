@@ -10,8 +10,10 @@ import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { MapRef } from 'react-map-gl/maplibre'
 import { BaseMap } from '@/shared/map/BaseMap'
 import { regionsView } from '@/shared/map/continent-view'
+import { cn } from '@/shared/utils'
 import { prepareMasteryMap } from './prepareMasteryMap'
 import { MasteryLayers } from './MasteryLayers'
+import { useShownWhenStyled } from './useShownWhenStyled'
 
 const FIT_PADDING = 12
 const TODAY_OUTLINE = '#1077b0'
@@ -36,6 +38,7 @@ export function MasteryMap({
 }: MasteryMapProps) {
 	const mapRef = useRef<MapRef | null>(null)
 	const [loaded, setLoaded] = useState(false)
+	const fade = useShownWhenStyled(mapRef, loaded)
 	const onLoad = useCallback(() => {
 		const map = mapRef.current?.getMap()
 		if (map) prepareMasteryMap(map)
@@ -67,7 +70,7 @@ export function MasteryMap({
 			onLoad={onLoad}
 			navigationTop={null}
 			overlays={overlay}
-			className={className}
+			className={cn(fade, className)}
 			dragPan={false}
 			dragRotate={false}
 			touchPitch={false}

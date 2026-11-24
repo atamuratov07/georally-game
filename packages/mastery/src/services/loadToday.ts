@@ -1,4 +1,4 @@
-import type { CountryPool } from '@georally/game-domain'
+import type { CountryPool, LocalDay } from '@georally/game-domain'
 import { introOrder } from '../intro/introOrder'
 import type { MasteryDeps, MasteryMeta } from '../ports'
 import { rebuildCards } from '../rebuildCards'
@@ -7,21 +7,16 @@ import { buildSessionPlan } from '../session/plan'
 import { activeSkills } from '../settings'
 import type { CardId, CardRecord } from '../types'
 
-export interface Day {
-	key: string // 'YYYY-MM-DD' in the player's time zone
-	start: number
-	end: number
-}
-
 export interface Today {
 	meta: MasteryMeta
 	cards: CardRecord[]
 	sessionPlan: CardId[]
+	unseenCount: number // cards in the plan's scopes not yet introduced
 }
 
 export async function loadToday(
 	{ repository, scheduler }: MasteryDeps,
-	input: { pool: CountryPool; day: Day },
+	input: { pool: CountryPool; day: LocalDay },
 ): Promise<Today> {
 	if ((await repository.loadMeta()).schedulerVersion !== SCHEDULER_VERSION) {
 		await repository.replaceCards(
@@ -58,5 +53,6 @@ export async function loadToday(
 			playableIds: new Set(Object.keys(input.pool.countriesById)),
 			dayEnd: input.day.end,
 		}),
+		unseenCount: order.length,
 	}
 }

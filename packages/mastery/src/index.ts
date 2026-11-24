@@ -1,5 +1,5 @@
 export { answerCard, type Answer } from './answerCard'
-export { parseCardId, toCardId } from './cardId'
+export { splitCardId, toCardId } from './cardId'
 export { introOrder } from './intro/introOrder'
 export type {
 	MasteryDeps,
@@ -10,7 +10,8 @@ export type {
 export { rebuildCards } from './rebuildCards'
 export { SCHEDULER_VERSION } from './schedulerVersion'
 export { addScope } from './services/addScope'
-export { loadToday, type Day, type Today } from './services/loadToday'
+export { loadDayResult, type DayResult } from './services/loadDayResult'
+export { loadToday, type Today } from './services/loadToday'
 export { recordAnswer } from './services/recordAnswer'
 export { buildSessionPlan, type SessionPlanInput } from './session/plan'
 export {
@@ -43,3 +44,5 @@ export {
 	type SingleAnswerOutcome,
 	type SkillId,
 } from './types'
+export { countDue } from './view/countDue'
+export type { MasteryLevel, MasteryView } from './view/deriveMastery'

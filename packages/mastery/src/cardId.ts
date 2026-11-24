@@ -5,6 +5,17 @@ export function toCardId(countryId: CountryId, skillId: SkillId): CardId {
 	return `${countryId}:${skillId}`
 }
 
+export function splitCardId(cardId: CardId): {
+	countryId: CountryId
+	skillId: SkillId
+} {
+	const separator = cardId.lastIndexOf(':')
+	return {
+		countryId: cardId.slice(0, separator),
+		skillId: cardId.slice(separator + 1) as SkillId, // the CardId type guarantees it
+	}
+}
+
 export function parseCardId(
 	cardId: string,
 ): { countryId: CountryId; skillId: SkillId } | null {

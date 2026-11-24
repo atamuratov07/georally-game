@@ -1,6 +1,6 @@
 import { GAME_DIFFICULTIES, type CountryPool } from '@georally/game-domain'
 import { answerCard } from '../answerCard'
-import { parseCardId } from '../cardId'
+import { splitCardId } from '../cardId'
 import { introOrder } from '../intro/introOrder'
 import { seededRandom } from '../intro/seededRandom'
 import type { Scheduler } from '../ports'
@@ -71,7 +71,7 @@ export function simulate(options: SimulationOptions): SimulationResult {
 			? scheduler.retrievability(current.scheduling, now)
 			: NEW_CARD_SUCCESS[
 					GAME_DIFFICULTIES.indexOf(
-						pool.countriesById[parseCardId(cardId)!.countryId].difficulty,
+						pool.countriesById[splitCardId(cardId).countryId].difficulty,
 					)
 				]
 		const correct = random() < chance

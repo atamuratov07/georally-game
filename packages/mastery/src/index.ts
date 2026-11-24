@@ -1,8 +1,17 @@
 export { answerCard, type Answer } from './answerCard'
 export { parseCardId, toCardId } from './cardId'
 export { introOrder } from './intro/introOrder'
-export type { MasteryMeta, MasteryRepository, Scheduler } from './ports'
+export type {
+	MasteryDeps,
+	MasteryMeta,
+	MasteryRepository,
+	Scheduler,
+} from './ports'
 export { rebuildCards } from './rebuildCards'
+export { SCHEDULER_VERSION } from './schedulerVersion'
+export { addScope } from './services/addScope'
+export { loadToday, type Day, type Today } from './services/loadToday'
+export { recordAnswer } from './services/recordAnswer'
 export { buildSessionPlan, type SessionPlanInput } from './session/plan'
 export {
 	applyAnswer,

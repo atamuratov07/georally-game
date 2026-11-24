@@ -10,7 +10,20 @@ import {
 	isReviewLogEntry,
 } from './guards'
 import { DB_NAME, openMasteryDb, type MasteryDb } from './schema'
-import type { IDBPDatabase } from 'idb'
+import type { IDBPDatabase, IDBPTransaction, StoreNames } from 'idb'
+
+async function computeOrAbort<T>(
+	tx: IDBPTransaction<MasteryDb, StoreNames<MasteryDb>[], 'readwrite'>,
+	compute: () => T,
+) {
+	try {
+		return compute()
+	} catch (error) {
+		tx.abort()
+		await tx.done.catch(() => {})
+		throw error
+	}
+}
 
 export function createIdbRepository(name = DB_NAME): MasteryRepository {
 	let opening: Promise<IDBPDatabase<MasteryDb>> | undefined
@@ -84,17 +97,9 @@ export function createIdbRepository(name = DB_NAME): MasteryRepository {
 				: {}
 			const recheckPending = rechecks[cardId] !== undefined
 
-			let result
-			try {
-				result = compute(
-					isCardRecord(stored) ? stored : undefined,
-					recheckPending,
-				)
-			} catch (error) {
-				tx.abort()
-				await tx.done.catch(() => {})
-				throw error
-			}
+			const result = await computeOrAbort(tx, () =>
+				compute(isCardRecord(stored) ? stored : undefined, recheckPending),
+			)
 
 			const writes: Promise<unknown>[] = [
 				tx.objectStore('cards').put(result.card),
@@ -106,12 +111,17 @@ export function createIdbRepository(name = DB_NAME): MasteryRepository {
 				writes.push(meta.put(rest, 'rechecks'))
 			}
 			await Promise.all([...writes, tx.done])
+			return result
 		},
 
-		async replaceCards(cards, schedulerVersion) {
+		async replaceCards(fromLog, schedulerVersion) {
 			const tx = (await database()).transaction(
-				['cards', 'meta'],
+				['reviewLog', 'cards', 'meta'],
 				'readwrite',
+			)
+			const log = await tx.objectStore('reviewLog').getAll()
+			const cards = await computeOrAbort(tx, () =>
+				fromLog(log.filter(isReviewLogEntry)),
 			)
 			const store = tx.objectStore('cards')
 			await Promise.all([

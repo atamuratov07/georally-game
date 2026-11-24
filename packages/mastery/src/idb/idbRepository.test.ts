@@ -111,13 +111,18 @@ describe('idbRepository', () => {
 		expect(await repository.loadReviewTimes()).toEqual([T0, T0 + 1, T0 + 2])
 	})
 
-	it('replaces every card and records the scheduler version', async () => {
+	it('replaces every card from the log and records the scheduler version', async () => {
 		const repository = createIdbRepository(freshName())
 		await repository.recordReview('417:locate', answer('417:locate', 'a', T0))
 		const rebuilt = answer('516:locate', 'x', T0)(undefined, false).card
+		let logRead: string[] = []
 
-		await repository.replaceCards([rebuilt], 3)
+		await repository.replaceCards(log => {
+			logRead = log.map(entry => entry.id)
+			return [rebuilt]
+		}, 3)
 
+		expect(logRead).toEqual(['a'])
 		expect(await repository.loadCards()).toEqual([rebuilt])
 		expect((await repository.loadMeta()).schedulerVersion).toBe(3)
 	})

@@ -39,11 +39,19 @@ export interface MasteryRepository {
 			current: CardRecord | undefined,
 			recheckPending: boolean,
 		) => { card: CardRecord; entry: ReviewLogEntry },
+	): Promise<{ card: CardRecord; entry: ReviewLogEntry }>
+	replaceCards(
+		fromLog: (log: ReviewLogEntry[]) => CardRecord[],
+		schedulerVersion: number,
 	): Promise<void>
-	replaceCards(cards: CardRecord[], schedulerVersion: number): Promise<void>
 
 	saveSettings(settings: LearnerSettings): Promise<void>
 	savePlan(plan: IntroPlan): Promise<void>
 	saveExtraNew(extra: ExtraNew): Promise<void>
 	requestRecheck(cardIds: CardId[], at: number): Promise<void>
+}
+
+export interface MasteryDeps {
+	repository: MasteryRepository
+	scheduler: Scheduler
 }

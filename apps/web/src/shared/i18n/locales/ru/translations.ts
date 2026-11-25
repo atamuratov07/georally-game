@@ -356,6 +356,8 @@ const translations = {
 			steady: 'Обычный',
 			intense: 'Быстрый',
 		},
+		learnMore: 'Выучить ещё {{count}}',
+		learnMoreFailed: 'Не удалось добавить страны',
 	},
 	multiplayer: {
 		title: 'Мультиплеер',

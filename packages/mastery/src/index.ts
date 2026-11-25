@@ -11,6 +11,7 @@ export type {
 export { rebuildCards } from './rebuildCards'
 export { SCHEDULER_VERSION } from './schedulerVersion'
 export { addScope } from './services/addScope'
+export { learnMore, LEARN_MORE_COUNT } from './services/learnMore'
 export { loadDayResult, type DayResult } from './services/loadDayResult'
 export { loadMastery, type MasteryState } from './services/loadMastery'
 export { loadToday, type Today } from './services/loadToday'

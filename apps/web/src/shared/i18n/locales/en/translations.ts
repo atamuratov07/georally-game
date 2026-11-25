@@ -341,6 +341,8 @@ const translations = {
 			steady: 'Steady',
 			intense: 'Intense',
 		},
+		learnMore: 'Learn {{count}} more',
+		learnMoreFailed: 'Couldn’t add more countries',
 	},
 	multiplayer: {
 		title: 'Multiplayer',

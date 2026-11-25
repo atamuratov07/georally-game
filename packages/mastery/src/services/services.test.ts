@@ -8,6 +8,7 @@ import { SCHEDULER_VERSION } from '../schedulerVersion'
 import { PACES } from '../settings'
 import type { AnswerOutcome, CardId, CardRecord } from '../types'
 import { addScope } from './addScope'
+import { learnMore, LEARN_MORE_COUNT } from './learnMore'
 import { loadToday } from './loadToday'
 import { recordAnswer } from './recordAnswer'
 
@@ -17,6 +18,11 @@ const TODAY = {
 	key: '2026-11-24',
 	start: T0 - 9 * 3_600_000,
 	end: T0 + 15 * 3_600_000,
+}
+const YESTERDAY = {
+	key: '2026-11-23',
+	start: TODAY.start - DAY,
+	end: TODAY.start,
 }
 const QUICK: AnswerOutcome = {
 	shape: 'single',
@@ -75,7 +81,7 @@ describe('mastery services', () => {
 		expect(today.meta.schedulerVersion).toBe(SCHEDULER_VERSION)
 	})
 
-	it('plans nothing before a scope, then the pace’s new cards and today’s extra', async () => {
+	it('plans nothing before a scope, then the pace’s new cards and today’s extras', async () => {
 		const deps = freshDeps()
 		expect((await loadToday(deps, { pool, day: TODAY })).sessionPlan).toEqual(
 			[],
@@ -85,13 +91,14 @@ describe('mastery services', () => {
 		const firstDay = await loadToday(deps, { pool, day: TODAY })
 		expect(firstDay.sessionPlan).toHaveLength(PACES.steady.newPerDay)
 
-		await deps.repository.saveExtraNew({ day: '2026-11-23', count: 5 })
+		await learnMore(deps, YESTERDAY)
 		expect((await loadToday(deps, { pool, day: TODAY })).sessionPlan).toEqual(
 			firstDay.sessionPlan,
 		)
-		await deps.repository.saveExtraNew({ day: TODAY.key, count: 5 })
+		await learnMore(deps, TODAY)
+		await learnMore(deps, TODAY)
 		expect(
 			(await loadToday(deps, { pool, day: TODAY })).sessionPlan,
-		).toHaveLength(PACES.steady.newPerDay + 5)
+		).toHaveLength(PACES.steady.newPerDay + 2 * LEARN_MORE_COUNT)
 	})
 })

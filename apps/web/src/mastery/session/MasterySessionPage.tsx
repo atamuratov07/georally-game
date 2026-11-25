@@ -1,6 +1,7 @@
 import { countryCatalog } from '@georally/country-catalog'
 import { splitCardId } from '@georally/mastery'
 import { LogOut } from 'lucide-react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useCurrentLocale } from '@/app/LocaleContext'
 import { LocalizedLink } from '@/app/LocalizedLink'
@@ -15,6 +16,11 @@ import { SessionSummary } from './SessionSummary'
 import { useMasterySession } from './useMasterySession'
 
 export default function MasterySessionPage() {
+	const [round, setRound] = useState(0)
+	return <Session key={round} onLearnMore={() => setRound(round + 1)} />
+}
+
+function Session({ onLearnMore }: { onLearnMore: () => void }) {
 	const { t } = useTranslation()
 	const language = useCurrentLocale()
 	const { session, answer, ready, next } = useMasterySession()
@@ -26,7 +32,7 @@ export default function MasterySessionPage() {
 		return <LocalizedNavigate to={masteryPaths.home} replace />
 	}
 	if (session.status === 'complete') {
-		return <SessionSummary stats={session.stats} />
+		return <SessionSummary stats={session.stats} onLearnMore={onLearnMore} />
 	}
 	if (session.status !== 'playing') return null
 

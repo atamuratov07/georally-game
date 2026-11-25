@@ -1,6 +1,13 @@
-import { loadDayResult, type DayResult } from '@georally/mastery'
+import { playableCountryPool } from '@georally/country-catalog'
+import {
+	learnMore,
+	LEARN_MORE_COUNT,
+	loadDayResult,
+	type DayResult,
+} from '@georally/mastery'
 import { motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 import { LocalizedLink } from '@/app/LocalizedLink'
 import { trackReviewSessionEnd } from '@/shared/analytics/track'
@@ -29,6 +36,7 @@ function useDayResult(startedAt: number): ResultState {
 		let ignore = false
 		const day = localDay(startedAt)
 		loadDayResult(mastery, {
+			pool: playableCountryPool,
 			day,
 			tomorrow: localDay(day.end),
 			now: Date.now(),
@@ -49,8 +57,15 @@ function useDayResult(startedAt: number): ResultState {
 	return state
 }
 
-export function SessionSummary({ stats }: { stats: SessionStats }) {
+export function SessionSummary({
+	stats,
+	onLearnMore,
+}: {
+	stats: SessionStats
+	onLearnMore: () => void
+}) {
 	const { t } = useTranslation()
+	const [adding, setAdding] = useState(false)
 	const state = useDayResult(stats.startedAt)
 	const ended = useRef(false)
 	const ready = state.status === 'ready'
@@ -75,7 +90,20 @@ export function SessionSummary({ stats }: { stats: SessionStats }) {
 	}
 	if (state.status === 'loading') return null
 
-	const { newIds, reviewedIds, flawless, dueTomorrow, views } = state.result
+	const { newIds, reviewedIds, flawless, dueTomorrow, unseenCount, views } =
+		state.result
+
+	async function addMore() {
+		setAdding(true)
+		try {
+			await learnMore(mastery, localDay(Date.now()))
+			onLearnMore()
+		} catch (error) {
+			console.error(error)
+			toast.error(t('review.learnMoreFailed'))
+			setAdding(false)
+		}
+	}
 
 	return (
 		<PageShell headerTitle={t('review.title')} width='sm' center>
@@ -122,6 +150,17 @@ export function SessionSummary({ stats }: { stats: SessionStats }) {
 						<p className='text-base font-extrabold text-muted'>
 							{t('review.tomorrow', { count: dueTomorrow })}
 						</p>
+					) : null}
+					{unseenCount > 0 ? (
+						<Button
+							variant='ocean'
+							size='lg'
+							className='w-full sm:w-64'
+							pending={adding}
+							onClick={addMore}
+						>
+							{t('review.learnMore', { count: LEARN_MORE_COUNT })}
+						</Button>
 					) : null}
 					<Button asChild size='lg' className='w-full sm:w-64'>
 						<LocalizedLink to='/'>{t('common.home')}</LocalizedLink>

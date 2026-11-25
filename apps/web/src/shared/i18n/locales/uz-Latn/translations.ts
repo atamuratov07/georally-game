@@ -345,6 +345,8 @@ const translations = {
 			steady: 'Meʼyorida',
 			intense: 'Jadal',
 		},
+		learnMore: 'Yana {{count}} tasini oʻrganish',
+		learnMoreFailed: 'Davlatlarni qoʻshib boʻlmadi',
 	},
 	multiplayer: {
 		title: "Ko'p o'yinchi",

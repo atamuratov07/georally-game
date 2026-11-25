@@ -1,10 +1,9 @@
 import type { CountryPool, LocalDay } from '@georally/game-domain'
-import { introOrder } from '../intro/introOrder'
+import { unseenCards } from '../intro/unseen'
 import type { MasteryDeps, MasteryMeta } from '../ports'
 import { rebuildCards } from '../rebuildCards'
 import { SCHEDULER_VERSION } from '../schedulerVersion'
 import { buildSessionPlan } from '../session/plan'
-import { activeSkills } from '../settings'
 import type { CardId, CardRecord } from '../types'
 
 export interface Today {
@@ -30,14 +29,7 @@ export async function loadToday(
 		repository.loadCards(),
 		repository.loadLog({ from: input.day.start, to: input.day.end }),
 	])
-	const order = meta.plan
-		? introOrder(
-				meta.plan,
-				input.pool,
-				activeSkills(meta.settings),
-				new Set(cards.map(card => card.id)),
-			)
-		: []
+	const order = unseenCards(meta, input.pool, cards)
 
 	return {
 		meta,

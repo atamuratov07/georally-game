@@ -348,6 +348,16 @@ const translations = {
 		},
 		learnMore: 'Yana {{count}} tasini oʻrganish',
 		learnMoreFailed: 'Davlatlarni qoʻshib boʻlmadi',
+		offer: {
+			question_one:
+				'{{count}} ta topilmagan davlatni takrorlashga qoʻshasizmi?',
+			question_other:
+				'{{count}} ta topilmagan davlatni takrorlashga qoʻshasizmi?',
+			add: 'Qoʻshish',
+			notNow: 'Hozir emas',
+			added: 'Takrorlashga qoʻshildi',
+			failed: 'Takrorlashga qoʻshib boʻlmadi',
+		},
 	},
 	multiplayer: {
 		title: "Ko'p o'yinchi",

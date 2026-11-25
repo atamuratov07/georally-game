@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { ReviewOffer } from '@/mastery/bridge/reportCasualOutcomes'
 import type { SingleplayerModeParam } from '@/shared/analytics/track'
 import { GameReaction } from '@/shared/feedback'
 import { celebrate } from '@/shared/lib/confetti'
@@ -13,6 +14,7 @@ import {
 	TextButton,
 } from '@/shared/ui'
 import type { BestView } from '../personalBests'
+import { ReviewOfferLine } from './ReviewOfferLine'
 
 interface GameResultModalProps {
 	open: boolean
@@ -21,6 +23,7 @@ interface GameResultModalProps {
 	correctCount: number
 	totalCount: number
 	best: BestView | null
+	reviewOffer?: ReviewOffer | null
 	onTryAgain: () => void
 	onHome: () => void
 }
@@ -32,6 +35,7 @@ export function GameResultModal({
 	correctCount,
 	totalCount,
 	best,
+	reviewOffer,
 	onTryAgain,
 	onHome,
 }: GameResultModalProps) {
@@ -74,6 +78,10 @@ export function GameResultModal({
 				</div>
 
 				<BestNote best={best} />
+
+				{reviewOffer ? (
+					<ReviewOfferLine offer={reviewOffer} mode={mode} />
+				) : null}
 
 				<div className='flex flex-col-reverse items-center gap-3 sm:flex-row sm:justify-center sm:gap-5'>
 					<TextButton type='button' onClick={onHome}>

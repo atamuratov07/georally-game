@@ -283,3 +283,23 @@ export function trackReviewSessionEnd(params: {
 		duration_ms: params.durationMs,
 	})
 }
+
+export function trackBridgeOfferShown(params: {
+	mode: SingleplayerModeParam
+	offeredCount: number
+}): void {
+	gtagEvent('bridge_offer_shown', {
+		mode: params.mode,
+		offered_count: params.offeredCount,
+	})
+}
+
+export function trackBridgeOfferAccepted(params: {
+	mode: SingleplayerModeParam
+	offeredCount: number
+}): void {
+	gtagEvent('bridge_offer_accepted', {
+		mode: params.mode,
+		offered_count: params.offeredCount,
+	})
+}

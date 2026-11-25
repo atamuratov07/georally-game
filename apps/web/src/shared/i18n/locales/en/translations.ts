@@ -344,6 +344,14 @@ const translations = {
 		},
 		learnMore: 'Learn {{count}} more',
 		learnMoreFailed: 'Couldn’t add more countries',
+		offer: {
+			question_one: 'Add {{count}} missed country to your review?',
+			question_other: 'Add {{count}} missed countries to your review?',
+			add: 'Add',
+			notNow: 'Not now',
+			added: 'Added to your review',
+			failed: 'Couldn’t add them to your review',
+		},
 	},
 	multiplayer: {
 		title: 'Multiplayer',

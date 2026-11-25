@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useMatch } from 'react-router-dom'
 import { masteryPaths } from '@/mastery/paths'
-import { CountryCardsIcon } from '@/mastery/shared/CountryCardsIcon'
+import { CountryCardsIcon } from '@/shared/widgets/CountryCardsIcon'
 import { outlinedText } from '@/shared/widgets/outlinedText'
 import { LocalizedLink } from './LocalizedLink'
 

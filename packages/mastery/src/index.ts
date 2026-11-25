@@ -1,4 +1,9 @@
 export { answerCard, type Answer } from './answerCard'
+export {
+	decideBridge,
+	type BridgeDecision,
+	type CasualOutcome,
+} from './bridge/decideBridge'
 export { splitCardId, toCardId } from './cardId'
 export { introOrder } from './intro/introOrder'
 export { isPlanned } from './intro/isPlanned'
@@ -10,7 +15,9 @@ export type {
 } from './ports'
 export { rebuildCards } from './rebuildCards'
 export { SCHEDULER_VERSION } from './schedulerVersion'
+export { acceptMisses } from './services/acceptMisses'
 export { addScope } from './services/addScope'
+export { applyCasualOutcomes } from './services/applyCasualOutcomes'
 export { learnMore, LEARN_MORE_COUNT } from './services/learnMore'
 export { loadDayResult, type DayResult } from './services/loadDayResult'
 export { loadMastery, type MasteryState } from './services/loadMastery'

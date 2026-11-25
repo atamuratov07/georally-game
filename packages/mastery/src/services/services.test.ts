@@ -7,7 +7,9 @@ import { rebuildCards } from '../rebuildCards'
 import { SCHEDULER_VERSION } from '../schedulerVersion'
 import { PACES } from '../settings'
 import type { AnswerOutcome, CardId, CardRecord } from '../types'
+import { acceptMisses } from './acceptMisses'
 import { addScope } from './addScope'
+import { applyCasualOutcomes } from './applyCasualOutcomes'
 import { learnMore, LEARN_MORE_COUNT } from './learnMore'
 import { loadToday } from './loadToday'
 import { recordAnswer } from './recordAnswer'
@@ -100,5 +102,27 @@ describe('mastery services', () => {
 		expect(
 			(await loadToday(deps, { pool, day: TODAY })).sessionPlan,
 		).toHaveLength(PACES.steady.newPerDay + 2 * LEARN_MORE_COUNT)
+	})
+
+	it('rechecks a known miss and leads with an accepted unseen one', async () => {
+		const deps = freshDeps()
+		await recordAnswer(deps, answer('417:locate', 'a', T0 - 3 * DAY))
+		const missed = (countryId: string) => ({
+			countryId,
+			skillId: 'locate' as const,
+			missed: true,
+		})
+
+		const offer = await applyCasualOutcomes(
+			deps,
+			[missed('250'), missed('417')],
+			T0,
+		)
+		expect(offer).toEqual(['250:locate'])
+		await acceptMisses(deps, offer, 7)
+
+		const today = await loadToday(deps, { pool, day: TODAY })
+		expect(today.sessionPlan).toEqual(['417:locate', '250:locate'])
+		expect(await applyCasualOutcomes(deps, [missed('250')], T0)).toEqual([])
 	})
 })

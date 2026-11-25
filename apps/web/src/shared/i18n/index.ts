@@ -1,4 +1,5 @@
 export { I18nDocumentSync } from './I18nDocumentSync.tsx'
+export { LanguageOptions } from './LanguageOptions'
 export { LanguageSwitcher } from './LanguageSwitcher'
 export {
 	APP_LANGUAGE_OPTIONS,

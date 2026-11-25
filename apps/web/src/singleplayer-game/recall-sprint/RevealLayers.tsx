@@ -1,10 +1,9 @@
 import { countryCatalog } from '@georally/country-catalog'
-import type { FeatureCollection, Point } from 'geojson'
 import { useEffect, useMemo, useRef } from 'react'
-import { Layer, Source, useMap } from 'react-map-gl/maplibre'
-import { isTinyAt } from '@/shared/map/camera/framing'
+import { Layer, useMap } from 'react-map-gl/maplibre'
 import { HitRing } from '@/shared/map/HitRing'
 import { LabelLayers } from '@/shared/map/layers/LabelLayers'
+import { TinyCountryRings } from '@/shared/map/layers/TinyCountryRings'
 import { MapMarkers } from '@/shared/map/MapMarkers'
 import {
 	ARCHIPELAGO_SOURCE_ID,
@@ -26,9 +25,7 @@ const DIM = {
 	region: { color: '#d3d8de', opacity: 0.9 },
 	outside: { color: '#eef0f2', opacity: 0.94 },
 }
-const TINY_REFERENCE_ZOOM = 3
-const RING_SOURCE_ID = 'sprint-tiny-rings'
-export const RING_LAYER_ID = RING_SOURCE_ID
+const FOUND_RING = '#f5b800'
 const WORLD = { source: SOURCE_ID, sourceLayer: COUNTRY_LAYER }
 const ISLANDS = { source: ARCHIPELAGO_SOURCE_ID }
 const DIM_LAYER = buildRevealDimLayer(DIM)
@@ -81,30 +78,9 @@ export function RevealLayers({
 	useFeatureState(loaded, WORLD, REGION_STATE, region)
 	useFeatureState(loaded, ISLANDS, SHOWN_STATE, region)
 
-	const rings = useMemo<FeatureCollection<Point>>(
-		() => ({
-			type: 'FeatureCollection',
-			features: ringIds.flatMap(countryId => {
-				const bounds = countryCatalog.countriesById.get(countryId)?.bounds
-				const centroid = centroidOf(countryId)
-				return bounds && centroid && isTinyAt(bounds, TINY_REFERENCE_ZOOM)
-					? [
-							{
-								type: 'Feature' as const,
-								properties: {
-									iso_n3: countryId,
-									found: revealedIds.includes(countryId),
-								},
-								geometry: {
-									type: 'Point' as const,
-									coordinates: centroid,
-								},
-							},
-						]
-					: []
-			}),
-		}),
-		[revealedIds, ringIds],
+	const ringColors = useMemo(
+		() => Object.fromEntries(revealedIds.map(id => [id, FOUND_RING])),
+		[revealedIds],
 	)
 
 	const markers = useMemo<MapMarker[]>(
@@ -131,40 +107,7 @@ export function RevealLayers({
 			<Layer {...archipelagoFillLayer} beforeId={BASE_STYLE_LAYER_ID} />
 			<Layer {...archipelagoOutlineLayer} beforeId={BASE_STYLE_LAYER_ID} />
 			<Layer {...DIM_LAYER} beforeId={LABELS_BOTTOM_LAYER_ID} />
-			<Source id={RING_SOURCE_ID} type='geojson' data={rings}>
-				<Layer
-					id={RING_LAYER_ID}
-					type='circle'
-					beforeId={LABELS_BOTTOM_LAYER_ID}
-					paint={{
-						'circle-radius': [
-							'interpolate',
-							['linear'],
-							['zoom'],
-							1,
-							6,
-							4,
-							16,
-						],
-						'circle-color': 'rgba(0, 0, 0, 0)',
-						'circle-stroke-width': [
-							'interpolate',
-							['linear'],
-							['zoom'],
-							1,
-							2,
-							4,
-							4,
-						],
-						'circle-stroke-color': [
-							'case',
-							['get', 'found'],
-							'#f5b800',
-							'#9aa3ae',
-						],
-					}}
-				/>
-			</Source>
+			<TinyCountryRings countryIds={ringIds} colors={ringColors} />
 			<LabelLayers countryIds={labelIds} />
 			<MapMarkers markers={markers} />
 		</>

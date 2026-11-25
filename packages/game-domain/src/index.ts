@@ -5,7 +5,7 @@ export {
 } from './shared/errors'
 export { pickRandomIds, type RandomNumberGenerator } from './shared/random'
 export { err, ok, type Result } from './shared/result'
-export { elapsedSeconds } from './shared/time'
+export { elapsedSeconds, type LocalDay } from './shared/time'
 export {
 	GAME_CONTINENTS,
 	GAME_DIFFICULTIES,
@@ -14,6 +14,7 @@ export {
 	type GameDifficulty,
 	type GameQuestionSetConfig,
 	type GameRegions,
+	type GameScope,
 } from './shared/types'
 export {
 	isGameRegions,

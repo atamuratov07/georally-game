@@ -14,16 +14,16 @@ import {
 	LIFTED_STATE,
 	SOURCE_ID,
 } from '@/shared/map/map-styles'
+import { TINY_RINGS_LAYER_ID } from '@/shared/map/layers/TinyCountryRings'
 import { RevealPopup } from '@/shared/map/RevealPopup'
 import { flagsFor, useFeatureState } from '@/shared/map/useFeatureState'
 import { CountryInfoCard } from '@/shared/widgets/CountryInfoCard'
 import { liftedLayers } from './liftedLayers'
-import { RING_LAYER_ID } from './RevealLayers'
 import { boundsOf, REGION_MARGIN, regionBounds } from './sprintRegion'
 import { prefersReducedMotion } from './useOverlayCamera'
 
 const PICKABLE_LAYERS = [
-	RING_LAYER_ID,
+	TINY_RINGS_LAYER_ID,
 	ARCHIPELAGO_FILL_LAYER_ID,
 	BASE_STYLE_LAYER_ID,
 ]

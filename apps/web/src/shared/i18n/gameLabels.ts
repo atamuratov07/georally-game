@@ -1,7 +1,7 @@
 import type {
-	GameContinent,
 	GameDifficulty,
 	GameRegions,
+	GameScope,
 } from '@georally/game-domain'
 import i18next, { type TFunction } from 'i18next'
 
@@ -12,10 +12,7 @@ export function getDifficultyLabel(
 	return t(`game.difficulty.${difficulty}`)
 }
 
-export function getRegionLabel(
-	t: TFunction,
-	region: GameContinent | 'all',
-): string {
+export function getRegionLabel(t: TFunction, region: GameScope): string {
 	return t(`game.scope.${region}`)
 }
 

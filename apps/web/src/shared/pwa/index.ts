@@ -1,5 +1,6 @@
 export { AppUpdateNotice } from './AppUpdateNotice'
 export { InstallAppButton } from './InstallAppButton'
+export { useInstallApp } from './useInstallApp'
 export { isStandalone, watchInstallPrompt } from './install'
 export { registerServiceWorker } from './serviceWorker'
 export { useOnline } from './useOnline'

@@ -42,6 +42,35 @@ function DropdownMenuContent({
 	)
 }
 
+function DropdownMenuItem({
+	className,
+	...props
+}: ComponentProps<typeof DropdownMenuPrimitive.Item>) {
+	return (
+		<DropdownMenuPrimitive.Item
+			data-slot='dropdown-menu-item'
+			className={cn(
+				'flex cursor-pointer items-center gap-3 rounded-[10px] px-3 py-2.5 text-base font-bold outline-none select-none focus:bg-ocean-50 [&_svg]:size-5 [&_svg]:shrink-0',
+				className,
+			)}
+			{...props}
+		/>
+	)
+}
+
+function DropdownMenuSeparator({
+	className,
+	...props
+}: ComponentProps<typeof DropdownMenuPrimitive.Separator>) {
+	return (
+		<DropdownMenuPrimitive.Separator
+			data-slot='dropdown-menu-separator'
+			className={cn('mx-2 my-1.5 h-0.5 rounded-full bg-line', className)}
+			{...props}
+		/>
+	)
+}
+
 function DropdownMenuRadioGroup(
 	props: ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>,
 ) {
@@ -81,7 +110,9 @@ function DropdownMenuRadioItem({
 export {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuItem,
 	DropdownMenuRadioGroup,
 	DropdownMenuRadioItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 }

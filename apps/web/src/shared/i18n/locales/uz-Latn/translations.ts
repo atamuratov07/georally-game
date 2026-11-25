@@ -2,6 +2,7 @@ const translations = {
 	app: {
 		name: 'GeoRally',
 		language: 'Til',
+		menu: 'Menyu',
 	},
 	common: {
 		remove: 'Olib tashlash',
@@ -307,6 +308,55 @@ const translations = {
 			ambiguous: 'Qaysi {{text}}?',
 			unknown: '«{{text}}» nomaʼlum',
 			heard: 'Eshitildi: {{text}}',
+		},
+	},
+	review: {
+		title: 'Takrorlash',
+		start: 'Boshlash',
+		add: 'Qoʻshish',
+		whereToStart: 'Qayerdan boshlaysiz?',
+		whereNext: 'Keyingisi qayer?',
+		toReview: 'takrorlash',
+		newCards: 'yangi',
+		niceWork: 'Barakalla!',
+		flawless: 'Xatosiz!',
+		doneToday: 'Bugunga yetarli',
+		tomorrow: 'Ertaga: {{count}}',
+		reviewed: 'takrorlandi',
+		saveFailed: 'Javob saqlanmadi',
+		unavailable: 'Takrorlash brauzerning bu rejimida ishlamaydi',
+		level: {
+			learning: 'Oʻrganilmoqda',
+			familiar: 'Tanish',
+			mastered: 'Oʻzlashtirilgan',
+		},
+		fading: 'Unutilmoqda',
+		nextReview: {
+			today: 'Bugun takrorlanadi',
+			tomorrow: 'Ertaga takrorlanadi',
+			days_one: '{{count}} kundan keyin takrorlanadi',
+			days_other: '{{count}} kundan keyin takrorlanadi',
+		},
+		comingUp: 'Tez orada takrorlashda',
+		notInReview: 'Takrorlashingizda yoʻq',
+		myMap: 'Mening xaritam',
+		pace: 'Surʼat',
+		paces: {
+			relaxed: 'Bemalol',
+			steady: 'Meʼyorida',
+			intense: 'Jadal',
+		},
+		learnMore: 'Yana {{count}} tasini oʻrganish',
+		learnMoreFailed: 'Davlatlarni qoʻshib boʻlmadi',
+		offer: {
+			question_one:
+				'{{count}} ta topilmagan davlatni takrorlashga qoʻshasizmi?',
+			question_other:
+				'{{count}} ta topilmagan davlatni takrorlashga qoʻshasizmi?',
+			add: 'Qoʻshish',
+			notNow: 'Hozir emas',
+			added: 'Takrorlashga qoʻshildi',
+			failed: 'Takrorlashga qoʻshib boʻlmadi',
 		},
 	},
 	multiplayer: {

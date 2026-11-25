@@ -9,8 +9,10 @@ import {
 	type GameState,
 } from '@georally/game-domain/singleplayer/locate'
 import { useCallback, useMemo, useState } from 'react'
+import type { ReviewOffer } from '@/mastery/bridge/reportCasualOutcomes'
 import { useStoredGame } from '../shared/useStoredGame'
 import { useLocateGameAnalytics } from './analytics'
+import { useLocateBridge } from './bridge'
 import { bestKey } from './config'
 import { locateGameStore } from './store'
 
@@ -24,6 +26,7 @@ interface UseLocateGameResult {
 	handleNext: (startsAt: number) => void
 	handlePlayAgain: () => void
 	handleLeave: () => void
+	reviewOffer: ReviewOffer | null
 }
 
 function keepIdle(idle: GameState): GameState {
@@ -65,6 +68,7 @@ export function useLocateGame(): UseLocateGameResult {
 	)
 
 	useLocateGameAnalytics(engineState, restored)
+	const reviewOffer = useLocateBridge(engineState, restored)
 
 	const begin = useCallback(
 		(startsAt: number) => {
@@ -122,5 +126,6 @@ export function useLocateGame(): UseLocateGameResult {
 		handleNext,
 		handlePlayAgain,
 		handleLeave,
+		reviewOffer,
 	}
 }

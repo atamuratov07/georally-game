@@ -4,6 +4,7 @@ export { Badge, type BadgeTone } from './badge'
 export { Button, type ButtonProps } from './button'
 export { Card, CardDescription, CardHeader, CardTitle } from './card'
 export { CopyButton, type CopyButtonProps } from './copy-button'
+export { CountUp } from './count-up'
 export {
 	Dialog,
 	DialogClose,
@@ -14,8 +15,10 @@ export {
 export {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuItem,
 	DropdownMenuRadioGroup,
 	DropdownMenuRadioItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from './dropdown-menu'
 export { IconTile, type IconTileTone } from './icon-tile'

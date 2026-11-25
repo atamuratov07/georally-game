@@ -4,58 +4,12 @@ import {
 	type GameRegions,
 } from '@georally/game-domain'
 import { X } from 'lucide-react'
-import { useId, useState, type KeyboardEvent } from 'react'
+import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getRegionLabel } from '@/shared/i18n'
 import { cn } from '@/shared/utils'
-import { REGION_MAP_VIEWBOX, REGION_PATHS } from 'virtual:region-map'
-
-export type Continent = keyof typeof REGION_PATHS
-
-const CONTINENTS = Object.keys(REGION_PATHS) as Continent[]
-
-const EDGE_DEPTH = 4
-
-const CONTINENT_COLORS: Record<
-	Continent,
-	{ face: string; edge: string; chip: string }
-> = {
-	africa: {
-		face: 'fill-[#ff9a1f]',
-		edge: 'fill-[#d9690a]',
-		chip: 'bg-[#d9690a]',
-	},
-	asia: {
-		face: 'fill-[#ff4f6d]',
-		edge: 'fill-[#c92143]',
-		chip: 'bg-[#c92143]',
-	},
-	europe: {
-		face: 'fill-[#3d8bff]',
-		edge: 'fill-[#1f5bd6]',
-		chip: 'bg-[#1f5bd6]',
-	},
-	'north-america': {
-		face: 'fill-[#3fd15c]',
-		edge: 'fill-[#20963a]',
-		chip: 'bg-[#20963a]',
-	},
-	'south-america': {
-		face: 'fill-[#a45cff]',
-		edge: 'fill-[#7432d9]',
-		chip: 'bg-[#7432d9]',
-	},
-	oceania: {
-		face: 'fill-[#1fcfc8]',
-		edge: 'fill-[#0b918c]',
-		chip: 'bg-[#0b918c]',
-	},
-}
-
-export interface RegionOption<Region extends string> {
-	value: Region
-	continents: readonly Continent[]
-}
+import { ContinentMap } from './ContinentMap'
+import { CONTINENT_COLORS, CONTINENTS, type RegionOption } from './continents'
 
 interface RegionMapPickerProps<Region extends string> {
 	label: string
@@ -103,16 +57,11 @@ export function RegionMapPicker<Region extends string>({
 	const { t } = useTranslation()
 	const labelId = useId()
 	const hintId = useId()
-	const [hovered, setHovered] = useState<Region | null>(null)
 	const isWorld = value.length === 0
 	const order = options.map(option => option.value)
 	const picked = options.filter(option => value.includes(option.value))
-	const optionOf = (continent: Continent) =>
-		options.find(option => option.continents.includes(continent))
 	const colorsOf = (option: RegionOption<Region>) =>
 		CONTINENT_COLORS[option.continents[0]]
-	const isLit = (option: RegionOption<Region> | undefined) =>
-		option !== undefined && (isWorld || value.includes(option.value))
 
 	function change(next: Region[]) {
 		onChange(normalizeRegions(next, order))
@@ -123,27 +72,6 @@ export function RegionMapPicker<Region extends string>({
 		else if (value.includes(region)) {
 			change(value.filter(item => item !== region))
 		} else change([...value, region])
-	}
-
-	function handleKeyDown(event: KeyboardEvent<SVGGElement>, region: Region) {
-		if (event.key === 'Enter' || event.key === ' ') {
-			event.preventDefault()
-			toggle(region)
-		}
-	}
-
-	function isDimmed(option: RegionOption<Region> | undefined): boolean {
-		return !isLit(option) && hovered !== option?.value
-	}
-
-	function faceClass(option: RegionOption<Region>): string {
-		const isHovered = hovered === option.value
-		if (isLit(option)) {
-			return isHovered ? '-translate-y-1' : ''
-		}
-		return isHovered
-			? 'translate-y-0.5 opacity-80'
-			: 'translate-y-1 opacity-45 grayscale'
 	}
 
 	return (
@@ -172,83 +100,17 @@ export function RegionMapPicker<Region extends string>({
 				)}
 			</div>
 
-			<svg
-				role='group'
-				aria-labelledby={labelId}
-				aria-describedby={value.length >= 2 ? undefined : hintId}
-				viewBox={REGION_MAP_VIEWBOX}
-				className='-mx-1 h-auto w-[calc(100%+0.5rem)] overflow-visible sm:mx-0 sm:w-full'
-				onMouseLeave={() => setHovered(null)}
-				onClick={event => {
-					if (!(event.target as Element).closest('[role="checkbox"]')) {
-						change([])
-					}
-				}}
-			>
-				{CONTINENTS.map(continent => {
-					const option = optionOf(continent)
-					return (
-						<path
-							key={continent}
-							aria-hidden='true'
-							d={REGION_PATHS[continent]}
-							transform={`translate(0 ${EDGE_DEPTH})`}
-							className={cn(
-								'pointer-events-none transition-[opacity,filter] duration-200',
-								(option
-									? colorsOf(option)
-									: CONTINENT_COLORS[continent]
-								).edge,
-								isDimmed(option) && 'opacity-45 grayscale',
-							)}
-						/>
-					)
-				})}
-				{CONTINENTS.filter(continent => !optionOf(continent)).map(
-					continent => (
-						<path
-							key={continent}
-							aria-hidden='true'
-							d={REGION_PATHS[continent]}
-							strokeWidth={1.5}
-							strokeLinejoin='round'
-							className={cn(
-								'translate-y-1 stroke-white opacity-45 grayscale',
-								CONTINENT_COLORS[continent].face,
-							)}
-						/>
-					),
-				)}
-				{options.map(option => (
-					<g
-						key={option.value}
-						role='checkbox'
-						tabIndex={0}
-						aria-checked={value.includes(option.value)}
-						aria-label={labelOf(option.value)}
-						className={cn(
-							'cursor-pointer transition-[translate,opacity,filter] duration-200 outline-none',
-							'focus-visible:[&>path]:stroke-ink focus-visible:[&>path]:[stroke-width:3]',
-							faceClass(option),
-						)}
-						onMouseEnter={() => setHovered(option.value)}
-						onFocus={() => setHovered(option.value)}
-						onBlur={() => setHovered(null)}
-						onClick={() => toggle(option.value)}
-						onKeyDown={event => handleKeyDown(event, option.value)}
-					>
-						{option.continents.map(continent => (
-							<path
-								key={continent}
-								d={REGION_PATHS[continent]}
-								strokeWidth={1.5}
-								strokeLinejoin='round'
-								className={cn('stroke-white', colorsOf(option).face)}
-							/>
-						))}
-					</g>
-				))}
-			</svg>
+			<ContinentMap
+				labelledBy={labelId}
+				describedBy={value.length >= 2 ? undefined : hintId}
+				options={options}
+				stateOf={region =>
+					isWorld || value.includes(region) ? 'on' : 'off'
+				}
+				labelOf={labelOf}
+				onToggle={toggle}
+				onBackgroundClick={() => change([])}
+			/>
 
 			<div
 				aria-live='polite'

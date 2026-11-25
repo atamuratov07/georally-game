@@ -13,6 +13,7 @@
 		"@georally/country-catalog": "workspace:*",
 		"@georally/game-domain": "workspace:*",
 		"@georally/game-protocol": "workspace:*",
+		"@georally/mastery": "workspace:*",
 		"boring-avatars": "^2.0.4",
 		"canvas-confetti": "^1.9.4",
 		"class-variance-authority": "^0.7.1",

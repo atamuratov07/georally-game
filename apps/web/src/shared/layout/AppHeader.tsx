@@ -7,6 +7,7 @@ import { LanguageSwitcher } from '@/shared/i18n'
 import { InstallAppButton } from '@/shared/pwa'
 import { cn } from '@/shared/utils'
 import { outlinedText } from '@/shared/widgets/outlinedText'
+import { HeaderMenu } from './HeaderMenu'
 
 const NAME_TEXT = outlinedText(0.16, 0.12, 'em')
 
@@ -35,7 +36,10 @@ export function AppLogo({
 				height={41}
 				className='h-[41px] w-[45px]'
 			/>
-			<span className='text-white' style={NAME_TEXT}>
+			<span
+				className='-m-[0.2em] truncate p-[0.2em] text-white'
+				style={NAME_TEXT}
+			>
 				{title ?? t('app.name')}
 			</span>
 		</LocalizedLink>
@@ -58,12 +62,15 @@ export function AppHeader({
 				className,
 			)}
 		>
-			<AppLogo title={title} />
-			<div className='flex items-center gap-1 sm:gap-2'>
+			<AppLogo title={title} className='min-w-0 shrink' />
+			<div className='flex shrink-0 items-center gap-1 sm:gap-2'>
 				{children}
-				<InstallAppButton />
-				<FeedbackButton />
-				<LanguageSwitcher />
+				<div className='flex items-center gap-2 max-sm:hidden'>
+					<InstallAppButton />
+					<FeedbackButton />
+					<LanguageSwitcher />
+				</div>
+				<HeaderMenu className='sm:hidden' />
 			</div>
 		</header>
 	)

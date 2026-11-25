@@ -21,7 +21,7 @@ export function FeedbackButton({ className }: { className?: string }) {
 				className='size-5'
 				strokeWidth={2.5}
 			/>
-			<span className='max-sm:sr-only'>{t('feedback.open')}</span>
+			{t('feedback.open')}
 		</button>
 	)
 }

@@ -2,6 +2,7 @@ const translations = {
 	app: {
 		name: 'GeoRally',
 		language: 'Language',
+		menu: 'Menu',
 	},
 	common: {
 		remove: 'Remove',

@@ -15,8 +15,10 @@ export {
 export {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuItem,
 	DropdownMenuRadioGroup,
 	DropdownMenuRadioItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from './dropdown-menu'
 export { IconTile, type IconTileTone } from './icon-tile'

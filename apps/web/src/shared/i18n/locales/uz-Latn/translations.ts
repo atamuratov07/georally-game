@@ -2,6 +2,7 @@ const translations = {
 	app: {
 		name: 'GeoRally',
 		language: 'Til',
+		menu: 'Menyu',
 	},
 	common: {
 		remove: 'Olib tashlash',

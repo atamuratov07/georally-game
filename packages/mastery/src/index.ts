@@ -15,6 +15,7 @@ export { loadDayResult, type DayResult } from './services/loadDayResult'
 export { loadMastery, type MasteryState } from './services/loadMastery'
 export { loadToday, type Today } from './services/loadToday'
 export { recordAnswer } from './services/recordAnswer'
+export { setPace } from './services/setPace'
 export { buildSessionPlan, type SessionPlanInput } from './session/plan'
 export {
 	applyAnswer,

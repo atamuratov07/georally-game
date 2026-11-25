@@ -335,6 +335,12 @@ const translations = {
 		comingUp: 'Coming up in your review',
 		notInReview: 'Not in your review',
 		myMap: 'My map',
+		pace: 'Pace',
+		paces: {
+			relaxed: 'Relaxed',
+			steady: 'Steady',
+			intense: 'Intense',
+		},
 	},
 	multiplayer: {
 		title: 'Multiplayer',

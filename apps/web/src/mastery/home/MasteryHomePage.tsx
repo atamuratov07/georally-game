@@ -6,8 +6,10 @@ import {
 } from '@georally/game-domain'
 import {
 	addScope,
+	setPace,
 	countDue,
 	type IntroPlan,
+	type Pace,
 	type Today,
 } from '@georally/mastery'
 import { LoaderCircle } from 'lucide-react'
@@ -23,6 +25,7 @@ import { masteryPaths } from '../paths'
 import { ReviewUnavailable } from '../shared/ReviewUnavailable'
 import { Stat } from '../shared/Stat'
 import { MapPreview } from './MapPreview'
+import { PaceSetting } from './PaceSetting'
 import { ScopePicker } from './ScopePicker'
 import { useToday } from './useToday'
 
@@ -41,6 +44,7 @@ export default function MasteryHomePage() {
 	const [state, reload] = useToday()
 	const [picked, setPicked] = useState<GameContinent[]>([])
 	const [saving, setSaving] = useState(false)
+	const [chosenPace, setChosenPace] = useState<Pace | null>(null)
 	const mapLabelId = useId()
 
 	if (state.status === 'unavailable') {
@@ -67,6 +71,24 @@ export default function MasteryHomePage() {
 			setSaving(false)
 		}
 	}
+
+	async function changePace(pace: Pace) {
+		setChosenPace(pace)
+		try {
+			await setPace(mastery, pace)
+			await reload()
+		} catch (error) {
+			console.error(error)
+			setChosenPace(null)
+		}
+	}
+
+	const paceSetting = ready ? (
+		<PaceSetting
+			pace={chosenPace ?? ready.today.meta.settings.pace}
+			onChange={pace => void changePace(pace)}
+		/>
+	) : null
 
 	function renderToday(today: Today, day: LocalDay) {
 		const { cards, sessionPlan } = today
@@ -106,9 +128,10 @@ export default function MasteryHomePage() {
 						/>
 					) : null}
 				</div>
+				<div className='w-full'>{paceSetting}</div>
 				<Button
 					size='lg'
-					className='w-full sm:w-64'
+					className='w-full'
 					onClick={() => navigate(masteryPaths.play)}
 				>
 					{t('review.start')}
@@ -176,10 +199,12 @@ export default function MasteryHomePage() {
 					</div>
 				) : null}
 
+				{isFirstRun ? paceSetting : null}
+
 				{isFirstRun ? (
 					<Button
 						size='lg'
-						className='w-full sm:mx-auto sm:w-64'
+						className='w-full'
 						disabled={picked.length === 0}
 						pending={saving}
 						onClick={addPicked}

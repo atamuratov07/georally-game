@@ -339,6 +339,12 @@ const translations = {
 		comingUp: 'Tez orada takrorlashda',
 		notInReview: 'Takrorlashingizda yoʻq',
 		myMap: 'Mening xaritam',
+		pace: 'Surʼat',
+		paces: {
+			relaxed: 'Bemalol',
+			steady: 'Meʼyorida',
+			intense: 'Jadal',
+		},
 	},
 	multiplayer: {
 		title: "Ko'p o'yinchi",

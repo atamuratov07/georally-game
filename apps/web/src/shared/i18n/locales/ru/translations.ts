@@ -350,6 +350,12 @@ const translations = {
 		comingUp: 'Скоро в повторении',
 		notInReview: 'Нет в вашем повторении',
 		myMap: 'Моя карта',
+		pace: 'Темп',
+		paces: {
+			relaxed: 'Спокойный',
+			steady: 'Обычный',
+			intense: 'Быстрый',
+		},
 	},
 	multiplayer: {
 		title: 'Мультиплеер',

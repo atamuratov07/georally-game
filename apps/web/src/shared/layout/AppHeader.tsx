@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LocalizedLink } from '@/app/LocalizedLink'
+import { ReviewLink } from '@/app/ReviewLink'
 import logo from '@/assets/logo.png'
 import { FeedbackButton } from '@/shared/feedback'
 import { LanguageSwitcher } from '@/shared/i18n'
@@ -25,7 +26,7 @@ export function AppLogo({
 			to='/'
 			aria-label={title ? t('app.name') : undefined}
 			className={cn(
-				'inline-flex shrink-0 items-center gap-2 rounded-control text-2xl font-black tracking-tight',
+				'inline-flex shrink-0 items-center gap-2 rounded-control text-xl font-black tracking-tight sm:text-2xl',
 				className,
 			)}
 		>
@@ -65,6 +66,7 @@ export function AppHeader({
 			<AppLogo title={title} className='min-w-0 shrink' />
 			<div className='flex shrink-0 items-center gap-1 sm:gap-2'>
 				{children}
+				<ReviewLink />
 				<div className='flex items-center gap-2 max-sm:hidden'>
 					<InstallAppButton />
 					<FeedbackButton />

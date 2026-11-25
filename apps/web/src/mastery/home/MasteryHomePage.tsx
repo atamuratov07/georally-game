@@ -6,6 +6,7 @@ import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
 import { BackLink, PageShell } from '@/shared/layout'
 import { Card } from '@/shared/ui'
 import { masteryPaths } from '../paths'
+import { ReviewEmblem } from '../shared/CountryCardsIcon'
 import { ReviewUnavailable } from '../shared/ReviewUnavailable'
 import { MapPreview } from './MapPreview'
 import { PaceSetting } from './PaceSetting'
@@ -32,7 +33,11 @@ export default function MasteryHomePage() {
 
 	if (state.status === 'loading') {
 		return (
-			<PageShell headerTitle={t('review.title')} center>
+			<PageShell
+				headerTitle={t('review.title')}
+				headerEmblem={<ReviewEmblem />}
+				center
+			>
 				<LoaderCircle
 					aria-label={t('game.loading')}
 					className='mx-auto size-10 animate-spin text-ocean-500'
@@ -53,7 +58,10 @@ export default function MasteryHomePage() {
 		added.size < GAME_CONTINENTS.length
 
 	return (
-		<PageShell headerTitle={t('review.title')}>
+		<PageShell
+			headerTitle={t('review.title')}
+			headerEmblem={<ReviewEmblem />}
+		>
 			<BackLink to='/'>{t('common.home')}</BackLink>
 			<h1 className='sr-only'>{t('review.title')}</h1>
 			<Card className='flex animate-pop-in flex-col gap-8'>

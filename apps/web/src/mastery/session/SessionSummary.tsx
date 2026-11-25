@@ -18,6 +18,7 @@ import { Button, CountUp } from '@/shared/ui'
 import { outlinedText } from '@/shared/widgets/outlinedText'
 import { mastery } from '../container'
 import { MasteryMap } from '../map/MasteryMap'
+import { ReviewEmblem } from '../shared/CountryCardsIcon'
 import { ReviewUnavailable } from '../shared/ReviewUnavailable'
 import { Stat } from '../shared/Stat'
 import type { SessionStats } from './sessionReducer'
@@ -106,7 +107,12 @@ export function SessionSummary({
 	}
 
 	return (
-		<PageShell headerTitle={t('review.title')} width='sm' center>
+		<PageShell
+			headerTitle={t('review.title')}
+			headerEmblem={<ReviewEmblem />}
+			width='sm'
+			center
+		>
 			<div className='flex flex-col items-center gap-7 text-center'>
 				<motion.h1
 					className='text-5xl font-black tracking-tight text-white sm:text-6xl'

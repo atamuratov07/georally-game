@@ -14,9 +14,11 @@ const NAME_TEXT = outlinedText(0.16, 0.12, 'em')
 
 export function AppLogo({
 	title,
+	emblem,
 	className,
 }: {
 	title?: string
+	emblem?: ReactNode
 	className?: string
 }) {
 	const { t } = useTranslation()
@@ -30,13 +32,15 @@ export function AppLogo({
 				className,
 			)}
 		>
-			<img
-				src={logo}
-				alt=''
-				width={45}
-				height={41}
-				className='h-[41px] w-[45px]'
-			/>
+			{emblem ?? (
+				<img
+					src={logo}
+					alt=''
+					width={45}
+					height={41}
+					className='h-[41px] w-[45px]'
+				/>
+			)}
 			<span
 				className='-m-[0.2em] truncate p-[0.2em] text-white'
 				style={NAME_TEXT}
@@ -49,10 +53,12 @@ export function AppLogo({
 
 export function AppHeader({
 	title,
+	emblem,
 	children,
 	className,
 }: {
 	title?: string
+	emblem?: ReactNode
 	children?: ReactNode
 	className?: string
 }) {
@@ -63,7 +69,7 @@ export function AppHeader({
 				className,
 			)}
 		>
-			<AppLogo title={title} className='min-w-0 shrink' />
+			<AppLogo title={title} emblem={emblem} className='min-w-0 shrink' />
 			<div className='flex shrink-0 items-center gap-1 sm:gap-2'>
 				{children}
 				<ReviewLink />

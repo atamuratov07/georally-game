@@ -4,7 +4,7 @@ A daily spaced-review session at `/review`. The player picks continents, and eve
 
 In the interface and the URL the feature is "review". In code it is `mastery`, and its web components carry that prefix (`MasteryHomePage`, `MasterySessionPage`), because Recall Sprint already uses "review" for its results walkthrough (`useReview`, `ReviewLayers`).
 
-Only the `locate` skill (find the named country) exists so far. The map page, the pace setting, the second skill, the bridge from casual games and the streak are designed in [`../proposals/mastery-review.md`](../proposals/mastery-review.md) and not built.
+Only the `locate` skill (find the named country) exists so far. The second skill, the bridge from casual games, the Overall map layer and the streak are designed in [`../proposals/mastery-review.md`](../proposals/mastery-review.md) and not built.
 
 ## Concepts
 
@@ -15,9 +15,11 @@ Only the `locate` skill (find the named country) exists so far. The map page, th
 | Kind          | `new` (the card's first answer), `due`, or `recheck` (a requested early test)                 |
 | Rating        | Again, Hard, Good or Easy; computed from the answer, never chosen by the player               |
 | Intro plan    | The chosen continents (scopes) and a seed, which together fix the order of new cards          |
-| Pace          | New cards a day and the review cap; steady (8 new, 60 reviews) until the setting exists       |
+| Pace          | New cards a day and the review cap: relaxed, steady (the default) or intense                  |
 | Day           | The player's local calendar date (`LocalDay` in `game-domain`: key, start, end)               |
 | Mastery level | Learning, familiar or mastered, derived from a card's state; a country with no card is unseen |
+| Known         | A country whose Locate card is familiar or mastered; what the map's counts count              |
+| Scope         | A continent or the whole world (`GameScope`), the unit the map's counts are given for         |
 
 ## Structure
 
@@ -99,7 +101,7 @@ A session is computed from storage every time it opens and is never saved, so cl
 - **The plan** (`buildSessionPlan`) is built once when the session opens:
    1. cards with a recheck, oldest request first, outside the caps;
    2. due cards (`due` before the day ends), earliest first, up to the review cap minus today's `due` entries;
-   3. the head of the intro order, up to the day's new cards minus today's `new` entries.
+   3. the head of the intro order, up to the day's new cards plus today's extra ones (`extraNew`) minus today's `new` entries.
 
    Counting today's entries lets a second session on the same day continue where the first left off. New cards are spread evenly among the due ones, centred, so a new card near the start leaves room for its minute-scale steps before the session ends.
 
@@ -109,19 +111,31 @@ A session is computed from storage every time it opens and is never saved, so cl
    | Steady  | 8               | 60         |
    | Intense | 12              | 80         |
 
+   "Learn 5 more" (`learnMore`) adds 5 to today's extra new cards; an extra granted on another day counts as none. It is offered only while the chosen scopes still have cards not yet introduced (`unseenCards`, the intro order minus existing cards).
+
    The cap grows with the pace because the review load grows with the rate of new cards: a fixed cap would turn the intense pace into a backlog that never clears. The values come from the long-run simulation (`pnpm --filter @georally/mastery simulate`), which plays 120 days per pace, with and without a 10-day break.
 
 - **The queue** (`selectNext`, `applyAnswer`) picks the next card after every answer: a waiting card whose `due` has passed, else the next planned card, else the earliest waiting card shown early, else the session is complete. An answered card waits only if it is due again within 15 minutes (`LEARN_AHEAD_MS`); otherwise it has left the session. So a miss comes back a few cards later and again at the end, the spacing FSRS asked for.
 
 ## Web feature
 
-`apps/web/src/mastery/` has two lazy pages, `/review` and `/review/play`. If IndexedDB is unavailable (some private modes), both show an "unavailable" screen; casual modes are unaffected.
+`apps/web/src/mastery/` has three lazy pages: `/review`, `/review/play` and `/review/map`. If IndexedDB is unavailable (some private modes), each shows an "unavailable" screen; casual modes are unaffected.
+
+**Entry and identity**
+
+- **The header links to review on every page that has it** (`app/ReviewLink.tsx`), except the review pages themselves. It lives in `app/` because `shared/` doesn't import features. On phones it is the icon alone, next to the menu button; from `sm` up it adds "Review" in the logo's outlined lettering, a little apart from Install, Feedback and the language, so it reads as a section rather than a utility. Hovering fans the cards out.
+- **The review emblem** (`mastery/shared/CountryCardsIcon.tsx`) is a hand of three country cards in the logo's style: filled, with white outlines and an ink drop to match the header's white menu stripes. On the review home and the summary it replaces the logo next to the header title (`PageShell`'s `headerEmblem`), and still links home.
 
 **Home** (`MasteryHomePage`)
 
-- **First run:** a continent map (`ScopePicker` on the shared `ContinentMap`) with a "Whole world" toggle and Start, which saves the first scope and opens the session.
-- **Later:** today's due and new counts and Start, or "Done for today" with how many cards are due tomorrow.
-- **The picker returns only when every chosen country has been introduced.** Before that, adding a continent would change nothing for days, since new cards still come from the earlier scopes. Continents already chosen are shown fixed and can't be removed.
+One card, in one of two forms:
+
+- **First run** (`ScopeForm`): "Where do you start?" with the continent map (`ScopePicker` on the shared `ContinentMap`), a "Whole world" toggle, the pace and Start. Start stays disabled until something is picked; it saves the first scope and opens the session.
+- **Later:**
+   - **Today** (`TodayPanel`): the due and new counts, the pace and Start. When nothing is left, "Done for today" with how many cards are due tomorrow, and no pace: a change would only show in tomorrow's plan.
+   - **The map preview** (`MapPreview`): the whole world on `MasteryMap`, with "My map" and the known count of all playable countries, linking to the map page.
+   - **"Where next"** (`ScopeForm` again), only when every chosen country has been introduced and continents remain. Before that, adding a continent would change nothing for days, since new cards still come from the earlier scopes. Continents already chosen are shown fixed and can't be removed.
+- **The pace** (`PaceSetting`) saves itself on every change (`setPace`) and reloads today's plan, so the counts follow at once.
 
 **Session** (`MasterySessionPage`)
 
@@ -145,11 +159,20 @@ graph TD
 
 - **It shows the whole day, not the session.** `loadDayResult` reads today's log: a card introduced today counts as new however often it came back, and any other card answered today counts as reviewed. A count kept in the session would split a day played in two sittings, and would count a missed new card's repeat as a review.
 - **The map** (`mastery/map/MasteryMap.tsx`) colours every seen country by its Locate level and outlines today's countries. It opens on the continents answered today and doesn't pan or zoom, so the page scrolls over it on phones.
-- **Levels** come from `deriveMastery`: learning until the card graduates from FSRS's short-term steps, then familiar, and mastered from a stability of 21 days. The fill is one fixed layer (`masteryFillLayer` in `map-styles.tsx`) driven by a feature state per country, so a change repaints one country without rebuilding the style. `deriveMastery` also reports a card as fading when its recall chance is under 0.85; that isn't drawn yet.
+- **Levels** come from `deriveMastery`: learning until the card graduates from FSRS's short-term steps, then familiar, and mastered from a stability of 21 days. A card is also fading when its recall chance is under 0.85. `MasteryLayers` draws them on both maps: one fixed fill layer and a white hatch for fading (`masteryStyles.ts`), driven by a feature state per country, so a change repaints one country without rebuilding the style. Tiny countries get rings in their level's colour.
+- **"Learn 5 more"** appears while the chosen scopes still have unseen cards (`loadDayResult` returns `unseenCount`). It grants five more new cards for today and starts the new session on the same page: `MasterySessionPage` remounts its session with a new key, so the plan is built again. If saving fails, a toast says so and the summary stays.
 - **`navigator.storage.persist()`** is requested here, after the player has stored progress (see [`persistence.md`](persistence.md#review-progress)).
+
+**Map page** (`MasteryMapPage`)
+
+- **A full-screen flat map** (`ExploreMap`) with every seen country coloured by its Locate level, unseen ones grey and the latitude lines hidden (`prepareMasteryMap`). It pans and zooms freely; the back button returns to the review home.
+- **The headline** names the focused scope and its known count out of its playable countries ("Europe 12/45"). `summarizeLayer` counts every scope at once over `playableCountryPool`.
+- **The continent row** at the bottom picks the focus: the whole world and each continent as a shape, the chosen one lit in its colour and the rest grey with their counts. Choosing one flies the camera to it, framed between the headline and the row. The shapes come from `virtual:region-map` (`REGION_SHAPES`): each continent projected alone and framed by its own outline, leaving out islands under 0.4% of its largest landmass, so outliers such as the Aleutians don't shrink the shape. The row is centred with auto margins inside its scroller, so on narrow screens its start stays reachable.
+- **Tapping a country** opens its card (`MasteryCountryCard`): the flag and name, the level, fading, and the next review in local days ("today", "tomorrow", "in 5 days"). A country with no card says "Coming up" when it is planned (`isPlanned`: its continent is in a chosen scope, or its card was accepted from a casual game's miss) and "Not in your review" otherwise.
+- **The maps fade in once styled.** MapLibre paints the base style before the mastery layers and feature states apply, so both mastery maps keep the canvas transparent over the sea colour until the first `idle` after load (`useShownWhenStyled`), then fade it in.
 
 **Analytics** (`shared/analytics/track.ts`): `review_session_start` (due and new counts), `review_card_answered` (skill, rating, kind, input, response time) and `review_session_end` (cards, new cards, duration).
 
 ## Testing
 
-The rules take time and storage as inputs, so they are tested in the package's Vitest without a browser: the grader against real revealed states from Find It's reducer, the scheduler adapter by snapshot, the intro order, the plan, the queue, `answerCard`, `rebuildCards`, the day summary, the IndexedDB repository against `fake-indexeddb`, and the services. The long-run simulation runs in the suite with loose bounds; its script prints the table the paces were set from. `apps/web` has no test runner.
+The rules take time and storage as inputs, so they are tested in the package's Vitest without a browser: the grader against real revealed states from Find It's reducer, the scheduler adapter by snapshot, the intro order, `isPlanned`, the known counts, the plan, the queue, `answerCard`, `rebuildCards`, the day summary, the IndexedDB repository against `fake-indexeddb`, and the services. The long-run simulation runs in the suite with loose bounds; its script prints the table the paces were set from. `apps/web` has no test runner.

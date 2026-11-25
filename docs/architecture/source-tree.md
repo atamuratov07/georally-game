@@ -50,7 +50,8 @@ georally-game/
 |       |   `-- sw.ts                   # service worker: precache, locale shells, tile and glyph caches, see pwa.md
 |       |-- vite/
 |       |   |-- precompress.ts          # writes a .gz next to every compressible build output
-|       |   `-- regionMap.ts            # serves virtual:region-map: region outlines projected at bundle time
+|       |   `-- regionMap.ts            # serves virtual:region-map: region outlines projected at bundle time,
+|       |                               # together and each continent alone
 |       |-- index.html
 |       |-- locales/                    # one Vite entry per locale: en.html, ru.html, uz.html
 |       |-- public/
@@ -73,6 +74,7 @@ georally-game/
 |           |   |-- LocaleGate.tsx      # detects language, redirects unprefixed URLs
 |           |   |-- LocaleContext.tsx
 |           |   |-- LocalizedLink.tsx
+|           |   |-- ReviewLink.tsx      # the header's link to review, with the review emblem
 |           |   |-- useLocalizedNavigate.tsx
 |           |   `-- globals.css
 |           |-- shared/
@@ -82,8 +84,10 @@ georally-game/
 |           |   |   |-- track.ts        # GA4 event helpers
 |           |   |   `-- useMultiplayerGameAnalytics.ts
 |           |   |-- feedback/           # the feedback form and the end-of-game reaction, see feedback.md
-|           |   |-- pwa/                # service worker registration and update prompt, install button,
-|           |   |                       # useOnline, see pwa.md
+|           |   |-- layout/             # AppHeader (logo or a section's emblem, title, links; on phones the
+|           |   |                       # actions fold into HeaderMenu), PageShell, BackLink, StatusScreen, SkyBackground
+|           |   |-- pwa/                # service worker registration and update prompt, install button and
+|           |   |                       # useInstallApp (the action and the iOS help), useOnline, see pwa.md
 |           |   |-- i18n/
 |           |   |   |-- setup.ts        # i18next init
 |           |   |   |-- locales/        # en, ru, uz-Latn translations
@@ -92,7 +96,7 @@ georally-game/
 |           |   |   |-- locale-segment.ts
 |           |   |   |-- useAppLanguage.tsx
 |           |   |   |-- I18nDocumentSync.tsx
-|           |   |   |-- LanguageSwitcher.tsx
+|           |   |   |-- LanguageSwitcher.tsx, LanguageOptions.tsx # the switcher; the list it shares with HeaderMenu
 |           |   |   `-- index.ts
 |           |   |-- map/
 |           |   |   |-- PickCountryMap.tsx # the pick-a-country map (locate, multiplayer), composed from the parts below
@@ -127,19 +131,29 @@ georally-game/
 |           |           `-- RegionPicker.tsx  # the game modes' region rules on ContinentMap
 |           |-- mastery/                  # review, see mastery.md
 |           |   |-- index.ts              # exports masteryRoutes
-|           |   |-- routes.tsx, paths.ts  # /review and /review/play, lazy pages
+|           |   |-- routes.tsx, paths.ts  # /review, /review/play and /review/map, lazy pages
 |           |   |-- container.ts          # creates the scheduler and repository; the only import of the adapters
-|           |   |-- home/                 # MasteryHomePage, useToday, ScopePicker
+|           |   |-- home/                 # MasteryHomePage, useToday, TodayPanel, ScopeForm, ScopePicker,
+|           |   |                         # PaceSetting, MapPreview
 |           |   |-- session/
 |           |   |   |-- MasterySessionPage.tsx # header, the current card, the summary
 |           |   |   |-- useMasterySession.ts   # loads the plan, saves each answer
 |           |   |   |-- sessionReducer.ts      # queue, current card, save status
 |           |   |   |-- LocateCard.tsx         # Find It's round on PickCountryMap, reports the outcome
-|           |   |   `-- SessionSummary.tsx     # the day's counts and map
+|           |   |   `-- SessionSummary.tsx     # the day's counts and map, Learn 5 more
 |           |   |-- map/
-|           |   |   `-- MasteryMap.tsx    # countries by level, today's outlined
+|           |   |   |-- MasteryMapPage.tsx     # /review/map: headline, ExploreMap, ContinentCounters
+|           |   |   |-- ExploreMap.tsx         # the free map, focus flights, the tapped country's card
+|           |   |   |-- MasteryCountryCard.tsx # flag, name, level, next review, or coming up
+|           |   |   |-- ContinentCounters.tsx  # the continent row with known counts
+|           |   |   |-- MasteryMap.tsx         # the fixed map: summary and home preview
+|           |   |   |-- MasteryLayers.tsx, masteryStyles.ts # level fill, fading hatch, outline, rings
+|           |   |   |-- prepareMasteryMap.ts   # hides the latitude lines, adds the hatch image
+|           |   |   |-- useMasteryLayer.ts     # loads the Locate layer and the plan
+|           |   |   `-- useShownWhenStyled.ts  # keeps the canvas hidden until the first idle
 |           |   `-- shared/
-|           |       `-- Stat.tsx
+|           |       |-- CountryCardsIcon.tsx   # the review emblem
+|           |       `-- ReviewUnavailable.tsx, Stat.tsx
 |           |-- singleplayer-game/
 |           |   |-- index.ts              # exports singleplayerRoutes
 |           |   |-- modes.ts              # mode registry: id and lazy pages
@@ -289,10 +303,11 @@ georally-game/
 |   |       |-- answerCard.ts            # one answer -> the card's new record and its log entry
 |   |       |-- rebuildCards.ts          # log -> cards, regraded with the current graders
 |   |       |-- skills/                  # registry, grading table, locate (outcome, slow cap)
-|   |       |-- intro/                   # introOrder, seededRandom
+|   |       |-- intro/                   # introOrder, unseen, isPlanned, seededRandom
 |   |       |-- session/                 # plan (the day's cards), queue (the next card)
-|   |       |-- view/                    # deriveMastery, daySummary, countDue
-|   |       |-- services/                # loadToday, recordAnswer, addScope, loadDayResult
+|   |       |-- view/                    # deriveMastery, layers, summarize (known counts), daySummary, countDue
+|   |       |-- services/                # loadToday, recordAnswer, addScope, loadDayResult, loadMastery,
+|   |       |                            # setPace, learnMore
 |   |       |-- simulation/              # the simulated player behind the pace table
 |   |       |-- fsrs/                    # @georally/mastery/fsrs: the ts-fsrs adapter
 |   |       `-- idb/                     # @georally/mastery/idb: schema and migrations, guards, repository

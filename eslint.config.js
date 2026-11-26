@@ -32,6 +32,21 @@ const MASTERY_FEATURE = {
 		'A mode reaches review only through mastery/bridge/reportCasualOutcomes.',
 }
 
+// apps/web/src layers, lowest first: shared/, game-kit/, then the features.
+const FEATURES = ['singleplayer-game', 'mastery', 'multiplayer-game']
+const layerPattern = (folders, message) => ({
+	group: folders.flatMap(folder => [`@/${folder}/**`, `**/${folder}/**`]),
+	message,
+})
+const SHARED_LAYER = layerPattern(
+	['game-kit', ...FEATURES],
+	'shared/ imports neither the game kit nor a feature.',
+)
+const GAME_KIT_LAYER = layerPattern(
+	FEATURES,
+	'game-kit/ imports shared/ only, never a feature.',
+)
+
 function masteryImports(allowedFolder) {
 	return {
 		patterns: Object.entries(MASTERY_BOUNDARIES)
@@ -114,6 +129,24 @@ export default defineConfig([
 		ignores: ['apps/web/src/mastery/container.ts'],
 		rules: {
 			'no-restricted-imports': ['error', { patterns: [MASTERY_ADAPTERS] }],
+		},
+	},
+	{
+		files: ['apps/web/src/shared/**/*.{ts,tsx}'],
+		rules: {
+			'no-restricted-imports': [
+				'error',
+				{ patterns: [MASTERY_ADAPTERS, SHARED_LAYER] },
+			],
+		},
+	},
+	{
+		files: ['apps/web/src/game-kit/**/*.{ts,tsx}'],
+		rules: {
+			'no-restricted-imports': [
+				'error',
+				{ patterns: [MASTERY_ADAPTERS, GAME_KIT_LAYER] },
+			],
 		},
 	},
 	{

@@ -1,24 +1,23 @@
 import { motion, useReducedMotion } from 'motion/react'
-import { CardToggle } from '@/shared/map/CardToggle'
-import { ProjectionToggle } from '@/shared/map/ProjectionToggle'
-import { ScoreBanner } from '@/shared/widgets/ScoreBanner'
-import { LeaveButton } from '../../shared/components/LeaveButton'
-import { VoiceButton } from '../../shared/components/VoiceButton'
-import { TouchAnswerBar } from '../components/TouchAnswerBar'
-import { GiveUpButton, NextButton } from '../components/RoundButtons'
-import type { RoundLayoutProps } from '../roundControls'
+import { TouchAnswerBar } from '../answering/TouchAnswerBar'
+import { VoiceButton } from '../answering/VoiceButton'
+import { GiveUpButton, NextButton } from './RoundButtons'
+import type { NameRoundLayoutProps } from './types'
 
 export const TOUCH_KEYBOARD_GAP_PX = 12
 export const TOUCH_EDGE_GAP_PX = 24
 
 const SPRING = { type: 'spring', stiffness: 420, damping: 32 } as const
 
-export function TouchRoundLayout({
+export function TouchNameLayout({
 	controls,
+	slots,
+	projectionToggle,
+	cardToggle,
 	keyboardInset,
-}: RoundLayoutProps) {
+}: NameRoundLayoutProps) {
 	const reduceMotion = useReducedMotion()
-	const { stage, input, map } = controls
+	const { stage, input } = controls
 
 	return (
 		<>
@@ -33,29 +32,19 @@ export function TouchRoundLayout({
 					answer={controls.answer}
 					lastAttempt={controls.lastAttempt}
 					input={input}
-					progress={controls.progress}
 					timer={controls.timer}
+					end={slots.topEnd}
 					onNext={controls.onNext}
 				/>
 			</motion.div>
-			<LeaveButton mode='name-it' className='absolute top-22 left-3 z-30' />
+			{slots.topStart ? (
+				<div className='absolute top-22 left-3 z-30'>{slots.topStart}</div>
+			) : null}
 			<div className='absolute top-22 right-3 z-30 flex flex-col gap-2'>
-				<ProjectionToggle
-					value={map.projection}
-					globeDisabled={!map.globeAllowed}
-					onChange={map.onProjectionChange}
-				/>
-				{map.hasCard ? (
-					<CardToggle
-						hidden={map.cardHidden}
-						onHiddenChange={map.onCardHiddenChange}
-					/>
-				) : null}
+				{projectionToggle}
+				{cardToggle}
 			</div>
-			<ScoreBanner
-				className='top-20 origin-top scale-80'
-				{...controls.score}
-			/>
+			{slots.overlay}
 
 			<motion.div
 				className='pointer-events-none absolute inset-x-0 z-30 flex justify-center'
@@ -77,7 +66,11 @@ export function TouchRoundLayout({
 						/>
 					) : null}
 					{stage === 'revealed' && controls.answer ? (
-						<NextButton size='main' onNext={controls.onNext} />
+						<NextButton
+							size='main'
+							pending={controls.nextPending}
+							onNext={controls.onNext}
+						/>
 					) : input.voiceAvailable && stage === 'answering' ? (
 						<VoiceButton
 							listening={input.listening}

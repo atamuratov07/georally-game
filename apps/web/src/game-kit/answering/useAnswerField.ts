@@ -5,8 +5,7 @@ import {
 	ANSWER_FIELD_ATTRIBUTES,
 	useInitialFocus,
 } from '@/shared/answers/answerField'
-import type { AnswerStage, RevealedAnswer } from '../roundControls'
-import type { AnswerInputState } from '../useAnswerInput'
+import type { AnswerInputState } from './useAnswerInput'
 
 const SHAKE: Keyframe[] = [
 	{ transform: 'translateX(0)' },
@@ -16,6 +15,13 @@ const SHAKE: Keyframe[] = [
 	{ transform: 'translateX(3px)' },
 	{ transform: 'translateX(0)' },
 ]
+
+export type AnswerStage = 'waiting' | 'answering' | 'revealed'
+
+export interface RevealedAnswer {
+	name: string
+	correct: boolean
+}
 
 export interface AnswerFieldOptions {
 	stage: AnswerStage

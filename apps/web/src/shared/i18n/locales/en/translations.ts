@@ -308,6 +308,7 @@ const translations = {
 	},
 	review: {
 		title: 'Review',
+		namePrompt: 'Which country is this?',
 		start: 'Start',
 		add: 'Add',
 		whereToStart: 'Where do you start?',

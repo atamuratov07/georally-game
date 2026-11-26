@@ -6,12 +6,11 @@ import { motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useCurrentLocale } from '@/app/LocaleContext'
+import { GameHud } from '@/game-kit/hud/GameHud'
 import { getCountryName } from '@/shared/i18n'
 import { StatusScreen } from '@/shared/layout'
 import { Avatar, Button, Card } from '@/shared/ui'
 import { cn } from '@/shared/utils'
-import { GameHud } from '@/shared/widgets/GameHud'
-import { Countdown } from './Countdown'
 import { RoomNotices } from '@/shared/widgets/RoomNotices'
 import {
 	getCurrentRound,
@@ -20,6 +19,7 @@ import {
 	type HostParticipantStanding,
 } from '../model/gameSelectors'
 import { getMemberColorIndexes } from '../model/roomSelectors'
+import { Countdown } from './Countdown'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 const ROW_LAYOUT_TRANSITION = { duration: 0.5, ease: EASE } as ValueTransition

@@ -7,27 +7,23 @@ import {
 	type ReactNode,
 } from 'react'
 import { Layer, type MapRef } from 'react-map-gl/maplibre'
-import { BaseMap } from '@/shared/map/BaseMap'
-import { loosenCameraConstraint } from '@/shared/map/camera/framing'
-import { useFitCamera, type FitTarget } from '@/shared/map/camera/useFitCamera'
-import { CountryLayers } from '@/shared/map/layers/CountryLayers'
-import { LabelLayers } from '@/shared/map/layers/LabelLayers'
-import { MapMarkers } from '@/shared/map/MapMarkers'
+import { BaseMap } from './BaseMap'
+import { loosenCameraConstraint } from './camera/framing'
+import { useFitCamera, type FitTarget } from './camera/useFitCamera'
+import { CountryLayers } from './layers/CountryLayers'
+import { LabelLayers } from './layers/LabelLayers'
 import {
 	COUNTRY_LAYER,
 	LABELS_BOTTOM_LAYER_ID,
 	OUTLINED_STATE,
 	SOURCE_ID,
 	targetOutlineLayer,
-} from '@/shared/map/map-styles'
-import type { ProjectionKind } from '@/shared/map/ProjectionToggle'
-import { RevealPopup } from '@/shared/map/RevealPopup'
-import type {
-	MapHighlight,
-	MapMarker,
-	MapRevealTarget,
-} from '@/shared/map/types'
-import { flagsFor, useFeatureState } from '@/shared/map/useFeatureState'
+} from './map-styles'
+import { MapMarkers } from './MapMarkers'
+import type { ProjectionKind } from './ProjectionToggle'
+import { RevealPopup } from './RevealPopup'
+import type { MapHighlight, MapMarker, MapRevealTarget } from './types'
+import { flagsFor, useFeatureState } from './useFeatureState'
 
 const MIN_ZOOM = 0
 const MAX_ZOOM = 7

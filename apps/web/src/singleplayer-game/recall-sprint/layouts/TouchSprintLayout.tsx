@@ -1,10 +1,10 @@
 import { Flag } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
+import { VoiceButton } from '@/game-kit/answering/VoiceButton'
 import { ProjectionToggle } from '@/shared/map/ProjectionToggle'
 import { ConfirmButton } from '../../shared/components/ConfirmButton'
 import { LeaveButton } from '../../shared/components/LeaveButton'
-import { VoiceButton } from '../../shared/components/VoiceButton'
 import { TouchSprintBar } from '../components/TouchSprintBar'
 import type { SprintLayoutProps } from '../sprintControls'
 

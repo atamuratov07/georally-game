@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ProgressStrip } from '@/shared/widgets/GameHud'
+import { ProgressStrip } from '@/game-kit/hud/GameHud'
 import { GamePanel, LoadingStatus } from '../../shared/components/GamePanel'
 import { LeaveButton } from '../../shared/components/LeaveButton'
 import { RoundSplash, type RoundInfo } from './RoundSplash'

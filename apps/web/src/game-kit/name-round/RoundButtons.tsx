@@ -2,7 +2,6 @@ import { ArrowRight, Flag } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/ui'
 import { cn } from '@/shared/utils'
-import { outlinedText } from '@/shared/widgets/outlinedText'
 
 export function GiveUpButton({
 	onGiveUp,
@@ -30,9 +29,11 @@ export function GiveUpButton({
 
 export function NextButton({
 	size,
+	pending,
 	onNext,
 }: {
 	size: 'inline' | 'main'
+	pending?: boolean
 	onNext: () => void
 }) {
 	const { t } = useTranslation()
@@ -48,6 +49,7 @@ export function NextButton({
 			)}
 			aria-label={t('singleplayer.next')}
 			title={t('singleplayer.next')}
+			pending={pending}
 			onClick={onNext}
 		>
 			<ArrowRight
@@ -55,46 +57,5 @@ export function NextButton({
 				className={size === 'main' ? 'size-9' : 'size-7'}
 			/>
 		</Button>
-	)
-}
-
-const PROGRESS_TEXT = outlinedText(0.23, 0.17, 'em')
-
-interface ProgressProps {
-	current: number
-	total: number
-}
-
-export function ProgressChip({
-	current,
-	total,
-	className,
-}: ProgressProps & { className?: string }) {
-	const { t } = useTranslation()
-
-	return (
-		<span
-			className={cn(
-				'text-3xl font-black whitespace-nowrap text-sunflower-300 tabular-nums',
-				className,
-			)}
-			style={PROGRESS_TEXT}
-			aria-label={t('game.progress', { current, total })}
-		>
-			{current} / {total}
-		</span>
-	)
-}
-
-export function ProgressText({ current, total }: ProgressProps) {
-	const { t } = useTranslation()
-
-	return (
-		<span
-			className='px-2 text-sm font-black text-muted tabular-nums'
-			aria-label={t('game.progress', { current, total })}
-		>
-			{current}/{total}
-		</span>
 	)
 }

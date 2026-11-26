@@ -318,6 +318,7 @@ const translations = {
 	},
 	review: {
 		title: 'Повторение',
+		namePrompt: 'Что это за страна?',
 		start: 'Начать',
 		add: 'Добавить',
 		whereToStart: 'С чего начнём?',

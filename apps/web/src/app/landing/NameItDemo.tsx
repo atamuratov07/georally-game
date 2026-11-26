@@ -1,24 +1,22 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useCurrentLocale } from '@/app/LocaleContext'
+import { MicButton } from '@/game-kit/answering/MicButton'
+import { ProgressChip } from '@/game-kit/hud/Progress'
+import { ScoreBanner } from '@/game-kit/hud/ScoreBanner'
+import { NextButton } from '@/game-kit/name-round/RoundButtons'
 import { defaultSpeechLanguage } from '@/shared/answers/speechLanguage'
 import {
 	REVEALED_FILL,
 	SELECTION_EDGE,
 	SELECTION_FILL,
 } from '@/shared/map/map-styles'
-import { ScoreBanner } from '@/shared/widgets/ScoreBanner'
-import { MicButton } from '@/singleplayer-game/shared/components/MicButton'
-import {
-	NextButton,
-	ProgressChip,
-} from '@/singleplayer-game/name-it/components/RoundButtons'
 import { DemoField } from './DemoField'
 import { DemoMap } from './DemoMap'
+import { demoName } from './demoNames'
 import { DemoScreen } from './DemoScreen'
 import { DemoStrip } from './DemoStrip'
 import { cameraFor, DEMO_COUNTRIES } from './demoWorld'
-import { demoName } from './demoNames'
 import { useDemoTicks } from './useDemoTicks'
 
 const ROUNDS = [

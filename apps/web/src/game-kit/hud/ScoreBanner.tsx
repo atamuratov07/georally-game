@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/utils'
-import { outlinedText } from './outlinedText'
+import { outlinedText } from '@/shared/widgets/outlinedText'
 
 const SCORE_VISIBLE_DURATION_MS = 2400
 const ENTER_DURATION_S = 0.4
@@ -13,7 +13,6 @@ const AWARD_REVEAL_DELAY_MS = 200
 const AWARD_VISIBLE_DURATION_MS = 800
 const SCORE_COUNT_DURATION_S = 0.72
 
-/** Written the way a hand draws them: the check left to right, the cross top-left stroke first. */
 const CHECK_STROKES = ['M4 12.5 9.5 18 20 6']
 const CROSS_STROKES = ['M6 6 18 18', 'M18 6 6 18']
 const DRAW_START_S = 0.12

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { GameHud, TimerChip } from '@/shared/widgets/GameHud'
+import { GameHud, TimerChip } from '@/game-kit/hud/GameHud'
 import { cn } from '@/shared/utils'
 import { LeaveButton } from '../../shared/components/LeaveButton'
 import type { RoundInfo } from './RoundSplash'

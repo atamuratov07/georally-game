@@ -1,18 +1,17 @@
+import type { ComponentProps, ReactNode } from 'react'
 import { cn } from '@/shared/utils'
-import type { RoundControls } from '../roundControls'
-import { AnswerNotice } from '../../shared/components/AnswerNotice'
-import { CountdownBar } from '../../shared/components/CountdownBar'
+import { CountdownBar } from '../hud/CountdownBar'
+import { AnswerNotice } from './AnswerNotice'
 import { AttemptFeedback } from './AttemptFeedback'
-import { ProgressText } from './RoundButtons'
 import { useAnswerField, type AnswerFieldOptions } from './useAnswerField'
 
 interface TouchAnswerBarProps extends AnswerFieldOptions {
-	progress: RoundControls['progress']
-	timer: RoundControls['timer']
+	end?: ReactNode
+	timer: Omit<ComponentProps<typeof CountdownBar>, 'variant'>
 }
 
 export function TouchAnswerBar({
-	progress,
+	end,
 	timer,
 	...options
 }: TouchAnswerBarProps) {
@@ -36,7 +35,8 @@ export function TouchAnswerBar({
 				<input
 					{...fieldProps}
 					className={cn(
-						'h-16 w-full bg-transparent pr-18 pb-2 pl-5 text-lg font-bold text-ink outline-none',
+						'h-16 w-full bg-transparent pb-2 pl-5 text-lg font-bold text-ink outline-none',
+						end ? 'pr-18' : 'pr-5',
 						'placeholder:font-semibold placeholder:text-muted/70',
 						reveal &&
 							(reveal.correct
@@ -45,9 +45,11 @@ export function TouchAnswerBar({
 						options.input.listening && 'placeholder:text-ocean-600',
 					)}
 				/>
-				<div className='absolute inset-y-0 right-3 flex items-center pb-2'>
-					<ProgressText {...progress} />
-				</div>
+				{end ? (
+					<div className='absolute inset-y-0 right-3 flex items-center pb-2'>
+						{end}
+					</div>
+				) : null}
 				<div className='absolute inset-x-0 bottom-0'>
 					<CountdownBar variant='strip' {...timer} />
 				</div>

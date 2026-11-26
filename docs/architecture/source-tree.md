@@ -100,6 +100,8 @@ georally-game/
 |           |   |   `-- index.ts
 |           |   |-- map/
 |           |   |   |-- PickCountryMap.tsx # the pick-a-country map (locate, multiplayer), composed from the parts below
+|           |   |   |-- NameItMap.tsx   # the name-a-country map (Name It, review): fit camera, target outline,
+|           |   |   |                   # labels only on reveal
 |           |   |   |-- BaseMap.tsx     # MapLibre map, style, load and error, projection and its toggle
 |           |   |   |-- camera/         # useRegionCamera (region views, reset), useRevealCamera, useFitCamera,
 |           |   |   |                   # framing (fitCamera, flight settings, isTinyAt,
@@ -124,11 +126,24 @@ georally-game/
 |           |   |   `-- cn.ts
 |           |   `-- widgets/
 |           |       |-- CountryInfoCard.tsx
-|           |       |-- ScoreBanner.tsx
 |           |       `-- region-map/
 |           |           |-- ContinentMap.tsx  # continents drawn from virtual:region-map, as toggles
 |           |           |-- continents.ts     # the options and colours
 |           |           `-- RegionPicker.tsx  # the game modes' region rules on ContinentMap
+|           |-- game-kit/                 # the parts of a round screen that the modes and review share;
+|           |   |                         # imports shared/ only, and shared/ never imports it (lint)
+|           |   |-- answering/            # useAnswerInput (typing and voice state of one named answer),
+|           |   |                         # DesktopAnswerBar and TouchAnswerBar on useAnswerField,
+|           |   |                         # AttemptFeedback, MicButton, VoiceButton, AnswerNotice
+|           |   |-- hud/                  # GameHud, ScoreBanner, CountdownBar, Progress (chip and text)
+|           |   `-- name-round/           # one name-a-country round on the map
+|           |       |-- useTargetRoundMap.tsx  # camera focus, highlight, tiny ring, label and reveal of a target
+|           |       |-- useNameRoundScreen.ts  # the layout, insets, projection and card state the map and layer share
+|           |       |-- NameRoundMap.tsx, NameRoundLayer.tsx # NameItMap, and the chosen layout with its toggles
+|           |       |-- layouts.ts             # desktop and touch: component, insets, zoom buttons' top
+|           |       |-- DesktopNameLayout.tsx, TouchNameLayout.tsx # with slots the owner fills
+|           |       |-- types.ts               # NameRoundControls, NameRoundSlots
+|           |       `-- RoundButtons.tsx       # Give up, Next
 |           |-- mastery/                  # review, see mastery.md
 |           |   |-- index.ts              # exports masteryRoutes
 |           |   |-- routes.tsx, paths.ts  # /review, /review/play and /review/map, lazy pages
@@ -139,8 +154,13 @@ georally-game/
 |           |   |   |-- MasterySessionPage.tsx # header, the current card, the summary
 |           |   |   |-- useMasterySession.ts   # loads the plan, saves each answer
 |           |   |   |-- sessionReducer.ts      # queue, current card, save status
-|           |   |   |-- LocateCard.tsx         # Find It's round on PickCountryMap, reports the outcome
-|           |   |   `-- SessionSummary.tsx     # the day's counts and map, Learn 5 more
+|           |   |   |-- SessionSummary.tsx     # the day's counts and map, Learn 5 more
+|           |   |   `-- cards/
+|           |   |       |-- registry.ts        # SKILL_CARDS: each skill's card and the header's question
+|           |   |       |-- types.ts           # ReviewCardProps
+|           |   |       |-- useCardRound.ts    # one round per turn, reported on reveal
+|           |   |       |-- LocateCard.tsx     # Find It's round on PickCountryMap
+|           |   |       `-- NameCard.tsx       # Name It's round on the game kit's name round
 |           |   |-- map/
 |           |   |   |-- MasteryMapPage.tsx     # /review/map: headline, ExploreMap, ContinentCounters
 |           |   |   |-- ExploreMap.tsx         # the free map, focus flights, the tapped country's card
@@ -172,18 +192,12 @@ georally-game/
 |           |   |-- name-it/
 |           |   |   |-- SetupPage.tsx
 |           |   |   |-- GamePage.tsx
-|           |   |   |-- RoundScreen.tsx   # joins the map, the round state and a layout
-|           |   |   |-- useRoundView.tsx  # the round's camera focus, highlights and reveal
-|           |   |   |-- useAnswerInput.ts # typing and voice state shared by the parts
-|           |   |   |-- roundControls.ts  # what a layout receives
-|           |   |   |-- layouts/          # DesktopRoundLayout, TouchRoundLayout, their insets
-|           |   |   |-- NameItMap.tsx     # the map: fit camera, target highlight, labels only on reveal
+|           |   |   |-- RoundScreen.tsx   # the game kit's name round with leave, progress and score
+|           |   |   |-- useRoundView.ts   # the run of questions: flies ahead to the next country
 |           |   |   |-- config.ts
 |           |   |   |-- store.ts
 |           |   |   |-- useNameItGame.ts  # begins and advances when the camera settles
-|           |   |   |-- analytics.ts
-|           |   |   `-- components/       # DesktopAnswerBar, TouchAnswerBar, useAnswerField, AttemptFeedback,
-|           |   |                         # RoundButtons
+|           |   |   `-- analytics.ts
 |           |   |-- recall-sprint/
 |           |   |   |-- SetupPage.tsx, GamePage.tsx
 |           |   |   |-- SprintScreen.tsx  # joins the map, the controls and a layout per phase
@@ -228,7 +242,6 @@ georally-game/
 |           |   |                         # no catalog, so the landing demo shares it), RouteFeedback,
 |           |   |                         # HintButton, GiveUpButton, RouteResult, SlideIn, BordersNote, verdictStyle
 |           |   `-- shared/
-|           |       |-- touch.ts          # the touch-screen media query
 |           |       |-- gameStore.ts      # createGameStore, hasValidQuestionProgress
 |           |       |-- useStoredGame.ts
 |           |       |-- useGuessField.ts  # the open guess field of Recall Sprint and Routes
@@ -239,8 +252,7 @@ georally-game/
 |           |       |-- useRoundEvents.ts
 |           |       `-- components/       # SetupShell, SetupCard, ModeTabs, modeTones, GameErrorBoundary,
 |           |                             # GameErrorScreen, GameResultModal, ResumeGameCard,
-|           |                             # KeyboardGameFrame, LeaveButton, CountdownBar,
-|           |                             # MicButton, VoiceButton, AnswerNotice, ConfirmButton
+|           |                             # KeyboardGameFrame, LeaveButton, ConfirmButton
 |           `-- multiplayer-game/
 |               |-- index.ts
 |               |-- api/

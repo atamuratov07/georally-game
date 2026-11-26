@@ -312,6 +312,7 @@ const translations = {
 	},
 	review: {
 		title: 'Takrorlash',
+		namePrompt: 'Bu qaysi davlat?',
 		start: 'Boshlash',
 		add: 'Qoʻshish',
 		whereToStart: 'Qayerdan boshlaysiz?',

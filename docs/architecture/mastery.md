@@ -144,11 +144,14 @@ graph TD
     Page["MasterySessionPage<br/>header: leave, progress, target"] --> Hook["useMasterySession<br/>loads the plan, saves answers"]
     Hook --> Reducer["sessionReducer<br/>queue, current card, save status"]
     Hook -->|recordAnswer| Store["MasteryRepository"]
-    Page --> Card["LocateCard<br/>Find It's round on PickCountryMap"]
-    Card -->|onAnswer: outcome| Hook
+    Page --> Registry["SKILL_CARDS<br/>skill → card and the header's question"]
+    Registry --> Locate["LocateCard<br/>Find It's round on PickCountryMap"]
+    Registry --> Name["NameCard<br/>Name It's round from game-kit"]
+    Locate -->|onAnswer: outcome| Hook
+    Name -->|onAnswer: outcome| Hook
 ```
 
-- **The card owns its mode's round; the session only sees outcomes.** `LocateCard` runs Find It's reducer and reports `onAnswer(outcome, at)`. The session reducer holds the queue, the current card and whether its answer is saved, and knows nothing about any mode, so a second skill adds a card component, not branches in the session. Next and Give up live in the card because where they go depends on how the card is answered (Find It floats them over the map; Name It has an answer bar). Leaving and the progress counter live in the page header, the same for every card.
+- **The card owns its mode's round; the session only sees outcomes.** Each card runs its mode's reducer for one question and reports `onAnswer(outcome, at)`; `useCardRound` keeps that round until the session's turn moves on. The session reducer holds the queue, the current card and whether its answer is saved, and knows nothing about any mode. `SKILL_CARDS` maps every skill to its card and to the question the header asks (the name and flag for Locate, "Which country is this?" for Name), and is typed against every skill, so a skill without a card doesn't compile. Next and Give up live in the card because where they go depends on how the card is answered (Find It floats them over the map; Name It has an answer bar). Leaving and the progress counter live in the page header, the same for every card.
 - **Next waits for the save.** The answer is written before the queue moves on, so the queue and storage never disagree. If the write fails, a toast offers a retry with the same entry id, and the card stays.
 - **One map for the whole session.** `PickCountryMap` stays mounted and resets its view for every card, so there is no reload between cards. The target's name appears only once the map is ready, since the response time starts then.
 - **Feedback:** the answered country turns green or red, the camera flies to the right one, and its `CountryInfoCard` opens (the map's toggle hides it). The player moves on with Next; nothing advances by itself, so a player reading the card is never cut off.

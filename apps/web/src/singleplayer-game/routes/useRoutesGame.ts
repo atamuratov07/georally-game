@@ -1,8 +1,10 @@
 import { playableCountryPool } from '@georally/country-catalog'
 import { borderGraph } from '@georally/country-catalog/borders'
+import { dailyRoutes } from '@georally/country-catalog/daily-routes'
 import type { InputMethod, MatchResult } from '@georally/game-domain/answers'
 import {
 	createRouteBoard,
+	dailyRouteSession,
 	prepareRouteSession,
 	reduceRouteState,
 	type RouteAction,
@@ -22,8 +24,8 @@ interface OpenedRoute {
 }
 
 function prepare(config: RouteConfig): RouteSession | null {
-	if (config.kind !== 'practice') {
-		return null
+	if (config.kind === 'daily') {
+		return dailyRouteSession(dailyRoutes.puzzles, config.number)
 	}
 	const session = prepareRouteSession(borderGraph, playableCountryPool, config)
 	return session.ok ? session.value : null

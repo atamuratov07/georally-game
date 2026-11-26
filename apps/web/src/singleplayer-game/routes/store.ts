@@ -24,7 +24,7 @@ function hasValidRoute(record: Record<string, unknown>): boolean {
 	)
 }
 
-function isRouteGame(game: unknown): game is RouteState {
+export function isRouteGame(game: unknown): game is RouteState {
 	if (typeof game !== 'object' || game === null) {
 		return false
 	}

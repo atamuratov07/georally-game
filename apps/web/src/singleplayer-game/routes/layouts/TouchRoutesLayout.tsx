@@ -1,3 +1,4 @@
+import { useContext } from 'react'
 import { getScore } from '@georally/game-domain/singleplayer/routes'
 import { AnswerNotice } from '@/game-kit/answering/AnswerNotice'
 import { VoiceButton } from '@/game-kit/answering/VoiceButton'
@@ -9,6 +10,7 @@ import { RouteFeedback } from '../components/RouteFeedback'
 import { RouteJourney } from '../components/RouteJourney'
 import { SlideIn } from '../components/SlideIn'
 import { useRouteField } from '../components/useRouteField'
+import { RouteLeaveTarget } from '../leaveTarget'
 import type { RoutesLayoutProps } from '../routesControls'
 
 export const TOUCH_KEYBOARD_GAP_PX = 12
@@ -18,6 +20,7 @@ export function TouchRoutesLayout({
 	controls,
 	keyboardInset,
 }: RoutesLayoutProps) {
+	const leaveTo = useContext(RouteLeaveTarget)
 	const { board, state, input } = controls
 	const { formRef, onSubmit, fieldProps } = useRouteField(input)
 	const typing = keyboardInset > 0
@@ -55,7 +58,7 @@ export function TouchRoutesLayout({
 			</SlideIn>
 
 			<SlideIn from='top' className='absolute top-22 left-3 z-30'>
-				<LeaveButton mode='routes' />
+				<LeaveButton mode='routes' to={leaveTo} />
 			</SlideIn>
 			<SlideIn from='top' className='absolute top-22 right-3 z-30'>
 				<GiveUpButton

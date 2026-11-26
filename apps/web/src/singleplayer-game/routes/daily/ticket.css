@@ -1,0 +1,22 @@
+.daily-ticket-top,
+.daily-ticket-stub {
+	--notch: 15px;
+	--notch-y: 100%;
+	mask:
+		radial-gradient(
+				circle at 0 var(--notch-y),
+				#0000 var(--notch),
+				#000 calc(var(--notch) + 0.5px)
+			)
+			left / 51% 100% no-repeat,
+		radial-gradient(
+				circle at 100% var(--notch-y),
+				#0000 var(--notch),
+				#000 calc(var(--notch) + 0.5px)
+			)
+			right / 51% 100% no-repeat;
+}
+
+.daily-ticket-stub {
+	--notch-y: 0%;
+}

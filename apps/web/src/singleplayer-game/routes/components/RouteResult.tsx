@@ -5,11 +5,12 @@ import {
 	type RouteBoard,
 } from '@georally/game-domain/singleplayer/routes'
 import { motion, useReducedMotion } from 'motion/react'
-import { useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/ui'
 import { cn } from '@/shared/utils'
 import { LeaveButton } from '../../shared/components/LeaveButton'
+import { RouteLeaveTarget } from '../leaveTarget'
 import { RouteJourney } from './RouteJourney'
 
 const SPRING = { type: 'spring', stiffness: 380, damping: 28 } as const
@@ -38,6 +39,7 @@ export function RouteResult({
 	const { t } = useTranslation()
 	const reduceMotion = useReducedMotion()
 	const score = getScore(state)
+	const leaveTo = useContext(RouteLeaveTarget)
 	const nextRef = useRef<HTMLButtonElement>(null)
 
 	useEffect(() => {
@@ -59,6 +61,7 @@ export function RouteResult({
 			</h2>
 			<LeaveButton
 				mode='routes'
+				to={leaveTo}
 				onLeave={onLeave}
 				className={leaveClassName}
 			/>

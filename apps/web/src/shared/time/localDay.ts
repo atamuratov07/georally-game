@@ -9,6 +9,11 @@ export function localDayKey(now: number): string {
 	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
 }
 
+export function localDayStart(key: string): number {
+	const [year, month, day] = key.split('-').map(Number)
+	return new Date(year, month - 1, day).getTime()
+}
+
 export function localDay(now: number): LocalDay {
 	const date = new Date(now)
 	const year = date.getFullYear()

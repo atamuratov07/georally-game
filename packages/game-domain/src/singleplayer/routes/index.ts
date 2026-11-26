@@ -1,4 +1,5 @@
 export { createRouteBoard, type RouteBoard } from './board'
+export { dailyDay, dailyLevel, dailyNumber } from './daily'
 export {
 	ratingRank,
 	ROUTE_REGION_CONTINENTS,

@@ -1,4 +1,4 @@
-import type { SettingTone } from '@/shared/widgets/SettingToggleGroup'
+import type { ControlTone } from '@/shared/ui'
 
 interface ModeToneClasses {
 	fill: string
@@ -6,7 +6,7 @@ interface ModeToneClasses {
 	text: string
 }
 
-export const MODE_TONES: Record<SettingTone, ModeToneClasses> = {
+export const MODE_TONES: Record<ControlTone, ModeToneClasses> = {
 	sunflower: {
 		fill: 'border-sunflower-500 bg-sunflower-400 text-ink [--edge:var(--color-sunflower-600)]',
 		idle: 'text-sunflower-700 [--edge:var(--color-sunflower-300)]',

@@ -353,6 +353,13 @@ const translations = {
 		notInReview: 'Нет в вашем повторении',
 		myMap: 'Моя карта',
 		pace: 'Темп',
+		skillsLabel: 'Навыки',
+		skills: {
+			locate: 'Найти',
+			name: 'Назвать',
+		},
+		overall: 'Общий',
+		layer: 'Слой карты',
 		paces: {
 			relaxed: 'Спокойный',
 			steady: 'Обычный',

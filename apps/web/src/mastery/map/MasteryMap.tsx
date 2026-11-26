@@ -1,11 +1,6 @@
 import { countryCatalog } from '@georally/country-catalog'
 import { normalizeGameRegions } from '@georally/game-domain'
-import {
-	skillLayer,
-	splitCardId,
-	type CardId,
-	type MasteryView,
-} from '@georally/mastery'
+import { splitCardId, type CardId, type MasteryLayer } from '@georally/mastery'
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { MapRef } from 'react-map-gl/maplibre'
 import { BaseMap } from '@/shared/map/BaseMap'
@@ -24,14 +19,14 @@ const WORLD_BOUNDS: [[number, number], [number, number]] = [
 ]
 
 interface MasteryMapProps {
-	views: ReadonlyMap<CardId, MasteryView>
+	layer: MasteryLayer
 	todayIds: readonly CardId[]
 	overlay?: ReactNode
 	className?: string
 }
 
 export function MasteryMap({
-	views,
+	layer,
 	todayIds,
 	overlay,
 	className,
@@ -45,7 +40,6 @@ export function MasteryMap({
 		setLoaded(true)
 	}, [])
 
-	const layer = useMemo(() => skillLayer(views, 'locate'), [views])
 	const todayCountries = useMemo(
 		() => [...new Set(todayIds.map(id => splitCardId(id).countryId))],
 		[todayIds],

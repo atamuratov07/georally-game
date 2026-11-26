@@ -24,6 +24,7 @@ export { loadMastery, type MasteryState } from './services/loadMastery'
 export { loadToday, type Today } from './services/loadToday'
 export { recordAnswer } from './services/recordAnswer'
 export { setPace } from './services/setPace'
+export { setSkillActive } from './services/setSkillActive'
 export { buildSessionPlan, type SessionPlanInput } from './session/plan'
 export {
 	applyAnswer,
@@ -32,7 +33,7 @@ export {
 	startSession,
 	type SessionState,
 } from './session/queue'
-export { activeSkills, DEFAULT_SETTINGS, PACES } from './settings'
+export { activeSkills, DEFAULT_SETTINGS, PACES, withSkill } from './settings'
 export type { Grader } from './skills/grade'
 export { LOCATE_SLOW_MS, locateOutcome } from './skills/locate'
 export { NAME_SLOW_MS, nameOutcome } from './skills/name'
@@ -63,7 +64,13 @@ export {
 	type MasteryLevel,
 	type MasteryView,
 } from './view/deriveMastery'
-export { skillLayer, type MasteryLayer } from './view/layers'
+export {
+	masteryLayer,
+	overallLayer,
+	skillLayer,
+	type LayerId,
+	type MasteryLayer,
+} from './view/layers'
 export {
 	summarizeLayer,
 	type MasteryCount,

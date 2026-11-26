@@ -10,6 +10,7 @@ import { ReviewEmblem } from '../shared/ReviewEmblem'
 import { ReviewUnavailable } from '../shared/ReviewUnavailable'
 import { MapPreview } from './MapPreview'
 import { PaceSetting } from './PaceSetting'
+import { SkillSwitches } from './SkillSwitches'
 import { ScopeForm } from './ScopeForm'
 import { TodayPanel } from './TodayPanel'
 import { useToday } from './useToday'
@@ -47,9 +48,14 @@ export default function MasteryHomePage() {
 		)
 	}
 
-	const { today, day, views } = state
+	const { today, day, layer } = state
 	const { plan, settings } = today.meta
-	const pace = <PaceSetting pace={settings.pace} onSaved={reload} />
+	const pace = (
+		<div className='flex flex-col gap-5'>
+			<PaceSetting pace={settings.pace} onSaved={reload} />
+			<SkillSwitches settings={settings} onSaved={reload} />
+		</div>
+	)
 
 	const added = plan ? addedContinents(plan) : undefined
 	const canAdd =
@@ -80,7 +86,7 @@ export default function MasteryHomePage() {
 						<TodayPanel today={today} day={day}>
 							{pace}
 						</TodayPanel>
-						<MapPreview views={views} />
+						<MapPreview layer={layer} />
 						{canAdd ? (
 							<ScopeForm
 								title={t('review.whereNext')}

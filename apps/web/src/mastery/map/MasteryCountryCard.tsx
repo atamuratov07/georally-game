@@ -1,5 +1,5 @@
 import type { CountryInfo } from '@georally/country-catalog'
-import type { MasteryView } from '@georally/mastery'
+import type { MasteryView, SkillId } from '@georally/mastery'
 import { useTranslation } from 'react-i18next'
 import { useCurrentLocale } from '@/app/LocaleContext'
 import { getCountryName } from '@/shared/i18n'
@@ -49,15 +49,19 @@ function MasteryLine({ view, now }: { view: MasteryView; now: number }) {
 	)
 }
 
+export interface SkillLine {
+	skill: SkillId
+	view: MasteryView | undefined
+	planned: boolean
+}
+
 export function MasteryCountryCard({
 	info,
-	view,
-	planned,
+	lines,
 	now,
 }: {
 	info: CountryInfo
-	view: MasteryView | undefined
-	planned: boolean
+	lines: readonly SkillLine[]
 	now: number
 }) {
 	const { t } = useTranslation()
@@ -77,14 +81,25 @@ export function MasteryCountryCard({
 					{name}
 				</h2>
 			</div>
-			<div className='px-3 py-2.5'>
-				{view ? (
-					<MasteryLine view={view} now={now} />
-				) : (
-					<p className='text-xs font-extrabold text-muted'>
-						{planned ? t('review.comingUp') : t('review.notInReview')}
-					</p>
-				)}
+			<div className='flex flex-col gap-2.5 px-3 py-2.5'>
+				{lines.map(({ skill, view, planned }) => (
+					<section key={skill} className='flex flex-col gap-1'>
+						{lines.length > 1 ? (
+							<h3 className='text-[11px] font-black tracking-widest text-muted uppercase'>
+								{t(`review.skills.${skill}`)}
+							</h3>
+						) : null}
+						{view ? (
+							<MasteryLine view={view} now={now} />
+						) : (
+							<p className='text-xs font-extrabold text-muted'>
+								{planned
+									? t('review.comingUp')
+									: t('review.notInReview')}
+							</p>
+						)}
+					</section>
+				))}
 			</div>
 		</article>
 	)

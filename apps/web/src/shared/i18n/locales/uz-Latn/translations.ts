@@ -342,6 +342,13 @@ const translations = {
 		notInReview: 'Takrorlashingizda yoʻq',
 		myMap: 'Mening xaritam',
 		pace: 'Surʼat',
+		skillsLabel: 'Koʻnikmalar',
+		skills: {
+			locate: 'Topish',
+			name: 'Nomlash',
+		},
+		overall: 'Umumiy',
+		layer: 'Xarita qatlami',
 		paces: {
 			relaxed: 'Bemalol',
 			steady: 'Meʼyorida',

@@ -4,16 +4,13 @@ import {
 } from '@georally/game-domain/multiplayer'
 import { useEffect, useState, type SubmitEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Card, CardHeader, CardTitle } from '@/shared/ui'
+import { Card, CardHeader, CardTitle, type SegmentOption } from '@/shared/ui'
 import { RegionPicker } from '@/shared/widgets/region-map/RegionPicker'
 import {
 	difficultyOptions,
 	numberOptions,
 } from '@/shared/widgets/settingOptions'
-import {
-	SettingToggleGroup,
-	type SettingOption,
-} from '@/shared/widgets/SettingToggleGroup'
+import { SettingToggleGroup } from '@/shared/widgets/SettingToggleGroup'
 import {
 	DIFFICULTY_OPTIONS,
 	loadRoomGameConfig,
@@ -68,7 +65,7 @@ export function GameConfigPanel({
 		onStartGame(effectiveConfig)
 	}
 
-	const timerOptions: SettingOption<number>[] = [
+	const timerOptions: SegmentOption<number>[] = [
 		...(requireQuestionDuration
 			? []
 			: [{ value: TIMER_OFF, label: t('settings.timerOff') }]),

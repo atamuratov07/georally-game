@@ -1,10 +1,12 @@
 import type { MasteryDeps } from '../ports'
-import type { CardId, IntroPlan } from '../types'
+import { activeSkills } from '../settings'
+import type { CardId, IntroPlan, SkillId } from '../types'
 import { masteryViews, type MasteryView } from '../view/deriveMastery'
 
 export interface MasteryState {
 	views: ReadonlyMap<CardId, MasteryView>
 	plan: IntroPlan | null
+	activeSkills: SkillId[]
 }
 
 export async function loadMastery(
@@ -15,5 +17,9 @@ export async function loadMastery(
 		repository.loadCards(),
 		repository.loadMeta(),
 	])
-	return { views: masteryViews(cards, scheduler, now), plan: meta.plan }
+	return {
+		views: masteryViews(cards, scheduler, now),
+		plan: meta.plan,
+		activeSkills: activeSkills(meta.settings),
+	}
 }

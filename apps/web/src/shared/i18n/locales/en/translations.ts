@@ -338,6 +338,13 @@ const translations = {
 		notInReview: 'Not in your review',
 		myMap: 'My map',
 		pace: 'Pace',
+		skillsLabel: 'Skills',
+		skills: {
+			locate: 'Find',
+			name: 'Name',
+		},
+		overall: 'Overall',
+		layer: 'Map layer',
 		paces: {
 			relaxed: 'Relaxed',
 			steady: 'Steady',

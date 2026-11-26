@@ -120,12 +120,15 @@ georally-game/
 |           |   |   |-- useFeatureState.ts # sets per-country states, applying only the changes
 |           |   |   `-- types.ts
 |           |   |-- time/               # useDeadline, useNow, localDay (the player's local day)
-|           |   |-- ui/                 # AlertMessage, Button, CopyButton, FloatingNotice, FormControls,
-|           |   |                       # IconButton, ScreenShell, SurfacePanel, buttonStyles
+|           |   |-- ui/                 # Alert, Avatar, Badge, Button, Card, CopyButton, CountUp, Dialog,
+|           |   |                       # DropdownMenu, IconTile, Input, InputOTP, Label, RadioGroup,
+|           |   |                       # SegmentedControl, Switch, Tabs, TextButton, Textarea, Toaster;
+|           |   |                       # tones.ts: ControlTone and a lit control's face
 |           |   |-- utils/
 |           |   |   `-- cn.ts
 |           |   `-- widgets/
 |           |       |-- CountryInfoCard.tsx
+|           |       |-- SettingToggleGroup.tsx # a setting's label over a SegmentedControl
 |           |       `-- region-map/
 |           |           |-- ContinentMap.tsx  # continents drawn from virtual:region-map, as toggles
 |           |           |-- continents.ts     # the options and colours
@@ -149,7 +152,7 @@ georally-game/
 |           |   |-- routes.tsx, paths.ts  # /review, /review/play and /review/map, lazy pages
 |           |   |-- container.ts          # creates the scheduler and repository; the only import of the adapters
 |           |   |-- home/                 # MasteryHomePage, useToday, TodayPanel, ScopeForm, ScopePicker,
-|           |   |                         # PaceSetting, MapPreview
+|           |   |                         # PaceSetting, SkillSwitches, MapPreview
 |           |   |-- session/
 |           |   |   |-- MasterySessionPage.tsx # header, the current card, the summary
 |           |   |   |-- useMasterySession.ts   # loads the plan, saves each answer
@@ -162,17 +165,19 @@ georally-game/
 |           |   |       |-- LocateCard.tsx     # Find It's round on PickCountryMap
 |           |   |       `-- NameCard.tsx       # Name It's round on the game kit's name round
 |           |   |-- map/
-|           |   |   |-- MasteryMapPage.tsx     # /review/map: headline, ExploreMap, ContinentCounters
+|           |   |   |-- MasteryMapPage.tsx     # /review/map: headline, LayerSwitch, ExploreMap, ContinentCounters
+|           |   |   |-- LayerSwitch.tsx        # Overall or one skill
 |           |   |   |-- ExploreMap.tsx         # the free map, focus flights, the tapped country's card
-|           |   |   |-- MasteryCountryCard.tsx # flag, name, level, next review, or coming up
+|           |   |   |-- MasteryCountryCard.tsx # flag, name, and per skill: level, next review, or coming up
 |           |   |   |-- ContinentCounters.tsx  # the continent row with known counts
 |           |   |   |-- MasteryMap.tsx         # the fixed map: summary and home preview
 |           |   |   |-- MasteryLayers.tsx, masteryStyles.ts # level fill, fading hatch, outline, rings
 |           |   |   |-- prepareMasteryMap.ts   # hides the latitude lines, adds the hatch image
-|           |   |   |-- useMasteryLayer.ts     # loads the Locate layer and the plan
+|           |   |   |-- useMasteryState.ts     # loads the card views, the plan and the active skills
 |           |   |   `-- useShownWhenStyled.ts  # keeps the canvas hidden until the first idle
 |           |   `-- shared/
-|           |       |-- CountryCardsIcon.tsx   # the review emblem
+|           |       |-- ReviewEmblem.tsx       # the header's emblem, on CountryCardsIcon
+|           |       |-- skillTones.ts          # each skill in its mode's colour
 |           |       `-- ReviewUnavailable.tsx, Stat.tsx
 |           |-- singleplayer-game/
 |           |   |-- index.ts              # exports singleplayerRoutes

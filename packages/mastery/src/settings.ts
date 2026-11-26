@@ -21,3 +21,17 @@ export const DEFAULT_SETTINGS: LearnerSettings = {
 export function activeSkills(settings: LearnerSettings): SkillId[] {
 	return SKILL_IDS.filter(skill => !settings.pausedSkills.includes(skill))
 }
+
+export function withSkill(
+	settings: LearnerSettings,
+	skill: SkillId,
+	active: boolean,
+): LearnerSettings {
+	const pausedSkills = SKILL_IDS.filter(
+		id => id !== skill && settings.pausedSkills.includes(id),
+	)
+	if (!active) pausedSkills.push(skill)
+	return pausedSkills.length < SKILL_IDS.length
+		? { ...settings, pausedSkills }
+		: settings
+}

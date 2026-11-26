@@ -1,6 +1,6 @@
 import { playableCountryPool } from '@georally/country-catalog'
 import type { GameScope } from '@georally/game-domain'
-import { summarizeLayer } from '@georally/mastery'
+import { masteryLayer, summarizeLayer, type LayerId } from '@georally/mastery'
 import { ChevronLeft } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useMemo, useState } from 'react'
@@ -13,11 +13,11 @@ import { masteryPaths } from '../paths'
 import { ReviewUnavailable } from '../shared/ReviewUnavailable'
 import { ContinentCounters } from './ContinentCounters'
 import { ExploreMap } from './ExploreMap'
-import { useMasteryLayer } from './useMasteryLayer'
+import { LayerSwitch } from './LayerSwitch'
+import { useMasteryState } from './useMasteryState'
 
 const TITLE_TEXT = outlinedText(7, 5)
 
-// An eased fade, so the edge where the shade ends can't be seen.
 const SCRIM = {
 	background: `linear-gradient(to top, ${[
 		[0.85, 0],
@@ -39,9 +39,17 @@ const SCRIM = {
 
 export default function MasteryMapPage() {
 	const { t } = useTranslation()
-	const state = useMasteryLayer()
+	const state = useMasteryState()
 	const [focus, setFocus] = useState<GameScope>('all')
-	const layer = state.status === 'ready' ? state.layer : null
+	const [layerId, setLayerId] = useState<LayerId>('overall')
+	const ready = state.status === 'ready' ? state : null
+	const layer = useMemo(
+		() =>
+			ready ? masteryLayer(ready.views, layerId, ready.activeSkills) : null,
+		[layerId, ready],
+	)
+	const cardSkills =
+		layerId === 'overall' ? (ready?.activeSkills ?? []) : [layerId]
 	const summary = useMemo(
 		() => (layer ? summarizeLayer(layer, playableCountryPool) : null),
 		[layer],
@@ -51,11 +59,13 @@ export default function MasteryMapPage() {
 
 	return (
 		<div className='fixed inset-0 overflow-hidden bg-ocean-100'>
-			{state.status === 'ready' ? (
+			{ready && layer ? (
 				<ExploreMap
-					layer={state.layer}
-					plan={state.plan}
-					now={state.now}
+					layer={layer}
+					views={ready.views}
+					skills={cardSkills}
+					plan={ready.plan}
+					now={ready.now}
 					focus={focus}
 				/>
 			) : null}
@@ -74,22 +84,25 @@ export default function MasteryMapPage() {
 			</Button>
 
 			{summary ? (
-				<motion.h1
-					key={focus}
-					initial={{ scale: 0.85 }}
-					animate={{ scale: 1 }}
-					transition={{ type: 'spring', stiffness: 420, damping: 16 }}
-					className='pointer-events-none absolute inset-x-16 top-3 z-10 flex flex-col items-center text-center text-white'
-					style={TITLE_TEXT}
-				>
-					<span className='text-3xl leading-tight font-black text-balance sm:text-4xl'>
-						{getRegionLabel(t, focus)}
-					</span>
-					<span className='font-black tabular-nums'>
-						<span className='text-4xl'>{summary[focus].known}</span>
-						<span className='text-xl'>/{summary[focus].total}</span>
-					</span>
-				</motion.h1>
+				<div className='pointer-events-none absolute inset-x-16 top-3 z-10 flex flex-col items-center gap-2'>
+					<motion.h1
+						key={`${focus}:${layerId}`}
+						initial={{ scale: 0.85 }}
+						animate={{ scale: 1 }}
+						transition={{ type: 'spring', stiffness: 420, damping: 16 }}
+						className='flex flex-col items-center text-center text-white'
+						style={TITLE_TEXT}
+					>
+						<span className='text-3xl leading-tight font-black text-balance sm:text-4xl'>
+							{getRegionLabel(t, focus)}
+						</span>
+						<span className='font-black tabular-nums'>
+							<span className='text-4xl'>{summary[focus].known}</span>
+							<span className='text-xl'>/{summary[focus].total}</span>
+						</span>
+					</motion.h1>
+					<LayerSwitch value={layerId} onChange={setLayerId} />
+				</div>
 			) : null}
 
 			{summary ? (

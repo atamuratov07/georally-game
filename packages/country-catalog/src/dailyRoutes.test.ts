@@ -7,6 +7,7 @@ import {
 	ratingRank,
 } from '@georally/game-domain/singleplayer/routes'
 import { describe, expect, it } from 'vitest'
+import { MIN_PAR } from '../scripts/dailyRoutes'
 import { borderGraph } from './borders'
 import { playableCountryPool } from './catalog'
 import { dailyRoutes } from './dailyRoutes'
@@ -20,6 +21,7 @@ describe('daily routes', () => {
 			const level = dailyLevel(dailyDay(launch, i + 1))
 			const board = createRouteBoard(borderGraph, entry)
 			const fits =
+				entry.par >= MIN_PAR &&
 				board?.par === entry.par &&
 				entry.level === level &&
 				fitsLevel(borderGraph, rank, entry, entry.par, level)

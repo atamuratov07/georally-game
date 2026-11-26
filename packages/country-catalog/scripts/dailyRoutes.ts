@@ -28,6 +28,7 @@ import type { DailyRoutesPayload } from '../src/types'
 const ENDPOINT_WINDOW = 30
 const WEEK = 7
 const REGION_CAP = 3
+export const MIN_PAR = 3
 
 type Pair = [CountryId, CountryId]
 type Candidate = RouteEnds & { par: number }
@@ -79,7 +80,7 @@ export function extendDailyRoutes(
 		const distances = distancesFrom(graph, startId)
 		for (const targetId of ids) {
 			const steps = distances.get(targetId)
-			if (steps === undefined || steps < 2) continue
+			if (steps === undefined || steps - 1 < MIN_PAR) continue
 			parOf.set(`${startId}>${targetId}`, steps - 1)
 			for (const level of GAME_DIFFICULTIES) {
 				if (

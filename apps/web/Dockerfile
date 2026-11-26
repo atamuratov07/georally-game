@@ -8,6 +8,7 @@ COPY apps/web/package.json apps/web/package.json
 COPY packages/game-domain/package.json packages/game-domain/package.json
 COPY packages/game-protocol/package.json packages/game-protocol/package.json
 COPY packages/country-catalog/package.json packages/country-catalog/package.json
+COPY packages/mastery/package.json packages/mastery/package.json
 RUN pnpm ci
 
 FROM deps AS build
@@ -15,6 +16,7 @@ COPY apps/web apps/web
 COPY packages/game-domain packages/game-domain
 COPY packages/game-protocol packages/game-protocol
 COPY packages/country-catalog packages/country-catalog
+COPY packages/mastery packages/mastery
 
 RUN pnpm --filter @georally/web... build
 

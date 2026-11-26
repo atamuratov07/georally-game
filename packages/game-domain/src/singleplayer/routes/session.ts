@@ -1,14 +1,10 @@
-import {
-	distancesFrom,
-	easiestShortestPathRank,
-	type BorderGraph,
-} from '../../borders'
+import { distancesFrom, type BorderGraph } from '../../borders'
 import type { CountryPool } from '../../catalog/types'
 import type { SessionPreparationError } from '../../shared/errors'
 import { pickRandomIds, type RandomNumberGenerator } from '../../shared/random'
 import { err, ok, type Result } from '../../shared/result'
 import type { CountryId, GameContinent } from '../../shared/types'
-import { parFits, ratingRank, routeLevels, routeRegionOf } from './difficulty'
+import { fitsLevel, ratingRank, routeRegionOf } from './difficulty'
 import type {
 	DailyRouteEntry,
 	RoutePracticeConfig,
@@ -22,7 +18,7 @@ const regionOf = (continent: GameContinent) =>
 			? 'asia'
 			: continent
 
-function byRegionPair(
+export function byRegionPair(
 	pairs: readonly [CountryId, CountryId][],
 	pool: CountryPool,
 	rng: RandomNumberGenerator,
@@ -92,12 +88,9 @@ export function prepareRouteSession(
 
 		const steps = distances.get(targetId)
 		if (steps === undefined || steps < 2) continue
-		const par = steps - 1
-		if (!parFits(config.difficulty, par)) continue
-
-		const best = easiestShortestPathRank(graph, startId, targetId, rank)
-		if (best !== null && routeLevels(par, best).includes(config.difficulty)) {
-			return ok({ config, startId, targetId })
+		const ends = { startId, targetId }
+		if (fitsLevel(graph, rank, ends, steps - 1, config.difficulty)) {
+			return ok({ config, ...ends })
 		}
 	}
 

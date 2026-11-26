@@ -1,3 +1,4 @@
+import { easiestShortestPathRank, type BorderGraph } from '../../borders'
 import { DIFFICULTY_RANK } from '../../catalog/selectors'
 import type { CountryPool } from '../../catalog/types'
 import type {
@@ -5,7 +6,7 @@ import type {
 	GameContinent,
 	GameDifficulty,
 } from '../../shared/types'
-import { ROUTE_REGIONS, type RouteRegion } from './types'
+import { ROUTE_REGIONS, type RouteEnds, type RouteRegion } from './types'
 
 export const ROUTE_REGION_CONTINENTS: Readonly<
 	Record<RouteRegion, readonly GameContinent[]>
@@ -51,4 +52,16 @@ export function parFits(level: GameDifficulty, par: number): boolean {
 		case 'hard':
 			return par >= 4
 	}
+}
+
+export function fitsLevel(
+	graph: BorderGraph,
+	rank: (id: CountryId) => number,
+	{ startId, targetId }: RouteEnds,
+	par: number,
+	level: GameDifficulty,
+): boolean {
+	if (!parFits(level, par)) return false
+	const best = easiestShortestPathRank(graph, startId, targetId, rank)
+	return best !== null && routeLevels(par, best).includes(level)
 }

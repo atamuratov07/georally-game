@@ -1,0 +1,17 @@
+{
+	"excluded": [],
+	"surprising": [
+		{ "a": "072", "b": "894", "reason": "Kazungula" },
+		{ "a": "250", "b": "826", "reason": "Channel Tunnel" },
+		{ "a": "208", "b": "752", "reason": "Øresund Bridge" },
+		{ "a": "458", "b": "702", "reason": "Johor–Singapore Causeway" },
+		{ "a": "048", "b": "682", "reason": "King Fahd Causeway" },
+		{ "a": "076", "b": "250", "reason": "French Guiana" },
+		{ "a": "250", "b": "740", "reason": "French Guiana" },
+		{ "a": "504", "b": "724", "reason": "Ceuta and Melilla" },
+		{ "a": "616", "b": "643", "reason": "Kaliningrad" },
+		{ "a": "440", "b": "643", "reason": "Kaliningrad" },
+		{ "a": "024", "b": "178", "reason": "Cabinda" },
+		{ "a": "031", "b": "792", "reason": "Nakhchivan" }
+	]
+}

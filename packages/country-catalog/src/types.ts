@@ -4,6 +4,7 @@ import type {
 	GameDifficulty,
 } from '@georally/game-domain'
 import type { AnswerLanguage } from '@georally/game-domain/answers'
+import type { DailyRouteEntry } from '@georally/game-domain/singleplayer/routes'
 
 export type CatalogLanguage = 'en' | 'ru' | 'uz-Latn'
 
@@ -54,4 +55,9 @@ export interface BordersPayload {
 	version: number
 	generated_at: string
 	edges: [CountryId, CountryId][]
+}
+
+export interface DailyRoutesPayload {
+	launch: string
+	puzzles: DailyRouteEntry[]
 }

@@ -3,11 +3,11 @@ import { describe, expect, it } from 'vitest'
 import { fsrsScheduler } from '../fsrs/fsrsScheduler'
 import { rebuildCards } from '../rebuildCards'
 import { PACES } from '../settings'
-import type { Pace } from '../types'
+import { SKILL_IDS, type Pace } from '../types'
 import { simulate } from './simulate'
 
-const DAYS = 120
-const SETTLED_FROM = 80
+const DAYS = 150
+const SETTLED_FROM = 110
 
 describe.each(Object.keys(PACES) as Pace[])('a %s player', pace => {
 	const runs = [
@@ -25,7 +25,9 @@ describe.each(Object.keys(PACES) as Pace[])('a %s player', pace => {
 	it('ends every session and meets every country', () => {
 		for (const run of runs) {
 			expect(run.days.every(day => day.ended)).toBe(true)
-			expect(run.cards).toHaveLength(Object.keys(pool.countriesById).length)
+			expect(run.cards).toHaveLength(
+				Object.keys(pool.countriesById).length * SKILL_IDS.length,
+			)
 		}
 	})
 

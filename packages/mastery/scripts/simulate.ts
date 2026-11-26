@@ -2,7 +2,7 @@ import { playableCountryPool } from '@georally/country-catalog'
 import { fsrsScheduler } from '../src/fsrs/fsrsScheduler'
 import { PACES } from '../src/settings'
 import { simulate, type SimulatedDay } from '../src/simulation/simulate'
-import type { Pace } from '../src/types'
+import { SKILL_IDS, type Pace } from '../src/types'
 
 const DAYS = 120
 const SETTLED_FROM = 40
@@ -19,7 +19,8 @@ function minutes(ms: number) {
 }
 
 function allIntroducedOn(days: readonly SimulatedDay[]) {
-	const total = Object.keys(playableCountryPool.countriesById).length
+	const total =
+		Object.keys(playableCountryPool.countriesById).length * SKILL_IDS.length
 	let introduced = 0
 	for (const day of days) {
 		introduced += day.newCards

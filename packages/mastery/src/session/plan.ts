@@ -1,4 +1,5 @@
 import type { CountryId } from '@georally/game-domain'
+import { splitCardId } from '../cardId'
 import { activeSkills, PACES } from '../settings'
 import type {
 	CardId,
@@ -37,6 +38,23 @@ function interleave(base: readonly CardId[], extra: readonly CardId[]) {
 	return [...result, ...base.slice(baseIndex)]
 }
 
+function onePerCountry(
+	cardIds: readonly CardId[],
+	owners: Map<CountryId, CardId>,
+	limit = Infinity,
+) {
+	const kept: CardId[] = []
+	for (const cardId of cardIds) {
+		if (kept.length >= limit) break
+		const { countryId } = splitCardId(cardId)
+		const owner = owners.get(countryId)
+		if (owner !== undefined && owner !== cardId) continue
+		owners.set(countryId, cardId)
+		kept.push(cardId)
+	}
+	return kept
+}
+
 export function buildSessionPlan(input: SessionPlanInput): CardId[] {
 	const pace = PACES[input.settings.pace]
 	const skills = activeSkills(input.settings)
@@ -45,33 +63,45 @@ export function buildSessionPlan(input: SessionPlanInput): CardId[] {
 			skills.includes(card.skillId) && input.playableIds.has(card.countryId),
 	)
 
-	const rechecked = playable
-		.filter(card => input.rechecks[card.id] !== undefined)
-		.sort((a, b) => input.rechecks[a.id]! - input.rechecks[b.id]!)
-		.map(card => card.id)
+	const owners = new Map<CountryId, CardId>(
+		input.todaysLog.map(entry => [
+			splitCardId(entry.cardId).countryId,
+			entry.cardId,
+		]),
+	)
+	const rechecked = onePerCountry(
+		playable
+			.filter(card => input.rechecks[card.id] !== undefined)
+			.sort((a, b) => input.rechecks[a.id]! - input.rechecks[b.id]!)
+			.map(card => card.id),
+		owners,
+	)
 
 	const dueRoom = Math.max(
 		0,
 		pace.reviewCap - countKind(input.todaysLog, 'due'),
 	)
-	const due = playable
-		.filter(
-			card =>
-				input.rechecks[card.id] === undefined &&
-				card.scheduling.due <= input.dayEnd,
-		)
-		.sort(
-			(a, b) =>
-				a.scheduling.due - b.scheduling.due || (a.id < b.id ? -1 : 1),
-		)
-		.slice(0, dueRoom)
-		.map(card => card.id)
+	const due = onePerCountry(
+		playable
+			.filter(
+				card =>
+					input.rechecks[card.id] === undefined &&
+					card.scheduling.due <= input.dayEnd,
+			)
+			.sort(
+				(a, b) =>
+					a.scheduling.due - b.scheduling.due || (a.id < b.id ? -1 : 1),
+			)
+			.map(card => card.id),
+		owners,
+		dueRoom,
+	)
 
 	const newRoom = Math.max(
 		0,
 		pace.newPerDay + input.extraNew - countKind(input.todaysLog, 'new'),
 	)
-	const fresh = input.introOrder.slice(0, newRoom)
+	const fresh = onePerCountry(input.introOrder, owners, newRoom)
 
 	return [...rechecked, ...interleave(due, fresh)]
 }

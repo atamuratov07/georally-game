@@ -35,6 +35,7 @@ export {
 export { activeSkills, DEFAULT_SETTINGS, PACES } from './settings'
 export type { Grader } from './skills/grade'
 export { LOCATE_SLOW_MS, locateOutcome } from './skills/locate'
+export { NAME_SLOW_MS, nameOutcome } from './skills/name'
 export { SKILLS, type SkillDefinition } from './skills/registry'
 export {
 	SKILL_IDS,

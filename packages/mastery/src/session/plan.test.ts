@@ -1,15 +1,25 @@
 import { describe, expect, it } from 'vitest'
-import type { CardId, CardRecord, ReviewKind, ReviewLogEntry } from '../types'
+import type {
+	CardId,
+	CardRecord,
+	ReviewKind,
+	ReviewLogEntry,
+	SkillId,
+} from '../types'
 import { buildSessionPlan, type SessionPlanInput } from './plan'
 
 const DAY_END = Date.UTC(2026, 10, 23, 23)
 const HOUR = 3_600_000
 
-function card(countryId: string, due: number): CardRecord {
+function card(
+	countryId: string,
+	due: number,
+	skillId: SkillId = 'locate',
+): CardRecord {
 	return {
-		id: `${countryId}:locate`,
+		id: `${countryId}:${skillId}`,
 		countryId,
-		skillId: 'locate',
+		skillId,
 		introducedAt: 0,
 		scheduling: {
 			due,
@@ -102,6 +112,29 @@ describe('buildSessionPlan', () => {
 		expect(result.map(id => (id.startsWith('n') ? 'N' : '.')).join('')).toBe(
 			'.N...N...N...N..',
 		)
+	})
+
+	it('gives a country one card a day, the longest due first', () => {
+		const cards = [
+			card('250', HOUR),
+			card('250', 2 * HOUR, 'name'),
+			card('392', HOUR),
+		]
+		expect(plan({ cards, introOrder: ['392:name', '616:locate'] })).toEqual([
+			'250:locate',
+			'616:locate',
+			'392:locate',
+		])
+
+		const nextDay = [card('250', DAY_END - 1), card('250', 2 * HOUR, 'name')]
+		const answeredToday: ReviewLogEntry = {
+			...logged('due', 1)[0],
+			cardId: '250:locate',
+		}
+		expect(plan({ cards: nextDay })).toEqual(['250:name'])
+		expect(plan({ cards: nextDay, todaysLog: [answeredToday] })).toEqual([
+			'250:locate',
+		])
 	})
 
 	it('skips paused skills and countries no longer playable', () => {

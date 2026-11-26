@@ -2,12 +2,12 @@ import {
 	GAME_DIFFICULTIES,
 	pickRandomIds,
 	regionsInclude,
+	seededRandom,
 	type CountryId,
 	type CountryPool,
 } from '@georally/game-domain'
 import { parseCardId, toCardId } from '../cardId'
 import type { CardId, IntroPlan, SkillId } from '../types'
-import { seededRandom } from './seededRandom'
 
 function countryOrder(plan: IntroPlan, pool: CountryPool): CountryId[] {
 	const random = seededRandom(plan.seed)

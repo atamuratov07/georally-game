@@ -324,7 +324,7 @@ georally-game/
 |   |       |-- answerCard.ts            # one answer -> the card's new record and its log entry
 |   |       |-- rebuildCards.ts          # log -> cards, regraded with the current graders
 |   |       |-- skills/                  # registry, grading table, locate (outcome, slow cap)
-|   |       |-- intro/                   # introOrder, unseen, isPlanned, seededRandom
+|   |       |-- intro/                   # introOrder, unseen, isPlanned
 |   |       |-- session/                 # plan (the day's cards), queue (the next card)
 |   |       |-- view/                    # deriveMastery, layers, summarize (known counts), daySummary, countDue
 |   |       |-- services/                # loadToday, recordAnswer, addScope, loadDayResult, loadMastery,

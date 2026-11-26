@@ -32,7 +32,8 @@ export default function GamePage() {
 }
 
 function GameContent({ onNext }: { onNext: (config: RouteConfig) => void }) {
-	const { state, board, begin, attempt, hint, giveUp, leave } = useRoutesGame()
+	const { state, board, begin, attempt, hint, giveUp } =
+		useRoutesGame(routeGameStore)
 
 	if (state === null || board === null) {
 		return <RedirectWithSearch to={paths.setup} />
@@ -49,7 +50,7 @@ function GameContent({ onNext }: { onNext: (config: RouteConfig) => void }) {
 				onAttempt={attempt}
 				onHint={hint}
 				onGiveUp={giveUp}
-				onLeave={leave}
+				onLeave={routeGameStore.clear}
 				onNext={config.kind === 'practice' ? () => onNext(config) : null}
 			/>
 		</KeyboardGameFrame>

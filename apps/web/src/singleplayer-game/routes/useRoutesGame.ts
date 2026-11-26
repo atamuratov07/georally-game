@@ -12,8 +12,8 @@ import {
 	type RouteState,
 } from '@georally/game-domain/singleplayer/routes'
 import { useCallback, useEffect, useReducer, useState } from 'react'
+import type { GameStore } from '../shared/gameStore'
 import { useRoutesAnalytics } from './analytics'
-import { routeGameStore } from './store'
 
 interface OpenedRoute {
 	initial: RouteState
@@ -39,17 +39,17 @@ function open(saved: RouteState): OpenedRoute | null {
 	return board ? { initial: saved, session: null, board } : null
 }
 
-function openSaved(): OpenedRoute | null {
-	const saved = routeGameStore.load()
+function openSaved(store: GameStore<RouteState>): OpenedRoute | null {
+	const saved = store.load()
 	const opened = saved && open(saved)
 	if (saved && !opened) {
-		routeGameStore.clear()
+		store.clear()
 	}
 	return opened
 }
 
-export function useRoutesGame() {
-	const [opened] = useState(openSaved)
+export function useRoutesGame(store: GameStore<RouteState>) {
+	const [opened] = useState(() => openSaved(store))
 	const board = opened?.board ?? null
 	const session = opened?.session ?? null
 	const [state, dispatch] = useReducer(
@@ -61,9 +61,9 @@ export function useRoutesGame() {
 
 	useEffect(() => {
 		if (state) {
-			routeGameStore.save(state)
+			store.save(state)
 		}
-	}, [state])
+	}, [state, store])
 
 	useRoutesAnalytics(
 		state,
@@ -92,9 +92,5 @@ export function useRoutesGame() {
 		dispatch({ type: 'GIVE_UP', now: Date.now() })
 	}, [])
 
-	const leave = useCallback(() => {
-		routeGameStore.clear()
-	}, [])
-
-	return { state, board, begin, attempt, hint, giveUp, leave }
+	return { state, board, begin, attempt, hint, giveUp }
 }

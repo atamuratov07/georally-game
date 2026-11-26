@@ -7,6 +7,13 @@ export { pickRandomIds, type RandomNumberGenerator } from './shared/random'
 export { err, ok, type Result } from './shared/result'
 export { elapsedSeconds, type LocalDay } from './shared/time'
 export {
+	addDays,
+	daysBetween,
+	deriveStreak,
+	weekday,
+	type Streak,
+} from './streak'
+export {
 	GAME_CONTINENTS,
 	GAME_DIFFICULTIES,
 	type CountryId,

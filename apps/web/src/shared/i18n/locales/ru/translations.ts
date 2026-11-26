@@ -318,6 +318,7 @@ const translations = {
 	},
 	review: {
 		title: 'Повторение',
+		namePrompt: 'Что это за страна?',
 		start: 'Начать',
 		add: 'Добавить',
 		whereToStart: 'С чего начнём?',
@@ -352,6 +353,13 @@ const translations = {
 		notInReview: 'Нет в вашем повторении',
 		myMap: 'Моя карта',
 		pace: 'Темп',
+		skillsLabel: 'Навыки',
+		skills: {
+			locate: 'Найти',
+			name: 'Назвать',
+		},
+		overall: 'Общий',
+		layer: 'Слой карты',
 		paces: {
 			relaxed: 'Спокойный',
 			steady: 'Обычный',

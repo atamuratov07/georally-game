@@ -2,7 +2,7 @@ import { Timer } from 'lucide-react'
 import type { CSSProperties, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/utils'
-import { FlagImage } from './FlagImage'
+import { FlagImage } from '@/shared/widgets/FlagImage'
 
 interface GameHudProps {
 	current: number

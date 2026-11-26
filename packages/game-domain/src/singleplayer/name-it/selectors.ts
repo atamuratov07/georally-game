@@ -1,3 +1,4 @@
+import type { CountryId } from '../../shared/types'
 import type { Attempt, GameState, RoundOutcome } from './types'
 
 export function getOutcome(state: GameState): RoundOutcome | null {
@@ -10,6 +11,16 @@ export function getRemainingMs(state: GameState, now: number): number {
 
 export function getDeadlineAt(state: GameState): number | null {
 	return state.phase === 'answering' ? state.deadlineAt : null
+}
+
+export function getWrongNames(state: GameState): CountryId[] {
+	if (state.phase !== 'answering' && state.phase !== 'revealed') return []
+	const target = state.questionIds[state.index]
+	return state.attempts.flatMap(({ result }) =>
+		result.kind === 'match' && result.countryId !== target
+			? [result.countryId]
+			: [],
+	)
 }
 
 export function getLastAttempt(state: GameState): Attempt | null {

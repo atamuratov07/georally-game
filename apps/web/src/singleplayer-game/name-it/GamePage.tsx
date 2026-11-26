@@ -40,6 +40,7 @@ function GameContent() {
 		next,
 		playAgain,
 		leave,
+		reviewOffer,
 	} = useNameItGame()
 	const finished = engineState?.phase === 'finished' ? engineState : null
 	const best = useBestView(
@@ -69,6 +70,7 @@ function GameContent() {
 				correctCount={getCorrectCount(engineState)}
 				totalCount={getQuestionCount(engineState)}
 				best={best}
+				reviewOffer={reviewOffer}
 				onTryAgain={playAgain}
 				onHome={() => {
 					leave()

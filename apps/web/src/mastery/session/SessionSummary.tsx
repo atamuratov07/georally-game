@@ -91,7 +91,7 @@ export function SessionSummary({
 	}
 	if (state.status === 'loading') return null
 
-	const { newIds, reviewedIds, flawless, dueTomorrow, unseenCount, views } =
+	const { newIds, reviewedIds, flawless, dueTomorrow, unseenCount, layer } =
 		state.result
 
 	async function addMore() {
@@ -147,7 +147,7 @@ export function SessionSummary({
 
 				<MasteryMap
 					className='raised h-56 animate-pop-in rounded-card border-2 border-line [animation-delay:550ms] sm:h-64'
-					views={views}
+					layer={layer}
 					todayIds={[...newIds, ...reviewedIds]}
 				/>
 

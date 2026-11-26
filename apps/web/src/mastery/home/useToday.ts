@@ -1,10 +1,11 @@
 import { playableCountryPool } from '@georally/country-catalog'
 import type { LocalDay } from '@georally/game-domain'
 import {
+	activeSkills,
 	loadToday,
 	masteryViews,
-	type CardId,
-	type MasteryView,
+	overallLayer,
+	type MasteryLayer,
 	type Today,
 } from '@georally/mastery'
 import { useCallback, useEffect, useState } from 'react'
@@ -18,7 +19,7 @@ export type TodayState =
 			status: 'ready'
 			day: LocalDay
 			today: Today
-			views: ReadonlyMap<CardId, MasteryView>
+			layer: MasteryLayer // Overall
 	  }
 
 export function useToday() {
@@ -32,7 +33,10 @@ export function useToday() {
 					status: 'ready',
 					day,
 					today,
-					views: masteryViews(today.cards, mastery.scheduler, Date.now()),
+					layer: overallLayer(
+						masteryViews(today.cards, mastery.scheduler, Date.now()),
+						activeSkills(today.meta.settings),
+					),
 				}),
 			(error: unknown) => {
 				console.error(error)

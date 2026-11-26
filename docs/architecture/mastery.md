@@ -4,7 +4,7 @@ A daily spaced-review session at `/review`. The player picks continents, and eve
 
 In the interface and the URL the feature is "review". In code it is `mastery`, and its web components carry that prefix (`MasteryHomePage`, `MasterySessionPage`), because Recall Sprint already uses "review" for its results walkthrough (`useReview`, `ReviewLayers`).
 
-Only the `locate` skill (find the named country) exists so far. The second skill, the bridge from casual games, the Overall map layer and the streak are designed in [`../proposals/mastery-review.md`](../proposals/mastery-review.md) and not built.
+Two skills exist: `locate` (find the named country) and `name` (name the highlighted one). The streak is designed in [`../proposals/mastery-review.md`](../proposals/mastery-review.md) and not built.
 
 ## Concepts
 
@@ -43,7 +43,7 @@ graph TD
 - **Import rules** (`eslint.config.js`):
    - only `src/fsrs/` imports `ts-fsrs`, only `src/idb/` imports `idb`, and only `src/skills/` imports a mode's reducer types;
    - in the web app, only `mastery/container.ts` imports the adapters;
-   - `singleplayer-game` doesn't import from `mastery/`.
+   - `singleplayer-game` imports from `mastery/` only `mastery/bridge/reportCasualOutcomes`, and only lazily.
 - **The rules never read the catalog.** They take a `CountryPool` or a set of ids, as `prepareQuestionSet` does.
 
 ## Data
@@ -117,6 +117,24 @@ A session is computed from storage every time it opens and is never saved, so cl
 
 - **The queue** (`selectNext`, `applyAnswer`) picks the next card after every answer: a waiting card whose `due` has passed, else the next planned card, else the earliest waiting card shown early, else the session is complete. An answered card waits only if it is due again within 15 minutes (`LEARN_AHEAD_MS`); otherwise it has left the session. So a miss comes back a few cards later and again at the end, the spacing FSRS asked for.
 
+## Casual-play bridge
+
+A Find It or Name It game reports its rounds to review when it finishes, so a country missed in casual play comes up in review.
+
+- **The mode decides what a miss is** (its `bridge.ts`), since only the mode knows its rounds:
+
+   | Mode    | Skill    | A miss                                                                                             |
+   | ------- | -------- | -------------------------------------------------------------------------------------------------- |
+   | Find It | `locate` | Not found, or found after a wrong pick: the first pick shows whether the player knew               |
+   | Name It | `name`   | Time up, given up, or another country named first (`getWrongNames`), even if the right one follows |
+
+   Text that matches no country, or several, isn't a wrong name: it shows a typing or hearing problem, not what the player knows. `nameOutcome` counts wrong attempts the same way.
+
+- **Review decides what a miss adds** (`decideBridge`), and knows nothing about modes. A miss on a card that already has a record asks for a recheck: it leads the next session, and its schedule is untouched until then. A miss on a card review hasn't introduced is offered. A miss on a paused skill, or a round that wasn't missed, adds nothing.
+- **The offer** is one line in the result modal (`ReviewOfferLine`): "Add 3 missed countries to your review?" with Add and Not now. Accepting appends the cards to the plan's `acceptedMisses`, which lead the intro order. For a player who has never opened review, this is the way in.
+- **Review's code loads only at the end of a game.** `useReviewBridge` (`singleplayer-game/shared/`) collects each revealed round's outcome from the round events and imports `mastery/bridge/reportCasualOutcomes` when the game finishes; a restored game reports only the rounds played after the restore. A new game drops an offer that hasn't arrived yet.
+- **Analytics:** `bridge_offer_shown` and `bridge_offer_accepted`, with the mode and the offered count.
+
 ## Web feature
 
 `apps/web/src/mastery/` has three lazy pages: `/review`, `/review/play` and `/review/map`. If IndexedDB is unavailable (some private modes), each shows an "unavailable" screen; casual modes are unaffected.
@@ -135,7 +153,8 @@ One card, in one of two forms:
    - **Today** (`TodayPanel`): the due and new counts, the pace and Start. When nothing is left, "Done for today" with how many cards are due tomorrow, and no pace: a change would only show in tomorrow's plan.
    - **The map preview** (`MapPreview`): the whole world on `MasteryMap`, with "My map" and the known count of all playable countries, linking to the map page.
    - **"Where next"** (`ScopeForm` again), only when every chosen country has been introduced and continents remain. Before that, adding a continent would change nothing for days, since new cards still come from the earlier scopes. Continents already chosen are shown fixed and can't be removed.
-- **The pace** (`PaceSetting`) saves itself on every change (`setPace`) and reloads today's plan, so the counts follow at once.
+- **The pace** (`PaceSetting`) and **the skill switches** (`SkillSwitches`, a `Switch` per skill in its mode's colour on the row below) save themselves on every change (`setPace`, `setSkillActive`) and reload today's plan, so the counts follow at once. A paused skill's cards are kept but stop coming up (`activeSkills` filters every rule) and drop out of the Overall layer. The last active skill can't be paused (`withSkill`), since review would have nothing to ask; its switch is locked on.
+- **Layers.** Each skill has a layer of its own cards (`skillLayer`). Overall (`overallLayer`) shows a country at the lowest level among the active skills that have met it, fading if any of them fades, and unseen only when none has. New cards come skill by skill, so a rule that waited for every skill would leave Overall empty for weeks; this way a country drops to learning when a new skill meets it. The home preview and the summary map show Overall.
 
 **Session** (`MasterySessionPage`)
 
@@ -144,11 +163,14 @@ graph TD
     Page["MasterySessionPage<br/>header: leave, progress, target"] --> Hook["useMasterySession<br/>loads the plan, saves answers"]
     Hook --> Reducer["sessionReducer<br/>queue, current card, save status"]
     Hook -->|recordAnswer| Store["MasteryRepository"]
-    Page --> Card["LocateCard<br/>Find It's round on PickCountryMap"]
-    Card -->|onAnswer: outcome| Hook
+    Page --> Registry["SKILL_CARDS<br/>skill → card and the header's question"]
+    Registry --> Locate["LocateCard<br/>Find It's round on PickCountryMap"]
+    Registry --> Name["NameCard<br/>Name It's round from game-kit"]
+    Locate -->|onAnswer: outcome| Hook
+    Name -->|onAnswer: outcome| Hook
 ```
 
-- **The card owns its mode's round; the session only sees outcomes.** `LocateCard` runs Find It's reducer and reports `onAnswer(outcome, at)`. The session reducer holds the queue, the current card and whether its answer is saved, and knows nothing about any mode, so a second skill adds a card component, not branches in the session. Next and Give up live in the card because where they go depends on how the card is answered (Find It floats them over the map; Name It has an answer bar). Leaving and the progress counter live in the page header, the same for every card.
+- **The card owns its mode's round; the session only sees outcomes.** Each card runs its mode's reducer for one question and reports `onAnswer(outcome, at)`; `useCardRound` keeps that round until the session's turn moves on. The session reducer holds the queue, the current card and whether its answer is saved, and knows nothing about any mode. `SKILL_CARDS` maps every skill to its card and to the question the header asks (the name and flag for Locate, "Which country is this?" for Name), and is typed against every skill, so a skill without a card doesn't compile. Next and Give up live in the card because where they go depends on how the card is answered (Find It floats them over the map; Name It has an answer bar). Leaving and the progress counter live in the page header, the same for every card.
 - **Next waits for the save.** The answer is written before the queue moves on, so the queue and storage never disagree. If the write fails, a toast offers a retry with the same entry id, and the card stays.
 - **One map for the whole session.** `PickCountryMap` stays mounted and resets its view for every card, so there is no reload between cards. The target's name appears only once the map is ready, since the response time starts then.
 - **Feedback:** the answered country turns green or red, the camera flies to the right one, and its `CountryInfoCard` opens (the map's toggle hides it). The player moves on with Next; nothing advances by itself, so a player reading the card is never cut off.
@@ -158,17 +180,18 @@ graph TD
 **Summary** (`SessionSummary`)
 
 - **It shows the whole day, not the session.** `loadDayResult` reads today's log: a card introduced today counts as new however often it came back, and any other card answered today counts as reviewed. A count kept in the session would split a day played in two sittings, and would count a missed new card's repeat as a review.
-- **The map** (`mastery/map/MasteryMap.tsx`) colours every seen country by its Locate level and outlines today's countries. It opens on the continents answered today and doesn't pan or zoom, so the page scrolls over it on phones.
+- **The map** (`mastery/map/MasteryMap.tsx`) colours every seen country by its Overall level and outlines today's countries. It opens on the continents answered today and doesn't pan or zoom, so the page scrolls over it on phones.
 - **Levels** come from `deriveMastery`: learning until the card graduates from FSRS's short-term steps, then familiar, and mastered from a stability of 21 days. A card is also fading when its recall chance is under 0.85. `MasteryLayers` draws them on both maps: one fixed fill layer and a white hatch for fading (`masteryStyles.ts`), driven by a feature state per country, so a change repaints one country without rebuilding the style. Tiny countries get rings in their level's colour.
 - **"Learn 5 more"** appears while the chosen scopes still have unseen cards (`loadDayResult` returns `unseenCount`). It grants five more new cards for today and starts the new session on the same page: `MasterySessionPage` remounts its session with a new key, so the plan is built again. If saving fails, a toast says so and the summary stays.
 - **`navigator.storage.persist()`** is requested here, after the player has stored progress (see [`persistence.md`](persistence.md#review-progress)).
 
 **Map page** (`MasteryMapPage`)
 
-- **A full-screen flat map** (`ExploreMap`) with every seen country coloured by its Locate level, unseen ones grey and the latitude lines hidden (`prepareMasteryMap`). It pans and zooms freely; the back button returns to the review home.
+- **A full-screen flat map** (`ExploreMap`) with every seen country coloured by its level in the chosen layer, unseen ones grey and the latitude lines hidden (`prepareMasteryMap`). It pans and zooms freely; the back button returns to the review home.
 - **The headline** names the focused scope and its known count out of its playable countries ("Europe 12/45"). `summarizeLayer` counts every scope at once over `playableCountryPool`.
+- **The layer switch** (`LayerSwitch`, a `SegmentedControl`) sits under the headline: Overall (the default), then each skill in its mode's colour (`skillTones.ts`). A paused skill keeps its layer. The headline and the continent counts follow the chosen layer.
 - **The continent row** at the bottom picks the focus: the whole world and each continent as a shape, the chosen one lit in its colour and the rest grey with their counts. Choosing one flies the camera to it, framed between the headline and the row. The shapes come from `virtual:region-map` (`REGION_SHAPES`): each continent projected alone and framed by its own outline, leaving out islands under 0.4% of its largest landmass, so outliers such as the Aleutians don't shrink the shape. The row is centred with auto margins inside its scroller, so on narrow screens its start stays reachable.
-- **Tapping a country** opens its card (`MasteryCountryCard`): the flag and name, the level, fading, and the next review in local days ("today", "tomorrow", "in 5 days"). A country with no card says "Coming up" when it is planned (`isPlanned`: its continent is in a chosen scope, or its card was accepted from a casual game's miss) and "Not in your review" otherwise.
+- **Tapping a country** opens its card (`MasteryCountryCard`): the flag and name, then for each skill of the layer (every active skill on Overall, titled by skill) the level, fading, and the next review in local days ("today", "tomorrow", "in 5 days"). A skill with no card says "Coming up" when it is planned (`isPlanned`: its continent is in a chosen scope, or its card was accepted from a casual game's miss) and "Not in your review" otherwise.
 - **The maps fade in once styled.** MapLibre paints the base style before the mastery layers and feature states apply, so both mastery maps keep the canvas transparent over the sea colour until the first `idle` after load (`useShownWhenStyled`), then fade it in.
 
 **Analytics** (`shared/analytics/track.ts`): `review_session_start` (due and new counts), `review_card_answered` (skill, rating, kind, input, response time) and `review_session_end` (cards, new cards, duration).

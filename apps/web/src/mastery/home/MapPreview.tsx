@@ -1,9 +1,8 @@
 import { playableCountryPool } from '@georally/country-catalog'
 import {
-	skillLayer,
 	summarizeLayer,
 	type CardId,
-	type MasteryView,
+	type MasteryLayer,
 } from '@georally/mastery'
 import { ChevronRight } from 'lucide-react'
 import { useMemo } from 'react'
@@ -16,22 +15,17 @@ import { masteryPaths } from '../paths'
 const TITLE_TEXT = outlinedText(5, 4)
 const NO_CARDS: readonly CardId[] = []
 
-export function MapPreview({
-	views,
-}: {
-	views: ReadonlyMap<CardId, MasteryView>
-}) {
+export function MapPreview({ layer }: { layer: MasteryLayer }) {
 	const { t } = useTranslation()
 	const { known, total } = useMemo(
-		() =>
-			summarizeLayer(skillLayer(views, 'locate'), playableCountryPool).all,
-		[views],
+		() => summarizeLayer(layer, playableCountryPool).all,
+		[layer],
 	)
 
 	return (
 		<MasteryMap
 			className='raised h-44 rounded-card border-2 border-line transition-transform duration-150 hover:-translate-y-1 active:translate-y-0.5 sm:h-52 [&_.maplibregl-ctrl-bottom-right]:top-0 [&_.maplibregl-ctrl-bottom-right]:bottom-auto'
-			views={views}
+			layer={layer}
 			todayIds={NO_CARDS}
 			overlay={
 				<LocalizedLink

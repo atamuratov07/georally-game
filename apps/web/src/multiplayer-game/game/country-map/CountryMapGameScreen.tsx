@@ -3,10 +3,10 @@ import type { VisibleMemberInfo } from '@georally/game-domain/multiplayer/room'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useCurrentLocale } from '@/app/LocaleContext'
+import { GameHud } from '@/game-kit/hud/GameHud'
+import { ScoreBanner } from '@/game-kit/hud/ScoreBanner'
 import { getCountryName } from '@/shared/i18n'
 import { PickCountryMap } from '@/shared/map/PickCountryMap'
-import { GameHud } from '@/shared/widgets/GameHud'
-import { ScoreBanner } from '@/shared/widgets/ScoreBanner'
 import {
 	getLeaderboardEntries,
 	getTargetCountryInfo,

@@ -1,10 +1,9 @@
 import type { GameDifficulty } from '@georally/game-domain'
 import type { TFunction } from 'i18next'
 import { getDifficultyLabel } from '@/shared/i18n'
-import type { SettingTone } from './SettingToggleGroup'
-import type { SettingOption } from './SettingToggleGroup'
+import type { ControlTone, SegmentOption } from '@/shared/ui'
 
-const DIFFICULTY_TONES: Record<GameDifficulty, SettingTone> = {
+const DIFFICULTY_TONES: Record<GameDifficulty, ControlTone> = {
 	easy: 'grass',
 	medium: 'sunflower',
 	hard: 'coral',
@@ -12,14 +11,14 @@ const DIFFICULTY_TONES: Record<GameDifficulty, SettingTone> = {
 
 export function numberOptions(
 	values: readonly number[],
-): SettingOption<number>[] {
+): SegmentOption<number>[] {
 	return values.map(value => ({ value, label: value }))
 }
 
 export function difficultyOptions(
 	t: TFunction,
 	difficulties: readonly { value: GameDifficulty }[],
-): SettingOption<GameDifficulty>[] {
+): SegmentOption<GameDifficulty>[] {
 	return difficulties.map(({ value }) => ({
 		value,
 		label: getDifficultyLabel(t, value),

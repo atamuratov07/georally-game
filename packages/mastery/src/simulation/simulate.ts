@@ -122,10 +122,14 @@ export function simulate(options: SimulationOptions): SimulationResult {
 			playableIds,
 			dayEnd,
 		})
-		const dueByDayEnd = [...cards.values()].filter(
-			card => card.scheduling.due <= dayEnd,
+		const plannedCountries = new Set(
+			sessionPlan.map(cardId => splitCardId(cardId).countryId),
+		)
+		const dueLeftOver = [...cards.values()].filter(
+			card =>
+				card.scheduling.due <= dayEnd &&
+				!plannedCountries.has(card.countryId),
 		).length
-		const plannedDue = sessionPlan.filter(cardId => cards.has(cardId)).length
 
 		const sessionStart = dayStart + SESSION_HOUR
 		const logStart = log.length
@@ -162,7 +166,7 @@ export function simulate(options: SimulationOptions): SimulationResult {
 			played: true,
 			reviews: today.length,
 			newCards: today.filter(entry => entry.kind === 'new').length,
-			dueLeftOver: dueByDayEnd - plannedDue,
+			dueLeftOver,
 			sessionMs: now - sessionStart,
 			ended: next === 'complete',
 		})

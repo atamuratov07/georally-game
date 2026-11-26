@@ -1,6 +1,6 @@
 import type { CountryId, GameRegions } from '@georally/game-domain'
 
-export const SKILL_IDS = ['locate'] as const
+export const SKILL_IDS = ['locate', 'name'] as const
 export type SkillId = (typeof SKILL_IDS)[number]
 export type CardId = `${CountryId}:${SkillId}`
 

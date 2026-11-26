@@ -100,6 +100,8 @@ georally-game/
 |           |   |   `-- index.ts
 |           |   |-- map/
 |           |   |   |-- PickCountryMap.tsx # the pick-a-country map (locate, multiplayer), composed from the parts below
+|           |   |   |-- NameItMap.tsx   # the name-a-country map (Name It, review): fit camera, target outline,
+|           |   |   |                   # labels only on reveal
 |           |   |   |-- BaseMap.tsx     # MapLibre map, style, load and error, projection and its toggle
 |           |   |   |-- camera/         # useRegionCamera (region views, reset), useRevealCamera, useFitCamera,
 |           |   |   |                   # framing (fitCamera, flight settings, isTinyAt,
@@ -118,41 +120,66 @@ georally-game/
 |           |   |   |-- useFeatureState.ts # sets per-country states, applying only the changes
 |           |   |   `-- types.ts
 |           |   |-- time/               # useDeadline, useNow, localDay (the player's local day)
-|           |   |-- ui/                 # AlertMessage, Button, CopyButton, FloatingNotice, FormControls,
-|           |   |                       # IconButton, ScreenShell, SurfacePanel, buttonStyles
+|           |   |-- ui/                 # Alert, Avatar, Badge, Button, Card, CopyButton, CountUp, Dialog,
+|           |   |                       # DropdownMenu, IconTile, Input, InputOTP, Label, RadioGroup,
+|           |   |                       # SegmentedControl, Switch, Tabs, TextButton, Textarea, Toaster;
+|           |   |                       # tones.ts: ControlTone and a lit control's face
 |           |   |-- utils/
 |           |   |   `-- cn.ts
 |           |   `-- widgets/
 |           |       |-- CountryInfoCard.tsx
-|           |       |-- ScoreBanner.tsx
+|           |       |-- SettingToggleGroup.tsx # a setting's label over a SegmentedControl
 |           |       `-- region-map/
 |           |           |-- ContinentMap.tsx  # continents drawn from virtual:region-map, as toggles
 |           |           |-- continents.ts     # the options and colours
 |           |           `-- RegionPicker.tsx  # the game modes' region rules on ContinentMap
+|           |-- game-kit/                 # the parts of a round screen that the modes and review share;
+|           |   |                         # imports shared/ only, and shared/ never imports it (lint)
+|           |   |-- answering/            # useAnswerInput (typing and voice state of one named answer),
+|           |   |                         # DesktopAnswerBar and TouchAnswerBar on useAnswerField,
+|           |   |                         # AttemptFeedback, MicButton, VoiceButton, AnswerNotice
+|           |   |-- hud/                  # GameHud, ScoreBanner, CountdownBar, Progress (chip and text)
+|           |   `-- name-round/           # one name-a-country round on the map
+|           |       |-- useTargetRoundMap.tsx  # camera focus, highlight, tiny ring, label and reveal of a target
+|           |       |-- useNameRoundScreen.ts  # the layout, insets, projection and card state the map and layer share
+|           |       |-- NameRoundMap.tsx, NameRoundLayer.tsx # NameItMap, and the chosen layout with its toggles
+|           |       |-- layouts.ts             # desktop and touch: component, insets, zoom buttons' top
+|           |       |-- DesktopNameLayout.tsx, TouchNameLayout.tsx # with slots the owner fills
+|           |       |-- types.ts               # NameRoundControls, NameRoundSlots
+|           |       `-- RoundButtons.tsx       # Give up, Next
 |           |-- mastery/                  # review, see mastery.md
 |           |   |-- index.ts              # exports masteryRoutes
 |           |   |-- routes.tsx, paths.ts  # /review, /review/play and /review/map, lazy pages
 |           |   |-- container.ts          # creates the scheduler and repository; the only import of the adapters
+|           |   |-- bridge/reportCasualOutcomes.ts # a casual game's rounds in, an offer out; the one module
+|           |   |                         # singleplayer-game may import (lazily)
 |           |   |-- home/                 # MasteryHomePage, useToday, TodayPanel, ScopeForm, ScopePicker,
-|           |   |                         # PaceSetting, MapPreview
+|           |   |                         # PaceSetting, SkillSwitches, MapPreview
 |           |   |-- session/
 |           |   |   |-- MasterySessionPage.tsx # header, the current card, the summary
 |           |   |   |-- useMasterySession.ts   # loads the plan, saves each answer
 |           |   |   |-- sessionReducer.ts      # queue, current card, save status
-|           |   |   |-- LocateCard.tsx         # Find It's round on PickCountryMap, reports the outcome
-|           |   |   `-- SessionSummary.tsx     # the day's counts and map, Learn 5 more
+|           |   |   |-- SessionSummary.tsx     # the day's counts and map, Learn 5 more
+|           |   |   `-- cards/
+|           |   |       |-- registry.ts        # SKILL_CARDS: each skill's card and the header's question
+|           |   |       |-- types.ts           # ReviewCardProps
+|           |   |       |-- useCardRound.ts    # one round per turn, reported on reveal
+|           |   |       |-- LocateCard.tsx     # Find It's round on PickCountryMap
+|           |   |       `-- NameCard.tsx       # Name It's round on the game kit's name round
 |           |   |-- map/
-|           |   |   |-- MasteryMapPage.tsx     # /review/map: headline, ExploreMap, ContinentCounters
+|           |   |   |-- MasteryMapPage.tsx     # /review/map: headline, LayerSwitch, ExploreMap, ContinentCounters
+|           |   |   |-- LayerSwitch.tsx        # Overall or one skill
 |           |   |   |-- ExploreMap.tsx         # the free map, focus flights, the tapped country's card
-|           |   |   |-- MasteryCountryCard.tsx # flag, name, level, next review, or coming up
+|           |   |   |-- MasteryCountryCard.tsx # flag, name, and per skill: level, next review, or coming up
 |           |   |   |-- ContinentCounters.tsx  # the continent row with known counts
 |           |   |   |-- MasteryMap.tsx         # the fixed map: summary and home preview
 |           |   |   |-- MasteryLayers.tsx, masteryStyles.ts # level fill, fading hatch, outline, rings
 |           |   |   |-- prepareMasteryMap.ts   # hides the latitude lines, adds the hatch image
-|           |   |   |-- useMasteryLayer.ts     # loads the Locate layer and the plan
+|           |   |   |-- useMasteryState.ts     # loads the card views, the plan and the active skills
 |           |   |   `-- useShownWhenStyled.ts  # keeps the canvas hidden until the first idle
 |           |   `-- shared/
-|           |       |-- CountryCardsIcon.tsx   # the review emblem
+|           |       |-- ReviewEmblem.tsx       # the header's emblem, on CountryCardsIcon
+|           |       |-- skillTones.ts          # each skill in its mode's colour
 |           |       `-- ReviewUnavailable.tsx, Stat.tsx
 |           |-- singleplayer-game/
 |           |   |-- index.ts              # exports singleplayerRoutes
@@ -167,23 +194,19 @@ georally-game/
 |           |   |   |-- config.ts         # setting options and the setup URL's query string
 |           |   |   |-- store.ts          # the saved locate game and its checks
 |           |   |   |-- useLocateGame.ts  # restores, runs and saves the locate game
+|           |   |   |-- bridge.ts         # what review counts as a missed round
 |           |   |   |-- analytics.ts
 |           |   |   `-- components/       # GameHeader, Hearts
 |           |   |-- name-it/
 |           |   |   |-- SetupPage.tsx
 |           |   |   |-- GamePage.tsx
-|           |   |   |-- RoundScreen.tsx   # joins the map, the round state and a layout
-|           |   |   |-- useRoundView.tsx  # the round's camera focus, highlights and reveal
-|           |   |   |-- useAnswerInput.ts # typing and voice state shared by the parts
-|           |   |   |-- roundControls.ts  # what a layout receives
-|           |   |   |-- layouts/          # DesktopRoundLayout, TouchRoundLayout, their insets
-|           |   |   |-- NameItMap.tsx     # the map: fit camera, target highlight, labels only on reveal
+|           |   |   |-- RoundScreen.tsx   # the game kit's name round with leave, progress and score
+|           |   |   |-- useRoundView.ts   # the run of questions: flies ahead to the next country
 |           |   |   |-- config.ts
 |           |   |   |-- store.ts
 |           |   |   |-- useNameItGame.ts  # begins and advances when the camera settles
-|           |   |   |-- analytics.ts
-|           |   |   `-- components/       # DesktopAnswerBar, TouchAnswerBar, useAnswerField, AttemptFeedback,
-|           |   |                         # RoundButtons
+|           |   |   |-- bridge.ts         # what review counts as a missed round
+|           |   |   `-- analytics.ts
 |           |   |-- recall-sprint/
 |           |   |   |-- SetupPage.tsx, GamePage.tsx
 |           |   |   |-- SprintScreen.tsx  # joins the map, the controls and a layout per phase
@@ -228,7 +251,6 @@ georally-game/
 |           |   |                         # no catalog, so the landing demo shares it), RouteFeedback,
 |           |   |                         # HintButton, GiveUpButton, RouteResult, SlideIn, BordersNote, verdictStyle
 |           |   `-- shared/
-|           |       |-- touch.ts          # the touch-screen media query
 |           |       |-- gameStore.ts      # createGameStore, hasValidQuestionProgress
 |           |       |-- useStoredGame.ts
 |           |       |-- useGuessField.ts  # the open guess field of Recall Sprint and Routes
@@ -239,8 +261,7 @@ georally-game/
 |           |       |-- useRoundEvents.ts
 |           |       `-- components/       # SetupShell, SetupCard, ModeTabs, modeTones, GameErrorBoundary,
 |           |                             # GameErrorScreen, GameResultModal, ResumeGameCard,
-|           |                             # KeyboardGameFrame, LeaveButton, CountdownBar,
-|           |                             # MicButton, VoiceButton, AnswerNotice, ConfirmButton
+|           |                             # KeyboardGameFrame, LeaveButton, ConfirmButton
 |           `-- multiplayer-game/
 |               |-- index.ts
 |               |-- api/

@@ -31,6 +31,8 @@ export function PaceSetting({
 	return (
 		<SettingToggleGroup
 			label={t('review.pace')}
+			// Not a skill's colour, so the pace doesn't read as one.
+			tone='grape'
 			value={chosen ?? pace}
 			options={PACE_ORDER.map(value => ({
 				value,

@@ -3,8 +3,11 @@ import type { CountryId, GameScope } from '@georally/game-domain'
 import {
 	isPlanned,
 	toCardId,
+	type CardId,
 	type IntroPlan,
 	type MasteryLayer,
+	type MasteryView,
+	type SkillId,
 } from '@georally/mastery'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -32,11 +35,15 @@ const FLIGHT_MS = 900
 
 export function ExploreMap({
 	layer,
+	views,
+	skills,
 	plan,
 	now,
 	focus,
 }: {
 	layer: MasteryLayer
+	views: ReadonlyMap<CardId, MasteryView>
+	skills: readonly SkillId[]
 	plan: IntroPlan | null
 	now: number
 	focus: GameScope
@@ -86,7 +93,6 @@ export function ExploreMap({
 	const selected = selectedId
 		? countryCatalog.countriesById.get(selectedId)
 		: undefined
-	const selectedView = selectedId ? layer.get(selectedId) : undefined
 	const selectedIds = useMemo(
 		() => (selectedId ? [selectedId] : []),
 		[selectedId],
@@ -124,12 +130,14 @@ export function ExploreMap({
 					<MasteryCountryCard
 						key={selected.id}
 						info={selected}
-						view={selectedView}
-						planned={isPlanned(
-							plan,
-							toCardId(selected.id, 'locate'),
-							selected.continent,
-						)}
+						lines={skills.map(skill => {
+							const cardId = toCardId(selected.id, skill)
+							return {
+								skill,
+								view: views.get(cardId),
+								planned: isPlanned(plan, cardId, selected.continent),
+							}
+						})}
 						now={now}
 					/>
 				</RevealPopup>

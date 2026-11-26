@@ -7,17 +7,15 @@ import {
 	type GameConfig,
 	type GameState,
 } from '@georally/game-domain/singleplayer/locate'
-import {
-	locateOutcome,
-	type AnswerInput,
-	type AnswerOutcome,
-} from '@georally/mastery'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { locateOutcome, type AnswerInput } from '@georally/mastery'
+import { useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PickCountryMap } from '@/shared/map/PickCountryMap'
 import type { PickCountryMapProps } from '@/shared/map/types'
 import { Button } from '@/shared/ui'
 import { CountryInfoCard } from '@/shared/widgets/CountryInfoCard'
+import type { ReviewCardProps } from './types'
+import { useCardRound } from './useCardRound'
 
 const ROUND_CONFIG: GameConfig = {
 	questionCount: 1,
@@ -38,16 +36,6 @@ function startRound(countryId: string, now: number): GameState {
 	})
 }
 
-interface LocateCardProps {
-	countryId: string
-	turn: number
-	startedAt: number | null
-	saving: boolean
-	onReady: () => void
-	onAnswer: (outcome: AnswerOutcome, at: number) => void
-	onNext: () => void
-}
-
 export function LocateCard({
 	countryId,
 	turn,
@@ -56,7 +44,7 @@ export function LocateCard({
 	onReady,
 	onAnswer,
 	onNext,
-}: LocateCardProps) {
+}: ReviewCardProps) {
 	const { t } = useTranslation()
 	const pointer = useRef<AnswerInput>('mouse')
 	const nextRef = useRef<HTMLButtonElement>(null)
@@ -64,8 +52,11 @@ export function LocateCard({
 		() => (startedAt === null ? null : startRound(countryId, startedAt)),
 		[countryId, startedAt],
 	)
-	const [played, setPlayed] = useState<{ turn: number; round: GameState }>()
-	const round = played?.turn === turn ? played.round : fresh
+	const { round, resolve } = useCardRound(turn, fresh, (next, input) => {
+		if (next.phase === 'revealed') {
+			onAnswer(locateOutcome(next, input), next.resolvedAt)
+		}
+	})
 
 	const answering = round?.phase === 'answering' ? round : null
 	const revealed = round?.phase === 'revealed' ? round : null
@@ -103,13 +94,6 @@ export function LocateCard({
 	useEffect(() => {
 		if (ready) nextRef.current?.focus()
 	}, [ready])
-
-	function resolve(next: GameState, input: AnswerInput | null) {
-		setPlayed({ turn, round: next })
-		if (next.phase === 'revealed') {
-			onAnswer(locateOutcome(next, input), next.resolvedAt)
-		}
-	}
 
 	return (
 		<main

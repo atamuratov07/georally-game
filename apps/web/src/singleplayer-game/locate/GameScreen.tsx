@@ -15,24 +15,24 @@ import {
 	type GameState,
 } from '@georally/game-domain/singleplayer/locate'
 import { useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ScoreBanner } from '@/game-kit/hud/ScoreBanner'
+import { Button } from '@/shared/ui'
+import { useCurrentLocale } from '../../app/LocaleContext'
+import { getCountryName } from '../../shared/i18n'
 import { PickCountryMap } from '../../shared/map/PickCountryMap'
 import type {
 	MapHighlightTone,
 	PickCountryMapProps,
 } from '../../shared/map/types'
-import { ScoreBanner } from '../../shared/widgets/ScoreBanner'
 import { CountryInfoCard } from '../../shared/widgets/CountryInfoCard'
-import { Button } from '@/shared/ui'
 import { GameHeader } from './components/GameHeader'
 import { Hearts } from './components/Hearts'
 import { RoundIntro } from './components/RoundIntro'
 import { RoundPanel } from './components/RoundPanel'
 import type { RoundInfo } from './components/RoundSplash'
-import { useRoundStages } from './useRoundStages'
-import { useTranslation } from 'react-i18next'
-import { getCountryName } from '../../shared/i18n'
-import { useCurrentLocale } from '../../app/LocaleContext'
 import './round-transitions.css'
+import { useRoundStages } from './useRoundStages'
 
 interface GameScreenProps {
 	state: GameState

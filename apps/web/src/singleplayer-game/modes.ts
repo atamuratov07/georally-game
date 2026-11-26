@@ -1,5 +1,5 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
-import type { SettingTone } from '@/shared/widgets/SettingToggleGroup'
+import type { ControlTone } from '@/shared/ui'
 import type { SingleplayerModeId } from './paths'
 
 type PageModule = Promise<{ default: ComponentType }>
@@ -9,7 +9,7 @@ export interface SingleplayerMode {
 	id: SingleplayerModeId
 	titleKey: string
 	descriptionKey: string
-	tone: SettingTone
+	tone: ControlTone
 	SetupPage: LazyPage
 	GamePage: LazyExoticComponent<ComponentType>
 }

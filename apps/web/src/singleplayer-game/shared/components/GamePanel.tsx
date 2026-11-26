@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import { GameHudRow, GameHudRowSpacer } from '@/shared/widgets/GameHud'
+import { GameHudRow, GameHudRowSpacer } from '@/game-kit/hud/GameHud'
 import { cn } from '@/shared/utils'
 
 interface GamePanelProps {

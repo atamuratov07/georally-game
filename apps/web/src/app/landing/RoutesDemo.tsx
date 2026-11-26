@@ -8,6 +8,7 @@ import {
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useCurrentLocale } from '@/app/LocaleContext'
+import { MicButton } from '@/game-kit/answering/MicButton'
 import { defaultSpeechLanguage } from '@/shared/answers/speechLanguage'
 import borderCrossings from '@/shared/map/generated/border-crossings.json'
 import { HitRing } from '@/shared/map/HitRing'
@@ -24,12 +25,11 @@ import {
 	TOURED_CORD,
 	TOURED_RIM,
 } from '@/singleplayer-game/routes/map/routeLineStyle'
-import { MicButton } from '@/singleplayer-game/shared/components/MicButton'
-import { DEMO_SIZE } from './demoSize'
 import { DemoField } from './DemoField'
 import { DemoMap } from './DemoMap'
 import { demoName } from './demoNames'
 import { DemoScreen } from './DemoScreen'
+import { DEMO_SIZE } from './demoSize'
 import { cameraFor, labelPoint, onScreen, project } from './demoWorld'
 import { useDemoTicks } from './useDemoTicks'
 

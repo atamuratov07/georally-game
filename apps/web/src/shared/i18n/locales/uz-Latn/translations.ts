@@ -312,6 +312,7 @@ const translations = {
 	},
 	review: {
 		title: 'Takrorlash',
+		namePrompt: 'Bu qaysi davlat?',
 		start: 'Boshlash',
 		add: 'Qoʻshish',
 		whereToStart: 'Qayerdan boshlaysiz?',
@@ -341,6 +342,13 @@ const translations = {
 		notInReview: 'Takrorlashingizda yoʻq',
 		myMap: 'Mening xaritam',
 		pace: 'Surʼat',
+		skillsLabel: 'Koʻnikmalar',
+		skills: {
+			locate: 'Topish',
+			name: 'Nomlash',
+		},
+		overall: 'Umumiy',
+		layer: 'Xarita qatlami',
 		paces: {
 			relaxed: 'Bemalol',
 			steady: 'Meʼyorida',

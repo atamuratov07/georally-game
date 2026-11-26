@@ -6,12 +6,11 @@ import { useTranslation } from 'react-i18next'
 import { useCurrentLocale } from '@/app/LocaleContext'
 import { LocalizedLink } from '@/app/LocalizedLink'
 import { LocalizedNavigate } from '@/app/LocalizedNavigate'
-import { getCountryName } from '@/shared/i18n'
+import { GameHud } from '@/game-kit/hud/GameHud'
 import { Button } from '@/shared/ui'
-import { GameHud } from '@/shared/widgets/GameHud'
 import { masteryPaths } from '../paths'
 import { ReviewUnavailable } from '../shared/ReviewUnavailable'
-import { LocateCard } from './LocateCard'
+import { SKILL_CARDS } from './cards/registry'
 import { SessionSummary } from './SessionSummary'
 import { useMasterySession } from './useMasterySession'
 
@@ -37,8 +36,10 @@ function Session({ onLearnMore }: { onLearnMore: () => void }) {
 	if (session.status !== 'playing') return null
 
 	const { cardId, queue, save, startedAt } = session
-	const countryId = splitCardId(cardId).countryId
+	const { countryId, skillId } = splitCardId(cardId)
 	const info = countryCatalog.countriesById.get(countryId)
+	const { Card, ask } = SKILL_CARDS[skillId]
+	const question = startedAt !== null && info ? ask(info, t, language) : null
 	const total = queue.reviewed + queue.upcoming.length + queue.waiting.length
 	const current = queue.reviewed + (save === 'saved' ? 0 : 1)
 
@@ -48,10 +49,8 @@ function Session({ onLearnMore }: { onLearnMore: () => void }) {
 				current={Math.min(current, total)}
 				total={total}
 				completed={queue.reviewed}
-				targetName={
-					startedAt !== null && info ? getCountryName(info, language) : ''
-				}
-				targetFlagUrl={startedAt !== null ? info?.flagUrl : undefined}
+				targetName={question?.text ?? ''}
+				targetFlagUrl={question?.flagUrl}
 				start={
 					<Button
 						asChild
@@ -67,7 +66,7 @@ function Session({ onLearnMore }: { onLearnMore: () => void }) {
 					</Button>
 				}
 			/>
-			<LocateCard
+			<Card
 				countryId={countryId}
 				turn={session.turn}
 				startedAt={startedAt}

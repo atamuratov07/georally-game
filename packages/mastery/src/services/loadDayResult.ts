@@ -1,15 +1,16 @@
 import type { CountryPool, LocalDay } from '@georally/game-domain'
 import { unseenCards } from '../intro/unseen'
 import type { MasteryDeps } from '../ports'
-import type { CardId } from '../types'
+import { activeSkills } from '../settings'
 import { summarizeDay, type DaySummary } from '../view/daySummary'
-import { masteryViews, type MasteryView } from '../view/deriveMastery'
+import { masteryViews } from '../view/deriveMastery'
+import { overallLayer, type MasteryLayer } from '../view/layers'
 import { countDue } from '../view/countDue'
 
 export interface DayResult extends DaySummary {
 	dueTomorrow: number
 	unseenCount: number
-	views: ReadonlyMap<CardId, MasteryView>
+	layer: MasteryLayer // Overall
 }
 
 export async function loadDayResult(
@@ -25,6 +26,9 @@ export async function loadDayResult(
 		...summarizeDay(log),
 		dueTomorrow: countDue(cards, input.tomorrow.end),
 		unseenCount: unseenCards(meta, input.pool, cards).length,
-		views: masteryViews(cards, scheduler, input.now),
+		layer: overallLayer(
+			masteryViews(cards, scheduler, input.now),
+			activeSkills(meta.settings),
+		),
 	}
 }

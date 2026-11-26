@@ -4,7 +4,7 @@ A daily spaced-review session at `/review`. The player picks continents, and eve
 
 In the interface and the URL the feature is "review". In code it is `mastery`, and its web components carry that prefix (`MasteryHomePage`, `MasterySessionPage`), because Recall Sprint already uses "review" for its results walkthrough (`useReview`, `ReviewLayers`).
 
-Two skills exist: `locate` (find the named country) and `name` (name the highlighted one). The bridge from Name It and the streak are designed in [`../proposals/mastery-review.md`](../proposals/mastery-review.md) and not built.
+Two skills exist: `locate` (find the named country) and `name` (name the highlighted one). The streak is designed in [`../proposals/mastery-review.md`](../proposals/mastery-review.md) and not built.
 
 ## Concepts
 
@@ -43,7 +43,7 @@ graph TD
 - **Import rules** (`eslint.config.js`):
    - only `src/fsrs/` imports `ts-fsrs`, only `src/idb/` imports `idb`, and only `src/skills/` imports a mode's reducer types;
    - in the web app, only `mastery/container.ts` imports the adapters;
-   - `singleplayer-game` doesn't import from `mastery/`.
+   - `singleplayer-game` imports from `mastery/` only `mastery/bridge/reportCasualOutcomes`, and only lazily.
 - **The rules never read the catalog.** They take a `CountryPool` or a set of ids, as `prepareQuestionSet` does.
 
 ## Data
@@ -116,6 +116,24 @@ A session is computed from storage every time it opens and is never saved, so cl
    The cap grows with the pace because the review load grows with the rate of new cards: a fixed cap would turn the intense pace into a backlog that never clears. The values come from the long-run simulation (`pnpm --filter @georally/mastery simulate`), which plays 120 days per pace, with and without a 10-day break.
 
 - **The queue** (`selectNext`, `applyAnswer`) picks the next card after every answer: a waiting card whose `due` has passed, else the next planned card, else the earliest waiting card shown early, else the session is complete. An answered card waits only if it is due again within 15 minutes (`LEARN_AHEAD_MS`); otherwise it has left the session. So a miss comes back a few cards later and again at the end, the spacing FSRS asked for.
+
+## Casual-play bridge
+
+A Find It or Name It game reports its rounds to review when it finishes, so a country missed in casual play comes up in review.
+
+- **The mode decides what a miss is** (its `bridge.ts`), since only the mode knows its rounds:
+
+   | Mode    | Skill    | A miss                                                                                             |
+   | ------- | -------- | -------------------------------------------------------------------------------------------------- |
+   | Find It | `locate` | Not found, or found after a wrong pick: the first pick shows whether the player knew               |
+   | Name It | `name`   | Time up, given up, or another country named first (`getWrongNames`), even if the right one follows |
+
+   Text that matches no country, or several, isn't a wrong name: it shows a typing or hearing problem, not what the player knows. `nameOutcome` counts wrong attempts the same way.
+
+- **Review decides what a miss adds** (`decideBridge`), and knows nothing about modes. A miss on a card that already has a record asks for a recheck: it leads the next session, and its schedule is untouched until then. A miss on a card review hasn't introduced is offered. A miss on a paused skill, or a round that wasn't missed, adds nothing.
+- **The offer** is one line in the result modal (`ReviewOfferLine`): "Add 3 missed countries to your review?" with Add and Not now. Accepting appends the cards to the plan's `acceptedMisses`, which lead the intro order. For a player who has never opened review, this is the way in.
+- **Review's code loads only at the end of a game.** `useReviewBridge` (`singleplayer-game/shared/`) collects each revealed round's outcome from the round events and imports `mastery/bridge/reportCasualOutcomes` when the game finishes; a restored game reports only the rounds played after the restore. A new game drops an offer that hasn't arrived yet.
+- **Analytics:** `bridge_offer_shown` and `bridge_offer_accepted`, with the mode and the offered count.
 
 ## Web feature
 

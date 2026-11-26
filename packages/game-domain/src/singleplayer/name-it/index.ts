@@ -16,6 +16,7 @@ export {
 	getLastAttempt,
 	getOutcome,
 	getRemainingMs,
+	getWrongNames,
 } from './selectors'
 export { prepareGameSession } from './session'
 export {

@@ -13,8 +13,10 @@ import {
 } from '@georally/game-domain/singleplayer/name-it'
 import { useCallback, useState } from 'react'
 import { useDeadline } from '@/shared/time/useDeadline'
+import { useReviewBridge } from '../shared/useReviewBridge'
 import { useStoredGame } from '../shared/useStoredGame'
 import { useNameItAnalytics } from './analytics'
+import { nameItOutcome } from './bridge'
 import { bestKey } from './config'
 import { nameItGameStore } from './store'
 
@@ -58,6 +60,7 @@ export function useNameItGame() {
 	const config = engineState?.config ?? null
 
 	useNameItAnalytics(engineState, restored)
+	const reviewOffer = useReviewBridge(engineState, restored, nameItOutcome)
 
 	useDeadline(engineState ? getDeadlineAt(engineState) : null, () =>
 		dispatch({ type: 'TIME_UP', now: Date.now() }),
@@ -116,5 +119,6 @@ export function useNameItGame() {
 		next,
 		playAgain,
 		leave,
+		reviewOffer,
 	}
 }

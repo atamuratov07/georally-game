@@ -151,6 +151,8 @@ georally-game/
 |           |   |-- index.ts              # exports masteryRoutes
 |           |   |-- routes.tsx, paths.ts  # /review, /review/play and /review/map, lazy pages
 |           |   |-- container.ts          # creates the scheduler and repository; the only import of the adapters
+|           |   |-- bridge/reportCasualOutcomes.ts # a casual game's rounds in, an offer out; the one module
+|           |   |                         # singleplayer-game may import (lazily)
 |           |   |-- home/                 # MasteryHomePage, useToday, TodayPanel, ScopeForm, ScopePicker,
 |           |   |                         # PaceSetting, SkillSwitches, MapPreview
 |           |   |-- session/
@@ -192,6 +194,7 @@ georally-game/
 |           |   |   |-- config.ts         # setting options and the setup URL's query string
 |           |   |   |-- store.ts          # the saved locate game and its checks
 |           |   |   |-- useLocateGame.ts  # restores, runs and saves the locate game
+|           |   |   |-- bridge.ts         # what review counts as a missed round
 |           |   |   |-- analytics.ts
 |           |   |   `-- components/       # GameHeader, Hearts
 |           |   |-- name-it/
@@ -202,6 +205,7 @@ georally-game/
 |           |   |   |-- config.ts
 |           |   |   |-- store.ts
 |           |   |   |-- useNameItGame.ts  # begins and advances when the camera settles
+|           |   |   |-- bridge.ts         # what review counts as a missed round
 |           |   |   `-- analytics.ts
 |           |   |-- recall-sprint/
 |           |   |   |-- SetupPage.tsx, GamePage.tsx

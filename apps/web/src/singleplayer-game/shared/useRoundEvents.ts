@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-type RoundsLike =
+export type RoundsLike =
 	| { phase: 'idle' }
 	| { phase: 'answering' | 'revealed' | 'finished'; index: number }
 

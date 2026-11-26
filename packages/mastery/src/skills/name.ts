@@ -1,6 +1,7 @@
-import type {
-	RevealedGameState,
-	RoundOutcome,
+import {
+	getWrongNames,
+	type RevealedGameState,
+	type RoundOutcome,
 } from '@georally/game-domain/singleplayer/name-it'
 import type { AnswerInput, SingleAnswerOutcome } from '../types'
 import { gradeSingle, type Grader } from './grade'
@@ -21,7 +22,7 @@ export function nameOutcome(
 		shape: 'single',
 		result: RESULTS[round.outcome],
 		responseMs: round.resolvedAt - round.startedAt,
-		wrongAttempts: round.attempts.length,
+		wrongAttempts: getWrongNames(round).length,
 		input,
 	}
 }

@@ -10,9 +10,10 @@ import {
 } from '@georally/game-domain/singleplayer/locate'
 import { useCallback, useMemo, useState } from 'react'
 import type { ReviewOffer } from '@/mastery/bridge/reportCasualOutcomes'
+import { useReviewBridge } from '../shared/useReviewBridge'
 import { useStoredGame } from '../shared/useStoredGame'
 import { useLocateGameAnalytics } from './analytics'
-import { useLocateBridge } from './bridge'
+import { locateOutcome } from './bridge'
 import { bestKey } from './config'
 import { locateGameStore } from './store'
 
@@ -68,7 +69,7 @@ export function useLocateGame(): UseLocateGameResult {
 	)
 
 	useLocateGameAnalytics(engineState, restored)
-	const reviewOffer = useLocateBridge(engineState, restored)
+	const reviewOffer = useReviewBridge(engineState, restored, locateOutcome)
 
 	const begin = useCallback(
 		(startsAt: number) => {

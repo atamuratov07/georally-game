@@ -15,19 +15,26 @@ type Answer = 'exact' | 'fuzzy' | 'giveUp' | 'timeUp'
 
 function attempt(
 	state: GameState,
-	countryId: string,
+	countryId: string | null, // null: matches no country
 	via: 'exact' | 'fuzzy',
 	now: number,
 ) {
 	return reduceGameState(state, {
 		type: 'ATTEMPT',
 		method: 'typing',
-		result: { kind: 'match', countryId, via, heard: countryId },
+		result: countryId
+			? { kind: 'match', countryId, via, heard: countryId }
+			: { kind: 'none', heard: 'atlantis' },
 		now,
 	})
 }
 
-function reveal(answer: Answer, afterMs: number, wrong = 0): RevealedGameState {
+function reveal(
+	answer: Answer,
+	afterMs: number,
+	wrong = 0,
+	unmatched = 0,
+): RevealedGameState {
 	const idle = createIdleState({ questionCount: 1 })
 	let state = reduceGameState(idle, {
 		type: 'START',
@@ -36,6 +43,9 @@ function reveal(answer: Answer, afterMs: number, wrong = 0): RevealedGameState {
 	})
 	for (let index = 0; index < wrong; index += 1) {
 		state = attempt(state, '398', 'exact', T0 + 1_000)
+	}
+	for (let index = 0; index < unmatched; index += 1) {
+		state = attempt(state, null, 'exact', T0 + 1_000)
 	}
 	const now = T0 + afterMs
 	state =
@@ -65,8 +75,8 @@ describe('gradeName', () => {
 		expect(gradeName(outcome, kind)).toBe(rating)
 	})
 
-	it('records a time-up after wrong names with their count', () => {
-		expect(nameOutcome(reveal('timeUp', 25_000, 2), 'voice')).toEqual({
+	it('records a time-up after wrong names with their count, not unmatched text', () => {
+		expect(nameOutcome(reveal('timeUp', 25_000, 2, 1), 'voice')).toEqual({
 			shape: 'single',
 			result: 'timeUp',
 			responseMs: 20_000,

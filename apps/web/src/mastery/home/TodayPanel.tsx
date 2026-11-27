@@ -1,5 +1,5 @@
 import type { LocalDay } from '@georally/game-domain'
-import { countDue, type Today } from '@georally/mastery'
+import { countDue, planCounts, type Today } from '@georally/mastery'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
@@ -36,9 +36,10 @@ export function TodayPanel({
 		)
 	}
 
-	const known = new Set(cards.map(card => card.id))
-	const reviewCount = sessionPlan.filter(id => known.has(id)).length
-	const newCount = sessionPlan.length - reviewCount
+	const { review: reviewCount, fresh: newCount } = planCounts(
+		cards,
+		sessionPlan,
+	)
 
 	return (
 		<div className='flex flex-col items-center gap-5'>

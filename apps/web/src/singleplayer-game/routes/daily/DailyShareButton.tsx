@@ -12,15 +12,15 @@ import { shareOrCopy } from '@/shared/lib/clipboard'
 import { Button } from '@/shared/ui'
 import { cn } from '@/shared/utils'
 import {
-	SHOWN_TILES,
 	shareMoves,
 	shareText,
-	TILE_STEP,
+	tileStep,
 	type ShareMark,
 	type ShareMove,
 } from './share'
 
 const COPIED_MS = 1800
+const DENSE_AFTER = 6
 
 const TILE_STYLE: Readonly<Record<ShareMark, string>> = {
 	route: 'bg-grass-500 [--edge:var(--color-grass-700)]',
@@ -105,6 +105,15 @@ export function DailyShareButton({
 	)
 }
 
+const gap = (count: number) =>
+	count <= DENSE_AFTER
+		? '0.25rem'
+		: count <= 24
+			? '2px'
+			: count <= 48
+				? '1px'
+				: '0px'
+
 function ShareTiles({
 	moves,
 	delay,
@@ -113,19 +122,27 @@ function ShareTiles({
 	delay: number
 }) {
 	const reduceMotion = useReducedMotion()
-	const shown = moves.slice(0, SHOWN_TILES)
-	const hidden = moves.length - shown.length
-	const size = moves.length > 10 ? 'size-4 rounded-[4px]' : 'size-5 rounded-md'
+	const dense = moves.length > DENSE_AFTER
+	const step = tileStep(moves.length)
 
 	return (
-		<span aria-hidden='true' className='flex items-center gap-1'>
-			{shown.map((move, i) => (
+		<span
+			aria-hidden='true'
+			className='grid h-5 w-fit max-w-[8.5rem] shrink-0'
+			style={{
+				gridTemplateColumns: `repeat(${moves.length}, minmax(0, 1.25rem))`,
+				columnGap: gap(moves.length),
+			}}
+		>
+			{moves.map((move, i) => (
 				<motion.span
 					key={i}
 					className={cn(
-						'raised grid place-items-center [--edge-size:3px]',
-						size,
-						TILE_STYLE[move.mark],
+						'raised grid h-5 place-items-center [--edge-size:3px]',
+						dense ? 'rounded-[3px]' : 'rounded-md',
+						dense && move.mark === 'hint'
+							? 'bg-line-strong [--edge:var(--color-muted)]'
+							: TILE_STYLE[move.mark],
 					)}
 					initial={reduceMotion ? false : { rotateX: 90, y: -6 }}
 					animate={{ rotateX: 0, y: 0 }}
@@ -133,17 +150,14 @@ function ShareTiles({
 						type: 'spring',
 						stiffness: 520,
 						damping: 22,
-						delay: delay + i * TILE_STEP,
+						delay: delay + i * step,
 					}}
 				>
-					{move.mark === 'hint' ? (
+					{move.mark === 'hint' && !dense ? (
 						<Lightbulb className='size-3! stroke-[3]!' />
 					) : null}
 				</motion.span>
 			))}
-			{hidden > 0 ? (
-				<span className='text-sm font-black text-muted'>+{hidden}</span>
-			) : null}
 		</span>
 	)
 }

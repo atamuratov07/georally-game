@@ -20,11 +20,15 @@ const SYMBOL: Readonly<Record<ShareMark, string>> = {
 	hint: '💡',
 }
 const LINK = 'georally.world/daily'
-export const TILE_STEP = 0.12
-export const SHOWN_TILES = 16
+const TILE_STEP = 0.12
+const FLIP_BUDGET = 1.2
+
+export function tileStep(moveCount: number) {
+	return Math.min(TILE_STEP, FLIP_BUDGET / Math.max(moveCount, 1))
+}
 
 export function tilesShownAt(delay: number, moveCount: number) {
-	return delay + Math.min(moveCount, SHOWN_TILES) * TILE_STEP
+	return delay + tileStep(moveCount) * moveCount
 }
 
 export function shareMoves(

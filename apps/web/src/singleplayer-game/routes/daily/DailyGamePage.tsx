@@ -8,6 +8,7 @@ import { KeyboardGameFrame } from '../../shared/components/KeyboardGameFrame'
 import { RouteLeaveTarget } from '../leaveTarget'
 import { RoutesScreen } from '../RoutesScreen'
 import { useRoutesGame } from '../useRoutesGame'
+import { DailyShareButton } from './DailyShareButton'
 import { dailySlot, loadDailyEntries } from './dailyStore'
 import { dailyToday } from './dailyToday'
 import { dailyPaths } from './paths'
@@ -33,13 +34,19 @@ function DailyGame({ number }: { number: number }) {
 			onError={slot.clear}
 		>
 			<RouteLeaveTarget value={dailyPaths.page}>
-				<DailyGameContent slot={slot} />
+				<DailyGameContent number={number} slot={slot} />
 			</RouteLeaveTarget>
 		</GameErrorBoundary>
 	)
 }
 
-function DailyGameContent({ slot }: { slot: GameStore<RouteState> }) {
+function DailyGameContent({
+	number,
+	slot,
+}: {
+	number: number
+	slot: GameStore<RouteState>
+}) {
 	const { state, board, begin, attempt, hint, giveUp } = useRoutesGame(slot)
 
 	if (state === null || board === null) {
@@ -56,7 +63,16 @@ function DailyGameContent({ slot }: { slot: GameStore<RouteState> }) {
 				onHint={hint}
 				onGiveUp={giveUp}
 				onLeave={stay}
-				onNext={null}
+				finishAction={
+					state.phase === 'finished' ? (
+						<DailyShareButton
+							number={number}
+							board={board}
+							state={state}
+							className='w-auto px-6'
+						/>
+					) : null
+				}
 			/>
 		</KeyboardGameFrame>
 	)

@@ -14,7 +14,13 @@ function gameParams(config: RouteConfig, board: RouteBoard) {
 				regions: config.regions,
 				par: board.par,
 			}
-		: { kind: config.kind, difficulty: 'daily', regions: [], par: board.par }
+		: {
+				kind: config.kind,
+				difficulty: 'daily',
+				regions: [],
+				par: board.par,
+				dailyNumber: config.number,
+			}
 }
 
 export function useRoutesAnalytics(

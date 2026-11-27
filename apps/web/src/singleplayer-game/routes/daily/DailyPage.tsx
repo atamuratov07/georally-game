@@ -2,6 +2,7 @@ import { dailyRoutes } from '@georally/country-catalog/daily-routes'
 import {
 	createIdleState,
 	dailyDay,
+	getTimeline,
 } from '@georally/game-domain/singleplayer/routes'
 import { Play } from 'lucide-react'
 import { AnimatePresence, useReducedMotion } from 'motion/react'
@@ -11,17 +12,24 @@ import { LocalizedLink } from '@/app/LocalizedLink'
 import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
 import { BackLink, PageShell } from '@/shared/layout'
 import { prefetchMap } from '@/shared/map/prefetchMap'
-import { localDay, localDayStart } from '@/shared/time/localDay'
+import { localDay } from '@/shared/time/localDay'
 import { useNow } from '@/shared/time/useNow'
+import { weekdayKey } from '@/shared/time/weekdays'
 import { Button, TextButton } from '@/shared/ui'
 import { singleplayerPaths } from '../../paths'
+import { DailyShareButton } from './DailyShareButton'
+import { DailyStreak } from './DailyStreak'
 import { DailyTicket, HiddenRoute, ResultStamp } from './DailyTicket'
 import { dailySlot, loadDailyEntries } from './dailyStore'
 import { dailyToday } from './dailyToday'
 import { dailyPaths } from './paths'
+import { tilesShownAt } from './share'
+import { useLazyBoard } from './useLazyBoard'
 
 const TEAR_MS = 950
 const SNAP_MS = 380
+const SHARE_TILES_DELAY = 1.4
+const PUNCH_AFTER_TILES = 0.35
 
 const prefetchGame = () => {
 	void import('./DailyGamePage')
@@ -40,7 +48,7 @@ function clock(ms: number): string {
 }
 
 export default function DailyPage() {
-	const { t, i18n } = useTranslation()
+	const { t } = useTranslation()
 	const navigate = useLocalizedNavigate()
 	const reduceMotion = useReducedMotion()
 	const now = useNow(1000, true)
@@ -53,16 +61,18 @@ export default function DailyPage() {
 		setEntries(loadDailyEntries())
 	}
 	const today = dailyToday(now, entries)
+	const finishedEntry =
+		today.kind === 'puzzle' && today.game?.phase === 'finished'
+			? today.entry
+			: null
+	const board = useLazyBoard(finishedEntry)
 
 	useEffect(() => {
 		const timer = setTimeout(prefetchGame, 500)
 		return () => clearTimeout(timer)
 	}, [])
 
-	const weekday = (key: string) =>
-		new Intl.DateTimeFormat(i18n.language, { weekday: 'long' }).format(
-			localDayStart(key),
-		)
+	const weekdayName = (key: string) => t(`common.weekday.${weekdayKey(key)}`)
 
 	const practice = (
 		<TextButton asChild>
@@ -99,7 +109,7 @@ export default function DailyPage() {
 				<AnimatePresence mode='wait'>
 					<DailyTicket
 						key='soon'
-						eyebrow={weekday(dailyRoutes.launch)}
+						eyebrow={weekdayName(dailyRoutes.launch)}
 						number={1}
 						locked
 					>
@@ -118,6 +128,17 @@ export default function DailyPage() {
 	const { number, entry, game, carried } = today
 	const finished = game?.phase === 'finished' ? game : null
 	const puzzleDay = dailyDay(dailyRoutes.launch, number)
+	const celebrate =
+		finished?.outcome === 'solved'
+			? {
+					day: puzzleDay,
+					delay:
+						tilesShownAt(
+							SHARE_TILES_DELAY,
+							getTimeline(finished).length,
+						) + PUNCH_AFTER_TILES,
+				}
+			: null
 
 	function play() {
 		const unstarted = !game || game.phase === 'idle'
@@ -138,10 +159,11 @@ export default function DailyPage() {
 	return (
 		<DailyShell>
 			<h1 className='sr-only'>{`${t('daily.title')} #${number}`}</h1>
+			<DailyStreak entries={entries} today={day.key} celebrate={celebrate} />
 			<AnimatePresence mode='wait'>
 				<DailyTicket
 					key={number}
-					eyebrow={carried ? t('daily.yesterday') : weekday(puzzleDay)}
+					eyebrow={carried ? t('daily.yesterday') : weekdayName(puzzleDay)}
 					number={number}
 					level={entry.level}
 					torn={torn}
@@ -157,14 +179,30 @@ export default function DailyPage() {
 						ends={finished}
 					/>
 					{finished ? (
-						<button
-							type='button'
-							className='mt-5 w-full text-center font-extrabold text-white/90 underline-offset-4 hover:underline'
-							onClick={play}
-							onPointerEnter={prefetchGame}
-						>
-							{t('daily.seeRoute')}
-						</button>
+						<>
+							<DailyShareButton
+								number={number}
+								board={board}
+								state={finished}
+								delay={SHARE_TILES_DELAY}
+								className='mt-6'
+							/>
+							<div className='mt-5'>
+								<Countdown
+									label={t('daily.nextIn')}
+									ms={day.end - now}
+									light
+								/>
+							</div>
+							<button
+								type='button'
+								className='mt-3 w-full text-center font-extrabold text-white/90 underline-offset-4 hover:underline'
+								onClick={play}
+								onPointerEnter={prefetchGame}
+							>
+								{t('daily.seeRoute')}
+							</button>
+						</>
 					) : (
 						<Button
 							type='button'
@@ -183,9 +221,6 @@ export default function DailyPage() {
 					)}
 				</DailyTicket>
 			</AnimatePresence>
-			{finished ? (
-				<Countdown label={t('daily.nextIn')} ms={day.end - now} />
-			) : null}
 			{practice}
 		</DailyShell>
 	)
@@ -197,7 +232,7 @@ function DailyShell({ children }: { children: ReactNode }) {
 	return (
 		<PageShell headerTitle={t('daily.title')}>
 			<BackLink to='/'>{t('common.home')}</BackLink>
-			<div className='flex flex-1 flex-col items-center gap-8 pt-10 pb-4 sm:justify-center sm:pt-14'>
+			<div className='flex flex-1 flex-col items-center gap-8 pt-2 pb-4 sm:justify-center sm:pt-6'>
 				{children}
 			</div>
 		</PageShell>

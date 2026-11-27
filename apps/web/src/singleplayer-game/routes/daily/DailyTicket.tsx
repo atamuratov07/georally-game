@@ -22,10 +22,10 @@ const BEAD_STEP = 0.06
 
 function numberSize(number: number) {
 	return number < 100
-		? 'text-[7rem]'
+		? 'text-[5.5rem]'
 		: number < 1000
-			? 'text-[5.75rem]'
-			: 'text-[4.75rem]'
+			? 'text-[4.75rem]'
+			: 'text-[4rem]'
 }
 
 const TEAR_TIMES = [0, 0.3, 0.38, 0.6, 0.8, 1]
@@ -101,7 +101,7 @@ export function DailyTicket({
 
 	return (
 		<motion.div
-			className='w-[calc(100%-1rem)] max-w-sm'
+			className='relative z-10 w-[calc(100%-1rem)] max-w-sm'
 			animate={reduceMotion ? undefined : { y: [0, -6, 0] }}
 			transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
 			exit={{

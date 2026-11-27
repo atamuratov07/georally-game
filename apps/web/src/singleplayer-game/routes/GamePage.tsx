@@ -8,6 +8,7 @@ import { RedirectWithSearch } from '../RedirectWithSearch'
 import { GameErrorBoundary } from '../shared/components/GameErrorBoundary'
 import { GameErrorScreen } from '../shared/components/GameErrorScreen'
 import { KeyboardGameFrame } from '../shared/components/KeyboardGameFrame'
+import { NextPuzzleButton } from './components/NextPuzzleButton'
 import { RoutesScreen } from './RoutesScreen'
 import { routeGameStore } from './store'
 import { useRoutesGame } from './useRoutesGame'
@@ -51,7 +52,11 @@ function GameContent({ onNext }: { onNext: (config: RouteConfig) => void }) {
 				onHint={hint}
 				onGiveUp={giveUp}
 				onLeave={routeGameStore.clear}
-				onNext={config.kind === 'practice' ? () => onNext(config) : null}
+				finishAction={
+					config.kind === 'practice' ? (
+						<NextPuzzleButton onNext={() => onNext(config)} />
+					) : null
+				}
 			/>
 		</KeyboardGameFrame>
 	)

@@ -5,9 +5,8 @@ import {
 	type RouteBoard,
 } from '@georally/game-domain/singleplayer/routes'
 import { motion, useReducedMotion } from 'motion/react'
-import { useContext, useEffect, useRef } from 'react'
+import { useContext, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/shared/ui'
 import { cn } from '@/shared/utils'
 import { LeaveButton } from '../../shared/components/LeaveButton'
 import { RouteLeaveTarget } from '../leaveTarget'
@@ -18,35 +17,28 @@ const SPRING = { type: 'spring', stiffness: 380, damping: 28 } as const
 interface RouteResultProps {
 	board: RouteBoard
 	state: FinishedRouteState
-	onNext: (() => void) | null
+	action: ReactNode
 	onLeave: () => void
 	leaveClassName: string
 	headerClassName: string
 	headerEnters: boolean
-	nextShown: boolean
+	actionShown: boolean
 }
 
 export function RouteResult({
 	board,
 	state,
-	onNext,
+	action,
 	onLeave,
 	leaveClassName,
 	headerClassName,
 	headerEnters,
-	nextShown,
+	actionShown,
 }: RouteResultProps) {
 	const { t } = useTranslation()
 	const reduceMotion = useReducedMotion()
 	const score = getScore(state)
 	const leaveTo = useContext(RouteLeaveTarget)
-	const nextRef = useRef<HTMLButtonElement>(null)
-
-	useEffect(() => {
-		if (nextShown) {
-			nextRef.current?.focus({ preventScroll: true })
-		}
-	}, [nextShown])
 	const outcome =
 		state.outcome === 'gaveUp'
 			? t('routes.result.gaveUp')
@@ -78,16 +70,14 @@ export function RouteResult({
 			>
 				<RouteJourney board={board} score={score} arrow='below' />
 			</motion.div>
-			{onNext && nextShown ? (
+			{action && actionShown ? (
 				<motion.div
-					className='absolute inset-x-0 bottom-6 z-30 flex justify-center'
+					className='absolute inset-x-0 bottom-6 z-30 flex justify-center px-4'
 					initial={reduceMotion ? false : { y: 48, opacity: 0 }}
 					animate={{ y: 0, opacity: 1 }}
 					transition={SPRING}
 				>
-					<Button ref={nextRef} type='button' size='lg' onClick={onNext}>
-						{t('routes.result.next')}
-					</Button>
+					{action}
 				</motion.div>
 			) : null}
 		</>

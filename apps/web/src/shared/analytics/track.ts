@@ -151,6 +151,7 @@ interface RoutesGameParams {
 	difficulty: string
 	regions: readonly string[]
 	par: number
+	dailyNumber?: number
 }
 
 export function trackRoutesStart(params: RoutesGameParams): void {
@@ -160,6 +161,7 @@ export function trackRoutesStart(params: RoutesGameParams): void {
 		difficulty: params.difficulty,
 		scope: scopeParam(params.regions),
 		par: params.par,
+		daily_number: params.dailyNumber,
 	})
 }
 
@@ -181,6 +183,19 @@ export function trackRoutesEnd(
 		hints: params.hints,
 		outcome: params.outcome,
 		duration_ms: params.durationMs,
+		daily_number: params.dailyNumber,
+	})
+}
+
+export function trackRoutesShare(params: {
+	dailyNumber: number
+	outcome: 'solved' | 'gave_up'
+	method: 'share' | 'copy'
+}): void {
+	gtagEvent('routes_share', {
+		daily_number: params.dailyNumber,
+		outcome: params.outcome,
+		method: params.method,
 	})
 }
 

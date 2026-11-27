@@ -3,7 +3,7 @@ import { useId, type ReactNode } from 'react'
 import { cn } from '@/shared/utils'
 
 export type PunchStatus =
-	'perfect' | 'solved' | 'missed' | 'open' | 'future' | 'none'
+	'perfect' | 'solved' | 'reviewed' | 'missed' | 'open' | 'future' | 'none'
 
 export interface PunchSlot {
 	day: string
@@ -27,16 +27,27 @@ const STAR = (() => {
 })()
 
 const punched = (status: PunchStatus) =>
-	status === 'solved' || status === 'perfect'
+	status === 'solved' || status === 'perfect' || status === 'reviewed'
 const center = (index: number, count: number) =>
 	`${((index + 0.5) / count) * 100}%`
 
 function HoleShape({ status }: { status: PunchStatus }) {
-	return status === 'perfect' ? (
-		<path d={STAR} strokeWidth='3' strokeLinejoin='round' />
-	) : (
-		<circle r={RADIUS} />
-	)
+	if (status === 'perfect') {
+		return <path d={STAR} strokeWidth='3' strokeLinejoin='round' />
+	}
+	if (status === 'reviewed') {
+		return (
+			<rect
+				x='-7.5'
+				y='-10'
+				width='15'
+				height='20'
+				rx='3'
+				transform='rotate(-12)'
+			/>
+		)
+	}
+	return <circle r={RADIUS} />
 }
 
 export function WeekPunchCard({

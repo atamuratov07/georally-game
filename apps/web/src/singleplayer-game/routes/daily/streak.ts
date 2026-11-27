@@ -13,15 +13,20 @@ type Entries = ReadonlyMap<number, RouteState>
 const solved = (game: RouteState | undefined) =>
 	game?.phase === 'finished' && game.outcome === 'solved'
 
-export function dailyStreak(entries: Entries, today: string) {
+export function dayStreak(
+	entries: Entries,
+	reviewDays: readonly string[],
+	today: string,
+) {
 	const days = [...entries]
 		.filter(([, game]) => solved(game))
 		.map(([number]) => dailyDay(dailyRoutes.launch, number))
-	return deriveStreak(days, today)
+	return deriveStreak([...days, ...reviewDays], today)
 }
 
 export function dailyWeek(
 	entries: Entries,
+	reviewDays: ReadonlySet<string>,
 	today: string,
 ): { day: string; status: PunchStatus }[] {
 	const monday = addDays(today, -weekday(today))
@@ -29,11 +34,15 @@ export function dailyWeek(
 		const day = addDays(monday, i)
 		const number = dailyNumber(dailyRoutes.launch, day)
 		const entry = dailyRoutes.puzzles[number - 1]
+		const status = entry
+			? slotStatus(entries.get(number), entry.par, day, today)
+			: 'none'
 		return {
 			day,
-			status: entry
-				? slotStatus(entries.get(number), entry.par, day, today)
-				: 'none',
+			status:
+				status !== 'perfect' && status !== 'solved' && reviewDays.has(day)
+					? 'reviewed'
+					: status,
 		}
 	})
 }

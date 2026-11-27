@@ -33,9 +33,7 @@ function DailyGame({ number }: { number: number }) {
 			fallback={<GameErrorScreen setupPath={dailyPaths.page} />}
 			onError={slot.clear}
 		>
-			<RouteLeaveTarget value={dailyPaths.page}>
-				<DailyGameContent number={number} slot={slot} />
-			</RouteLeaveTarget>
+			<DailyGameContent number={number} slot={slot} />
 		</GameErrorBoundary>
 	)
 }
@@ -48,32 +46,44 @@ function DailyGameContent({
 	slot: GameStore<RouteState>
 }) {
 	const { state, board, begin, attempt, hint, giveUp } = useRoutesGame(slot)
+	const [openedFinished] = useState(() => state?.phase === 'finished')
+	const solvedHere =
+		!openedFinished &&
+		state?.phase === 'finished' &&
+		state.outcome === 'solved'
 
 	if (state === null || board === null) {
 		return <RedirectWithSearch to={dailyPaths.page} />
 	}
 
 	return (
-		<KeyboardGameFrame>
-			<RoutesScreen
-				state={state}
-				board={board}
-				onReady={begin}
-				onAttempt={attempt}
-				onHint={hint}
-				onGiveUp={giveUp}
-				onLeave={stay}
-				finishAction={
-					state.phase === 'finished' ? (
-						<DailyShareButton
-							number={number}
-							board={board}
-							state={state}
-							className='w-auto px-6'
-						/>
-					) : null
-				}
-			/>
-		</KeyboardGameFrame>
+		<RouteLeaveTarget
+			value={{
+				to: dailyPaths.page,
+				state: solvedHere ? { solved: number } : undefined,
+			}}
+		>
+			<KeyboardGameFrame>
+				<RoutesScreen
+					state={state}
+					board={board}
+					onReady={begin}
+					onAttempt={attempt}
+					onHint={hint}
+					onGiveUp={giveUp}
+					onLeave={stay}
+					finishAction={
+						state.phase === 'finished' ? (
+							<DailyShareButton
+								number={number}
+								board={board}
+								state={state}
+								className='w-auto px-6'
+							/>
+						) : null
+					}
+				/>
+			</KeyboardGameFrame>
+		</RouteLeaveTarget>
 	)
 }

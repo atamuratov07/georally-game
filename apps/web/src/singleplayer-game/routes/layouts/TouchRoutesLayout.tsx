@@ -20,7 +20,7 @@ export function TouchRoutesLayout({
 	controls,
 	keyboardInset,
 }: RoutesLayoutProps) {
-	const leaveTo = useContext(RouteLeaveTarget)
+	const leave = useContext(RouteLeaveTarget)
 	const { board, state, input } = controls
 	const { formRef, onSubmit, fieldProps } = useRouteField(input)
 	const typing = keyboardInset > 0
@@ -58,7 +58,7 @@ export function TouchRoutesLayout({
 			</SlideIn>
 
 			<SlideIn from='top' className='absolute top-22 left-3 z-30'>
-				<LeaveButton mode='routes' to={leaveTo} />
+				<LeaveButton mode='routes' to={leave.to} state={leave.state} />
 			</SlideIn>
 			<SlideIn from='top' className='absolute top-22 right-3 z-30'>
 				<GiveUpButton

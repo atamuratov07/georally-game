@@ -1,7 +1,8 @@
 .streak-tongue,
 .streak-spark,
 .streak-burst,
-.streak-glow {
+.streak-glow,
+.streak-smoke {
 	transform-box: fill-box;
 }
 
@@ -83,14 +84,57 @@
 	}
 }
 
+.streak-gutter {
+	transform-origin: 50% 92%;
+	animation: streak-gutter 3.2s ease-in-out infinite;
+}
+
+@keyframes streak-gutter {
+	0%,
+	55%,
+	100% {
+		transform: none;
+	}
+	64% {
+		transform: skewX(-7deg) scale(0.97, 0.84);
+	}
+	72% {
+		transform: skewX(4deg) scale(1.02, 1.06);
+	}
+	80% {
+		transform: skewX(-2deg) scale(0.99, 0.95);
+	}
+}
+
+.streak-smoke {
+	transform-origin: center;
+	animation: streak-smoke var(--dur) ease-out var(--delay) infinite both;
+}
+
+@keyframes streak-smoke {
+	0% {
+		transform: translate(0, 0) scale(0.4);
+		opacity: 0;
+	}
+	20% {
+		opacity: 0.55;
+	}
+	100% {
+		transform: translate(var(--dx), -34px) scale(1.8);
+		opacity: 0;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.streak-tongue,
 	.streak-spark,
-	.streak-burst {
+	.streak-burst,
+	.streak-smoke {
 		display: none;
 	}
 	.streak-glow,
-	.streak-digits {
+	.streak-digits,
+	.streak-gutter {
 		animation: none;
 	}
 }

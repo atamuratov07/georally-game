@@ -1,33 +1,35 @@
 import type { RouteState } from '@georally/game-domain/singleplayer/routes'
-import { motion, useReducedMotion } from 'motion/react'
-import { useMemo } from 'react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { weekdayKey } from '@/shared/time/weekdays'
+import { celebrate as confetti } from '@/shared/lib/confetti'
+import { PressedBest } from '@/shared/widgets/streak/PressedBest'
 import { StreakFlame } from '@/shared/widgets/streak/StreakFlame'
 import { WeekPunchCard } from '@/shared/widgets/streak/WeekPunchCard'
-import { dailyStreak, dailyWeek } from './streak'
+import type { DayStreak } from './useDayStreak'
+import { useWeekSlots } from './useWeekSlots'
 
 const FLARE_AFTER_PUNCH = 0.35
+const MILESTONES = [7, 30, 100, 365]
+const NO_DAYS: ReadonlySet<string> = new Set()
+const SECTION =
+	'relative z-20 flex w-[calc(100%-1rem)] max-w-sm items-end gap-3'
+const FLAME = 'w-[5.25rem]'
 
 export function DailyStreak({
 	entries,
 	today,
+	dayStreak,
 	celebrate,
 }: {
 	entries: ReadonlyMap<number, RouteState>
 	today: string
+	dayStreak: DayStreak | null
 	celebrate: { day: string; delay: number } | null
 }) {
 	const { t } = useTranslation()
-	const streak = useMemo(() => dailyStreak(entries, today), [entries, today])
-	const slots = useMemo(
-		() =>
-			dailyWeek(entries, today).map(slot => ({
-				...slot,
-				label: t(`common.weekdayShort.${weekdayKey(slot.day)}`),
-			})),
-		[entries, today, t],
-	)
+	const reviewDays = dayStreak?.reviewDays ?? NO_DAYS
+	const current = dayStreak?.streak.current ?? 0
+	const slots = useWeekSlots(entries, reviewDays, today)
 	const punchIndex = celebrate
 		? slots.findIndex(slot => slot.day === celebrate.day)
 		: -1
@@ -36,22 +38,39 @@ export function DailyStreak({
 			? { index: punchIndex, delay: celebrate.delay }
 			: null
 	const ignite =
-		celebrate && celebrate.day === today
+		celebrate && celebrate.day === today && !reviewDays.has(today)
 			? {
-					from: Math.max(0, streak.current - 1),
+					from: Math.max(0, current - 1),
 					delay: celebrate.delay + FLARE_AFTER_PUNCH,
 				}
 			: null
+	const milestone =
+		ignite && MILESTONES.includes(current) ? ignite.delay : null
+
+	useEffect(() => {
+		if (milestone === null) return
+		const timer = setTimeout(confetti, milestone * 1000)
+		return () => clearTimeout(timer)
+	}, [milestone])
+
+	if (!dayStreak) {
+		return (
+			<section aria-hidden='true' className={SECTION}>
+				<span className={`${FLAME} aspect-[100/120]`} />
+			</section>
+		)
+	}
+	const { streak } = dayStreak
 
 	return (
-		<section className='relative z-20 flex w-[calc(100%-1rem)] max-w-sm items-end gap-3'>
+		<section className={SECTION}>
 			<StreakFlame
 				count={streak.current}
 				state={
 					streak.todayActive ? 'lit' : streak.current > 0 ? 'risk' : 'cold'
 				}
 				ignite={ignite}
-				className='w-[5.25rem]'
+				className={FLAME}
 			/>
 			<WeekPunchCard
 				className='min-w-0 flex-1'
@@ -65,23 +84,5 @@ export function DailyStreak({
 				punch={punch}
 			/>
 		</section>
-	)
-}
-
-function PressedBest({ label, best }: { label: string; best: number }) {
-	const reduceMotion = useReducedMotion()
-
-	return (
-		<motion.p
-			className='flex shrink-0 items-baseline gap-1 font-black text-sunflower-200 [text-shadow:0_-1px_0_rgb(168_98_0/0.45),0_1px_0_#fff]'
-			initial={reduceMotion ? false : { scale: 1.3, opacity: 0 }}
-			animate={{ scale: 1, opacity: 1 }}
-			transition={{ duration: 0.18, ease: 'easeIn', delay: 0.6 }}
-		>
-			<span className='text-[0.6875rem] tracking-wider uppercase'>
-				{label}
-			</span>
-			<span className='text-xl leading-none tabular-nums'>{best}</span>
-		</motion.p>
 	)
 }

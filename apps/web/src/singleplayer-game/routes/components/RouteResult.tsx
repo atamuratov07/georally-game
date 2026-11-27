@@ -38,7 +38,7 @@ export function RouteResult({
 	const { t } = useTranslation()
 	const reduceMotion = useReducedMotion()
 	const score = getScore(state)
-	const leaveTo = useContext(RouteLeaveTarget)
+	const leave = useContext(RouteLeaveTarget)
 	const outcome =
 		state.outcome === 'gaveUp'
 			? t('routes.result.gaveUp')
@@ -53,7 +53,8 @@ export function RouteResult({
 			</h2>
 			<LeaveButton
 				mode='routes'
-				to={leaveTo}
+				to={leave.to}
+				state={leave.state}
 				onLeave={onLeave}
 				className={leaveClassName}
 			/>

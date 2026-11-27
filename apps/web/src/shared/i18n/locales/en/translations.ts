@@ -75,6 +75,17 @@ const translations = {
 		tellMore: 'Tell us more',
 	},
 	landing: {
+		today: {
+			riskTitle: 'Keep your streak alive',
+			riskText: 'Solve today’s route or review a few cards',
+			firstTitle: 'Day one done!',
+			doneTitle: 'Another day in a row!',
+			doneText: 'Come back tomorrow to keep it going',
+			startTitle: 'Start a streak today',
+			startText: 'Solve the daily route or review a few cards',
+			thisWeek: 'This week',
+			reviewInvite: 'Remember every country, a few cards a day',
+		},
 		heroTitle: 'Find every country <hl>on the map</hl>',
 		heroText:
 			'A fast, visual geography game. Practice on your own or run a live map quiz with your class.',

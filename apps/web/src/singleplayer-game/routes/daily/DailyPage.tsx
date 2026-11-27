@@ -8,6 +8,7 @@ import { Play } from 'lucide-react'
 import { AnimatePresence, useReducedMotion } from 'motion/react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
 import { LocalizedLink } from '@/app/LocalizedLink'
 import { useLocalizedNavigate } from '@/app/useLocalizedNavigate'
 import { BackLink, PageShell } from '@/shared/layout'
@@ -25,6 +26,7 @@ import { dailySlot, loadDailyEntries } from './dailyStore'
 import { dailyToday } from './dailyToday'
 import { dailyPaths } from './paths'
 import { tilesShownAt } from './share'
+import { useDayStreak } from './useDayStreak'
 import { useLazyBoard } from './useLazyBoard'
 
 const TEAR_MS = 950
@@ -56,6 +58,19 @@ export default function DailyPage() {
 			? today.entry
 			: null
 	const board = useLazyBoard(finishedEntry)
+	const dayStreak = useDayStreak(entries, day.key)
+	const location = useLocation()
+	const [solvedNumber] = useState(
+		() => (location.state as { solved?: number } | null)?.solved,
+	)
+
+	useEffect(() => {
+		if (location.state !== null) navigate(dailyPaths.page, { replace: true })
+	}, [location.state, navigate])
+
+	useEffect(() => {
+		if (finishedEntry) void navigator.storage?.persist?.()
+	}, [finishedEntry])
 
 	useEffect(() => {
 		const timer = setTimeout(prefetchGame, 500)
@@ -119,7 +134,7 @@ export default function DailyPage() {
 	const finished = game?.phase === 'finished' ? game : null
 	const puzzleDay = dailyDay(dailyRoutes.launch, number)
 	const celebrate =
-		finished?.outcome === 'solved'
+		finished?.outcome === 'solved' && solvedNumber === number
 			? {
 					day: puzzleDay,
 					delay:
@@ -149,7 +164,12 @@ export default function DailyPage() {
 	return (
 		<DailyShell>
 			<h1 className='sr-only'>{`${t('daily.title')} #${number}`}</h1>
-			<DailyStreak entries={entries} today={day.key} celebrate={celebrate} />
+			<DailyStreak
+				entries={entries}
+				today={day.key}
+				dayStreak={dayStreak}
+				celebrate={celebrate}
+			/>
 			<AnimatePresence mode='wait'>
 				<DailyTicket
 					key={number}

@@ -1,45 +1,47 @@
-.daily-ticket-top,
-.daily-ticket-stub {
-	--notch: 15px;
-	--notch-y: 100%;
-	mask:
-		radial-gradient(
-				circle at 0 var(--notch-y),
-				#0000 var(--notch),
-				#000 calc(var(--notch) + 0.5px)
-			)
-			left / 51% 100% no-repeat,
-		radial-gradient(
-				circle at 100% var(--notch-y),
-				#0000 var(--notch),
-				#000 calc(var(--notch) + 0.5px)
-			)
-			right / 51% 100% no-repeat;
-}
+@layer components {
+	.daily-ticket-top,
+	.daily-ticket-stub {
+		--notch: 15px;
+		--notch-y: 100%;
+		mask:
+			radial-gradient(
+					circle at 0 var(--notch-y),
+					#0000 var(--notch),
+					#000 calc(var(--notch) + 0.5px)
+				)
+				left / 51% 100% no-repeat,
+			radial-gradient(
+					circle at 100% var(--notch-y),
+					#0000 var(--notch),
+					#000 calc(var(--notch) + 0.5px)
+				)
+				right / 51% 100% no-repeat;
+	}
 
-.daily-ticket-stub {
-	--notch-y: 0%;
-}
+	.daily-ticket-stub {
+		--notch-y: 0%;
+	}
 
-.daily-mini-left,
-.daily-mini-right {
-	--notch: 9px;
-	--notch-x: 100%;
-	mask:
-		radial-gradient(
-				circle at var(--notch-x) 0,
-				#0000 var(--notch),
-				#000 calc(var(--notch) + 0.5px)
-			)
-			top / 100% 51% no-repeat,
-		radial-gradient(
-				circle at var(--notch-x) 100%,
-				#0000 var(--notch),
-				#000 calc(var(--notch) + 0.5px)
-			)
-			bottom / 100% 51% no-repeat;
-}
+	.daily-mini-left,
+	.daily-mini-right {
+		--notch: 9px;
+		--notch-x: 100%;
+		mask:
+			radial-gradient(
+					circle at var(--notch-x) 0,
+					#0000 var(--notch),
+					#000 calc(var(--notch) + 0.5px)
+				)
+				top / 100% 51% no-repeat,
+			radial-gradient(
+					circle at var(--notch-x) 100%,
+					#0000 var(--notch),
+					#000 calc(var(--notch) + 0.5px)
+				)
+				bottom / 100% 51% no-repeat;
+	}
 
-.daily-mini-right {
-	--notch-x: 0%;
+	.daily-mini-right {
+		--notch-x: 0%;
+	}
 }

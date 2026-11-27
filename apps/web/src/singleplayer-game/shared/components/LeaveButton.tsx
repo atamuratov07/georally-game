@@ -16,6 +16,7 @@ const TONES = {
 interface LeaveButtonProps {
 	mode: SingleplayerModeId
 	to?: string
+	state?: unknown
 	tone?: keyof typeof TONES
 	className?: string
 	onLeave?: () => void
@@ -24,6 +25,7 @@ interface LeaveButtonProps {
 export function LeaveButton({
 	mode,
 	to = singleplayerPaths(mode).setup,
+	state,
 	tone = 'light',
 	className,
 	onLeave,
@@ -39,7 +41,7 @@ export function LeaveButton({
 			aria-label={t('singleplayer.exit')}
 			title={t('singleplayer.exit')}
 		>
-			<LocalizedLink to={to} onClick={onLeave}>
+			<LocalizedLink to={to} state={state} onClick={onLeave}>
 				<LogOut aria-hidden='true' className='rotate-180' />
 			</LocalizedLink>
 		</Button>

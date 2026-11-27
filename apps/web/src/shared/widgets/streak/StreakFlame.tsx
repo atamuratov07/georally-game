@@ -5,7 +5,7 @@ import { FLAME } from './flameShapes'
 import './streak.css'
 
 export type FlameState = 'lit' | 'risk' | 'cold'
-type Tier = 'warm' | 'hot' | 'blaze' | 'cold'
+type Tier = 'warm' | 'hot' | 'blaze' | 'ember' | 'cold'
 
 const color = (token: string) => `var(--color-${token})`
 
@@ -33,6 +33,14 @@ const PALETTES: Readonly<Record<Tier, Readonly<Record<string, string>>>> = {
 		midLight: color('sunflower-100'),
 		core: '#fff',
 		digits: color('coral-500'),
+	},
+	ember: {
+		body: color('coral-300'),
+		light: color('coral-100'),
+		mid: color('sunflower-200'),
+		midLight: color('sunflower-50'),
+		core: '#fff',
+		digits: color('coral-400'),
 	},
 	cold: {
 		body: color('line'),
@@ -72,13 +80,15 @@ const SPLINES = Array(4).fill('.45 0 .55 1').join(';')
 
 function tierOf(state: FlameState, count: number): Tier {
 	if (state === 'cold') return 'cold'
+	if (state === 'risk') return 'ember'
 	if (count >= 30) return 'blaze'
 	return count >= 7 ? 'hot' : 'warm'
 }
 
-const RISK_SCALE = 'scale(0.6)'
-// Follows the shrunken flame's core, which sits lower in the box.
-const RISK_DIGITS = 'translateY(12cqw) scale(0.62)'
+const SMOKE = [
+	{ dx: -6, dur: 2.6, delay: 0 },
+	{ dx: 5, dur: 2.9, delay: -1.3 },
+] as const
 
 function digitsSize(count: number) {
 	if (count < 10) return 'text-[42cqw]'
@@ -165,27 +175,27 @@ export function StreakFlame({
 					flared
 						? {
 								transform: [
-									RISK_SCALE,
+									'scale(1)',
 									'scale(1.28)',
 									'scale(0.94)',
 									'scale(1)',
 								],
 							}
-						: {
-								transform:
-									shownState === 'risk' ? RISK_SCALE : 'scale(1)',
-							}
+						: undefined
 				}
-				transition={
-					flared
-						? { duration: 0.7, times: [0, 0.35, 0.7, 1], ease: 'easeOut' }
-						: { type: 'spring', stiffness: 400, damping: 20 }
-				}
+				transition={{
+					duration: 0.7,
+					times: [0, 0.35, 0.7, 1],
+					ease: 'easeOut',
+				}}
 			>
 				<svg
 					aria-hidden='true'
 					viewBox='0 0 100 120'
-					className='absolute inset-0 size-full overflow-visible'
+					className={cn(
+						'absolute inset-0 size-full overflow-visible',
+						moving && shownState === 'risk' && 'streak-gutter',
+					)}
 				>
 					<defs>
 						{layer('outer', 1.4, 0)}
@@ -322,6 +332,25 @@ export function StreakFlame({
 								/>
 							))
 						: null}
+					{moving && shownState === 'risk'
+						? SMOKE.map((puff, i) => (
+								<circle
+									key={i}
+									className='streak-smoke'
+									cx='50'
+									cy='22'
+									r='5'
+									fill={palette.light}
+									style={
+										{
+											'--dx': `${puff.dx}px`,
+											'--dur': `${puff.dur}s`,
+											'--delay': `${puff.delay}s`,
+										} as CSSProperties
+									}
+								/>
+							))
+						: null}
 				</svg>
 			</motion.div>
 			<p
@@ -339,18 +368,16 @@ export function StreakFlame({
 					aria-hidden='true'
 					className='block'
 					initial={false}
-					animate={{
-						transform: flared
-							? [RISK_DIGITS, 'scale(1.15)', 'scale(1)']
-							: shownState === 'risk'
-								? RISK_DIGITS
-								: 'scale(1)',
-					}}
-					transition={
+					animate={
 						flared
-							? { duration: 0.6, times: [0, 0.45, 1], ease: 'easeOut' }
-							: { type: 'spring', stiffness: 400, damping: 22 }
+							? { transform: ['scale(1)', 'scale(1.15)', 'scale(1)'] }
+							: undefined
 					}
+					transition={{
+						duration: 0.6,
+						times: [0, 0.45, 1],
+						ease: 'easeOut',
+					}}
 				>
 					<span
 						aria-hidden='true'

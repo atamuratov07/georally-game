@@ -77,6 +77,20 @@ const translations = {
 		tellMore: 'Batafsil yozing',
 	},
 	landing: {
+		today: {
+			riskTitle: 'Seriyani saqlab qoling',
+			riskText:
+				'Kunlik marshrutni yeching yoki bir nechta kartani takrorlang',
+			firstTitle: 'Birinchi kun bajarildi!',
+			doneTitle: 'Yana bir kun ketma-ket!',
+			doneText: 'Seriyani davom ettirish uchun ertaga qayting',
+			startTitle: 'Bugun seriyani boshlang',
+			startText:
+				'Kunlik marshrutni yeching yoki bir nechta kartani takrorlang',
+			thisWeek: 'Shu hafta',
+			reviewInvite:
+				'Har kuni bir nechta karta bilan barcha davlatlarni eslab qoling',
+		},
 		heroTitle: 'Har bir davlatni <hl>xaritada</hl> toping',
 		heroText:
 			"Tez va ko'rgazmali geografiya o'yini. Mustaqil mashq qiling yoki sinfingiz bilan jonli xarita viktorinasini o'tkazing.",

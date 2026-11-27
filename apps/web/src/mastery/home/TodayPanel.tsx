@@ -47,18 +47,21 @@ export function TodayPanel({
 				{reviewCount > 0 ? (
 					<Stat
 						value={reviewCount}
+						valueClassName='text-ink'
 						label={t('review.toReview', { count: reviewCount })}
 					/>
 				) : null}
 				{newCount > 0 ? (
 					<Stat
 						value={newCount}
+						valueClassName='text-berry-500'
 						label={t('review.newCards', { count: newCount })}
 					/>
 				) : null}
 			</div>
 			<div className='w-full'>{children}</div>
 			<Button
+				variant='lagoon'
 				size='lg'
 				className='w-full'
 				onClick={() => navigate(masteryPaths.play)}

@@ -70,7 +70,7 @@ export function ScopeForm({
 				/>
 				{wholeWorld ? (
 					<Button
-						variant={allPicked ? 'ocean' : 'neutral'}
+						variant={allPicked ? 'lagoon' : 'neutral'}
 						size='sm'
 						aria-pressed={allPicked}
 						onClick={() =>
@@ -83,7 +83,7 @@ export function ScopeForm({
 			</div>
 			{children}
 			<Button
-				variant={primary ? 'primary' : 'ocean'}
+				variant={primary ? 'primary' : 'lagoon'}
 				size='lg'
 				className='w-full'
 				disabled={picked.length === 0}

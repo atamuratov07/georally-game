@@ -3,10 +3,12 @@ import type { TFunction } from 'i18next'
 import { getDifficultyLabel } from '@/shared/i18n'
 import type { ControlTone, SegmentOption } from '@/shared/ui'
 
+export const LEVEL_TONES = ['grass', 'sunflower', 'coral'] as const
+
 const DIFFICULTY_TONES: Record<GameDifficulty, ControlTone> = {
-	easy: 'grass',
-	medium: 'sunflower',
-	hard: 'coral',
+	easy: LEVEL_TONES[0],
+	medium: LEVEL_TONES[1],
+	hard: LEVEL_TONES[2],
 }
 
 export function numberOptions(

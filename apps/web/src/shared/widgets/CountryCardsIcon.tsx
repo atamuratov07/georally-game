@@ -104,8 +104,8 @@ export function CountryCardsIcon({ className }: { className?: string }) {
 				className='rotate-22 group-hover:rotate-30 group-focus-visible:rotate-30'
 			/>
 			<Card
-				fill='var(--color-ocean-500)'
-				shade='var(--color-ocean-600)'
+				fill='var(--color-lagoon-500)'
+				shade='var(--color-lagoon-600)'
 				clipId={cardClip}
 				className='-translate-y-[3.5px] group-hover:-translate-y-[5.5px] group-focus-visible:-translate-y-[5.5px]'
 			>

@@ -23,6 +23,7 @@ export function GameErrorScreen({ setupPath }: { setupPath: string }) {
 			}
 			footer={
 				<TextButton
+					tone='sky'
 					type='button'
 					onClick={() => openFeedback({ category: 'bug' })}
 				>

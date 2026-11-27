@@ -22,7 +22,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
 			<DropdownMenuTrigger
 				aria-label={t('app.language')}
 				className={cn(
-					'group inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-sm font-extrabold text-ink transition-colors hover:bg-ink/6 data-[state=open]:bg-ink/6',
+					'group inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-sm font-extrabold text-on-sky transition-colors hover:bg-on-sky/10 data-[state=open]:bg-on-sky/10',
 					className,
 				)}
 			>
@@ -34,7 +34,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
 				{current?.shortLabel}
 				<ChevronDown
 					aria-hidden='true'
-					className='size-4 text-muted transition-transform group-data-[state=open]:rotate-180'
+					className='size-4 text-on-sky-soft transition-transform group-data-[state=open]:rotate-180'
 					strokeWidth={3}
 				/>
 			</DropdownMenuTrigger>

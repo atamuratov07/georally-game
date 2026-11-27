@@ -9,6 +9,7 @@ import { InstallAppButton } from '@/shared/pwa'
 import { cn } from '@/shared/utils'
 import { outlinedText } from '@/shared/widgets/outlinedText'
 import { HeaderMenu } from './HeaderMenu'
+import { SkySwitch } from './SkySwitch'
 
 const NAME_TEXT = outlinedText(0.16, 0.12, 'em')
 
@@ -73,12 +74,13 @@ export function AppHeader({
 			<div className='flex shrink-0 items-center gap-1 sm:gap-2'>
 				{children}
 				<ReviewLink />
-				<div className='flex items-center gap-2 max-sm:hidden'>
+				<SkySwitch />
+				<div className='flex items-center gap-2 max-lg:hidden'>
 					<InstallAppButton />
 					<FeedbackButton />
 					<LanguageSwitcher />
 				</div>
-				<HeaderMenu className='sm:hidden' />
+				<HeaderMenu className='lg:hidden' />
 			</div>
 		</header>
 	)

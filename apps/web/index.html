@@ -16,6 +16,14 @@
 			gtag('config', 'G-8N0ST19DZ9')
 		</script>
 		<meta charset="UTF-8" />
+		<script>
+			try {
+				const sky = localStorage.getItem('georally.sky')
+				if (sky === 'dusk' || sky === 'night') {
+					document.documentElement.dataset.sky = sky
+				}
+			} catch {}
+		</script>
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
 		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
 		<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />

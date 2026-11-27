@@ -4,6 +4,7 @@ import { cn } from '@/shared/utils'
 
 const TONES = {
 	muted: 'text-muted hover:text-ink',
+	sky: 'text-on-sky-soft hover:text-on-sky',
 	coral: 'text-coral-600 hover:text-coral-700',
 } as const
 

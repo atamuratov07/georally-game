@@ -25,7 +25,7 @@ export function HeaderMenu({ className }: { className?: string }) {
 				<DropdownMenuTrigger
 					aria-label={t('app.menu')}
 					className={cn(
-						'group inline-flex size-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/6 data-[state=open]:bg-ink/6',
+						'group inline-flex size-10 items-center justify-center rounded-full transition-colors hover:bg-on-sky/10 data-[state=open]:bg-on-sky/10',
 						className,
 					)}
 				>

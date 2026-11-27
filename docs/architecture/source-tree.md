@@ -85,7 +85,9 @@ georally-game/
 |           |   |   `-- useMultiplayerGameAnalytics.ts
 |           |   |-- feedback/           # the feedback form and the end-of-game reaction, see feedback.md
 |           |   |-- layout/             # AppHeader (logo or a section's emblem, title, links; on phones the
-|           |   |                       # actions fold into HeaderMenu), PageShell, BackLink, StatusScreen, SkyBackground
+|           |   |                       # actions fold into HeaderMenu), PageShell, BackLink, StatusScreen, SkyBackground,
+|           |   |                       # SkySwitch and sky.ts (day, evening or night; anything drawn straight on the sky
+|           |   |                       # takes the on-sky colours from globals.css, which turn white on the dark skies)
 |           |   |-- pwa/                # service worker registration and update prompt, install button and
 |           |   |                       # useInstallApp (the action and the iOS help), useOnline, see pwa.md
 |           |   |-- i18n/

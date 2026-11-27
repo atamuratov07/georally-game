@@ -12,7 +12,7 @@ export function FeedbackButton({ className }: { className?: string }) {
 			type='button'
 			onClick={() => openFeedback()}
 			className={cn(
-				'inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-sm font-extrabold text-ink transition-colors hover:bg-ink/6',
+				'inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-sm font-extrabold text-on-sky transition-colors hover:bg-on-sky/10',
 				className,
 			)}
 		>

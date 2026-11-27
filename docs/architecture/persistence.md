@@ -7,6 +7,7 @@ GeoRally has no server database. The server keeps rooms in memory. The browser k
 - `multiplayer-game/session/sessionStorage.ts` saves host/player room sessions in `localStorage` — room code, member ID, role, and `memberSessionToken`.
 - `multiplayer-game/model/gameConfig.ts` saves the host's last multiplayer game config, keyed by room code.
 - `shared/feedback/useReactionPrompt.ts` saves how many games the player has finished and when the game reaction was last shown in each mode (see [`feedback.md`](feedback.md)).
+- `shared/layout/sky.ts` saves the page sky (`georally.sky`: evening or night; day is the default and isn't saved). An inline script in `index.html` sets `data-sky` on `<html>` from it before the first paint.
 - Singleplayer saves the game in progress (one per mode, discarded after 7 days) and personal bests in `localStorage` (see [`singleplayer.md`](singleplayer.md#saved-games)).
 
 ## Review progress

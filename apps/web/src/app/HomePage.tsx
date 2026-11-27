@@ -73,7 +73,7 @@ export default function HomePage() {
 										}}
 									/>
 								</h1>
-								<p className='max-w-xl text-lg font-medium text-muted sm:text-xl'>
+								<p className='max-w-xl text-lg font-medium text-on-sky-soft sm:text-xl'>
 									{t('landing.heroText')}
 								</p>
 								<div className='flex w-full flex-col gap-3 pt-2 sm:w-auto sm:flex-row'>
@@ -138,7 +138,7 @@ export default function HomePage() {
 						>
 							<h2
 								id='modes-title'
-								className='text-center text-3xl font-black tracking-tight sm:text-4xl'
+								className='text-center text-3xl font-black tracking-tight text-on-sky sm:text-4xl'
 							>
 								{t('landing.modesTitle')}
 							</h2>
@@ -196,7 +196,7 @@ export default function HomePage() {
 						>
 							<h2
 								id='steps-title'
-								className='text-center text-3xl font-black tracking-tight sm:text-4xl'
+								className='text-center text-3xl font-black tracking-tight text-on-sky sm:text-4xl'
 							>
 								{t('landing.stepsTitle')}
 							</h2>
@@ -206,17 +206,17 @@ export default function HomePage() {
 										<span
 											aria-hidden='true'
 											className={cn(
-												'text-7xl leading-[0.85] font-black [text-shadow:0_5px_0_var(--color-line-strong)]',
+												'text-7xl leading-[0.85] font-black [text-shadow:0_5px_0_var(--sky-edge)]',
 												color,
 											)}
 										>
 											{n}
 										</span>
 										<div>
-											<h3 className='text-xl font-black'>
+											<h3 className='text-xl font-black text-on-sky'>
 												{t(`landing.step${n}Title`)}
 											</h3>
-											<p className='mt-1 font-medium text-muted'>
+											<p className='mt-1 font-medium text-on-sky-soft'>
 												{t(`landing.step${n}Text`)}
 											</p>
 										</div>

@@ -80,7 +80,7 @@ export default function DailyPage() {
 	const weekdayName = (key: string) => t(`common.weekday.${weekdayKey(key)}`)
 
 	const practice = (
-		<TextButton asChild>
+		<TextButton asChild tone='sky'>
 			<LocalizedLink to={singleplayerPaths('routes').setup}>
 				{t('daily.practice')}
 			</LocalizedLink>
@@ -91,10 +91,10 @@ export default function DailyPage() {
 		return (
 			<DailyShell>
 				<div className='flex animate-pop-in flex-col items-center gap-3 text-center'>
-					<h1 className='text-3xl font-black tracking-tight'>
+					<h1 className='text-3xl font-black tracking-tight text-on-sky'>
 						{t('daily.overTitle')}
 					</h1>
-					<p className='max-w-xs font-bold text-muted'>
+					<p className='max-w-xs font-bold text-on-sky-soft'>
 						{t('daily.overText')}
 					</p>
 					<Button asChild variant='grass' className='mt-4'>

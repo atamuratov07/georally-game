@@ -16,11 +16,11 @@ export function ReviewLink() {
 	return (
 		<LocalizedLink
 			to={masteryPaths.home}
-			className='group inline-flex h-10 items-center gap-1.5 rounded-full transition-transform active:translate-y-0.5 max-sm:size-10 max-sm:justify-center sm:mr-2 sm:pr-3 sm:pl-2'
+			className='group inline-flex h-10 items-center gap-1.5 rounded-full transition-transform active:translate-y-0.5 max-lg:size-10 max-lg:justify-center lg:mr-2 lg:pr-3 lg:pl-2'
 		>
-			<CountryCardsIcon className='size-8 drop-shadow-[0_1.5px_0_var(--color-ink)] sm:size-7' />
+			<CountryCardsIcon className='size-10 drop-shadow-[0_1.5px_0_var(--color-ink)] lg:size-9' />
 			<span
-				className='text-[17px] font-black text-white max-sm:sr-only'
+				className='text-[17px] font-black text-white max-lg:sr-only'
 				style={LABEL_TEXT}
 			>
 				{t('review.title')}

@@ -1,6 +1,6 @@
 import type { RouteState } from '@georally/game-domain/singleplayer/routes'
 import type { GameStore } from '../../shared/gameStore'
-import { isRouteGame } from '../store'
+import { isRouteGame } from '../routeGame'
 
 const KEY = 'georally.routes.daily'
 const VERSION = 1

@@ -1,8 +1,11 @@
-import { GAME_DIFFICULTIES, type CountryPool } from '@georally/game-domain'
+import {
+	GAME_DIFFICULTIES,
+	seededRandom,
+	type CountryPool,
+} from '@georally/game-domain'
 import { answerCard } from '../answerCard'
 import { splitCardId } from '../cardId'
 import { introOrder } from '../intro/introOrder'
-import { seededRandom } from '../intro/seededRandom'
 import type { Scheduler } from '../ports'
 import { buildSessionPlan } from '../session/plan'
 import { applyAnswer, selectNext, startSession } from '../session/queue'

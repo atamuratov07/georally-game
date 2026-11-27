@@ -1,11 +1,14 @@
-import { Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import type { RouteObject } from 'react-router-dom'
 import { SINGLEPLAYER_MODES } from './modes'
 import { singleplayerPaths } from './paths'
 import { RedirectWithSearch } from './RedirectWithSearch'
+import { dailyPaths } from './routes/daily/paths'
 import { GameLoader } from './shared/components/GameLoader'
 
 const defaultPaths = singleplayerPaths(SINGLEPLAYER_MODES[0].id)
+const DailyPage = lazy(() => import('./routes/daily/DailyPage'))
+const DailyGamePage = lazy(() => import('./routes/daily/DailyGamePage'))
 
 export const singleplayerRoutes: RouteObject[] = [
 	{
@@ -30,4 +33,15 @@ export const singleplayerRoutes: RouteObject[] = [
 			},
 		]
 	}),
+	{ path: dailyPaths.page.slice(1), element: <DailyPage /> },
+	{
+		path: dailyPaths.play.slice(1),
+		element: (
+			<Suspense
+				fallback={<GameLoader mode='routes' leaveTo={dailyPaths.page} />}
+			>
+				<DailyGamePage />
+			</Suspense>
+		),
+	},
 ]

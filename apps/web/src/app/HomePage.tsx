@@ -14,6 +14,7 @@ const HeroGlobe = lazy(() => import('./landing/HeroGlobe'))
 const NameItDemo = lazy(() => import('./landing/NameItDemo'))
 const SprintDemo = lazy(() => import('./landing/SprintDemo'))
 const RoutesDemo = lazy(() => import('./landing/RoutesDemo'))
+const TodaySection = lazy(() => import('./landing/TodaySection'))
 
 const MODES = [
 	{
@@ -92,6 +93,10 @@ export default function HomePage() {
 								<HeroGlobe />
 							</Suspense>
 						</section>
+
+						<Suspense fallback={null}>
+							<TodaySection />
+						</Suspense>
 
 						<ModeShowcase
 							id='name-it'

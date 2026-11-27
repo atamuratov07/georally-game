@@ -10,10 +10,12 @@ import {
 	SOURCE_ID,
 	stateFlag,
 } from '@/shared/map/map-styles'
+import type { Hatch } from '@/shared/map/hatchPattern'
 
 export const MASTERY_STATE = 'mastery'
 export const FADING_STATE = 'fading'
 export const FADING_PATTERN_ID = 'mastery-fading'
+export const FADING_HATCH: Hatch = { stripe: [255, 255, 255, 170] }
 
 export const MASTERY_FILL: Readonly<Record<MasteryLevel, string>> = {
 	learning: '#d7f5c8',

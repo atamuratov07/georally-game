@@ -87,7 +87,10 @@ export function getMissingIds(
 	)
 }
 
-export function isPerfect(board: RouteBoard, state: RouteState): boolean {
+export function isPerfect(
+	board: Pick<RouteBoard, 'par'>,
+	state: RouteState,
+): boolean {
 	return (
 		state.phase === 'finished' &&
 		state.outcome === 'solved' &&

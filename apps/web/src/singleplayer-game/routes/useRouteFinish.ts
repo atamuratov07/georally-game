@@ -43,6 +43,6 @@ export function useRouteFinish(
 		camera,
 		onMoved,
 		restored,
-		nextShown: restored || (moved && lineSettled),
+		actionShown: restored || (moved && lineSettled),
 	}
 }

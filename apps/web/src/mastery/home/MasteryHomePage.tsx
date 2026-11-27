@@ -41,7 +41,7 @@ export default function MasteryHomePage() {
 			>
 				<LoaderCircle
 					aria-label={t('game.loading')}
-					className='mx-auto size-10 animate-spin text-ocean-500'
+					className='mx-auto size-10 animate-spin text-lagoon-500'
 					strokeWidth={2.5}
 				/>
 			</PageShell>

@@ -19,6 +19,8 @@ const buttonVariants = cva(
 				ocean: 'border-ocean-600 bg-ocean-500 text-white [--edge:var(--color-ocean-700)]',
 				grass: 'border-grass-600 bg-grass-500 text-white [--edge:var(--color-grass-700)]',
 				grape: 'border-grape-600 bg-grape-500 text-white [--edge:var(--color-grape-700)]',
+				lagoon:
+					'border-lagoon-600 bg-lagoon-500 text-white [--edge:var(--color-lagoon-700)]',
 				coral: 'border-coral-600 bg-coral-500 text-white [--edge:var(--color-coral-700)]',
 				neutral:
 					'border-line-strong bg-white text-ink [--edge:var(--color-line-strong)]',

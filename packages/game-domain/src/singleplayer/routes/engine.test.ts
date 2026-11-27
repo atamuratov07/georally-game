@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest'
 
 import type { MatchResult } from '../../answers'
 import { fromEdges } from '../../borders'
+import { addDays } from '../../streak'
 import { createRouteBoard } from './board'
+import { dailyDay, dailyLevel, dailyNumber } from './daily'
 import { routeLevels } from './difficulty'
 import { createIdleState, reduceRouteState } from './engine'
 import { getKnownIds, getScore, getTimeline, isPerfect } from './selectors'
@@ -239,5 +241,30 @@ describe('route engine', () => {
 		})
 		expect(dailyRouteSession(list, 0)).toBeNull()
 		expect(dailyRouteSession(list, 2)).toBeNull()
+	})
+})
+
+describe('daily route', () => {
+	const LAUNCH = '2026-11-28'
+
+	it('numbers puzzles by local day from the launch', () => {
+		expect(dailyNumber(LAUNCH, '2026-11-27')).toBe(0)
+		expect(dailyNumber(LAUNCH, LAUNCH)).toBe(1)
+		expect(dailyNumber(LAUNCH, '2027-11-28')).toBe(366)
+		expect(dailyDay(LAUNCH, 366)).toBe('2027-11-28')
+	})
+
+	it('follows the week for its level', () => {
+		const monday = '2026-11-30'
+		const week = [0, 1, 2, 3, 4, 5, 6].map(i => addDays(monday, i))
+		expect(week.map(dailyLevel)).toEqual([
+			'easy',
+			'easy',
+			'medium',
+			'medium',
+			'medium',
+			'medium',
+			'hard',
+		])
 	})
 })

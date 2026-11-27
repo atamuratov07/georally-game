@@ -8,6 +8,7 @@ import { RedirectWithSearch } from '../RedirectWithSearch'
 import { GameErrorBoundary } from '../shared/components/GameErrorBoundary'
 import { GameErrorScreen } from '../shared/components/GameErrorScreen'
 import { KeyboardGameFrame } from '../shared/components/KeyboardGameFrame'
+import { NextPuzzleButton } from './components/NextPuzzleButton'
 import { RoutesScreen } from './RoutesScreen'
 import { routeGameStore } from './store'
 import { useRoutesGame } from './useRoutesGame'
@@ -32,7 +33,8 @@ export default function GamePage() {
 }
 
 function GameContent({ onNext }: { onNext: (config: RouteConfig) => void }) {
-	const { state, board, begin, attempt, hint, giveUp, leave } = useRoutesGame()
+	const { state, board, begin, attempt, hint, giveUp } =
+		useRoutesGame(routeGameStore)
 
 	if (state === null || board === null) {
 		return <RedirectWithSearch to={paths.setup} />
@@ -49,8 +51,12 @@ function GameContent({ onNext }: { onNext: (config: RouteConfig) => void }) {
 				onAttempt={attempt}
 				onHint={hint}
 				onGiveUp={giveUp}
-				onLeave={leave}
-				onNext={config.kind === 'practice' ? () => onNext(config) : null}
+				onLeave={routeGameStore.clear}
+				finishAction={
+					config.kind === 'practice' ? (
+						<NextPuzzleButton onNext={() => onNext(config)} />
+					) : null
+				}
 			/>
 		</KeyboardGameFrame>
 	)

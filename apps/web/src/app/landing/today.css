@@ -1,0 +1,18 @@
+@layer components {
+	.review-ruled {
+		--rule-top: 2.75rem;
+		background-color: var(--color-lagoon-50);
+		background-image:
+			linear-gradient(var(--color-berry-300), var(--color-berry-300)),
+			repeating-linear-gradient(
+				180deg,
+				transparent 0 1.4rem,
+				var(--color-lagoon-200) 1.4rem calc(1.4rem + 1px)
+			);
+		background-size:
+			100% 2px,
+			100% 100%;
+		background-position: 0 var(--rule-top);
+		background-repeat: no-repeat;
+	}
+}

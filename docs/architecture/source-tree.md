@@ -114,6 +114,7 @@ georally-game/
 |           |   |   |-- map-controls.ts # shared style of the round map buttons
 |           |   |   |-- continent-view.ts
 |           |   |   |-- map-styles.tsx  # fixed layer specs driven by feature state
+|           |   |   |-- hatchPattern.ts # diagonal stripe images in each map's colours (Roads, mastery)
 |           |   |   |-- style.json, mapStyle.ts # base style; inlines the tile list and outlines URL
 |           |   |   |-- generated/      # tiles.json, archipelagos.geojson, border-crossings.json (country-build output)
 |           |   |   |-- prefetchMap.ts  # warms the outlines, low-zoom tiles and common glyphs
@@ -232,7 +233,7 @@ georally-game/
 |           |   |   |-- RouteAnnouncements.tsx # screen-reader guess list and announcements
 |           |   |   |-- map/              # everything drawn on the map
 |           |   |   |   |-- RoutesMap.tsx     # BaseMap, opening view; mounts the layers and cameras
-|           |   |   |   |-- RouteLayers.tsx   # verdict fills, dashed outline on revealed countries,
+|           |   |   |   |-- RouteLayers.tsx   # verdict fills, hatch on revealed countries,
 |           |   |   |   |                     # labels, the line and the rings
 |           |   |   |   |-- routeFrame.ts     # bounds that keep both ends in view, however large a country
 |           |   |   |   |-- routeGeometry.ts  # border crossings, arcs along the links
@@ -324,7 +325,7 @@ georally-game/
 |   |       |-- answerCard.ts            # one answer -> the card's new record and its log entry
 |   |       |-- rebuildCards.ts          # log -> cards, regraded with the current graders
 |   |       |-- skills/                  # registry, grading table, locate (outcome, slow cap)
-|   |       |-- intro/                   # introOrder, unseen, isPlanned, seededRandom
+|   |       |-- intro/                   # introOrder, unseen, isPlanned
 |   |       |-- session/                 # plan (the day's cards), queue (the next card)
 |   |       |-- view/                    # deriveMastery, layers, summarize (known counts), daySummary, countDue
 |   |       |-- services/                # loadToday, recordAnswer, addScope, loadDayResult, loadMastery,

@@ -129,7 +129,7 @@ export function SessionSummary({
 						<Stat
 							outlined
 							className='animate-pop-in [animation-delay:250ms]'
-							valueClassName='text-ocean-500'
+							valueClassName='text-berry-500'
 							value={<CountUp value={newIds.length} delay={0.35} />}
 							label={t('review.newCards', { count: newIds.length })}
 						/>
@@ -138,7 +138,7 @@ export function SessionSummary({
 						<Stat
 							outlined
 							className='animate-pop-in [animation-delay:400ms]'
-							valueClassName='text-grass-500'
+							valueClassName='text-ink'
 							value={<CountUp value={reviewedIds.length} delay={0.5} />}
 							label={t('review.reviewed', { count: reviewedIds.length })}
 						/>
@@ -159,7 +159,7 @@ export function SessionSummary({
 					) : null}
 					{unseenCount > 0 ? (
 						<Button
-							variant='ocean'
+							variant='lagoon'
 							size='lg'
 							className='w-full sm:w-64'
 							pending={adding}

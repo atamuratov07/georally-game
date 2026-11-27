@@ -27,9 +27,8 @@ const MASTERY_ADAPTERS = {
 }
 
 const MASTERY_FEATURE = {
-	regex: '^(?:@|\\.\\.?)/(?:.*/)?mastery(?:$|/(?!bridge/reportCasualOutcomes$))',
-	message:
-		'A mode reaches review only through mastery/bridge/reportCasualOutcomes.',
+	regex: '^(?:@|\\.\\.?)/(?:.*/)?mastery(?:$|/(?!bridge/))',
+	message: 'A mode reaches review only through mastery/bridge/.',
 }
 
 // apps/web/src layers, lowest first: shared/, game-kit/, then the features.
@@ -46,6 +45,9 @@ const GAME_KIT_LAYER = layerPattern(
 	FEATURES,
 	'game-kit/ imports shared/ only, never a feature.',
 )
+
+const LIGHT_HOME =
+	'The home page strip loads neither the catalog nor the map; import them lazily.'
 
 function masteryImports(allowedFolder) {
 	return {
@@ -155,6 +157,26 @@ export default defineConfig([
 			'no-restricted-imports': [
 				'error',
 				{ patterns: [MASTERY_ADAPTERS, MASTERY_FEATURE] },
+			],
+		},
+	},
+	{
+		files: ['apps/web/src/app/landing/{TodaySection,ReviewCard}.tsx'],
+		rules: {
+			'no-restricted-imports': [
+				'error',
+				{
+					paths: [
+						{ name: '@georally/country-catalog', message: LIGHT_HOME },
+					],
+					patterns: [
+						MASTERY_ADAPTERS,
+						{
+							group: ['maplibre-gl', '@/shared/map/**'],
+							message: LIGHT_HOME,
+						},
+					],
+				},
 			],
 		},
 	},

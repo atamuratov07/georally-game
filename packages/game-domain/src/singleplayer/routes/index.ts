@@ -1,5 +1,7 @@
 export { createRouteBoard, type RouteBoard } from './board'
+export { dailyDay, dailyLevel, dailyNumber } from './daily'
 export {
+	fitsLevel,
 	ratingRank,
 	ROUTE_REGION_CONTINENTS,
 	routeLevels,
@@ -17,7 +19,7 @@ export {
 	getTimeline,
 	isPerfect,
 } from './selectors'
-export { dailyRouteSession, prepareRouteSession } from './session'
+export { byRegionPair, dailyRouteSession, prepareRouteSession } from './session'
 export {
 	ROUTE_REGIONS,
 	type Attempt,

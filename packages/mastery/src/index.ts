@@ -58,6 +58,7 @@ export {
 	type SkillId,
 } from './types'
 export { countDue } from './view/countDue'
+export { planCounts } from './view/planCounts'
 export {
 	MASTERY_LEVELS,
 	masteryViews,

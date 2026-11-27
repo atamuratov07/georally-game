@@ -1,6 +1,7 @@
 import { PACES, setPace, type Pace } from '@georally/mastery'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { LEVEL_TONES } from '@/shared/widgets/settingOptions'
 import { SettingToggleGroup } from '@/shared/widgets/SettingToggleGroup'
 import { mastery } from '../container'
 
@@ -31,12 +32,11 @@ export function PaceSetting({
 	return (
 		<SettingToggleGroup
 			label={t('review.pace')}
-			// Not a skill's colour, so the pace doesn't read as one.
-			tone='grape'
 			value={chosen ?? pace}
-			options={PACE_ORDER.map(value => ({
+			options={PACE_ORDER.map((value, i) => ({
 				value,
 				label: t(`review.paces.${value}`),
+				tone: LEVEL_TONES[i],
 			}))}
 			onChange={next => void choose(next)}
 		/>

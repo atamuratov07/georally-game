@@ -11,7 +11,7 @@ import {
 	type RouteMove,
 	type RouteState,
 } from '@georally/game-domain/singleplayer/routes'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState, type ReactNode } from 'react'
 import { useRequestReaction } from '@/shared/feedback'
 import { TOUCH_QUERY } from '@/shared/lib/touch'
 import { useKeyboardInset } from '@/shared/lib/useKeyboardInset'
@@ -46,7 +46,7 @@ interface RoutesScreenProps {
 	onHint: () => void
 	onGiveUp: () => void
 	onLeave: () => void
-	onNext: (() => void) | null
+	finishAction: ReactNode
 }
 
 export function RoutesScreen({
@@ -57,7 +57,7 @@ export function RoutesScreen({
 	onHint,
 	onGiveUp,
 	onLeave,
-	onNext,
+	finishAction,
 }: RoutesScreenProps) {
 	const keyboardInset = useKeyboardInset()
 	const requestReaction = useRequestReaction()
@@ -120,15 +120,6 @@ export function RoutesScreen({
 		requestReaction('routes')
 		onLeave()
 	}, [onLeave, requestReaction])
-	const next = useMemo(
-		() =>
-			onNext &&
-			(() => {
-				requestReaction('routes')
-				onNext()
-			}),
-		[onNext, requestReaction],
-	)
 
 	return (
 		<RouteIntroContext value={intro.stage}>
@@ -183,12 +174,12 @@ export function RoutesScreen({
 					<RouteResult
 						board={board}
 						state={state}
-						onNext={next}
+						action={finishAction}
 						onLeave={leaveFinished}
 						leaveClassName={layout.leaveClassName}
 						headerClassName={layout.finishHeaderClassName}
 						headerEnters={finish.restored || layout.finishHeaderMoves}
-						nextShown={finish.nextShown}
+						actionShown={finish.actionShown}
 					/>
 				) : null}
 				{started ? (

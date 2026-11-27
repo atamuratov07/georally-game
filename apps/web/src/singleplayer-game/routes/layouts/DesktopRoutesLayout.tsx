@@ -1,3 +1,4 @@
+import { useContext } from 'react'
 import { getScore } from '@georally/game-domain/singleplayer/routes'
 import { AnswerNotice } from '@/game-kit/answering/AnswerNotice'
 import { MicButton } from '@/game-kit/answering/MicButton'
@@ -9,19 +10,21 @@ import { RouteFeedback } from '../components/RouteFeedback'
 import { RouteJourney } from '../components/RouteJourney'
 import { SlideIn } from '../components/SlideIn'
 import { useRouteField } from '../components/useRouteField'
+import { RouteLeaveTarget } from '../leaveTarget'
 import type { RoutesLayoutProps } from '../routesControls'
 
 export function DesktopRoutesLayout({
 	controls,
 	keyboardInset,
 }: RoutesLayoutProps) {
+	const leave = useContext(RouteLeaveTarget)
 	const { board, state, input } = controls
 	const { formRef, onSubmit, fieldProps } = useRouteField(input)
 
 	return (
 		<>
 			<SlideIn from='top' className='absolute top-4 left-3 z-30'>
-				<LeaveButton mode='routes' />
+				<LeaveButton mode='routes' to={leave.to} state={leave.state} />
 			</SlideIn>
 			<SlideIn from='top' className='absolute top-4 right-3 z-30'>
 				<GiveUpButton

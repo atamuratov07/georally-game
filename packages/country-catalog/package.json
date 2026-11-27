@@ -9,7 +9,8 @@
 	"scripts": {
 		"build": "tsup",
 		"check": "tsc -p tsconfig.json --noEmit",
-		"test": "vitest run"
+		"test": "vitest run",
+		"build:daily-routes": "tsx --conditions=development scripts/build-daily-routes.ts"
 	},
 	"exports": {
 		".": {
@@ -36,6 +37,12 @@
 			"import": "./dist/borders.js",
 			"default": "./dist/borders.js"
 		},
+		"./daily-routes": {
+			"types": "./src/dailyRoutes.ts",
+			"development": "./src/dailyRoutes.ts",
+			"import": "./dist/dailyRoutes.js",
+			"default": "./dist/dailyRoutes.js"
+		},
 		"./regions.geojson": "./generated/regions.geojson"
 	},
 	"sideEffects": false,
@@ -44,6 +51,7 @@
 	},
 	"devDependencies": {
 		"tsup": "^8.5.1",
+		"tsx": "^4.23.12",
 		"vitest": "^4.1.10"
 	}
 }

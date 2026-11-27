@@ -129,7 +129,7 @@ export function LocateCard({
 			<div className='absolute inset-x-0 bottom-8 z-20 flex justify-center px-4'>
 				{revealed ? (
 					<Button
-						variant='ocean'
+						variant='lagoon'
 						size='lg'
 						className='animate-pop-in px-10 [--drop:0_14px_30px_-8px_rgb(24_34_61/0.4)]'
 						ref={nextRef}

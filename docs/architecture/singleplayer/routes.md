@@ -87,7 +87,7 @@ The code has three layers, each knowing less than the one above:
    - **Give up** is final and needed at most once a game, so it sits in a top corner behind Recall Sprint's two-tap confirm. Hint states no cost, since a hint costs what a guess does.
 - **The map.** Every colour goes through feature state.
    - **Fills:** the two ends are blue, since the puzzle has no direction. Known countries take their verdict colour, and unknown ones are a faint grey.
-   - **Revealed countries** (a hint, or the rest of the route after a give-up) take a pale tint of their verdict colour and a dashed outline. The outline is offset just inside each country, so two revealed neighbours draw two parallel lines instead of patterns that clash.
+   - **Revealed countries** (a hint, or the rest of the route after a give-up) are hatched: full green diagonal stripes on a pale green ground (`ROUTE_REVEALED_HATCH`, drawn by `shared/map/hatchPattern.ts`), so they stand apart from named countries and from the mastery map's white fading hatch.
    - **Labels** are shown only for the ends and the known countries.
    - **The route line** (`RouteLine`, from `routeLinks`) runs centroid, border crossing, centroid along great circles. Passing through the crossing keeps Brazil–France from running to Paris. Links grow at 1.5 km/ms, each starting when the line reaches its first country.
    - **The beads:** the main way is white beads on a navy cord; side branches to yellow countries are smaller beads on a thin cord. Each country the line reaches gets a gold-centred bead, and the ends get a larger blue one.

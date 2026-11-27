@@ -10,6 +10,7 @@ import type {
 	SymbolLayerSpecification,
 } from 'react-map-gl/maplibre'
 import type { AppLanguage } from '../i18n'
+import type { Hatch } from './hatchPattern'
 import type { MapHighlightTone } from './types'
 
 export const SOURCE_ID = 'world'
@@ -169,6 +170,11 @@ export const ROUTE_STATE = 'route'
 export const ROUTE_REVEALED_STATE = 'routeRevealed'
 export const ROUTE_LAYER_ID = 'countries-route'
 export const ROUTE_REVEALED_LAYER_ID = 'countries-route-revealed'
+export const ROUTE_REVEALED_PATTERN_ID = 'route-revealed'
+export const ROUTE_REVEALED_HATCH: Hatch = {
+	stripe: [63, 166, 37, 255],
+	ground: [217, 237, 211, 255],
+}
 
 export const ROUTE_END_FILL = '#1b7ff0'
 const ROUTE_FILL = {
@@ -180,16 +186,6 @@ const ROUTE_FILL = {
 } as const
 export const ROUTE_UNKNOWN_FILL = '#d3d8de'
 const ROUTE_UNKNOWN_OPACITY = 0.85
-const ROUTE_EDGE = {
-	route: '#2f861b',
-	near: '#d68400',
-	off: '#cc2c1c',
-} as const
-const ROUTE_REVEALED_FILL = {
-	route: '#d9edd3',
-	near: '#f5ecc9',
-	off: '#f6d9d4',
-} as const
 
 const routeState: ExpressionSpecification = [
 	'to-string',
@@ -214,12 +210,7 @@ export const routeFillLayer: FillLayerSpecification = {
 	source: SOURCE_ID,
 	'source-layer': COUNTRY_LAYER,
 	paint: {
-		'fill-color': [
-			'case',
-			stateFlag(ROUTE_REVEALED_STATE),
-			byRouteState(ROUTE_REVEALED_FILL, 'transparent'),
-			byRouteState(ROUTE_FILL, ROUTE_UNKNOWN_FILL),
-		],
+		'fill-color': byRouteState(ROUTE_FILL, ROUTE_UNKNOWN_FILL),
 		'fill-outline-color': '#ffffff',
 		'fill-opacity': [
 			'case',
@@ -230,30 +221,14 @@ export const routeFillLayer: FillLayerSpecification = {
 	},
 }
 
-export const routeRevealedLayer: LineLayerSpecification = {
+export const routeRevealedLayer: FillLayerSpecification = {
 	id: ROUTE_REVEALED_LAYER_ID,
-	type: 'line',
+	type: 'fill',
 	source: SOURCE_ID,
 	'source-layer': COUNTRY_LAYER,
 	paint: {
-		'line-color': byRouteState(ROUTE_EDGE, 'transparent'),
-		'line-width': {
-			type: 'exponential',
-			stops: zoomStops([2, 1.2], [4, 2], [6, 2.5]),
-		},
-		'line-offset': [
-			'interpolate',
-			['linear'],
-			['zoom'],
-			2.5,
-			0,
-			3.5,
-			1.2,
-			6,
-			1.5,
-		],
-		'line-dasharray': [4, 3],
-		'line-opacity': ['case', stateFlag(ROUTE_REVEALED_STATE), 1, 0],
+		'fill-pattern': ROUTE_REVEALED_PATTERN_ID,
+		'fill-opacity': ['case', stateFlag(ROUTE_REVEALED_STATE), 1, 0],
 	},
 }
 

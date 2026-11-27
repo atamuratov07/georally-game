@@ -5,7 +5,12 @@ import type {
 } from '@georally/game-domain/singleplayer/routes'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import type { MapRef } from 'react-map-gl/maplibre'
+import { addHatchPattern } from '@/shared/map/hatchPattern'
 import { BaseMap } from '@/shared/map/BaseMap'
+import {
+	ROUTE_REVEALED_HATCH,
+	ROUTE_REVEALED_PATTERN_ID,
+} from '@/shared/map/map-styles'
 import {
 	keepVisibleAreaOnMap,
 	viewPadding,
@@ -96,6 +101,7 @@ function RoutesMapInner({
 	const handleLoad = useCallback(() => {
 		const map = mapRef.current?.getMap()
 		if (map) {
+			addHatchPattern(map, ROUTE_REVEALED_PATTERN_ID, ROUTE_REVEALED_HATCH)
 			keepVisibleAreaOnMap(map, () => overlays.current)
 			map.touchZoomRotate.disableRotation()
 			map.getCanvas().removeAttribute('tabindex')

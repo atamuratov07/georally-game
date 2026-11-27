@@ -313,6 +313,7 @@ const translations = {
 		},
 	},
 	daily: {
+		today: 'Today',
 		title: 'Daily route',
 		yesterday: 'Yesterday · still counts',
 		between_one: '{{count}} country between',

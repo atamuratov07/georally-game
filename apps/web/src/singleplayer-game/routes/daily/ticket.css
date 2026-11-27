@@ -20,3 +20,26 @@
 .daily-ticket-stub {
 	--notch-y: 0%;
 }
+
+.daily-mini-left,
+.daily-mini-right {
+	--notch: 9px;
+	--notch-x: 100%;
+	mask:
+		radial-gradient(
+				circle at var(--notch-x) 0,
+				#0000 var(--notch),
+				#000 calc(var(--notch) + 0.5px)
+			)
+			top / 100% 51% no-repeat,
+		radial-gradient(
+				circle at var(--notch-x) 100%,
+				#0000 var(--notch),
+				#000 calc(var(--notch) + 0.5px)
+			)
+			bottom / 100% 51% no-repeat;
+}
+
+.daily-mini-right {
+	--notch-x: 0%;
+}

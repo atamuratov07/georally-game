@@ -317,6 +317,7 @@ const translations = {
 		},
 	},
 	daily: {
+		today: 'Bugun',
 		title: 'Kunlik marshrut',
 		yesterday: 'Kechagi · hali hisoblanadi',
 		between_one: 'Oraliqda {{count}} ta davlat',

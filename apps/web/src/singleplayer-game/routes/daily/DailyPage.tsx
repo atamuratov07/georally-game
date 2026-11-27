@@ -17,6 +17,7 @@ import { useNow } from '@/shared/time/useNow'
 import { weekdayKey } from '@/shared/time/weekdays'
 import { Button, TextButton } from '@/shared/ui'
 import { singleplayerPaths } from '../../paths'
+import { clock } from './clock'
 import { DailyShareButton } from './DailyShareButton'
 import { DailyStreak } from './DailyStreak'
 import { DailyTicket, HiddenRoute, ResultStamp } from './DailyTicket'
@@ -34,17 +35,6 @@ const PUNCH_AFTER_TILES = 0.35
 const prefetchGame = () => {
 	void import('./DailyGamePage')
 	prefetchMap()
-}
-
-function clock(ms: number): string {
-	const seconds = Math.max(0, Math.ceil(ms / 1000))
-	return [
-		Math.floor(seconds / 3600),
-		Math.floor(seconds / 60) % 60,
-		seconds % 60,
-	]
-		.map(part => String(part).padStart(2, '0'))
-		.join(':')
 }
 
 export default function DailyPage() {

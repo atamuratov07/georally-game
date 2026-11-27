@@ -25,6 +25,7 @@ import {
 	toSearchParams,
 } from './config'
 import { BordersNote } from './components/BordersNote'
+import { DailyStub } from './daily/DailyStub'
 import { useCountryName } from './countryNames'
 import { routeGameStore } from './store'
 
@@ -81,6 +82,7 @@ export default function SetupPage() {
 				: []
 		return (
 			<SetupShell mode='routes'>
+				<DailyStub />
 				<ResumeGameCard
 					heading={`${countryName(saved.startId)} → ${countryName(saved.targetId)}`}
 					details={[
@@ -99,6 +101,7 @@ export default function SetupPage() {
 
 	return (
 		<SetupShell mode='routes'>
+			<DailyStub />
 			<SetupCard
 				mode='routes'
 				copyLink={setupLink()}

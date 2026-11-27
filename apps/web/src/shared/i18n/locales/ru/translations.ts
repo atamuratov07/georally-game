@@ -323,6 +323,7 @@ const translations = {
 		},
 	},
 	daily: {
+		today: 'Сегодня',
 		title: 'Маршрут дня',
 		yesterday: 'Вчерашний · ещё засчитается',
 		between_one: 'Между ними {{count}} страна',

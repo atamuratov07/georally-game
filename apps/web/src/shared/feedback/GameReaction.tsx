@@ -49,20 +49,28 @@ const REACTIONS: readonly {
 
 export function GameReaction({
 	mode,
+	onSky = false,
 	className,
 }: {
 	mode: ReactionModeParam
+	onSky?: boolean
 	className?: string
 }) {
 	const show = useReactionPrompt(mode)
 
 	return show ? (
-		<ReactionPicker mode={mode} className={className} entranceDelay={0.7} />
+		<ReactionPicker
+			mode={mode}
+			onSky={onSky}
+			className={className}
+			entranceDelay={0.7}
+		/>
 	) : null
 }
 
 export interface ReactionPickerProps {
 	mode: ReactionModeParam
+	onSky?: boolean
 	className?: string
 	entranceDelay?: number
 	onReact?: () => void
@@ -71,6 +79,7 @@ export interface ReactionPickerProps {
 
 export function ReactionPicker({
 	mode,
+	onSky = false,
 	className,
 	entranceDelay = 0,
 	onReact,
@@ -89,7 +98,13 @@ export function ReactionPicker({
 
 	return (
 		<div className={cn('flex flex-col items-center gap-2', className)}>
-			<p id={labelId} className='text-sm font-extrabold text-muted'>
+			<p
+				id={labelId}
+				className={cn(
+					'text-sm font-extrabold',
+					onSky ? 'text-on-sky-soft' : 'text-muted',
+				)}
+			>
 				{reaction ? t('reaction.thanks') : t('reaction.prompt')}
 			</p>
 			<div
@@ -168,6 +183,7 @@ export function ReactionPicker({
 						transition={{ ...SPRING, delay: 0.25 }}
 					>
 						<TextButton
+							tone={onSky ? 'sky' : 'muted'}
 							type='button'
 							onClick={() => {
 								openFeedback({ reaction })

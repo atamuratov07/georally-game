@@ -3,6 +3,8 @@ const translations = {
 		name: 'GeoRally',
 		language: 'Язык',
 		menu: 'Меню',
+		sky: 'Небо: {{sky}}',
+		skies: { day: 'день', dusk: 'вечер', night: 'ночь' },
 	},
 	common: {
 		remove: 'Убрать',

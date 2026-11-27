@@ -138,7 +138,7 @@ export function SessionSummary({
 						<Stat
 							outlined
 							className='animate-pop-in [animation-delay:400ms]'
-							valueClassName='text-ink'
+							valueClassName='text-on-sky'
 							value={<CountUp value={reviewedIds.length} delay={0.5} />}
 							label={t('review.reviewed', { count: reviewedIds.length })}
 						/>
@@ -153,7 +153,7 @@ export function SessionSummary({
 
 				<div className='flex w-full flex-col items-center gap-3'>
 					{dueTomorrow > 0 ? (
-						<p className='text-base font-extrabold text-muted'>
+						<p className='text-base font-extrabold text-on-sky-soft'>
 							{t('review.tomorrow', { count: dueTomorrow })}
 						</p>
 					) : null}

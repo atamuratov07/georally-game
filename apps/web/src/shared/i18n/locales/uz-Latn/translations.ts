@@ -3,6 +3,8 @@ const translations = {
 		name: 'GeoRally',
 		language: 'Til',
 		menu: 'Menyu',
+		sky: 'Osmon: {{sky}}',
+		skies: { day: 'kunduz', dusk: 'kechqurun', night: 'tun' },
 	},
 	common: {
 		remove: 'Olib tashlash',

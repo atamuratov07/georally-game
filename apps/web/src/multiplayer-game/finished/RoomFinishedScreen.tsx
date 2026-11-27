@@ -148,7 +148,7 @@ export function RoomFinishedScreen({
 					) : null}
 				</div>
 			</Card>
-			<GameReaction mode='multiplayer' className='mt-6' />
+			<GameReaction mode='multiplayer' onSky className='mt-6' />
 		</PageShell>
 	)
 }

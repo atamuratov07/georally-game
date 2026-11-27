@@ -52,10 +52,10 @@ function RoomCode({
 
 	return (
 		<section className='flex flex-col items-center gap-3 py-2 text-center sm:py-4'>
-			<p className='text-sm font-extrabold text-muted'>
+			<p className='text-sm font-extrabold text-on-sky-soft'>
 				{t('multiplayer.lobby.roomCode')}
 			</p>
-			<h1 className='animate-pop-in text-4xl font-black tracking-[0.12em] text-ink select-all sm:text-5xl'>
+			<h1 className='animate-pop-in text-4xl font-black tracking-[0.12em] text-on-sky select-all sm:text-5xl'>
 				{roomCode}
 			</h1>
 			<Badge tone={roomMode === 'classroom' ? 'ocean' : 'grape'}>

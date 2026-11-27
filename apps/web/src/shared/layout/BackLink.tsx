@@ -16,7 +16,7 @@ export function BackLink({
 		<LocalizedLink
 			to={to}
 			className={cn(
-				'group mb-4 inline-flex w-fit items-center gap-0.5 rounded-full text-sm font-extrabold text-muted transition-colors hover:text-ink',
+				'group mb-4 inline-flex w-fit items-center gap-0.5 rounded-full text-sm font-extrabold text-on-sky-soft transition-colors hover:text-on-sky',
 				className,
 			)}
 		>

@@ -88,7 +88,7 @@ export function ModeShowcase({
 					/>
 				</h2>
 				{text ? (
-					<p className='max-w-xl text-lg font-medium text-muted sm:text-xl'>
+					<p className='max-w-xl text-lg font-medium text-on-sky-soft sm:text-xl'>
 						{text}
 					</p>
 				) : null}

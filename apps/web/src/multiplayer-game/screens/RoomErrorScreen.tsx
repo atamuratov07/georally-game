@@ -33,6 +33,7 @@ export function RoomErrorScreen({ message, onRetry }: RoomErrorScreenProps) {
 			}
 			footer={
 				<TextButton
+					tone='sky'
 					type='button'
 					onClick={() => openFeedback({ category: 'bug' })}
 				>

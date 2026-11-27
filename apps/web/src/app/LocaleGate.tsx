@@ -27,6 +27,8 @@ export function LocaleGate() {
 					pathname: '/' + rest.join('/'),
 					search: location.search,
 					hash: location.hash,
+					state: location.state as unknown,
+					key: location.key,
 				}}
 			/>
 		)
@@ -51,7 +53,13 @@ function LocalizedRoutes({
 	rest,
 }: {
 	locale: AppLanguage
-	rest: { pathname: string; search: string; hash: string }
+	rest: {
+		pathname: string
+		search: string
+		hash: string
+		state: unknown
+		key: string
+	}
 }) {
 	const { i18n } = useTranslation()
 	const segment = toLocaleSegment(locale)

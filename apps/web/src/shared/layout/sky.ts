@@ -1,7 +1,7 @@
 export const SKIES = ['day', 'dusk', 'night'] as const
 export type Sky = (typeof SKIES)[number]
 
-// index.html applies the saved sky before the first paint with the same key.
+// Every HTML entry applies the saved sky before the first paint with the same key.
 const STORAGE_KEY = 'georally.sky'
 
 export function currentSky(): Sky {

@@ -1,0 +1,21 @@
+.faq-item {
+	interpolate-size: allow-keywords;
+}
+
+.faq-item::details-content {
+	block-size: 0;
+	overflow-y: clip;
+	transition:
+		block-size 300ms ease,
+		content-visibility 300ms allow-discrete;
+}
+
+.faq-item[open]::details-content {
+	block-size: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.faq-item::details-content {
+		transition: none;
+	}
+}

@@ -12,7 +12,7 @@ import {
 
 const ROOM_CODE_LENGTH = 6
 
-export function JoinRoomForm() {
+export function JoinRoomForm({ autoFocus = true }: { autoFocus?: boolean }) {
 	const { t } = useTranslation()
 	const navigate = useLocalizedNavigate()
 	const inputId = useId()
@@ -36,7 +36,7 @@ export function JoinRoomForm() {
 				<Label htmlFor={inputId}>{t('multiplayer.join.roomCode')}</Label>
 				<InputOTP
 					id={inputId}
-					autoFocus
+					autoFocus={autoFocus}
 					maxLength={ROOM_CODE_LENGTH}
 					pattern='^[A-Za-z0-9]*$'
 					inputMode='text'

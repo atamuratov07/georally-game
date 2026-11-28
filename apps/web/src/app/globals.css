@@ -302,7 +302,6 @@ html[data-view-transition]::view-transition-new(root) {
 @theme inline {
 	--color-on-sky: var(--on-sky);
 	--color-on-sky-soft: var(--on-sky-soft);
-	--color-on-sky-accent: var(--on-sky-accent);
 }
 
 @layer base {
@@ -310,8 +309,6 @@ html[data-view-transition]::view-transition-new(root) {
 		color-scheme: light;
 		--on-sky: var(--color-ink);
 		--on-sky-soft: var(--color-muted);
-		--on-sky-accent: var(--color-ocean-600);
-		--sky-band: var(--color-sunflower-300);
 		--sky-edge: var(--color-line-strong);
 		--sky-floor: #fff6df;
 		--cloud: #fff;
@@ -321,8 +318,6 @@ html[data-view-transition]::view-transition-new(root) {
 	:root[data-sky='dusk'] {
 		--on-sky: #fff;
 		--on-sky-soft: rgb(255 255 255 / 0.82);
-		--on-sky-accent: var(--color-sunflower-200);
-		--sky-band: rgb(255 255 255 / 0.2);
 		--sky-edge: rgb(74 46 140 / 0.35);
 		--sky-floor: #ffc49a;
 		--cloud: #f3c3dc;
@@ -332,8 +327,6 @@ html[data-view-transition]::view-transition-new(root) {
 	:root[data-sky='night'] {
 		--on-sky: #fff;
 		--on-sky-soft: rgb(255 255 255 / 0.72);
-		--on-sky-accent: var(--color-sunflower-300);
-		--sky-band: rgb(255 255 255 / 0.14);
 		--sky-edge: rgb(0 0 0 / 0.35);
 		--sky-floor: #2a1d52;
 		--cloud: #2b3a72;

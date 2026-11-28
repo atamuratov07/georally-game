@@ -42,7 +42,7 @@ export function ReviewCard({ plan }: { plan: ReviewPlan | null }) {
 				</span>
 				<span className='flex flex-1 flex-col items-center justify-center gap-2 px-3 pt-2 pb-3 text-center'>
 					{plan === null ? (
-						<span className='text-base leading-snug font-extrabold text-ink sm:text-lg'>
+						<span className='text-base leading-snug font-extrabold text-balance text-ink sm:text-lg'>
 							{t('landing.today.reviewInvite')}
 						</span>
 					) : done ? (

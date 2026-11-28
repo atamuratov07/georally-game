@@ -4,39 +4,25 @@ import {
 	type LazyExoticComponent,
 	type ReactNode,
 } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/ui'
 import { cn } from '@/shared/utils'
 import { LocalizedLink } from '../LocalizedLink'
 import { DEMO_SIZE } from './demoSize'
-import { HIGHLIGHT_CLASS, SECTION_TITLE_CLASS } from './styles'
+import { ShowcaseBadge, type ShowcaseTone } from './ShowcaseBadge'
+import { SECTION_TITLE_CLASS } from './styles'
 import { useNearViewport } from './useNearViewport'
 
 interface ModeShowcaseProps {
 	id: string
 	copyKey: 'nameIt' | 'recallSprint' | 'routes'
+	eyebrow: string
 	to: string
 	Demo: LazyExoticComponent<ComponentType<{ active: boolean }>>
 	demoSide: 'left' | 'right'
-	accent: keyof typeof ACCENTS
+	accent: ShowcaseTone
 	badgeIcon?: ReactNode
-	text?: string
 }
-
-const ACCENTS = {
-	ocean: {
-		badge: 'border-ocean-600 bg-ocean-500 [--edge:var(--color-ocean-700)]',
-		button: 'ocean',
-	},
-	coral: {
-		badge: 'border-coral-600 bg-coral-500 [--edge:var(--color-coral-700)]',
-		button: 'coral',
-	},
-	grass: {
-		badge: 'border-grass-600 bg-grass-500 [--edge:var(--color-grass-700)]',
-		button: 'grass',
-	},
-} as const
 
 function DemoPlaceholder() {
 	return (
@@ -50,12 +36,12 @@ function DemoPlaceholder() {
 export function ModeShowcase({
 	id,
 	copyKey,
+	eyebrow,
 	to,
 	Demo,
 	demoSide,
 	accent,
 	badgeIcon,
-	text,
 }: ModeShowcaseProps) {
 	const { t } = useTranslation()
 	const { ref, near } = useNearViewport<HTMLDivElement>()
@@ -72,32 +58,17 @@ export function ModeShowcase({
 					demoSide === 'left' && 'lg:order-2',
 				)}
 			>
-				<span
-					className={cn(
-						'raised inline-flex -rotate-3 items-center gap-1.5 rounded-full border-2 px-3.5 py-1 text-sm font-black tracking-wide text-white uppercase [--edge-size:3px]',
-						ACCENTS[accent].badge,
-					)}
-				>
+				<ShowcaseBadge tone={accent}>
 					{badgeIcon}
-					{t(`landing.${copyKey}.eyebrow`)}
-				</span>
+					{eyebrow}
+				</ShowcaseBadge>
 				<h2 id={`${id}-title`} className={SECTION_TITLE_CLASS}>
-					<Trans
-						i18nKey={`landing.${copyKey}.title`}
-						components={{ hl: <span className={HIGHLIGHT_CLASS} /> }}
-					/>
+					{t(`landing.${copyKey}.title`)}
 				</h2>
-				{text ? (
-					<p className='max-w-xl text-lg font-medium text-on-sky-soft sm:text-xl'>
-						{text}
-					</p>
-				) : null}
-				<Button
-					asChild
-					size='lg'
-					variant={ACCENTS[accent].button}
-					className='mt-2'
-				>
+				<p className='max-w-xl text-lg font-medium text-on-sky-soft sm:text-xl'>
+					{t(`landing.${copyKey}.text`)}
+				</p>
+				<Button asChild size='lg' variant={accent} className='mt-2'>
 					<LocalizedLink to={to}>
 						{t(`landing.${copyKey}.cta`)}
 					</LocalizedLink>

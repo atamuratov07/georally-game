@@ -22,6 +22,11 @@ const NAMES: Record<string, Record<AppLanguage, string>> = {
 	'578': { en: 'Norway', ru: 'Норвегия', 'uz-Latn': 'Norvegiya' },
 	'246': { en: 'Finland', ru: 'Финляндия', 'uz-Latn': 'Finlandiya' },
 	'804': { en: 'Ukraine', ru: 'Украина', 'uz-Latn': 'Ukraina' },
+	'818': { en: 'Egypt', ru: 'Египет', 'uz-Latn': 'Misr' },
+	'484': { en: 'Mexico', ru: 'Мексика', 'uz-Latn': 'Meksika' },
+	'404': { en: 'Kenya', ru: 'Кения', 'uz-Latn': 'Keniya' },
+	'398': { en: 'Kazakhstan', ru: 'Казахстан', 'uz-Latn': 'Qozogʻiston' },
+	'032': { en: 'Argentina', ru: 'Аргентина', 'uz-Latn': 'Argentina' },
 }
 
 export function demoName(countryId: string, language: AppLanguage): string {

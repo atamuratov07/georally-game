@@ -61,7 +61,7 @@ const translations = {
 		contactPlaceholder: 'Javob olishni istasangiz',
 		send: 'Yuborish',
 		sentTitle: 'Rahmat!',
-		sentText: 'Xabaringiz bizga yuborildi.',
+		sentText: 'Xabaringiz menga yuborildi.',
 		close: 'Yopish',
 		reportProblem: 'Muammo haqida xabar berish',
 		errors: {
@@ -82,66 +82,69 @@ const translations = {
 		today: {
 			riskTitle: 'Seriyani saqlab qoling',
 			riskText:
-				'Kunlik marshrutni yeching yoki bir nechta kartani takrorlang',
+				'Kunlik marshrutni yeching yoki bir nechta davlatni takrorlang',
 			firstTitle: 'Birinchi kun bajarildi!',
 			doneTitle: 'Yana bir kun ketma-ket!',
 			doneText: 'Seriyani davom ettirish uchun ertaga qayting',
 			startTitle: 'Bugun seriyani boshlang',
 			startText:
-				'Kunlik marshrutni yeching yoki bir nechta kartani takrorlang',
+				'Kunlik marshrutni yeching yoki bir nechta davlatni takrorlang',
 			thisWeek: 'Shu hafta',
 			reviewInvite:
-				'Har kuni bir nechta karta bilan barcha davlatlarni eslab qoling',
+				'Har kuni bir nechtadan, barcha davlatlarni eslab qoling',
 		},
-		heroTitle: 'Har bir davlatni <hl>xaritada</hl> toping',
+		heroTitle: "Dunyo xaritasini o'rganing",
 		heroText:
-			"Tez va ko'rgazmali geografiya o'yini. Mustaqil mashq qiling yoki sinfingiz bilan jonli xarita viktorinasini o'tkazing.",
+			"Barcha 195 davlatni toping, nomlang va bog'lang: yakka o'zingiz yoki sinfingiz bilan jonli.",
+		trust: {
+			free: 'Bepul',
+			noAccount: "Ro'yxatdan o'tmasdan",
+			noAds: 'Reklamasiz',
+		},
 		playSolo: "Yakka o'ynash",
 		playTogether: "Birga o'ynash",
-		previewCountry: 'Yaponiya',
-		modesTitle: "O'ynashning ikki usuli",
 		nameIt: {
-			eyebrow: 'Shunchaki ayting',
-			title: 'Har bir davlatni <hl>shaklidan</hl> nomlang',
+			title: 'Har bir davlatni shaklidan nomlang',
+			text: 'Yozuvlar va maslahatlarsiz. Nomini yozing yoki ayting, kichik imlo xatolari kechiriladi.',
 			cta: "Sinab ko'ring",
 		},
 		recallSprint: {
-			eyebrow: 'Yangi rejim',
-			title: "Xaritani <hl>xotiradan</hl> to'ldiring",
-			text: 'Davlatlarni bir nafasda bir nechtadan ayting. Vaqt tugagach, unutganlaringiz xaritada kutib turadi.',
+			title: "Xaritani xotiradan to'ldiring",
+			text: 'Bir nafasda bir nechta davlatni ayting. Vaqt tugagach, unutganlaringiz xaritada kutib turadi.',
 			cta: 'Sprintni boshlash',
 		},
 		routes: {
-			eyebrow: 'Qoʻshnilarni biling',
-			title: 'Istalgan ikki davlat orasidagi <hl>eng qisqa yoʻlni</hl> toping',
+			title: 'Istalgan ikki davlat orasidagi eng qisqa yoʻlni toping',
 			text: 'Oradagi davlatlarni yozib yoki ovoz bilan ayting va ortiqcha qadamsiz yeting.',
 			cta: 'Marshrut tuzish',
 		},
-		solo: {
-			title: "Yakka o'yin",
-			text: "O'z sur'atingizda, to'rt rejimda mashq qiling.",
-			point1: '«Top»: nomi aytilgan davlatni xaritada toping',
-			point2:
-				'«Nomini ayt»: ajratilgan davlat nomini ovoz yoki matn bilan ayting',
-			point3: '«Sprint»: hududning barcha davlatlarini xotiradan nomlang',
-			point4: '«Marshrutlar»: ikki davlatni oradagilari orqali bogʻlang',
+		together: {
+			title: "Sinfingiz yoki do'stlaringiz bilan jonli o'ynang",
+			text: "Kodni ulashing. Hamma bir xil davlatni o'z ekranida qidiradi, tezroq javob ko'proq ball beradi. 40 tagacha o'yinchi.",
 		},
-		multiplayer: {
-			title: "Jonli ko'p o'yinchi",
-			text: "Xona yarating va sinf yoki do'stlar bilan real vaqtda o'ynang.",
-			point1: "6 belgili kod orqali qo'shilish",
-			point2: "O'qituvchilar uchun sinf rejimi",
-			point3: 'Jonli reyting jadvali',
+		faq: {
+			title: 'Savollar',
+			different: {
+				q: "GeoRally Seterra, Travle yoki Anki'dan nimasi bilan farq qiladi?",
+				a: "Seterra, JetPunk, Travle, Anki va Kahoot bitta ilovada jamlangandek, hammasi globus kabi aylantirsa bo'ladigan bitta batafsil dunyo xaritasida. Rejimlar o'zaro bog'langan: o'yinda topolmagan davlatlaringiz kunlik takrorlashda qaytadi.",
+			},
+			progress: {
+				q: 'Natijalarim qayerda saqlanadi?',
+				a: "Shu brauzerda, shu qurilmada. iPhone va iPad'da bir hafta kirilmasa, Safari ularni o'chirib yuborishi mumkin. GeoRally'ni bosh ekranga qo'shsangiz, bunday bo'lmaydi.",
+			},
+			countries: {
+				q: "O'yinda qaysi davlatlar bor?",
+				a: "BMTga a'zo 193 davlat, shuningdek Vatikan va Falastin. Kosovo, Tayvan va G'arbiy Sahroi Kabir o'yinda yo'q.",
+			},
+			app: {
+				q: 'Ilova bormi?',
+				a: "GeoRally'ni bosh ekranga qo'shing yoki Chrome orqali o'rnating, u ilova kabi ochiladi. Shunda yakka o'yinlar va takrorlash internetsiz ishlaydi.",
+			},
+			feedback: {
+				q: "Noto'g'ri chegara yoki xato topdingizmi?",
+				a: "Sahifa yuqorisidagi «{{feedback}}» tugmasini bosing. Xabar to'g'ridan-to'g'ri menga keladi.",
+			},
 		},
-		stepsTitle: "Bir daqiqada jonli o'yin",
-		step1Title: 'Xona yarating',
-		step1Text: 'Sinf yoki guruh rejimini tanlang.',
-		step2Title: 'Kodni ulashing',
-		step2Text:
-			"O'yinchilar istalgan qurilmadan, ro'yxatdan o'tmasdan qo'shiladi.",
-		step3Title: "Xaritada o'ynang",
-		step3Text:
-			"Hamma bir xil davlatni qidiradi. To'g'ri javob qancha tez bo'lsa, shuncha ko'p ochko.",
 	},
 	game: {
 		difficulty: {

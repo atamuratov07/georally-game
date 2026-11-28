@@ -32,7 +32,6 @@ export default function TodaySection() {
 	}, [dayKey])
 
 	if (!daily || plan === undefined) return null
-	if (!daily.played && plan === null) return null
 
 	const { ticket, slots } = daily
 	const { current, best, todayActive } = daily.streak
@@ -99,15 +98,17 @@ export default function TodaySection() {
 				</motion.div>
 			</div>
 
-			<WeekPunchCard
-				slots={slots}
-				title={t('landing.today.thisWeek')}
-				aside={
-					best > current ? (
-						<PressedBest label={t('daily.best')} best={best} />
-					) : null
-				}
-			/>
+			{best > 0 ? (
+				<WeekPunchCard
+					slots={slots}
+					title={t('landing.today.thisWeek')}
+					aside={
+						best > current ? (
+							<PressedBest label={t('daily.best')} best={best} />
+						) : null
+					}
+				/>
+			) : null}
 		</motion.section>
 	)
 }

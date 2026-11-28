@@ -17,6 +17,14 @@
 			gtag('set', 'user_properties', { ui_locale: 'ru' })
 		</script>
 		<meta charset="UTF-8" />
+		<script>
+			try {
+				const sky = localStorage.getItem('georally.sky')
+				if (sky === 'dusk' || sky === 'night') {
+					document.documentElement.dataset.sky = sky
+				}
+			} catch {}
+		</script>
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
 		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
 		<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
@@ -26,14 +34,14 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 		<!-- Primary Meta Tags -->
-		<title>GeoRally | Онлайн-викторина и игра по карте мира</title>
+		<title>GeoRally: выучи карту мира. Игра и викторина по географии</title>
 		<meta
 			name="title"
-			content="GeoRally | Онлайн-викторина и игра по карте мира"
+			content="GeoRally: выучи карту мира. Игра и викторина по географии"
 		/>
 		<meta
 			name="description"
-			content="Играйте в GeoRally — бесплатную интерактивную геовикторину в реальном времени. Соревнуйтесь с друзьями и школьным классом на карте мира или тренируйтесь соло."
+			content="Находи, называй и соединяй все 195 стран на подробной карте мира. Маршрут дня, повторение по нескольку стран в день и живые викторины для класса. Бесплатно, без регистрации."
 		/>
 		<meta name="robots" content="index, follow, max-image-preview:large" />
 		<link rel="canonical" href="https://georally.world/ru/" />
@@ -57,26 +65,28 @@
 		<meta property="og:locale:alternate" content="uz_UZ" />
 		<meta
 			property="og:title"
-			content="GeoRally | Онлайн-викторина и игра по карте мира"
+			content="GeoRally: выучи карту мира. Игра и викторина по географии"
 		/>
 		<meta
 			property="og:description"
-			content="Бесплатная интерактивная географическая игра в реальном времени. Играйте с друзьями или классом на карте мира."
+			content="Находи, называй и соединяй все 195 стран на подробной карте мира. Маршрут дня, повторение по нескольку стран в день и живые викторины для класса. Бесплатно, без регистрации."
 		/>
-		<meta property="og:image" content="https://georally.world/icon-512.png" />
+		<meta property="og:image" content="https://georally.world/og-ru.png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
 
 		<!-- Twitter Card -->
-		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:url" content="https://georally.world/ru/" />
 		<meta
 			name="twitter:title"
-			content="GeoRally | Онлайн-викторина и игра по карте мира"
+			content="GeoRally: выучи карту мира. Игра и викторина по географии"
 		/>
 		<meta
 			name="twitter:description"
-			content="Играйте в GeoRally — бесплатную геовикторину в реальном времени для друзей и класса."
+			content="Находи, называй и соединяй все 195 стран на подробной карте мира. Маршрут дня, повторение по нескольку стран в день и живые викторины для класса. Бесплатно, без регистрации."
 		/>
-		<meta name="twitter:image" content="https://georally.world/icon-512.png" />
+		<meta name="twitter:image" content="https://georally.world/og-ru.png" />
 
 		<!-- Structured Data (JSON-LD) -->
 		<script type="application/ld+json">
@@ -94,7 +104,7 @@
 					"price": "0",
 					"priceCurrency": "USD"
 				},
-				"description": "Бесплатная интерактивная географическая викторина в реальном времени для класса и соревнований с друзьями."
+				"description": "Находи, называй и соединяй все 195 стран на подробной карте мира. Маршрут дня, повторение по нескольку стран в день и живые викторины для класса. Бесплатно, без регистрации."
 			}
 		</script>
 	</head>

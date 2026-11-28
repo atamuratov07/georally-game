@@ -17,6 +17,14 @@
 			gtag('set', 'user_properties', { ui_locale: 'en' })
 		</script>
 		<meta charset="UTF-8" />
+		<script>
+			try {
+				const sky = localStorage.getItem('georally.sky')
+				if (sky === 'dusk' || sky === 'night') {
+					document.documentElement.dataset.sky = sky
+				}
+			} catch {}
+		</script>
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
 		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
 		<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
@@ -26,14 +34,14 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 		<!-- Primary Meta Tags -->
-		<title>GeoRally | Free Real-Time Geography & World Map Game</title>
+		<title>GeoRally: Learn the World Map. Geography Game & Map Quiz</title>
 		<meta
 			name="title"
-			content="GeoRally | Free Real-Time Geography & World Map Game"
+			content="GeoRally: Learn the World Map. Geography Game & Map Quiz"
 		/>
 		<meta
 			name="description"
-			content="Play GeoRally, a free real-time interactive geography game for classrooms and friends. Host live multiplayer world map quiz rounds or practice solo."
+			content="Find, name and connect all 195 countries on a detailed world map. Play the daily route, review a few countries a day, or host a live class quiz. Free, no account."
 		/>
 		<meta name="robots" content="index, follow, max-image-preview:large" />
 		<link rel="canonical" href="https://georally.world/en/" />
@@ -57,26 +65,28 @@
 		<meta property="og:locale:alternate" content="uz_UZ" />
 		<meta
 			property="og:title"
-			content="GeoRally | Free Real-Time Geography & World Map Game"
+			content="GeoRally: Learn the World Map. Geography Game & Map Quiz"
 		/>
 		<meta
 			property="og:description"
-			content="Play GeoRally, a free real-time interactive geography game for classrooms and friends. Host live multiplayer world map quiz rounds or practice solo."
+			content="Find, name and connect all 195 countries on a detailed world map. Play the daily route, review a few countries a day, or host a live class quiz. Free, no account."
 		/>
-		<meta property="og:image" content="https://georally.world/icon-512.png" />
+		<meta property="og:image" content="https://georally.world/og-en.png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
 
 		<!-- Twitter Card -->
-		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:url" content="https://georally.world/en/" />
 		<meta
 			name="twitter:title"
-			content="GeoRally | Free Real-Time Geography & World Map Game"
+			content="GeoRally: Learn the World Map. Geography Game & Map Quiz"
 		/>
 		<meta
 			name="twitter:description"
-			content="Play GeoRally, a free real-time interactive geography game for classrooms and friends."
+			content="Find, name and connect all 195 countries on a detailed world map. Play the daily route, review a few countries a day, or host a live class quiz. Free, no account."
 		/>
-		<meta name="twitter:image" content="https://georally.world/icon-512.png" />
+		<meta name="twitter:image" content="https://georally.world/og-en.png" />
 
 		<!-- Structured Data (JSON-LD) -->
 		<script type="application/ld+json">
@@ -94,7 +104,7 @@
 					"price": "0",
 					"priceCurrency": "USD"
 				},
-				"description": "Free interactive real-time geography learning and world map quiz game for classrooms and multiplayer groups."
+				"description": "Find, name and connect all 195 countries on a detailed world map. Play the daily route, review a few countries a day, or host a live class quiz. Free, no account."
 			}
 		</script>
 	</head>

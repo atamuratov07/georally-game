@@ -66,8 +66,9 @@ georally-game/
 |           |   |-- main.tsx            # React root + router
 |           |   |-- App.tsx
 |           |   |-- routes.tsx          # route table
-|           |   |-- HomePage.tsx        # mode chooser
-|           |   |-- landing/            # home page pieces: hero globe, mode showcases and their demos
+|           |   |-- HomePage.tsx        # landing page: hero, Today, mode showcases, Play together, FAQ
+|           |   |-- landing/            # home page pieces: hero globe, Today section, mode showcases and their demos,
+|           |   |                       # PlayTogether (room modes and the join form), HomeFaq
 |           |   |                       # (a fixed 720x540 replica of the desktop game built from the
 |           |   |                       # real widgets and scaled to fit; country names copied from the
 |           |   |                       # catalog in demoNames.ts so the home page doesn't load it)
@@ -132,6 +133,7 @@ georally-game/
 |           |   `-- widgets/
 |           |       |-- CountryInfoCard.tsx
 |           |       |-- SettingToggleGroup.tsx # a setting's label over a SegmentedControl
+|           |       |-- faq/FaqList.tsx   # questions as <details>, coloured by the parent
 |           |       `-- region-map/
 |           |           |-- ContinentMap.tsx  # continents drawn from virtual:region-map, as toggles
 |           |           |-- continents.ts     # the options and colours

@@ -7,19 +7,19 @@ import { feature } from 'topojson-client'
 import type { GeometryCollection } from 'topojson-specification'
 import world from 'world-atlas/countries-110m.json'
 import { useCurrentLocale } from '@/app/LocaleContext'
+import { demoName } from './demoNames'
 
-/** `id` matches world-atlas features; `code` feeds Intl.DisplayNames. */
 const TARGETS = [
-	{ id: '392', code: 'JP', points: 95 },
-	{ id: '076', code: 'BR', points: 80 },
-	{ id: '818', code: 'EG', points: 100 },
-	{ id: '036', code: 'AU', points: 90 },
-	{ id: '356', code: 'IN', points: 85 },
-	{ id: '484', code: 'MX', points: 95 },
-	{ id: '710', code: 'ZA', points: 75 },
-	{ id: '380', code: 'IT', points: 100 },
-	{ id: '398', code: 'KZ', points: 90 },
-	{ id: '032', code: 'AR', points: 85 },
+	{ id: '392', points: 95 },
+	{ id: '076', points: 80 },
+	{ id: '818', points: 100 },
+	{ id: '036', points: 90 },
+	{ id: '356', points: 85 },
+	{ id: '484', points: 95 },
+	{ id: '404', points: 75 },
+	{ id: '380', points: 100 },
+	{ id: '398', points: 90 },
+	{ id: '032', points: 85 },
 ] as const
 
 const SPIN_MS = 1300
@@ -57,23 +57,9 @@ function rotationFor(target: Feature): Rotation {
 	return [-lon, -lat]
 }
 
-function useCountryName(code: string): string {
-	const locale = useCurrentLocale()
-	return useMemo(() => {
-		try {
-			const names = new Intl.DisplayNames([locale.split('-')[0], 'en'], {
-				type: 'region',
-			})
-			return names.of(code) ?? code
-		} catch {
-			return code
-		}
-	}, [locale, code])
-}
-
 function QuestionCard({ index }: { index: number }) {
 	const target = TARGETS[index]
-	const name = useCountryName(target.code)
+	const name = demoName(target.id, useCurrentLocale())
 
 	return (
 		<div className='raised absolute top-0 left-1/2 z-10 w-56 -translate-x-1/2 overflow-hidden rounded-[18px] border-2 border-line bg-white px-4 pt-2.5 pb-3 text-center [--edge-size:5px]'>

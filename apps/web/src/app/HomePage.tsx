@@ -1,13 +1,14 @@
 import { Speech } from 'lucide-react'
 import { lazy, Suspense } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { AppHeader, SkyBackground } from '@/shared/layout'
 import { AppUpdateNotice } from '@/shared/pwa'
 import { Button } from '@/shared/ui'
-import { cn } from '@/shared/utils'
 import { singleplayerPaths } from '@/singleplayer-game/paths'
+import { HomeFaq } from './landing/HomeFaq'
 import { ModeShowcase } from './landing/ModeShowcase'
-import { HERO_TITLE_CLASS, HIGHLIGHT_CLASS } from './landing/styles'
+import { PlayTogether } from './landing/PlayTogether'
+import { HERO_TITLE_CLASS } from './landing/styles'
 import { LocalizedLink } from './LocalizedLink'
 
 const HeroGlobe = lazy(() => import('./landing/HeroGlobe'))
@@ -16,32 +17,7 @@ const SprintDemo = lazy(() => import('./landing/SprintDemo'))
 const RoutesDemo = lazy(() => import('./landing/RoutesDemo'))
 const TodaySection = lazy(() => import('./landing/TodaySection'))
 
-const MODES = [
-	{
-		key: 'solo',
-		to: '/singleplayer',
-		cta: 'playSolo',
-		points: ['point1', 'point2', 'point3', 'point4'],
-		button: 'primary',
-		panel: 'bg-sunflower-100 [--edge:var(--color-sunflower-300)]',
-		bullet: 'bg-sunflower-500',
-	},
-	{
-		key: 'multiplayer',
-		to: '/multiplayer',
-		cta: 'playTogether',
-		points: ['point1', 'point2', 'point3'],
-		button: 'grape',
-		panel: 'bg-grape-100 [--edge:var(--color-grape-200)]',
-		bullet: 'bg-grape-500',
-	},
-] as const
-
-const STEPS = [
-	{ n: 1, color: 'text-ocean-500' },
-	{ n: 2, color: 'text-grape-500' },
-	{ n: 3, color: 'text-coral-500' },
-] as const
+const TRUST = ['free', 'noAccount', 'noAds'] as const
 
 function GlobePlaceholder() {
 	return (
@@ -66,12 +42,7 @@ export default function HomePage() {
 						<section className='grid items-center gap-10 lg:grid-cols-[1.1fr_1fr]'>
 							<div className='flex flex-col items-center gap-6 text-center lg:items-start lg:text-left'>
 								<h1 className={HERO_TITLE_CLASS}>
-									<Trans
-										i18nKey='landing.heroTitle'
-										components={{
-											hl: <span className={HIGHLIGHT_CLASS} />,
-										}}
-									/>
+									{t('landing.heroTitle')}
 								</h1>
 								<p className='max-w-xl text-lg font-medium text-on-sky-soft sm:text-xl'>
 									{t('landing.heroText')}
@@ -88,6 +59,17 @@ export default function HomePage() {
 										</LocalizedLink>
 									</Button>
 								</div>
+								<ul className='flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs font-black tracking-[0.08em] text-on-sky-soft uppercase sm:text-sm lg:justify-start'>
+									{TRUST.map(key => (
+										<li key={key} className='flex items-center gap-2'>
+											<span
+												aria-hidden='true'
+												className='size-1.5 rounded-full bg-sunflower-500'
+											/>
+											{t(`landing.trust.${key}`)}
+										</li>
+									))}
+								</ul>
 							</div>
 							<Suspense fallback={<GlobePlaceholder />}>
 								<HeroGlobe />
@@ -101,6 +83,7 @@ export default function HomePage() {
 						<ModeShowcase
 							id='name-it'
 							copyKey='nameIt'
+							eyebrow={t('singleplayer.modes.nameIt.title')}
 							to={singleplayerPaths('name-it').setup}
 							Demo={NameItDemo}
 							demoSide='left'
@@ -116,114 +99,25 @@ export default function HomePage() {
 						<ModeShowcase
 							id='recall-sprint'
 							copyKey='recallSprint'
+							eyebrow={t('singleplayer.modes.recallSprint.title')}
 							to={singleplayerPaths('recall-sprint').setup}
 							Demo={SprintDemo}
 							demoSide='right'
 							accent='coral'
-							text={t('landing.recallSprint.text')}
 						/>
 						<ModeShowcase
 							id='routes'
 							copyKey='routes'
+							eyebrow={t('singleplayer.modes.routes.title')}
 							to={singleplayerPaths('routes').setup}
 							Demo={RoutesDemo}
 							demoSide='left'
 							accent='grass'
-							text={t('landing.routes.text')}
 						/>
 
-						<section
-							aria-labelledby='modes-title'
-							className='flex flex-col gap-8'
-						>
-							<h2
-								id='modes-title'
-								className='text-center text-3xl font-black tracking-tight text-on-sky sm:text-4xl'
-							>
-								{t('landing.modesTitle')}
-							</h2>
-							<div className='grid gap-6 md:grid-cols-2'>
-								{MODES.map(mode => (
-									<div
-										key={mode.key}
-										className={cn(
-											'raised flex flex-col gap-5 rounded-card p-6 sm:p-8',
-											mode.panel,
-										)}
-									>
-										<div>
-											<h3 className='text-3xl font-black tracking-tight'>
-												{t(`landing.${mode.key}.title`)}
-											</h3>
-											<p className='mt-1 text-lg font-medium text-ink/70'>
-												{t(`landing.${mode.key}.text`)}
-											</p>
-										</div>
-										<ul className='flex flex-1 flex-col gap-2'>
-											{mode.points.map(point => (
-												<li
-													key={point}
-													className='flex items-start gap-3 font-semibold'
-												>
-													<span
-														aria-hidden='true'
-														className={cn(
-															'mt-2 size-2 shrink-0 rounded-full',
-															mode.bullet,
-														)}
-													/>
-													{t(`landing.${mode.key}.${point}`)}
-												</li>
-											))}
-										</ul>
-										<Button
-											asChild
-											variant={mode.button}
-											className='w-full sm:w-fit sm:px-8'
-										>
-											<LocalizedLink to={mode.to}>
-												{t(`landing.${mode.cta}`)}
-											</LocalizedLink>
-										</Button>
-									</div>
-								))}
-							</div>
-						</section>
+						<PlayTogether />
 
-						<section
-							aria-labelledby='steps-title'
-							className='flex flex-col gap-10'
-						>
-							<h2
-								id='steps-title'
-								className='text-center text-3xl font-black tracking-tight text-on-sky sm:text-4xl'
-							>
-								{t('landing.stepsTitle')}
-							</h2>
-							<ol className='grid gap-10 md:grid-cols-3 md:gap-8'>
-								{STEPS.map(({ n, color }) => (
-									<li key={n} className='flex gap-4'>
-										<span
-											aria-hidden='true'
-											className={cn(
-												'text-7xl leading-[0.85] font-black [text-shadow:0_5px_0_var(--sky-edge)]',
-												color,
-											)}
-										>
-											{n}
-										</span>
-										<div>
-											<h3 className='text-xl font-black text-on-sky'>
-												{t(`landing.step${n}Title`)}
-											</h3>
-											<p className='mt-1 font-medium text-on-sky-soft'>
-												{t(`landing.step${n}Text`)}
-											</p>
-										</div>
-									</li>
-								))}
-							</ol>
-						</section>
+						<HomeFaq />
 					</main>
 				</div>
 			</div>
